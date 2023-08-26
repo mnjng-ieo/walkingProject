@@ -2,6 +2,7 @@ package com.walk.aroundyou.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -25,12 +26,11 @@ public class BoardCourse {
 	@Column(name="bcourse_id", columnDefinition="bigint", nullable=false)
 	private long bcourseId;
 	
-	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_id", nullable = false)
-	private Board boardId;
+	private Boards boardId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "esntl_id", nullable = false)
 	private Course esntlId;
 	

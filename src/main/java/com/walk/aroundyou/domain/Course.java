@@ -65,8 +65,8 @@ public class Course {
 	private String lnmAddr;
 
 	@Column(name="cours_spot_la", nullable=false, columnDefinition="double")
-	private double cours_spot_la;
+	private double coursSpotLa;
 	
 	@Column(name="cours_spot_lo", nullable=false, columnDefinition="double")
-	private double cours_spot_lo;	
+	private double coursSpotLo;	
 }
