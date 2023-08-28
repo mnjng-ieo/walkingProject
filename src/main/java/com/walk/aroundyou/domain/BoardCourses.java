@@ -19,11 +19,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="board_course")
-public class BoardCourse {
+public class BoardCourses {
 
 	@Id
-	@Column(name="bcourse_id", columnDefinition="bigint", nullable=false)
-	private long BcourseId;
+	@Column(name="board_course_id", columnDefinition="bigint", nullable=false)
+	private long BoardCourseId;
 	
 	
 	@ManyToOne
@@ -31,8 +31,8 @@ public class BoardCourse {
 	private Boards BoardId;
 	
 	@ManyToOne
-	@JoinColumn(name = "esntl_id", nullable = false)
-	private Course EsntlId;
+	@JoinColumn(name = "course_id", nullable = false)
+	private Course CourseId;
 	
 }
 

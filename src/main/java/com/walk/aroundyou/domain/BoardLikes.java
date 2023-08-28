@@ -17,11 +17,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="board_like")
-public class BoardLike {
+public class BoardLikes {
 
 	@Id
-	@Column(name="blike_id",columnDefinition="bigint", nullable=false)
-	private long BlikeId;
+	@Column(name="board_like_id",columnDefinition="bigint", nullable=false)
+	private long BoardlikeId;
 	
 	@ManyToOne
 	@JoinColumn(name = "board_id", nullable = false)
