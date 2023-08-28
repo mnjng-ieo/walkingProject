@@ -34,7 +34,7 @@ public class Comments {
 	// 게시판 식별 번호 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="board_id", nullable = false)
-	private Boards board;
+	private Board board;
 
 	// 코멘트 내용 
 	@Column(name="comment_content", nullable=false, columnDefinition="varchar(255)")
