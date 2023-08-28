@@ -45,7 +45,7 @@ public class User {
    private String userEmail;
    
    
-   // 	버전2를 위한 컬럼
+   /// 	버전2를 위한 컬럼
 //   @Column(name="user_img", columnDefinition= "varchar(255)")
 //   private String userImg;
    
