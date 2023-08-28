@@ -2,6 +2,7 @@ package com.walk.aroundyou.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -21,10 +22,10 @@ public class BoardLikes {
 
 	@Id
 	@Column(name="board_like_id",columnDefinition="bigint", nullable=false)
-	private long BoardlikeId;
+	private long boardlikeId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_id", nullable = false)
-	private Boards BoardId;
+	private Boards boardId;
 }
 
