@@ -21,8 +21,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "tags")
-public class Tags {
+@Table(name = "tag")
+public class Tag {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name="tag_id", nullable=false, columnDefinition = "bigint")
