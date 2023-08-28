@@ -19,7 +19,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="board_course")
+@Table(name="board_courses")
 public class BoardCourses {
 
 	@Id
