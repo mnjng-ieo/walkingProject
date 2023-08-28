@@ -68,5 +68,5 @@ public class User {
    @Column(name="social", nullable=false, columnDefinition= "tinyint")
    private int social;
       
-   
+
 }
