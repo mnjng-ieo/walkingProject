@@ -19,11 +19,14 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="course")
-public class Course {
+@Table(name="courses")
+public class Courses {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="course_id", nullable = false)
+	private Long courseId;
+	
 	@Column(name="esntl_id", columnDefinition="varchar(50)")
 	private String esntlId; 
 	
