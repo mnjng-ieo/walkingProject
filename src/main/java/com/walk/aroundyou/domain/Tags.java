@@ -1,15 +1,14 @@
 package com.walk.aroundyou.domain;
 
-import jakarta.persistence.CascadeType;
+import org.hibernate.annotations.ColumnDefault;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,19 +21,19 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "hashtag")
-public class Hashtag {
+@Table(name = "tags")
+public class Tags {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name="tag_id", nullable=false, columnDefinition = "bigint")
-   @OneToMany(mappedBy = "tagId", cascade=CascadeType.REMOVE)
-   private long tagId;
+   private Long tagId;
    
-   @Column(name="hashtag", nullable=false, columnDefinition = "varchar(50)")
-   private String hashTag;
+   @Column(name="tag_content", nullable=false, columnDefinition = "varchar(50)")
+   private String tagContent;
    
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "state_id", nullable = false)
-   private int stateId;
+   @Column(name = "state_id", nullable = false)
+   @Enumerated(EnumType.STRING)
+   @ColumnDefault("'NORMAL'")
+   private StateId stateId;
 
 }

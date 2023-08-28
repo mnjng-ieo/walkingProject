@@ -20,20 +20,20 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "board_tag")
-public class BoardTag {
+@Table(name = "board_tags")
+public class BoardTags {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="bt_id", columnDefinition="bigint", nullable=false)
-	private long btId;
+	@Column(name="board_tag_id", columnDefinition="bigint", nullable=false)
+	private Long boardTagId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_id", nullable = false)
-	private long boardId;
+	private Boards boardId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tag_id", nullable = false)
-	private long tagId;
+	private Tags tagId;
 
 }
