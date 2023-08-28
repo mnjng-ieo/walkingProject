@@ -16,12 +16,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user")
 @Entity
+@ToString(exclude="userPwd")
 public class User {
 
    // 멤버변수
@@ -63,7 +65,7 @@ public class User {
    @Column(name="user_role", nullable=false)
    @Enumerated(EnumType.STRING)
    @ColumnDefault("'USER'")
-   private UserRole role;
+   private UserRole userRole;
    
    @Column(name="social", nullable=false, columnDefinition= "tinyint")
    private int social;
