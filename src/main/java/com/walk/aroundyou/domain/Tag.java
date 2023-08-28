@@ -2,6 +2,8 @@ package com.walk.aroundyou.domain;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.walk.aroundyou.domainenum.StateId;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -6,6 +6,9 @@ import java.sql.Timestamp;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.walk.aroundyou.domain.role.UserRole;
+import com.walk.aroundyou.domainenum.StateId;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -50,25 +53,26 @@ public class User {
 	private byte userImg;
 	
 	@Column(name="user_join_date", nullable=false)
+	@ColumnDefault("now()")
 	private Timestamp userJoinDate;
 	
 	@Column(name="user_update_date", nullable=false)
+	@ColumnDefault("now()")
 	private Timestamp userUpdateDate;
 	
 	@Column(name="user_role", nullable=false)
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'USER'")
-	private userRole role;
+	private UserRole userRole;
 	
 	@Column(name = "state_id", nullable = false)
 	@Enumerated(EnumType.STRING)
 	@ColumnDefault("'NORMAL'")
-	   private StateId stateId;
+	  private StateId stateId;
 
 	// social 소셜로그인 가입 여부
-    @Column(name = "social", nullable=false)
-    private boolean Social;
+    @Column(name = "social_yn", nullable = false)
+    @ColumnDefault("false")
+    private boolean socialYn;
 
-	
-	
 }
