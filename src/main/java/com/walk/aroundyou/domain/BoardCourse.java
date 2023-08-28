@@ -23,16 +23,16 @@ public class BoardCourse {
 
 	@Id
 	@Column(name="bcourse_id", columnDefinition="bigint", nullable=false)
-	private long bcourseId;
+	private long BcourseId;
 	
 	
 	@ManyToOne
 	@JoinColumn(name = "board_id", nullable = false)
-	private Board boardId;
+	private Boards BoardId;
 	
 	@ManyToOne
 	@JoinColumn(name = "esntl_id", nullable = false)
-	private Course esntlId;
+	private Course EsntlId;
 	
 }
 

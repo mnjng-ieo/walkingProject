@@ -21,10 +21,10 @@ public class BoardLike {
 
 	@Id
 	@Column(name="blike_id",columnDefinition="bigint", nullable=false)
-	private long blikeId;
+	private long BlikeId;
 	
 	@ManyToOne
 	@JoinColumn(name = "board_id", nullable = false)
-	private Boards boardId;
+	private Boards BoardId;
 }
 
