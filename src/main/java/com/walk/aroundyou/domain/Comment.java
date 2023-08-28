@@ -59,7 +59,6 @@ public class Comment {
 
 	// 회원 ID
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="user_id", referencedColumnName="user_id" )
-	@Column(nullable=false, columnDefinition="varchar(100)")
+	@JoinColumn(name="user_id", referencedColumnName="user_id", nullable = false )
 	private User userId;
 }
