@@ -1,9 +1,8 @@
 package com.walk.aroundyou.domain;
 
-package com.walk.aroundyou.domain;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -22,10 +21,15 @@ import lombok.ToString;
 public class BoardLike {
 
 	@Id
-	@Column(name="blike_id",columnDefinition="bigint", nullable=false)
-	private long blikeId;
+	@Column(name="board_like_id",columnDefinition="bigint", nullable=false)
+	private long boardLikeId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_id", nullable = false)
 	private Board boardId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User userId;
 }
+
