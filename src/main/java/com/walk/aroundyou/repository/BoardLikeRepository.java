@@ -1,0 +1,40 @@
+package com.walk.aroundyou.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.walk.aroundyou.domain.Board;
+import com.walk.aroundyou.domain.BoardLike;
+import com.walk.aroundyou.domain.User;
+
+@Repository
+public interface BoardLikeRepository extends JpaRepository<BoardLike, Long>{
+
+	// 특정 게시물 좋아요 개수(JPQL)
+	//@Query(value = "SELECT count(bl) FROM BoardLike bl WHERE bl.boardId = :{boardId}")
+	//Long countLike(@Param(value = "boardId")Board boardId);
+	// JPA 
+	Long countByBoardId(Board boardId);
+	
+	
+	// controller 필요 O -> 사용자 응답으로 확인하는 거니까
+	// 마이페이지에서 좋아요한 게시물 확인 (유저 - 게시글) (JPQL)
+	@Query(value = "SELECT bl.boradId FORM BoardLike bl WHERE bl.userId = :{userId}")
+	List<Long> findLikedBoardByUserId(@Param(value = "userId")User userId);
+	
+	
+	// 사용자가 게시물 좋아요 표시 클릭 시 선택 + 해제 (JPA)
+	// 값의 유무 모르니까 에러 발생하지 않기 위해 Optional<>
+	Optional<BoardLike> findByUserAndBoard(User userId, Board boardId);
+
+
+	
+	
+	
+	
+}
