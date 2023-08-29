@@ -1,12 +1,8 @@
 package com.walk.aroundyou.domain;
 
 import java.sql.Timestamp;
-
 import org.hibernate.annotations.ColumnDefault;
-
-import com.walk.aroundyou.domainenum.CommentType;
 import com.walk.aroundyou.domainenum.StateId;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,17 +15,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter	
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="comment")
-public class Comment {
+@Table(name="comments")
+public class Comments {
 
 	// 코멘트 식별 번호 
 	@Id
@@ -39,13 +33,8 @@ public class Comment {
 	
 	// 게시판 식별 번호 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="board_id", nullable = true)
-	private Board boardId;
-	
-	// 코스 식별 번호 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="course_id", nullable = true)
-	private Course courseId;
+	@JoinColumn(name="board_id", nullable = false)
+	private Board board;
 
 	// 코멘트 내용 
 	@Column(name="comment_content", nullable=false, columnDefinition="varchar(255)")
@@ -61,6 +50,7 @@ public class Comment {
 	@ColumnDefault("now()")
 	private Timestamp commentUpdatedDate;
 
+	// Enum 클래스때문에 오류 발생 
 	// 상태정보 ID 
 	@Column(name="state_id")
 	@Enumerated(EnumType.STRING)
@@ -70,11 +60,6 @@ public class Comment {
 	// 회원 ID
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="user_id", referencedColumnName="user_id" )
-	// 오류창에 JoinColumn과 같이 사용하지 않을수있다고해서 주석처리
-	// @Column(nullable=false, columnDefinition="varchar(100)")
+	@Column(nullable=false, columnDefinition="varchar(100)")
 	private User userId;
-	
-	@Column(name = "comment_type", nullable = true)
-	@Enumerated(EnumType.STRING)
-	private CommentType commentType;
 }
