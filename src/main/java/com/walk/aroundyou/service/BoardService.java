@@ -18,11 +18,13 @@ public class BoardService {
     }
 
     // 게시글 생성
-    public Board createBoard(String title, String content, Timestamp createdAt) {
+    public Board createBoard(String title, String content, Timestamp createdAt, String userNickname) {
         Board board = new Board();
         board.setBoardTitle(title);
         board.setBoardContent(content);
-        board.setBoardCreatedDate(createdAt);
+        board.setUserNickname(userNickname);
+        board.setUserNickname(content);
+        
         return boardRepository.save(board);
     }
     
