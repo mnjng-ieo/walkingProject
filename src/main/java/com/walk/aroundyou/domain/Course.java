@@ -1,6 +1,7 @@
 package com.walk.aroundyou.domain;
 
 import java.sql.Timestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,10 +11,12 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Builder
 @Entity
 @Data
 @ToString
@@ -28,12 +31,12 @@ public class Course {
 	private Long courseId;
 	
 	@Column(name="esntl_id", columnDefinition="varchar(50)")
-	private String esntlId; 
+	private String esntlId;
 	
 	@Column(name="wlk_cours_flag_nm", nullable=false, columnDefinition="varchar(200)")
 	private String wlkCoursFlagNm;
 	
-	@Column(name="wlk_cours_nm", columnDefinition="varchar(200)")
+	@Column(name="wlk_cours_nm", nullable=false, columnDefinition="varchar(200)")
 	private String wlkCoursNm;
 	
 	@Column(name="cours_dc", nullable=false, columnDefinition="text")
@@ -52,7 +55,7 @@ public class Course {
 	private Float coursDetailLtCn;
 	
 	@Column(name="adit_dc", columnDefinition="text")
-	private Float aditDc;
+	private String aditDc;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="cours_time_cn", columnDefinition="time")
@@ -72,4 +75,36 @@ public class Course {
 	
 	@Column(name="cours_spot_lo", nullable=false, columnDefinition="double")
 	private double coursSpotLo;	
+	
+	// 값 수정 메서드
+	public void update(
+			String wlkCoursFlagNm,
+			String wlkCoursNm,
+			String coursDc,
+			String signguCn,
+			String coursLevelNm,
+			String coursLtCn,
+			Float coursDetailLtCn,
+			String aditDc,
+			Timestamp coursTimeCn,
+			String toiletDc,
+			String cvntlNm,
+			String lnmAddr,
+			double coursSpotLa,
+			double coursSpotLo) {
+		this.wlkCoursFlagNm = wlkCoursFlagNm;
+		this.wlkCoursNm = wlkCoursNm;
+		this.coursDc = coursDc;
+		this.signguCn = signguCn;
+		this.coursLevelNm = coursLevelNm;
+		this.coursLtCn = coursLtCn;
+		this.coursDetailLtCn = coursDetailLtCn;
+		this.aditDc = aditDc;
+		this.coursTimeCn = coursTimeCn;
+		this.toiletDc = toiletDc;
+		this.cvntlNm = cvntlNm;
+		this.lnmAddr = lnmAddr;
+		this.coursSpotLa = coursSpotLa;
+		this.coursSpotLo = coursSpotLo;
+	}
 }
