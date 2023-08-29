@@ -8,6 +8,6 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public enum CommentType {
-	COURSE,
-	COMMUNITY;
+	BOARD,
+	COURSE;
 }

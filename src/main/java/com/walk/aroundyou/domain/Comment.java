@@ -39,8 +39,13 @@ public class Comment {
 	
 	// 게시판 식별 번호 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="board_id", nullable = false)
+	@JoinColumn(name="board_id", nullable = true)
 	private Board boardId;
+	
+	// 코스 식별 번호 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="course_id", nullable = true)
+	private Course courseId;
 
 	// 코멘트 내용 
 	@Column(name="comment_content", nullable=false, columnDefinition="varchar(255)")
