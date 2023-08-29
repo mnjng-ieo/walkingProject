@@ -19,12 +19,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Data
+@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,7 +45,7 @@ public class Board {
 	//private Long userId;
 	
 	// 회원 ID
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="user_id", referencedColumnName="user_id" )
 	// 오류창에 JoinColumn과 같이 사용하지 않을수있다고해서 주석처리
 	// @Column(nullable=false, columnDefinition="varchar(100)")

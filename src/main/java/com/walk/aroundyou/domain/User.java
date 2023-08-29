@@ -50,7 +50,7 @@ public class User {
 	private String userEmail;
 	
 	@Column(name="user_img", nullable=true)
-	private byte userImg;
+	private String userImg;
 	
 	@Column(name="user_join_date", nullable=false)
 	@ColumnDefault("now()")

@@ -27,11 +27,11 @@ public class BoardCourse {
 	private long boardCourseId;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "board_id", nullable = false)
 	private Board boardId;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "course_id", nullable = false)
 	private Course courseId;
 	
