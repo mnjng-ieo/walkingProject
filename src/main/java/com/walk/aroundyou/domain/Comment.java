@@ -74,6 +74,10 @@ public class Comment {
 	// @Column(nullable=false, columnDefinition="varchar(100)")
 	private User userId;
 	
+	// 회원 닉네임
+	@Column(name = "user_nickname", nullable = false)
+	private String userNickname;
+	
 	@Column(name = "comment_type", nullable = true)
 	@Enumerated(EnumType.STRING)
 	private CommentType commentType;
