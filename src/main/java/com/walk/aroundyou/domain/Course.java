@@ -2,6 +2,8 @@ package com.walk.aroundyou.domain;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -51,12 +53,14 @@ public class Course {
 	@Column(name="cours_lt_cn", columnDefinition="varchar(50)")
 	private String coursLtCn;
 	
-	@Column(name="cours_detail_lt_cn", columnDefinition="float")
+	@Column(name="cours_detail_lt_cn", nullable=false, columnDefinition="float")
 	private Float coursDetailLtCn;
 	
 	@Column(name="adit_dc", columnDefinition="text")
 	private String aditDc;
 	
+	// JsonFormat 
+	@JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="cours_time_cn", columnDefinition="time")
 	private Timestamp coursTimeCn;

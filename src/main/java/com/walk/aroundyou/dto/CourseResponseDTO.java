@@ -2,13 +2,14 @@ package com.walk.aroundyou.dto;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.walk.aroundyou.domain.Course;
 
 import lombok.Getter;
 
 @Getter
 // 산책로 목록 조회에 대한 응답을 위한 DTO 클래스
-public class CourseResponseDto {
+public class CourseResponseDTO {
 
 	private Long courseId;
 	private String esntlId; 
@@ -20,14 +21,19 @@ public class CourseResponseDto {
 	private String coursLtCn;
 	private Float coursDetailLtCn;
 	private String aditDc;
+	
+	// 이 어노테이션 없으면 Json으로 조회했을 때 ISO 8601 형식으로 보이는 문제 발생
+	// "HH:mm:ss" 형식으로 바꾸고, timezone 설정으로 원래 데이터와 15시간 차이나던 것 바로 잡았다.
+	@JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
 	private Timestamp coursTimeCn;
+	
 	private String toiletDc;
 	private String cvntlNm;
 	private String lnmAddr;
 	private double coursSpotLa;
 	private double coursSpotLo;	
 	
-	public CourseResponseDto(Course entity) {
+	public CourseResponseDTO(Course entity) {
 		this.courseId = entity.getCourseId();
 		this.esntlId = entity.getEsntlId();
 		this.wlkCoursFlagNm = entity.getWlkCoursFlagNm();

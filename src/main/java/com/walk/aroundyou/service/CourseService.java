@@ -1,5 +1,9 @@
 package com.walk.aroundyou.service;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
@@ -9,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.walk.aroundyou.domain.Course;
-import com.walk.aroundyou.dto.CourseRequestDto;
+import com.walk.aroundyou.dto.CourseRequestDTO;
 import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.repository.CourseSpecifications;
 
@@ -21,6 +25,16 @@ import lombok.RequiredArgsConstructor;
 public class CourseService {
 
 	private final CourseRepository courseRepository;
+	
+	/**
+	 * [산책로상세조회페이지] id로 산책로 하나 조회
+	 */
+	public Course findById(long id) {
+		return courseRepository.findById(id)
+				.orElseThrow(() 
+						-> new IllegalArgumentException(
+								"not found: " + id));
+	}
 	
 	/**
 	 * [산책로목록조회페이지] 모든 산책로 조회 메서드
@@ -37,10 +51,10 @@ public class CourseService {
 	 * [산책로목록조회페이지] 조건에 따른 조회 메서드
 	 */
 	public List<Course> findAllByCondition(
-			@RequestParam(required = false) String region,
-			@RequestParam(required = false) String level,
-			@RequestParam(required = false) String distance, 
-			@RequestParam(required = false) String sort  // 원래 없었음.
+			String region, String level, String distance, 
+			String startTime, String endTime, 
+			String total, String title, String coursDc, 
+			String aditDc, String sort
 	){
 		Specification<Course> spec = 
 				(root, query, criteriaBuilder) -> null;
@@ -55,18 +69,47 @@ public class CourseService {
 			spec = spec.and(
 					CourseSpecifications.equalDistance(distance));
 		
-		//** 정렬 방식 : 산책로명 가나다순이 기본. 나머지 옵션은 버튼 누르면 바뀌도록 구현하고 싶다.
-		//            ~ 조건 검색된 결과에 대한 정렬 후작업이라 파라미터로 넣지는 못 함. 어떻게 해야 할까?
-			// 산책로명 가나다순으로 정렬
-			//Sort sort = Sort.by(Direction.ASC, "wlkCoursFlagNm", "wlkCoursNm");
+		try {
+			// 매개변수로 넘어간 문자열 데이터를 "HH:mm:ss" 패턴의 timestamp 형으로 교체
+			SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			
-			// 경로상세거리 짧은 순으로 정렬
-			//Sort sort = Sort.by(Direction.ASC, "coursDetailLtCn");
+			if (startTime != null && endTime != null) {
+				Date parsedStartTime = dateFormat.parse(startTime);
+				Date parsedEndTime = dateFormat.parse(endTime);
+				spec = spec.and(
+						CourseSpecifications.betweenTime(parsedStartTime, parsedEndTime));
+			}
 			
-			// 경로상세거리 먼 순으로 정렬
-			//Sort sort = Sort.by(Direction.DESC, "coursDetailLtCn");
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("Invalid timestamp format");
+		}
+		
+		if (total != null)
+			spec = spec.and(
+					CourseSpecifications.likeTotalKeyword(total));
+		if (title != null)
+			spec = spec.and(
+					CourseSpecifications.likeTitleKeyword(title));
+		if (coursDc != null)
+			spec = spec.and(
+					CourseSpecifications.likeCoursDcKeyword(coursDc));
+		if (aditDc != null)
+			spec = spec.and(
+					CourseSpecifications.likeAditDcKeyword(aditDc));
+		
+		// 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
+		Sort customSort;
+
+		// 상세코스거리에 null이 있으면 마치 0처럼 asc에서는 가장 위에, desc에서는 가장 아래에 보인다. 
+		if("coursDetailLtCnASC".equals(sort)) { // 상세코스거리 오름차순
+			customSort = Sort.by(Direction.ASC, "coursDetailLtCn");
+		} else if("coursDetailLtCnDESC".equals(sort)) { // 상세코스거리 내림차순
+			customSort = Sort.by(Direction.DESC, "coursDetailLtCn");
+		} else { // 산책로명 가나다순
+			customSort = Sort.by(Direction.ASC, "wlkCoursFlagNm", "wlkCoursNm");
+		}
 	
-		return courseRepository.findAll(spec);  // 원래 (spec, sort) 이런 식이었다.
+		return courseRepository.findAll(spec, customSort);
 	}
 	
 	/**
@@ -75,7 +118,7 @@ public class CourseService {
 	 * Long 형으로 바꾸고, entity.getId()를 return하면 생성된 산책로의 id(PK)를 리턴한다.
 	 */
 	@Transactional
-	public Course save(CourseRequestDto request) {
+	public Course save(CourseRequestDTO request) {
 		return courseRepository.save(request.toEntity());
 	}
 	
@@ -85,7 +128,7 @@ public class CourseService {
 	 * 영속성 컨텍스트에 저장된 엔티티 객체의 값이 변경되어 update 쿼리가 자동 실행됨.  
 	 */
 	@Transactional
-	public Course updateCourse (long id, CourseRequestDto request) {
+	public Course updateCourse (long id, CourseRequestDTO request) {
 		Course course = courseRepository.findById(id)
 				.orElseThrow(()-> new IllegalArgumentException("Course not found : " + id));
 		
@@ -105,6 +148,12 @@ public class CourseService {
 				request.getCoursSpotLo()
 		);
 		return course;
-
+	}
+	
+	/**
+	 * [관리자페이지] 산책로데이터 삭제 메소드
+	 */
+	public void deleteCourse(long id) {
+		courseRepository.deleteById(id);
 	}
 }
