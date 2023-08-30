@@ -23,15 +23,39 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	//// MVC 개발 라이브러리
+	// MVC 환경 개발에 필요한 필수 라이브러리
+	implementation 'org.springframework.boot:spring-boot-starter-web'	
+	// 타임리프를 뷰템플릿으로 사용하겠다.
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// 타임리프 레이아웃 의존성 추가
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+	//// 데이터베이스를 다루는 기술 3대장 1.JPA 2.MyBatis 3.JDBC TEMPLATE
+	// jdbc Template방식 기술로 개발할때 필요
+//	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	// jpa방식 기술로 개발할때 필요
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// 순수 jdbc 기술로 개발할때 필요
+//	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	// 대한민국에서 가장 많이 사용하고 있는 데이터베이스 기술
+//	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
+	
+	// 실행시 필요한 데이터베이스 jdbc 드라이버
+//	runtimeOnly 'com.h2database:h2'
+//	runtimeOnly 'com.mysql:mysql-connector-j'
+//	runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+	
+	// 개발할때 소스자동생성 실행시 필요한 라이브러리
+	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-	annotationProcessor 'org.projectlombok:lombok'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	
+	// 테스트 라이브러리
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.2'
 }
 
 tasks.named('test') {
