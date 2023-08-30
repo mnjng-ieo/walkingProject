@@ -37,9 +37,4 @@ public class BoardTag {
 	@JoinColumn(name = "tag_id", nullable = false)
 	private Tag tagId;
 
-	// 생성자
-	public BoardTag(Board board, Tag tag) {
-		// TODO Auto-generated constructor stub
-	}
-
 }

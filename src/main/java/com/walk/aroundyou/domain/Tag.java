@@ -39,10 +39,5 @@ public class Tag {
    @Enumerated(EnumType.STRING)
    @ColumnDefault("'NORMAL'")
    private StateId stateId;
-   
-   // 생성자
-   public Tag(String content) {
-		// TODO Auto-generated constructor stub
-	}
 
 }
