@@ -9,13 +9,17 @@ import org.springframework.stereotype.Service;
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.BoardLike;
 import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.dto.BoardLikeDTO;
 import com.walk.aroundyou.repository.BoardLikeRepository;
 
 @Service
 public class BoardLikeService {
 
 	@Autowired
-	private BoardLikeRepository boardLikeRepository;
+	BoardLikeRepository boardLikeRepository;
+	
+	@Autowired
+	BoardLikeDTO boardLikeDTO;
 	
 	
 	
@@ -24,6 +28,7 @@ public class BoardLikeService {
 		
         return boardLikeRepository.countUserIdByBoardId(boardId);
     }
+	
 	
 	// 특정 게시물에 대한 좋아요한 회원 목록
 	public List<Long> findUserIdByBoardId(Board boardId) {
@@ -48,18 +53,24 @@ public class BoardLikeService {
 
 	
 	
-	
 	// 사용자가 게시물 좋아요 표시 클릭 시 선택 + 해제
 	public boolean toggleLike(User userId, Board boardId) {
 		
-		Optional<BoardLike> existingLike = boardLikeRepository.findByUserIdAndBoardId(userId, boardId);
+		Optional<BoardLike> boardLikeDTO = boardLikeRepository.findByUserIdAndBoardId(userId, boardId);
+		
+		
+		
+		
 		
 		// boolean의 디폴트는 false
 		
 		// 현재는 값이 없으면(null) true, 있으면 false
 		// 값이 있을때(좋아요한 게시물일 때) true로 나오길 원하면 아래를 사용
 		// return !existingLike.isEmpty();
-		return existingLike.isEmpty();
+		return boardLikeDTO.isEmpty();
 	}
+	
+	
+	
 	
 }
