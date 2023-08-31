@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.CourseRequestDTO;
+import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.repository.CourseSpecifications;
 

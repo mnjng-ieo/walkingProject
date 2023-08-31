@@ -22,7 +22,9 @@ public interface CourseRepository
 	// Specification과 Sort를 사용한 findAll 메소드 -> JPARepository에 기본 정의되어 있음.
 	//public List<Course> findAll(Specification<Course> spec, Sort sort);
 	
-	
 	// *** 페이징 처리는 다음과 같은 JpaRepository 기본 메소드가 지원한다.
 	// Page<T> findAll(Specification<T> spec, Pageable pageable);
+	
+	// ↳ 좋아요 수, 게시물언급 수, 댓글 수 포함 조회하기
+	
 }
