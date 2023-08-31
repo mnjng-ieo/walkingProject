@@ -1,6 +1,5 @@
 package com.walk.aroundyou.controller;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -58,16 +57,15 @@ public class CourseApiController {
 			    @RequestParam(required = false) String distance,
 			    @RequestParam(required = false) String startTime,
 			    @RequestParam(required = false) String endTime,
-			    @RequestParam(required = false) String total,
-			    @RequestParam(required = false) String title,
-			    @RequestParam(required = false) String coursDc,
-			    @RequestParam(required = false) String aditDc,
-			    @RequestParam(required = false) String sort
+			    @RequestParam(required = false) String searchTargetAttr,
+			    @RequestParam(required = false) String searchKeyword,
+			    @RequestParam(required = false) String sort,
+			    @RequestParam(required = false) int page
 				){
 			
 			List<CourseResponseDTO> courses = courseService.findAllByCondition(
 					region, level, distance, startTime, endTime, 
-					total, title, coursDc, aditDc, sort)
+					searchTargetAttr, searchKeyword, sort, page)
 					.stream()
 					.map(CourseResponseDTO::new)
 					.toList();

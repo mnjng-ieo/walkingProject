@@ -1,16 +1,16 @@
 package com.walk.aroundyou.service;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.CourseRequestDTO;
@@ -24,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class CourseService {
 
+	// 페이징 처리에 필요한, 한 페이지에 조회되는 데이터 수
+	private final static int SIZE_OF_PAGE = 20;
 	private final CourseRepository courseRepository;
 	
 	/**
@@ -48,17 +50,23 @@ public class CourseService {
 	//   일단 ajax로 경로 설정하기 전에는 findAll() 호출을 통해 '/courses'로는 전체 조회가 바로 보이도록 했다.
 	
 	/**
-	 * [산책로목록조회페이지] 조건에 따른 조회 메서드
+	 * [산책로목록조회페이지] 조건에 따른 산책로 목록 조회 메서드
+	 * - 페이징 처리하면서 메소드의 반환 형을 List에서 Page로 바꿨다.
 	 */
-	public List<Course> findAllByCondition(
+	public Page<Course> findAllByCondition(
 			String region, String level, String distance, 
 			String startTime, String endTime, 
-			String total, String title, String coursDc, 
-			String aditDc, String sort
+			String searchTargetAttr, String searchKeyword, 
+			String sort, int page
 	){
+		//** Specification : 검색 조건
+		// -> 각 매개변수의 값 여부에 따라서 검색 조건 추가 되거나 않도록 만들었음.
+		// -> 처음에는 검색 조건 없도록 초기화 (null)
 		Specification<Course> spec = 
 				(root, query, criteriaBuilder) -> null;
 		
+		//** 드롭박스 선택 검색조건 추가
+		// Specification의 and() : 검색 조건을 더하는 메소드
 		if (region != null)
 			spec = spec.and(
 					CourseSpecifications.equalRegion(region));
@@ -69,8 +77,10 @@ public class CourseService {
 			spec = spec.and(
 					CourseSpecifications.equalDistance(distance));
 		
+		// 드롭박스 선택 검색조건 중 소요시간(ex. '1시간 이내')의 경우
+		// 매개변수로 넘어간 문자열 데이터를 "HH:mm:ss" 패턴의 timestamp 형으로 교체
+		// 과정 중 필요한 예외 처리해줌. 
 		try {
-			// 매개변수로 넘어간 문자열 데이터를 "HH:mm:ss" 패턴의 timestamp 형으로 교체
 			SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			
 			if (startTime != null && endTime != null) {
@@ -79,25 +89,41 @@ public class CourseService {
 				spec = spec.and(
 						CourseSpecifications.betweenTime(parsedStartTime, parsedEndTime));
 			}
-			
 		} catch (ParseException e) {
 			throw new IllegalArgumentException("Invalid timestamp format");
 		}
 		
-		if (total != null)
-			spec = spec.and(
-					CourseSpecifications.likeTotalKeyword(total));
-		if (title != null)
-			spec = spec.and(
-					CourseSpecifications.likeTitleKeyword(title));
-		if (coursDc != null)
-			spec = spec.and(
-					CourseSpecifications.likeCoursDcKeyword(coursDc));
-		if (aditDc != null)
-			spec = spec.and(
-					CourseSpecifications.likeAditDcKeyword(aditDc));
+		//** 검색 대상 및 검색 조건 추가
+		// 검색키워드의 대상이 되는 컬럼을 뜻하는 searchTargetAttr가 각 키워드와 같다면,
+		// total = 산책로명, 주요코스, 소개글 전체 대상으로 키워드와 같은 값 검색
+		// title = 산책로명 대상으로 키워드와 같은 값 검색
+		// total = 주요코스 대상으로 키워드와 같은 값 검색
+		// total = 소개글 대상으로 키워드와 같은 값 검색
 		
-		// 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
+		if (searchTargetAttr != null) {
+			switch(searchTargetAttr) {
+			case "total" :
+				spec = spec.and(
+						CourseSpecifications.likeTotalKeyword(searchKeyword));
+				break;
+			case "title" :
+				spec = spec.and(
+						CourseSpecifications.likeTotalKeyword(searchKeyword));
+				break;
+			case "coursDc" : 
+				spec = spec.and(
+						CourseSpecifications.likeTotalKeyword(searchKeyword));
+				break;
+			case "aditDc" : 
+				spec = spec.and(
+						CourseSpecifications.likeTotalKeyword(searchKeyword));
+				break;
+			default :
+				break;
+			}
+		}	
+		
+		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
 		Sort customSort;
 
 		// 상세코스거리에 null이 있으면 마치 0처럼 asc에서는 가장 위에, desc에서는 가장 아래에 보인다. 
@@ -108,8 +134,10 @@ public class CourseService {
 		} else { // 산책로명 가나다순
 			customSort = Sort.by(Direction.ASC, "wlkCoursFlagNm", "wlkCoursNm");
 		}
-	
-		return courseRepository.findAll(spec, customSort);
+		
+		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(20), 정렬 설정) 
+		PageRequest pageRequest = PageRequest.of(page, SIZE_OF_PAGE, customSort);
+		return courseRepository.findAll(spec, pageRequest);
 	}
 	
 	/**
@@ -156,4 +184,5 @@ public class CourseService {
 	public void deleteCourse(long id) {
 		courseRepository.deleteById(id);
 	}
+	
 }
