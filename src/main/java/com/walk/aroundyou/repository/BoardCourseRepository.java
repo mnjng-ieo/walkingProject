@@ -19,7 +19,13 @@ public interface BoardCourseRepository extends JpaRepository<BoardCourse, Long> 
 		하나의 산책로(courseId)에 대한 
 		게시글(boardId)은 여러 개가 나올 수 있으므로 List타입으로 지정해주었다. 
 	*/
-	@Query(value = "SELECT b.* FROM board b WHERE IN (SELECT bc.boardId FROM BoardCousre bc WHERE bc.courseId =: bc.courseId)")
+	@Query(value = "SELECT b.* "
+			+ "FROM Board b "
+			+ "WHERE boardId IN "
+			+ "		(SELECT "
+			+ "			bc.boardId "
+			+ "		FROM BoardCourse bc "
+			+ "		WHERE bc.courseId = :#{#courseId.courseId}")
 	List<Board> findByCourseId(@Param(value = "courseId") Course cousreId);
 	
 	
@@ -30,7 +36,8 @@ public interface BoardCourseRepository extends JpaRepository<BoardCourse, Long> 
 		 하나의 게시글(boardId)에 대한 
 		 산책로(courseId)는 여러 개가 나올 수 있으므로(하나의 글에 여러 개의 산책로에 대해 쓸 수 있음) List타입으로 지정해주었다.
 	 */
-	@Query(value = "SELECT c.* FROM course c WHERE IN (SELECT bc.courseId FROM BoardCousre bc WHERE bc.boardId =: bc.boardId)")
+	@Query(value = "SELECT c.* FROM Course c WHERE courseId IN (SELECT bc.courseId FROM BoardCourse bc WHERE bc.boardId = :#{#boardId.boardId})")
+	// @Query(value = "SELECT c.* FROM Course c WHERE courseId IN (SELECT bc.courseId FROM BoardCourse bc WHERE bc.boardId = :boardId)") 와 동일
 	List<Course> findByBoardId(@Param(value = "boardId") Board boardId);
 	
 }
