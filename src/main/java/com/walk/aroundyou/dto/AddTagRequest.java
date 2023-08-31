@@ -1,7 +1,6 @@
 package com.walk.aroundyou.dto;
 
 import com.walk.aroundyou.domain.Tag;
-import com.walk.aroundyou.domainenum.StateId;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
