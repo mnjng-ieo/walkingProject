@@ -22,7 +22,7 @@ public class BoardLike {
 
 	@Id
 	@Column(name="board_like_id",columnDefinition="bigint", nullable=false)
-	private long boardLikeId;
+	private Long boardLikeId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_id", nullable = false)

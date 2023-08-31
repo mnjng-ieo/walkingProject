@@ -52,7 +52,7 @@ public class Course {
 	private Float coursDetailLtCn;
 	
 	@Column(name="adit_dc", columnDefinition="text")
-	private Float aditDc;
+	private String aditDc;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="cours_time_cn", columnDefinition="time")
