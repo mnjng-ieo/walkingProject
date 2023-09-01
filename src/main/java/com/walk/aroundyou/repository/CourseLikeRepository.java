@@ -11,5 +11,6 @@ import com.walk.aroundyou.domain.User;
 public interface CourseLikeRepository 
 					extends JpaRepository<CourseLike, Long>{
 	
-	Optional<CourseLike> findByUserAndCourse(User user, Course course);
+	// user와 course 조합으로 CourseLike 테이블 찾기
+	Optional<CourseLike> findByUserIdAndCourseId(User user, Course course);
 }
