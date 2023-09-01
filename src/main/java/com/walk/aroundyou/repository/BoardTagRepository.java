@@ -16,7 +16,11 @@ public interface BoardTagRepository extends JpaRepository<BoardTag, Long>{
 	// 1. 게시물 삭제 시 board_tag 테이블에서 삭제하기(기본 메서드 사용)
 	@Modifying
 	@Transactional
-	void deleteByBoardTagId(Long boardTag);
+	@Query(value = 
+		"DELETE FROM board_tag WHERE board_id = ?1", 
+		nativeQuery = true)
+	void deleteByBoardId(Long boardId); // 게시물 id로 한번에 삭제하기
+	// void deleteByBoardTagId(Long boardTagId); // 이력 id로 각각 삭제하기
 	
 	// 2. 새로운 게시물 작성시 board_tag 테이블에 추가하기(글 작성시 매번 실행되는 부분)
 	// 게시물에 태그가 여러개 작성되는 경우 생각하기

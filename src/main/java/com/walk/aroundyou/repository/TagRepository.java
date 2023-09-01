@@ -23,7 +23,7 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 //	@Query(value = 
 //		"DELETE FROM tag WHERE tag_content = ?1", 
 //		nativeQuery = true)
-//	void deleteByTag(String tagContent); // 직접 쿼리문 보내기(문자열로 보내는 것이 잘못된 듯)
+//	void deleteByTag(String tagContent); // 직접 쿼리문 보내기(매개변수가 문자열이라 사용 불가)
  	void deleteByTagId(Long TagId); // 기본 메소드
 	
 	// 2. 새로운 태그 tag 테이블에 추가하기(중복 값도 저장되니 새로운 태그인지 확인 후 사용)
