@@ -8,12 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.walk.aroundyou.DTO.AddCommentRequest;
-import com.walk.aroundyou.DTO.CommentResponseDto;
-import com.walk.aroundyou.DTO.UpdateCommentRequest;
 import com.walk.aroundyou.domain.Comment;
 import com.walk.aroundyou.domain.Course;
-import com.walk.aroundyou.domainenum.CommentType;
+import com.walk.aroundyou.dto.AddCommentRequest;
+import com.walk.aroundyou.dto.ICommentResponseDto;
+import com.walk.aroundyou.dto.UpdateCommentRequest;
 
 import jakarta.transaction.Transactional;
 
@@ -33,7 +32,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 			+ "	LEFT JOIN comment_like cl ON c.comment_id  = cl.comment_id "
 			+ "	WHERE c.board_id = :#{#boardId}"
 			+ " GROUP BY c.comment_id ", nativeQuery = true)
-	List<CommentResponseDto> findByBoardId(@Param("boardId") Long boardId);
+	List<ICommentResponseDto> findByBoardId(@Param("boardId") Long boardId);
 	
 	
 	// 2. Course에서 course_id를 이용한 Comment 목록 조회 ( 닉네임 / 내용 / 수정날짜 / 좋아요 수 )
@@ -46,7 +45,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 			+ "	LEFT JOIN comment_like cl ON c.comment_id  = cl.comment_id "
 			+ "	WHERE c.course_id = :#{#courseId}"
 			+ " GROUP BY c.comment_id ", nativeQuery = true)
-	List<CommentResponseDto> findByCourseId(@Param("courseId") Long courseId);	
+	List<ICommentResponseDto> findByCourseId(@Param("courseId") Long courseId);	
 	
 	
 	

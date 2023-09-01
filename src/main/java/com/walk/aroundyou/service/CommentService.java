@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.walk.aroundyou.DTO.AddCommentRequest;
-import com.walk.aroundyou.DTO.CommentResponseDto;
-import com.walk.aroundyou.DTO.UpdateCommentRequest;
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.dto.AddCommentRequest;
+import com.walk.aroundyou.dto.ICommentResponseDto;
+import com.walk.aroundyou.dto.UpdateCommentRequest;
 import com.walk.aroundyou.repository.CommentRepository;
 
 import jakarta.transaction.Transactional;
@@ -26,12 +26,12 @@ public class CommentService {
 	
 /* comment 목록 조회 */
 	// board_id로 조회된 게시물에 대한 comment 목록 조회 
-	public List<CommentResponseDto> findAllByBoard(Long boardId) {
+	public List<ICommentResponseDto> findAllByBoard(Long boardId) {
 		return commentRepo.findByBoardId(boardId);
 	}	
 	
 	// course_id로 조회된 게시물에 대한 comment 목록 조회 
-	public List<CommentResponseDto> findAllByCourse(Long courseId){
+	public List<ICommentResponseDto> findAllByCourse(Long courseId){
 		return commentRepo.findByCourseId(courseId);
 	}
 	

@@ -9,11 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.walk.aroundyou.DTO.AddCommentRequest;
-import com.walk.aroundyou.DTO.CommentResponseDto;
-import com.walk.aroundyou.DTO.UpdateCommentRequest;
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.dto.AddCommentRequest;
+import com.walk.aroundyou.dto.ICommentResponseDto;
+import com.walk.aroundyou.dto.UpdateCommentRequest;
 import com.walk.aroundyou.service.CommentService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,14 +29,14 @@ public class CommentApiController {
 /* comment 목록 조회 */
 	// board_id로 해당 게시물에 대한 comment 목록 조회 
 	@GetMapping("/board/comments/{boardId}")
-	public List<CommentResponseDto> findByBoardId(@PathVariable(name = "boardId") Long boardId){
+	public List<ICommentResponseDto> findByBoardId(@PathVariable(name = "boardId") Long boardId){
 		log.info("boardId : {}",boardId);	// 로그 확인 
 		return commentService.findAllByBoard(boardId);
 	}
 
 	// course_id로 해당 게시물에 대한 comment 목록 조회 
 	@GetMapping("/course/comments/{courseId}")
-	public List<CommentResponseDto> findByCourseId(@PathVariable(name = "courseId") Long courseId){
+	public List<ICommentResponseDto> findByCourseId(@PathVariable(name = "courseId") Long courseId){
 		log.info("boardId : {}",courseId);	// 로그 확인 
 		return commentService.findAllByBoard(courseId);
 	}

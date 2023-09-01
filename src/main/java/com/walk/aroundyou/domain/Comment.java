@@ -23,8 +23,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Getter	
+@Entity	
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,7 +39,7 @@ public class Comment {
 	
 	// 게시판 식별 번호 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="board_id", nullable = true)
+	@JoinColumn(name="board_id", nullable = false)
 	private Board boardId;
 	
 	// 코스 식별 번호 
@@ -78,6 +78,7 @@ public class Comment {
 	@Column(name = "user_nickname", nullable = false)
 	private String userNickname;
 	
+	// commentType = BOARD / COURSE 두 가지로 분류
 	@Column(name = "comment_type", nullable = true)
 	@Enumerated(EnumType.STRING)
 	private CommentType commentType;
