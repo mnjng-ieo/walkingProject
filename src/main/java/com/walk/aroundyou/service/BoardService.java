@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.Board;
-import com.walk.aroundyou.dto.BoardDetailResponse;
+import com.walk.aroundyou.dto.IBoardDetailResponse;
 import com.walk.aroundyou.dto.BoardRequest;
 import com.walk.aroundyou.repository.BoardRepository;
 
@@ -34,7 +34,7 @@ public class BoardService {
 		return BoardRepo.findBoardAndCntByType(type, PageRequest.of(page, SIZE_OF_PAGE));
 	}
 
-	public Optional<BoardDetailResponse> findBoardDetail(Long id) {
+	public Optional<IBoardDetailResponse> findBoardDetail(Long id) {
 		BoardRepo.updateViewCount(id);
 		return BoardRepo.findBoardDetailById(id);
 	}

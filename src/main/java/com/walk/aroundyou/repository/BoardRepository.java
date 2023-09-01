@@ -15,8 +15,8 @@ import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.User;
 import com.walk.aroundyou.domainenum.BoardType;
-import com.walk.aroundyou.dto.BoardDetailResponse;
-import com.walk.aroundyou.dto.BoardListResponse;
+import com.walk.aroundyou.dto.IBoardDetailResponse;
+import com.walk.aroundyou.dto.IBoardListResponse;
 
 import jakarta.transaction.Transactional;
 
@@ -75,7 +75,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			ORDER BY b.board_id asc
 					""" // ORDER BY는 나중에 수정하기
 			, nativeQuery = true)
-	Page<BoardListResponse> findBoardAndCnt(Pageable pageable);
+	Page<IBoardListResponse> findBoardAndCnt(Pageable pageable);
 	
 //////좋아요 수와 댓글 수를 같이 출력
 	/// 타입별 출력
@@ -108,7 +108,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			ORDER BY b.board_id asc
 					""" // ORDER BY는 나중에 수정하기
 			, nativeQuery = true)
-	Page<BoardListResponse> findBoardAndCntByType(@Param("type") String boardType, Pageable pageable);
+	Page<IBoardListResponse> findBoardAndCntByType(@Param("type") String boardType, Pageable pageable);
 //	List<BoardListResponse> findBoardAndCnt();
 //	List<BoardListResponse> findBoardAndCntByCourse(@Param("course") Course course);
 	
@@ -140,7 +140,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 		WHERE b.board_id = :#{#id}
 				"""
 			, nativeQuery = true)
-	Optional<BoardDetailResponse> findBoardDetailById(@Param("id") Long id);
+	Optional<IBoardDetailResponse> findBoardDetailById(@Param("id") Long id);
 	
 	
 //			, CASE :#{#userId} IN (select user_id

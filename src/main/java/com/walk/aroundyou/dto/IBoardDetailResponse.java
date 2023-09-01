@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 // 게시물 상세를 보여주는 DTO
-public interface BoardDetailResponse {
+public interface IBoardDetailResponse {
 	Long getBoardId();
 	String getBoardType();
 	String getBoardTitle();

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.walk.aroundyou.dto.BoardDetailResponse;
+import com.walk.aroundyou.dto.IBoardDetailResponse;
 import com.walk.aroundyou.dto.BoardRequest;
 import com.walk.aroundyou.service.BoardService;
 
@@ -57,7 +57,7 @@ public class BoardRestController {
 	// 게시판 상세 출력
 	@GetMapping("/board/{id}")
 	public Object boardById(@PathVariable("id") Long id) {
-		Optional<BoardDetailResponse> board = boardService.findBoardDetail(id);
+		Optional<IBoardDetailResponse> board = boardService.findBoardDetail(id);
 		if(board.isEmpty()){
 			return "없는 게시물입니다";
 		} else {

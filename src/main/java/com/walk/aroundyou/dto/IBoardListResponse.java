@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 // 좋아요 수와 댓글 수를 같이 전송하는 DTO클래스
-public interface BoardListResponse {
+public interface IBoardListResponse {
 	
 	Long getBoardId();
 	String getBoardType();
