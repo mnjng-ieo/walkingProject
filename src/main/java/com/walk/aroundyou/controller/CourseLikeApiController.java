@@ -36,12 +36,14 @@ public class CourseLikeApiController {
 	 *              로그인한 상태에서 좋아요 버튼 누르는 거니까 principal 사용
 	 * - @RequestBody : POST 방식의 HTTP 요청할 때
 	 *                  응답에 해당하는 JSON 형식의 값을, 애너테이션이 붙은 대상 객체에 매핑
+	 * - @Valid : dto 파라미터 앞에 붙여주면 들어오는 객체 값에 대한 검증 가능한데, 
+	 *            정확한 필요성을 모르겠어서 일단 떼줬습니다.
 	 */         
 	@PostMapping //("/courses/{courseId}")
 	public ResponseEntity<CourseLikeRequestDTO> AddCourseLike(
 			@PathVariable long courseId,
 			Principal principal,
-			@RequestBody @Valid CourseLikeRequestDTO request) throws Exception {
+			@RequestBody CourseLikeRequestDTO request) throws Exception {
 		request.setCourseId(courseId);
 		//String userId = principal.getName();     // 실제 로그인한 유저 정보
 		String userId = "wayid1";                  // 테스트용. 직접 부여
