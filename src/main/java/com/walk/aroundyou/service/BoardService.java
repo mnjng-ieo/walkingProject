@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.dto.BoardDetailResponse;
+import com.walk.aroundyou.dto.BoardRequest;
 import com.walk.aroundyou.repository.BoardRepository;
 
 
@@ -36,6 +37,34 @@ public class BoardService {
 	public Optional<BoardDetailResponse> findBoardDetail(Long id) {
 		BoardRepo.updateViewCount(id);
 		return BoardRepo.findBoardDetailById(id);
+	}
+
+
+	public boolean save(BoardRequest board) {
+		if(BoardRepo.save(board.toEntity()) != null) {
+			return true;
+		} else {			
+			return false;
+		}
+	}
+
+
+	public boolean deleteById(Long board) {
+		BoardRepo.deleteById(board);
+		if(BoardRepo.findById(board) != null) {
+			return true;
+		} else {			
+			return false;
+		}
+	}
+
+
+	public boolean update(BoardRequest board) {
+		if(BoardRepo.save(board.toEntity()) != null) {
+			return true;
+		} else {			
+			return false;
+		}
 	}
 	
 	
