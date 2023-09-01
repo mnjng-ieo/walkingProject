@@ -15,7 +15,10 @@ import com.walk.aroundyou.domain.Course;
 public interface BoardCourseRepository extends JpaRepository<BoardCourse, Long>{
 
 	// Board의 식별번호와 Course의 식별번호를 연결해 특정 산책로 조회
-	@Query(value = "SELECT b.* FROM board b WHERE IN (SELECT bc.boardId FROM BoardCousre bc WHERE bc.courseId =: courseId)")
-	List<Board> findByCourseId(@Param(value = "courseId") Course cousreId);
+//	@Query(value = "SELECT b.* FROM board b WHERE b.boardId IN (SELECT bc.boardId FROM BoardCourse bc WHERE bc.courseId = :courseId)")
+//    List<Board> findByCourseId(@Param(value = "courseId") Course courseId);
+	
+	@Query(value = "SELECT bc.boardId FROM BoardCourse bc WHERE bc.courseId = :courseId")
+	List<Board> findByCourseId(@Param(value = "courseId") Course courseId);
 	
 }

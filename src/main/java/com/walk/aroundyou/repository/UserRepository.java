@@ -17,21 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	// 1. 회원가입 시 User엔티티 전부 가져오기
 	User save(User user);
-
-	// 1-1. 회원정보 수정(업데이트)
-	@Modifying
-	@Transactional
-	// 엔티티 "User"의 "userPwd" 필드를 ":userPwd"라는 파라미터로 업데이트
-	// 파라미터 ":u.userPwd"는 실제로 쿼리 실행 시에 해당 파라미터에 할당된 값을 사용하여 엔티티의 필드를 업데이트할 때 사용
-	@Query(value = "UPDATE User u SET "
-		    + "u.userPwd = :userPwd, "
-		    + "u.userNickname = :userNickname, "
-		    + "u.userTelNumber = :userTelNumber, "
-		    + "u.userEmail = :userEmail, "
-		    + "WHERE u.userId = :userId")
-		void updateUserFields(
-		    @Param("userId") User user);
-
 	
 	
 	// 2. 아이디로 유저 찾기 (로그인할 때 id로 정보 받기, pw변경 및 찾기, 회원 정보 보기에서 아이디로 회원 찾기, 회원 삭제할 때 아이디로 조회해 삭제 | 관리자가 회원 검색)
@@ -59,16 +44,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	// 6. Id로 검색한 엔터티 삭제하기
 	void deleteByUserId(String userId);
-
-
-
-	/// 엔티티 수정하는 거 다시
-	
-	/// 회원 권한에서도 사용 가능한 메소드
-
-	// 회원정보 수정 가능한 목록 반환하기 (패스워드를 입력했을 때만)
-	// 회원이 본인 고유의 id(userId), userPwd로 로그인해서 
-	// 회원정보 수정을 위해 다시 한 번 userPwd를 입력해야만 
-	// 회원정보 수정이 가능하다. => findByIdAndPwd()
 
 }

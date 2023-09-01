@@ -2,6 +2,8 @@ package com.walk.aroundyou.domain;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.walk.aroundyou.domain.role.StateId;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,6 +25,7 @@ import lombok.ToString;
 @ToString
 @Table(name = "tag")
 public class Tag {
+	
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name="tag_id", nullable=false, columnDefinition = "bigint")

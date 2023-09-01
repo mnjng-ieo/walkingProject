@@ -35,7 +35,7 @@ public class BoardLikeService {
 	// 사용자가 게시물 좋아요 표시 클릭 시 선택 + 해제
 	public boolean toggleLike(User user, Board board) {
 		
-		Optional<BoardLike> existingLike = boardLikeRepository.findByUserAndBoard(user, board);
+		Optional<BoardLike> existingLike = boardLikeRepository.findByUserIdAndBoardId(user, board);
 		
 		// 값으로 채워져 있는지 여부 판단
 		// 현재는 값이 없으면 true, 있으면 false

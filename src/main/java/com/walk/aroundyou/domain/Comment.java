@@ -1,8 +1,11 @@
 package com.walk.aroundyou.domain;
 
 import java.sql.Timestamp;
+
 import org.hibernate.annotations.ColumnDefault;
-import com.walk.aroundyou.domainenum.StateId;
+
+import com.walk.aroundyou.domain.role.StateId;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,7 +20,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @Entity
 @Getter	
 @NoArgsConstructor
@@ -31,10 +36,14 @@ public class Comment {
 	@Column(name="comment_id", nullable = false)
 	private Long commentId;
 	
+	// 회원 닉네임
+	@Column(name = "user_nickname", nullable = false)
+	private String userNickname;
+	
 	// 게시판 식별 번호 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="board_id", nullable = false)
-	private Board board;
+	private Board boardId;
 
 	// 코멘트 내용 
 	@Column(name="comment_content", nullable=false, columnDefinition="varchar(255)")
@@ -59,7 +68,7 @@ public class Comment {
 
 	// 회원 ID
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="user_id", referencedColumnName="user_id" )
-	@Column(nullable=false, columnDefinition="varchar(100)")
+	//@Column(nullable=false, columnDefinition="varchar(100)")
+	@JoinColumn(name="user_id", referencedColumnName="user_id", nullable=false )
 	private User userId;
 }
