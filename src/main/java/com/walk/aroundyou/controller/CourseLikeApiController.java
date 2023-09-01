@@ -47,7 +47,6 @@ public class CourseLikeApiController {
 		request.setCourseId(courseId);
 		//String userId = principal.getName();     // 실제 로그인한 유저 정보
 		String userId = "wayid1";                  // 테스트용. 직접 부여
-		//request.setUserId(principal.getName());  
 		request.setUserId(userId);   
 		
 		// 조회한 좋아요 상태를 확인

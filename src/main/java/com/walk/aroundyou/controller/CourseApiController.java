@@ -10,41 +10,43 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.CourseRequestDTO;
 import com.walk.aroundyou.dto.CourseResponseDTO;
+import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.service.CourseService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class CourseApiController {
-
+	
 	private final CourseService courseService;
+	private final CourseRepository courseRepository;
 	
 	// id로 산책로 하나로 조회
 	@GetMapping("/courses/{id}")
-	public ResponseEntity<CourseResponseDTO> findCourse(@PathVariable long id){
+	public ResponseEntity<Course> findCourse(@PathVariable long id){
 		Course course = courseService.findById(id);
 		
 		return ResponseEntity.ok()
-				.body(new CourseResponseDTO(course));
+				.body(course);
 	}
-	
-	// 전체 목록 조회
-	@GetMapping("/courses")
-	public ResponseEntity<List<CourseResponseDTO>> findAllCourses(){
-		List<CourseResponseDTO> courses = courseService.findAll()
-				.stream()
-				.map(CourseResponseDTO::new)
-				.toList();
-		return ResponseEntity.ok()
-				.body(courses);
+
+	/**
+	 * [산책로 상세 조회페이지] 좋아요, 언급, 댓글 수 포함 산책로 상세 정보 조회
+	 */
+	@GetMapping("/courses/detail/{id}")
+	public ResponseEntity<CourseResponseDTO> findDetailCourse(@PathVariable Long id){
+		log.info("courses/detail/{id} 들어감");
+		CourseResponseDTO courseResponseDTO = courseService.findByIdWithCounts(id);
+		return ResponseEntity.ok().body(courseResponseDTO);
 	}
 	
 	/**
@@ -64,14 +66,27 @@ public class CourseApiController {
 		    @RequestParam(required = false) String searchTargetAttr,
 		    @RequestParam(required = false) String searchKeyword,
 		    @RequestParam(required = false) String sort,
-		    @RequestParam(required = false) int page
+		    @RequestParam(required = false, defaultValue = "0") Integer page
 			){
 		
 		List<CourseResponseDTO> courses = courseService.findAllByCondition(
 				region, level, distance, startTime, endTime,
 				searchTargetAttr, searchKeyword, sort, page)
 				.stream()
-				.map(CourseResponseDTO::new)
+				.map(course -> {
+					CourseResponseDTO dto = new CourseResponseDTO(course);
+					// 좋아요 수, 언급 수, 댓글 수 추가
+					dto.setLikeCnt(
+							courseRepository.countCourseLikesByCourseId(
+									course.getCourseId()));;
+					dto.setMentionCnt(
+							courseRepository.countCourseMentionsByCourseId(
+									course.getCourseId()));
+					dto.setCommentCnt(
+							courseRepository.countCourseCommentsByCourseId(
+									course.getCourseId()));;
+					return dto;
+				})
 				.toList();
 		
 		return ResponseEntity.ok()
