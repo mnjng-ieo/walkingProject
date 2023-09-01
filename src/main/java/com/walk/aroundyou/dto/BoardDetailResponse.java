@@ -19,4 +19,5 @@ public interface BoardDetailResponse {
 	Timestamp getBoardUpdatedDate();
 	Integer getCommentCnt();
 	Integer getLikeCnt();
+//	boolean getIsBoardLike();
 }

@@ -91,6 +91,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 				, board_updated_date as boardUpdatedDate
 				, ifnull(comment_cnt, 0) as commentCnt
 				, ifnull(like_cnt, 0) as likeCnt
+				, 
 			FROM board as b
 				LEFT JOIN 
 					(select board_id, count(board_id) as comment_cnt
@@ -101,7 +102,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 					(select board_id, count(board_id) as like_cnt
 						from board_like as bl
 						group by bl.board_id) as bll
-			on b.board_id = bll.board_id
+				on b.board_id = bll.board_id
 			WHERE board_type = :#{#type}
 			GROUP BY b.board_id
 			ORDER BY b.board_id asc
@@ -124,6 +125,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			, board_updated_date as boardUpdatedDate
 			, ifnull(comment_cnt, 0) as commentCnt
 			, ifnull(like_cnt, 0) as likeCnt
+
 		FROM board as b
 			LEFT JOIN 
 				(select board_id, count(board_id) as comment_cnt
@@ -134,12 +136,17 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 				(select board_id, count(board_id) as like_cnt
 					from board_like as bl
 					group by bl.board_id) as bll
-		on b.board_id = bll.board_id
+			on b.board_id = bll.board_id
 		WHERE b.board_id = :#{#id}
 				"""
 			, nativeQuery = true)
 	Optional<BoardDetailResponse> findBoardDetailById(@Param("id") Long id);
 	
+	
+//			, CASE :#{#userId} IN (select user_id
+//	from board_like as bbl
+//	where b.board_id = :#{#id}
+
 	// 게시물 작성
 	// 제목, 내용, 유저정보(id, 닉네임)만으로 작성하는 쿼리
 	@Modifying

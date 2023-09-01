@@ -145,24 +145,29 @@ public class WalkAroundYouApplication implements CommandLineRunner{
 //			log.info(board.toString());
 //		}
 		
-		Long boardId = 100L;
-		for(String userId : boardLikeRepo.findUserIdByBoardId(boardId)) {
-			log.info("{}번 게시물에 좋아요를 누른 회원 : {}", boardId, userId);
-		}
-		log.info("{}번 게시물에 좋아요를 누른 회원 수 : {}", boardId, boardLikeRepo.countUserIdByBoardId(boardId));
-		
-		String userId = "wayid50";
-		for(Long num : boardLikeRepo.findLikedBoardIdByUserId(userId)) {
-			log.info("회원 {}이 좋아요를 누른 게시물 : {}", userId, num);
-		}
+//		Long boardId = 100L;
+//		for(String userId : boardLikeRepo.findUserIdByBoardId(boardId)) {
+//			log.info("{}번 게시물에 좋아요를 누른 회원 : {}", boardId, userId);
+//		}
+//		log.info("{}번 게시물에 좋아요를 누른 회원 수 : {}", boardId, boardLikeRepo.countUserIdByBoardId(boardId));
+//		
+//		String userId = "wayid50";
+//		for(Long num : boardLikeRepo.findLikedBoardIdByUserId(userId)) {
+//			log.info("회원 {}이 좋아요를 누른 게시물 : {}", userId, num);
+//		}
 //		log.info("회원 {}이 좋아요를 누른 게시물 수 : {}", userId, boardLikeRepo.countLikedBoardIdByUserId(userId));
 //		
-//		log.info("회원 {}이 {}번 게시물에 좋아요를 눌렀나요? : "
-//				, userId, boardId, 
+//		User user = new User();
+//		user.setUserId(userId);
+//		Board board = new Board();
+//		board.setBoardId(171L);
+//		
+//		log.info("회원 {}이 {}번 게시물에 좋아요를 눌렀나요? : {}"
+//				, userId, board.getBoardId(), 
 //				boardLikeRepo.findByUserIdAndBoardId(
-//						userId, boardId).isPresent()?
+//						user, board).isPresent()?
 //								"네" : "아니요");
-		
+//		
 		
 	}
 }
