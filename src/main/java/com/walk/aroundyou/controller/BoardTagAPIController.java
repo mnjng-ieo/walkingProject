@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.BoardTag;
-import com.walk.aroundyou.dto.AddTagRequest;
-import com.walk.aroundyou.service.BoardTagService;
 import com.walk.aroundyou.service.TagService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class BoardTagAPIController {
 
 	private final TagService tagService;
-	private final BoardTagService boardTagService;
 	
 	/// TagRepository 사용하여 출력 확인하기
 	// 1. 기존 태그 tag 테이블에서 삭제하기(기본메서드 사용)
@@ -32,32 +32,43 @@ public class BoardTagAPIController {
 		return ResponseEntity.ok().build();
 	}
 	
-	// 2. 새로운 태그 tag 테이블에 추가하기
+	// 2. 새로운 태그 tag 테이블에 추가하기(tag 테이블에만 추가하는 버전)
 	@PostMapping("/api/board/tag")
-	public void saveTag(@RequestBody AddTagRequest request) {
-		tagService.saveTag(request);
+	public void saveTag(@RequestBody String tagContent) {
+		tagService.saveTag(tagContent); 
 	}
+
 	
 	// 3. 게시물에 작성된 해시태그 조회
 	@GetMapping("/api/board/tag/{boardId}")
+	// 컴파일 후에 @PathVariable 에 있는 변수를 못찾는 오류 발생 시 @PathVariable 에 name 을 명시
+	// Name for argument type [java.lang.String] not available ~
 	public List<String> findTagsByBoardId(@PathVariable(name = "boardId") Long boardId) {
 		return tagService.findTagsByBoardId(boardId);
 	}
 	
+	
+	// 4. 게시글에 저장된 해시태그 파싱하기(실패)
+
+	
+	
+	
 	/*------------------------------------------------------*/
 	/// BoardTagRepository 사용하여 출력 확인하기
 	
-	// 1. 게시물 삭제 시 board_tag 테이블에서 삭제하기(기본 메서드 사용)
-	@DeleteMapping("/api/board/boardTag/{boardTagId}")
-	public ResponseEntity<Void> deleteByBoardTagId(@PathVariable Long boardTagId) {
-		boardTagService.deleteByBoardTagId(boardTagId);
+	// 1. 게시물 삭제(수정)시 board_tag 테이블에서 삭제하기(기본 메서드 사용)
+	// 게시물이 수정되면 해시태그이력은 전체 삭제되고 전체 추가되는 로직임
+	@DeleteMapping("/api/board/boardTag/{boardId}")
+	public ResponseEntity<Void> deleteByBoardId(@PathVariable Long boardId) {
+		tagService.deleteByBoardId(boardId);
 		return ResponseEntity.ok().build();
 	}
 	
-	// 2. 새로운 태그 board_tag 테이블에 추가하기
+	// 2. 새로운 게시물의 태그 board_tag 테이블에 추가하기
 	@PostMapping("/api/board/boardTag")
-	public void saveBoardTag(@RequestBody BoardTag boardTag) {
-		boardTagService.saveBoardTag(boardTag);
+	public void saveBoardTag(@RequestBody BoardTag boardTag, String tagContent) {
+		tagService.deleteByBoardId(boardTag.getBoardTagId());
+		tagService.saveBoardTag(boardTag, tagContent);
 	}
 	
 }

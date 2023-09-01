@@ -27,7 +27,7 @@ public interface BoardTagRepository extends JpaRepository<BoardTag, Long>{
 	// PK와 FK만으로 이루어진 테이블이라 쿼리문에서 외래키는 객체로 사용
 	@Modifying
 	@Transactional
-	// 외래키 객체를 사용하는 방법(직접 쿼리를 작성하여 사용하기) 
+	// 외래키 객체를 사용하는 방법(직접 쿼리를 작성하여 사용하기)
 	@Query(value = 
 		"INSERT INTO board_tag(board_id, tag_id) "
 		+ "VALUES "

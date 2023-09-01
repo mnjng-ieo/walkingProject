@@ -28,10 +28,9 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 //		nativeQuery = true)
 //	void deleteByTagId(Long tagId);
 	
-	// 2. 새로운 태그 tag 테이블에 추가하기(중복 값도 저장되니 새로운 태그인지 확인 후 사용)
+	// 2. 새로운 태그 tag 테이블에 추가하기
 	@Modifying
 	@Transactional
-	// 외래키 객체를 사용하는 방법(DTO 객체를 만들어서 사용하기)
 	@Query(value = 
 		"INSERT INTO tag(tag_content) VALUES( :#{#tagContent})", 
 		nativeQuery = true)
@@ -51,14 +50,19 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 		, nativeQuery = true)
 	List<String> findTagsByBoardId(@Param("boardId") Long boardId);
 	
-	// 4. 태그를 테이블에 저장할 때 존재하는 태그인지 조회하고 저장하기
+	// 4. 해시태그가 있는지 확인하는 메서드
 //	@Query(value = "SELECT t.*"
 //			+ "    FROM tag t "
 //			+ "    WHERE t.tag_content = :#{#tagContent}", 
 //			nativeQuery = true)
 //	Optional<Tag> findByTagContent(@Param("tagContent") String tagContent);
 	
-	// 4. 해시태그가 있는지 확인하는 메서드(기본메소드 활용, 상단의 주석 처리한 메소드와 같은 역할)
+	// 4. 해시태그가 있는지 확인하는 메서드(tagContent로 tagId 조회하는 쿼리)
 	boolean existsByTagContent(String tagContent);
+	@Query(value = "SELECT"
+			+ " tag_id"
+			+ " FROM tag"
+			+ " WHERE tag_content = :tagContent", nativeQuery = true)
+	Tag findIdByTagContent(@Param("tagContent")String tagContent);
 
 }
