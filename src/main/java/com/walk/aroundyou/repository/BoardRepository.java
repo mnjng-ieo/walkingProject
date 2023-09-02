@@ -91,7 +91,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 				, board_updated_date as boardUpdatedDate
 				, ifnull(comment_cnt, 0) as commentCnt
 				, ifnull(like_cnt, 0) as likeCnt
-				, 
 			FROM board as b
 				LEFT JOIN 
 					(select board_id, count(board_id) as comment_cnt
@@ -108,7 +107,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			ORDER BY b.board_id asc
 					""" // ORDER BY는 나중에 수정하기
 			, nativeQuery = true)
-	Page<IBoardListResponse> findBoardAndCntByType(@Param("type") String boardType, Pageable pageable);
+	Page<IBoardListResponse> findBoardAndCntByType(@Param("type") String type, Pageable pageable);
 //	List<BoardListResponse> findBoardAndCnt();
 //	List<BoardListResponse> findBoardAndCntByCourse(@Param("course") Course course);
 	

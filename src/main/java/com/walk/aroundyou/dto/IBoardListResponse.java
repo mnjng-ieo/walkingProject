@@ -2,6 +2,8 @@ package com.walk.aroundyou.dto;
 
 import java.sql.Timestamp;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 // 좋아요 수와 댓글 수를 같이 전송하는 DTO클래스
