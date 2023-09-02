@@ -16,9 +16,9 @@ import com.walk.aroundyou.domain.User;
 public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
 	
 
-	// 특정 게시물(boardId)에 대한 좋아요(userId)누른 회원들의 목록 
-	// : 목록의 요소는 userId 대신 userId와 매칭되는 프로필 사진 이미지로 조회된다. (user 권한에서)
-	// : 목록의 요소는 userId 그리고 userId와 매칭되는 프로필 사진 이미지로 조회된다. (admin 권한에서)
+	// 특정 게시물(boardId)에 대한 좋아요(userId)누른 회원들 목록 
+	// : 목록의 요소는 userId 대신 userId와 매칭되는 (프로필 사진 이미지/닉네임)으로 조회된다. (user 권한에서)
+	// : 목록의 요소는 userId 그리고 userId와 매칭되는 (프로필 사진 이미지/닉네임)으로 조회된다. (admin 권한에서)
 	@Query(value = "SELECT bl.userId FROM BoardLike bl WHERE bl.boardId = :boardId")
 	List<Long> findUserIdByBoardId(@Param(value = "boardId")Board boardId);
 	
@@ -42,8 +42,7 @@ public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
 	// 사용자가 게시물 좋아요 표시 클릭 시 선택 + 해제
 	// 값의 유무 모르니까 에러 발생하지 않기 위해 Optional<>
 	Optional<BoardLike> findByUserIdAndBoardId(User userId, Board boardId);
-
-
+	
 	
 	
 	

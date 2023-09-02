@@ -12,7 +12,15 @@ import com.walk.aroundyou.domain.User;
 import com.walk.aroundyou.dto.BoardLikeDTO;
 import com.walk.aroundyou.repository.BoardLikeRepository;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+// service : repository 의 method 에 기반하여, 더 상세한 비즈니스로직 작성
+
+
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class BoardLikeService {
 
 	@Autowired
@@ -23,14 +31,16 @@ public class BoardLikeService {
 	
 	
 	
-	// 특정 게시물에 대한 좋아요 개수 
+	// 특정 게시물(boardId)에 대한 좋아요(userId) 수
+	// : 목록의 요소는 userId 대신 userId와 매칭되는 (프로필 사진 이미지/닉네임)으로 조회된다. (user 권한에서)
+	// : 목록의 요소는 userId 그리고 userId와 매칭되는 (프로필 사진 이미지/닉네임)으로 조회된다. (admin 권한에서)
 	public Long countUserIdByBoardId(Board boardId) {
 		
         return boardLikeRepository.countUserIdByBoardId(boardId);
     }
 	
 	
-	// 특정 게시물에 대한 좋아요한 회원 목록
+	// 특정 게시물(boardId)에 대한 좋아요(userId) 누른 회원들 목록
 	public List<Long> findUserIdByBoardId(Board boardId) {
 		
 		return boardLikeRepository.findUserIdByBoardId(boardId); 
@@ -69,8 +79,10 @@ public class BoardLikeService {
 		// return !existingLike.isEmpty();
 		return boardLikeDTO.isEmpty();
 	}
+
+
+
 	
-	
-	
+
 	
 }
