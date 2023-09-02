@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.service.TagService;
 
 import lombok.RequiredArgsConstructor;
@@ -47,8 +48,13 @@ public class BoardTagAPIController {
 		return tagService.findTagsByBoardId(boardId);
 	}
 	
-	
-	// 4. 게시글에 저장된 해시태그 파싱하기(실패)
+	// 4. 게시글에 저장된 해시태그 파싱하기(확인용)
+	// 새로운 게시글이 저장되었을 때 작성된 해시태그 뽑아 tag, board_tag에 저장하기위한 용도
+	@GetMapping("/api/board/hashtag/{boardId}")
+	public List<String> createTagList(@PathVariable(name = "boardId") Long boardId) {
+		return tagService.createTagList(boardId);
+	}
+
 
 	// 5. 동일한 tag_id를 가진 board_tag_id의 tag_content 출력
 	// 메인화면에 지금 핫한 해시태그에 출력될 내용

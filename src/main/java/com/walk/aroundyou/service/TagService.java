@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.BoardTag;
 import com.walk.aroundyou.domain.Tag;
+import com.walk.aroundyou.repository.BoardRepository;
 import com.walk.aroundyou.repository.BoardTagRepository;
 import com.walk.aroundyou.repository.TagRepository;
 
@@ -21,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 public class TagService {
 	@Autowired
 	private TagRepository tagRepository;
+	@Autowired
+	private BoardRepository boardRepository;
 	
 	/// TagRepository 사용하여 출력 확인하기
 	// 1. 기존 태그 tag 테이블에서 삭제하기
@@ -53,23 +56,25 @@ public class TagService {
 	
 	// 4. 태그를 테이블에 저장할 때 존재하는 태그인지 조회하고 저장하기
 	// 4-1. 게시글에 저장된 해시태그 파싱하기
-	public void createTagList(Board post) {
+	public List<String> createTagList(Long boardId) {
 		// 정규식 사용
 		// # : 으로 시작하는(해시태그를 나타냄)
 		// (\\S+) : 첫 번째 그룹에 하나 이상의 공백이 아닌 문자가 하나 이상 나온다는 의미
 		// 정규식을 활용해 문자열을 검증, 탐색을 돕는 Pattern, Matcher 클래스
-		Pattern MY_PATTERN = Pattern.compile("#(\\S+)"); // 패턴 생성
+		Pattern MY_PATTERN = Pattern.compile("#(\\S+)"); // 패턴 생성(#해시태그)
+		Board post = boardRepository.findById(boardId).get();
 		Matcher mat = MY_PATTERN.matcher(post.getBoardContent()); // 게시물 가져오기
 		List<String> tagList = new ArrayList<>(); // 배열 생성
 		
-		while(mat.find()) { // 패턴이 일치하는 다음 문자열 찾기
+		while(mat.find()) { // find() : 패턴이 일치하는 다음 문자열 찾기
 			// List컬렉션의 add메소드 사용
 			// Matcher 클래스의 group() : 매칭되는 문자열 중 첫번째 그룹의 문자열 반환
 			tagList.add((mat.group(1))); 
 		}
-		System.out.println("Success! -----> " + tagList);
-		log.info("생성된 TagList : {}", tagList.toString());
+		log.info("생성된 TagList : {}", tagList.toString());	
+		return tagList;
 	}
+	// 4-2. 저장하기 구현
 	
 	// 5. 동일한 tag_id를 가진 board_tag_id의 tag_content 출력
 	// 메인화면에 '지금 핫한 해시태그'에 출력될 내용
