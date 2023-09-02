@@ -36,6 +36,7 @@ public class BoardService {
 
 	public Optional<IBoardDetailResponse> findBoardDetail(Long id) {
 		BoardRepo.updateViewCount(id);
+		deleteById(id);
 		return BoardRepo.findBoardDetailById(id);
 	}
 

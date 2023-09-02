@@ -33,7 +33,7 @@ public class BoardRestController {
 //		return BoardService.findboardAllList(); 
 //	}
 	// 게시판 목록 출력
-	@GetMapping("/board")
+	@GetMapping("/api/board")
 	public ResponseEntity<Object> boardAllList(Optional<String> type, Optional<Integer> page) {
 		int paramPage = 0;
 		if(page.isPresent()) {
@@ -55,7 +55,7 @@ public class BoardRestController {
 //		return boardService.findboardAllListByType(type, paramPage); 
 //	}
 	// 게시판 상세 출력
-	@GetMapping("/board/{id}")
+	@GetMapping("/api/board/{id}")
 	public Object boardById(@PathVariable("id") Long id) {
 		Optional<IBoardDetailResponse> board = boardService.findBoardDetail(id);
 		if(board.isEmpty()){
@@ -68,7 +68,7 @@ public class BoardRestController {
 	
 	//// 게시판 등록
 	//// userId, userNickname, boardType, boardTitle, boardContent 입력
-	@PostMapping("/board/editor")
+	@PostMapping("/api/board/editor")
 	public Object creatBoard(@RequestBody BoardRequest board) {
 //		// 게시물 등록
 		if(boardService.save(board)){
@@ -79,7 +79,7 @@ public class BoardRestController {
 	}
 	// 등록된 board_id로 해시태그 이력 추가
 	//// 게시판 수정
-	@PatchMapping("/board/editor")
+	@PatchMapping("/api/board/editor")
 	public Object updateBoard(@RequestBody BoardRequest board) {
 		if(boardService.update(board)) {
 			return "수정이 성공하였습니다";
@@ -94,7 +94,7 @@ public class BoardRestController {
 	//// 게시판 삭제
 	//// 편의상 임시적으로 게시물 생성에 만든 json을 사용하기 위해 데이터형을 사용
 	//// 나중에 Long으로 변경해도 됨
-	@DeleteMapping("/board/editor")
+	@DeleteMapping("/api/board/editor")
 	public Object deleteBoard(@RequestBody BoardRequest board) {
 		log.info("board의 id : {}", board.toEntity().getBoardId());
 		if(boardService.deleteById(board.toEntity().getBoardId())){
