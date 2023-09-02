@@ -35,6 +35,7 @@ public class CourseService {
 	 * [산책로상세조회페이지] id로 산책로 하나 조회
 	 */
 	public Course findById(long id) {
+		courseRepository.updateViewCount(id);
 		return courseRepository.findById(id)
 				.orElseThrow(() 
 						-> new IllegalArgumentException(
@@ -45,6 +46,8 @@ public class CourseService {
 	 * [산책로상세조회페이지] id로 산책로 하나 조회(좋아요, 언급, 댓글 수 포함 + 조회수 1 증가) 
 	 */
 	public CourseResponseDTO findByIdWithCounts(Long id) {
+		// 조회수 1 증가
+		courseRepository.updateViewCount(id);
 		Course course = courseRepository.findById(id)
 				.orElseThrow(() 
 				-> new IllegalArgumentException(
@@ -56,11 +59,6 @@ public class CourseService {
 		
 		return new CourseResponseDTO(course, likeCnt, mentionCnt, commentCnt);
 	}
-	
-	/**
-	 * 조회수 증가
-	 */
-
 	
 	/**
 	 * [산책로목록조회페이지] 모든 산책로 조회 메서드

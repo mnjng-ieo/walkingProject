@@ -45,4 +45,14 @@ public interface CourseRepository
 			SELECT COUNT(*) FROM comment WHERE course_id = :courseId
 			""", nativeQuery = true)
 	int countCourseCommentsByCourseId(@Param("courseId") Long courseId);
+	
+	/**
+	 * 조회 수 1씩 증가하기
+	 */
+	@Query(value = """
+			UPDATE Course c
+			SET cours_view_count = cours_view_count + 1
+			WHERE course_id = :courseId
+			""", nativeQuery = true)
+	void updateViewCount(@Param("courseId") Long courseid);
 }

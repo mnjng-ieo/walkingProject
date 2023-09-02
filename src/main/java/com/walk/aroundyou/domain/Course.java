@@ -80,6 +80,9 @@ public class Course {
 	@Column(name="cours_spot_lo", nullable=false, columnDefinition="double")
 	private double coursSpotLo;	
 	
+	@Column(name="cours_view_count", nullable=false, columnDefinition="int default 0")
+	private int coursViewCount;
+	
 	// 값 수정 메서드
 	public void update(
 			String wlkCoursFlagNm,
