@@ -1,51 +1,74 @@
 package com.walk.aroundyou.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+
+import com.walk.aroundyou.service.UserService;
 
 import jakarta.servlet.DispatcherType;
 
 @Configuration
 public class SecurityConfig {
+	
+	// 시큐리티 처리를 위한 서비스 클래스 의존성 주입하기
+	private final UserService userService;
+	
+	@Autowired
+	public SecurityConfig(UserService userService) {
+		this.userService = userService;
+	}
 
+	// 특정 HTTP 요청에 대한 웹 기반 보안 구성
 	@Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+		// Spring Security 버전 6.1 이상에서 and() 메서드가 더 이상 사용되지 않기 때문에 이 방식으로 구현
         http.csrf((csrf) -> csrf.disable())
         	.cors((cors) -> cors.disable())
+        	// 인증, 인가, 권한 설정
             .authorizeHttpRequests(request -> request
+            	// .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll(): DispatcherType.FORWARD로 전달되는 요청에 대해 접근을 허용합니다. 예를 들어, Forward 되는 요청에 대한 접근을 허용하고자 할 때 사용됩니다.
                 .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                 .requestMatchers("/guest/**").permitAll()
-                .requestMatchers("/member/**").hasAnyRole("USER", "ADMIN")
+                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()	// 어떠한 요청이라도 인증필요
             );
-        
+        // 폼 기반 로그인 설정
+        // http.formLogin((formLogin) -> formLogin : formLogin 객체를 받아 설정을 수행합니다. 즉, formLogin 객체를 생성한 후 이를 사용하여 폼 로그인 설정을 구성
         http.formLogin((formLogin) -> formLogin
 			.loginPage("/login") 			// default : /login
-			.loginProcessingUrl("check")
-			.failureUrl("/loginError") 			// default : /login?error
-			.usernameParameter("j_username")	// default : j_username
-			.passwordParameter("j_password") 	// default : j_password
+			.loginProcessingUrl("/spring_security_check")
+			.defaultSuccessUrl("/main")
+			.usernameParameter("userId")	// default : userId
+			.passwordParameter("userPwd") 	// default : userPwd
 			.permitAll());
-
+        
+        // 로그아웃 설정
         http.logout((logout) -> logout
         	.logoutUrl("/logout") // default
-        	.logoutSuccessUrl("/")
+        	.logoutSuccessUrl("/main")
         	.permitAll());
         
         return http.build();
     }
+	
     
+	// 사용자 정보를 메모리에 저장
 	@Bean
 	public UserDetailsService users() {
 		UserDetails user = User.builder()
@@ -66,7 +89,7 @@ public class SecurityConfig {
     // passwordEncoder()
 	@Bean
     public PasswordEncoder passwordEncoder() {
-        //return new BCryptPasswordEncoder();
-        return  PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return new BCryptPasswordEncoder();
+        //return  PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

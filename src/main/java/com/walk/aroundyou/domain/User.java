@@ -1,6 +1,6 @@
 package com.walk.aroundyou.domain;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,6 +21,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +29,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
+// 스프링 시큐리티에서 사용자 인증 및 권한 부여를 다루는 클래스는 보안 관련 작업을 수행하므로, 이러한 클래스의 인스턴스를 외부에서 생성 및 조작하는 것을 방지하기 위해 생성자 접근 제한을 두는 것이 좋음
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "user")
 @Entity

@@ -5,22 +5,19 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.walk.aroundyou.domain.User;
 import com.walk.aroundyou.domain.role.UserRole;
+import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,80 +26,47 @@ import jakarta.servlet.http.HttpServletResponse;
 @Controller
 public class UserController {
 	
-	@Autowired
-	private UserService userService;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final UserService userService;
 
+	@Autowired
+	public UserController(UserService userService) {
+		this.userService = userService;
+	}
 	
 	//////////////////// 회원가입
-	// 처음 회원가입 페이지를 보여줌
+	// 회원가입 폼을 보여주는 페이지
 	@GetMapping("/signup")
-    public String showSignupForm(Model model) {
-		// 뷰 템플릿에서 폼을 표시하기 위한 초기값을 설정
-		// "user"라는 이름으로 뷰 모델에 새로운 User 객체를 추가하는 것
-		// 추가된 User 객체의 필드는 뷰 템플릿에서 해당 필드의 값을 사용하여 폼 필드에 초기값을 설정
-        model.addAttribute("user", new User());
-        return "signup";
-    }
-	// 회원가입 폼을 작성하고 제출했을 때 회원가입 정보를 처리하는 역할
-    @PostMapping("/signup")
-    // @ModelAttribute : 클라이언트가 전송한 데이터를 자동으로 User 객체에 매핑
-    public String processSignupForm(@ModelAttribute User user) {
-        // 사용자 정보 등록
-        userService.registerUser(user);
-        return "redirect:/login"; // 회원가입 후 로그인 페이지로 리다이렉트
-    }
+	public String showSignup() {
+		return "signup";
+	}
+	// 회원가입 처리하는 페이지
+	// 회원가입 후 작성한 데이터를 뷰에 보여주지 않으므로 Model객체 필요없음
+	@PostMapping("/signup")
+	public String processSignup(UserRequest request) {
+		
+		// 회원가입 메서드 호출
+		userService.registerUser(request); 
+		
+		//회원가입이 완료된 이후에 로그인 페이지로 이동
+		return "redirect:/login";
+	}
 	
 	
 	//////////////////// 로그인
-	// 로그인 메인 페이지(처음 시작 할 때의 화면)
 	@GetMapping("/login")
 	public String login() {
-		return "login";
-	}
-	// 로그인 입력 시 페이지
-	@PostMapping("/login")
-	public String processLoginForm(@RequestParam String userId, @RequestParam String userPwd, Model model) {
-
-		// loginResult 값이 true = 로그인 성공, false = 로그인 실패
-		boolean loginResult = userService.login(userId, userPwd);
 		
-		// loginResult == true
-		if(loginResult){
-			// 로그인 성공 시 메인 페이지로 redirect
-			return "redirect:/main";
-		} else {	
-			// loginResult == false
-			// model객체에 true 값으로 '실패 상태' 표시
-			model.addAttribute("resultFail", true);
-			// 로그인페이지로 가서 실패메시지 출력
-			return "/login";
-		}
+		return "login";
 	}
 	
 	//////////////////// 로그아웃
-	// 스프링 시큐리티를 사용해서 로그아웃 처리
-	@RequestMapping("/logout")
+	@GetMapping("/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
+		// SecurityContextLogoutHandler() : 로그아웃 수행
+		// SecurityContextHolder.getContext().getAuthentication() : 현재 인증된 사용자의 인증 객체 -> SecurityContextHolder에서 해당 사용자의 인증 정보를 지우는 데 사용
+		new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+		return "redirect:/login";
 		
-	    /// Spring Security의 로그아웃 처리 과정 :
-		///  SecurityContextHolder를 사용하여 현재 사용자의 인증 정보를 가져와 SecurityContextLogoutHandler를 통해 로그아웃 작업이 수행
-		// Authentication : 인증 정보를 나타내는데 사용
-		// SecurityContextHolder는 Spring Security의 SecurityContext를 관리하는 클래스
-		// getAuthentication() 메서드로 현재 사용자의 인증 정보를 가져옴
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    
-	    // 인증 정보가 null이 아닌 경우에만 로그아웃 처리를 수행
-	    if (authentication != null) {
-	    	// SecurityContextLogoutHandler 클래스를 사용하여 로그아웃 처리를 수행
-	    	// 이 클래스는 Spring Security의 로그아웃 기능을 제공하며, 사용자의 세션을 무효화하고 인증 정보를 제거하는 역할
-	        new SecurityContextLogoutHandler().logout(request, response, authentication);
-	    }
-	    
-	    // 로그아웃이 완료되면 로그인 페이지로 리다이렉트하며, URL에 "?logout" 파라미터를 추가하여 로그아웃 성공 여부를 표시
-	    return "redirect:/login?logout"; 
 	}
 	
 	
@@ -189,7 +153,7 @@ public class UserController {
 	
 	
 	//////////////////// 유저페이지
-	@GetMapping("/mypage/{userId}")
+	@GetMapping("/userpage/{userId}")
 	public String showUserpage(Model model, Principal principal) {
 
 		// 현재 로그인한 사용자 아이디
@@ -207,7 +171,7 @@ public class UserController {
 	}
 	
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 허용
-	@PostMapping("/mypage/{userId}")
+	@PostMapping("/userpage/{userId}")
 	public String processUserpage(@PathVariable String userId, @RequestParam String userName, @RequestParam String userNickname, @RequestParam String userTelnumber, @RequestParam String userEmail, Principal principal) {
 		
 		String userId1 = principal.getName();
@@ -229,46 +193,22 @@ public class UserController {
 		return "changepwdform";
 	}
 	@PostMapping("/changePwd")
-	public String processChangePwd(@RequestParam String currentPwd, @RequestParam String newPwd, String newPwdConfirm, Principal principal, Model model) {
-		// 인증된 id 얻어오기
-		String userId = principal.getName();
-		// id 통해 사용자 정보 조회
-		Optional<User> userOptional = userService.findByUserId(userId);
-		// id가 존재한다면
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
+	public String processChangePwd(@RequestParam String userId, @RequestParam String currentPwd,
+			@RequestParam String newPwd, String newPwdConfirm, Model model) {
 
-            // 현재 비밀번호와 맞다면 DB에 저장된 비밀 번호가 일치한다면
-            if (passwordEncoder.matches(currentPwd, user.getUserPwd())) {
-            	
-            	// 새로 입력한 비번을 두번 입력해서 그 값이 일치하면
-                if (newPwd.equals(newPwdConfirm)) {
-                	// 비번 암호화해라
-                    String encryptedPassword = passwordEncoder.encode(newPwd);
-                    // 비번 값 변경
-                    user.setUserPwd(encryptedPassword);
-                    // 저장
-                    userService.saveUser(user);
-                    // 비밀번호 변경 성공 시 로그인 페이지로 리다이렉트
-                    return "redirect:/login?passwordChanged";
-                    
-                } else {
-                	// 일치하지 않을 경우 
-                	// 모델 객체에 데이터 담아 뷰에 보냄
-                    model.addAttribute("error", "새로운 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
-                }
-            } else {
-            	// 현재 입력한 비밀 번호와 디비에 저장된 현재 비번이 일치하지 않을 경우
-                model.addAttribute("error", "현재 비밀번호가 일치하지 않습니다.");
-            }
-        } else {
-        	// id가 존재하지 않을 경우
-            model.addAttribute("error", "사용자를 찾을 수 없습니다.");
-        }
-        
-        // 변경 실패 시 다시 폼 템플릿을 보여줌
-        return "changepwdform"; 
+		boolean isPasswordChanged = userService.changePwd(userId, currentPwd, newPwd, newPwdConfirm);
+
+		if (isPasswordChanged) {
+			// 비밀번호 변경 성공 시 메인 페이지 또는 다른 페이지로 리디렉션
+			return "redirect:/userpage";
+		} else {
+			// 비밀번호 변경 실패 시 에러 메시지를 모델에 추가하여 폼 다시 표시
+			model.addAttribute("error", "비밀번호 변경에 실패했습니다. 입력 정보를 확인해 주세요.");
+			// 변경 실패 시 다시 폼 템플릿을 보여줌
+			return "changepwdform";
+		}
 	}
+
 	
 	
 	

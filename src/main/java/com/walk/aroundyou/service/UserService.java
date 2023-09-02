@@ -1,16 +1,9 @@
 package com.walk.aroundyou.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-// org.springframework.security.core.GrantedAuthority는 Spring Security 프레임워크에서 사용되는 인터페이스
-// 이 인터페이스는 사용자에게 부여된 권한을 나타내는 객체를 나타내며, Spring Security에서 권한을 효과적으로 관리하는 데 사용
-// 일반적으로 사용자 객체 (예: UserDetails 인터페이스를 구현한 객체)에 GrantedAuthority 객체의 컬렉션을 포함시켜 사용자의 권한을 정의하고, Spring Security는 이 정보를 기반으로 인증 및 권한 검사를 수행함
-// 예를 들어, Spring Security를 사용하는 경우, 사용자에게 부여된 권한을 나타내기 위해 GrantedAuthority 객체를 구현하고, 사용자 정보 객체에 이 권한을 할당하게 됨
-// 이를 통해 Spring Security가 사용자의 권한을 관리하고 보안 검사를 수행할 수 있음
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.User;
 import com.walk.aroundyou.domain.role.UserRole;
+import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.repository.UserRepository;
 
 
@@ -25,21 +19,30 @@ import com.walk.aroundyou.repository.UserRepository;
 public class UserService implements UserDetailsService{
 
 	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
+	// 자동로그인
+	//private final DataSource dataSource;
 	
 	@Autowired
-	public UserService(UserRepository userRepository) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 	
-	// 시큐리티 암호화 의존성 주입
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
-
+	
+	///// 사용자 정보를 가져오는 로직
+	/// loadUserByUsername : Spring Security에서 사용자 인증과 권한 부여를 처리하는 메서드인 
+	/// loadUserByUsername(String userId) : userId를 기반으로 사용제 세부 정보를 로드
+	// UserDetailsService에 정의된 메서드를 오버라이드
 	@Override
+	// userId를 매개변수로 받고 사용자의 세부 정보(아이디, 비밀번호, 권한 등)을 나타내는 UserDetails객체를 반환
 	public UserDetails loadUserByUsername(String userId) {
+		// .orElseThrow(() -> new IllegalArgumentException((userId))); : 사용자가 리포지토리에서 찾을 수 없는 경우 처리
+		// Optional<User>객체를 반환했는데 비어있는 경우 userId를 메시지로 하는 IllegalArgumentException 예외를 던짐(throw)
 		return userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException((userId)));
 	}
+	
 	
 	// 1. 회원가입 시 User엔티티 전부 가져오기
 	// 회원가입, User 엔티티들 변경 후에(update) save로 저장
@@ -165,56 +168,32 @@ public class UserService implements UserDetailsService{
 				// 유저 객체에 업데이트하기
 				userRepository.save(user);
 				return true; // 변경 성공
+			}else {
+				return false; // 새로운 비밀번호가 일치하지 않음
 			}
-			
 		} else {
-			return false; // 비번이 일치하지 않음
+			return false; // 새로운 비밀번호가 일치하지 않음
 		}
-		return false; // 조회 실패
 	}
 	
 	
 	
 	/////////////////////// 회원가입
-	public User registerUser(User user) {
-		
-		// 사용자 비밀번호 암호화
-		user.setUserPwd(passwordEncoder.encode(user.getUserPwd()));
-		// 사용자 이메일 암호화
-		user.setUserEmail(passwordEncoder.encode(user.getUserEmail()));
-		// 사용자 번호 암호화
-		user.setUserTelNumber(passwordEncoder.encode(user.getUserTelNumber()));
+	public String registerUser(UserRequest dto) {
 		
 		// 사용자 정보 저장
-		return userRepository.save(user);
+		return userRepository.save(User.builder()
+				.userId(dto.getUserId())
+				.userPwd(passwordEncoder.encode(dto.getUserPwd()))
+				.userName(dto.getUserName())
+				.userNickname(dto.getUserNickname())
+				.userTelNumber(dto.getUserTelNumber())
+				.userEmail(dto.getUserEmail())
+				.userJoinDate(dto.getUserJoinDate())
+				.userUpdateDate(dto.getUserUpdateDate())
+				.socialYn(dto.isSocialYn())
+				.build()).getUserId();
 	}
-	
-	
-	
-	/////////////////////// 로그인 
-	public boolean login(String userId, String currentPwd) {
-
-		// 아이디를 기준으로 비밀번호 확인해서 로그인하기
-		Optional<User> user = userRepository.findByUserId(userId);
-
-		// 아이디가 존재하면
-		if (user.isPresent()) {
-			
-			// PasswordEncoder의 matches : 입력한 평문 비밀번호와 암호화된 비밀번호가 일치하는지 검증하는 역할
-			// userPwd: 사용자가 입력한 평문 비밀번호
-			// user.get().getUserPwd(): 데이터베이스에 저장된 암호화된 비밀번호
-			// 디비에 저장된 비번과 사용자가 입력한 비번이 비번이 일치하면
-			if (passwordEncoder.matches(currentPwd, user.get().getUserPwd())) {
-				
-				return true; // 로그인 성공
-			} else {
-				return false; // 비밀번호 틀림
-			}
-		} else {
-			return false; // 아이디 없거나 실패
-		}
-	}
-	
 	
 	
 	/////////////////////// 아이디 찾기
@@ -224,13 +203,8 @@ public class UserService implements UserDetailsService{
 		Optional<User> user = userRepository.findByUserNameAndUserEmail(userName, userEmail);
 		
 		if (user.isPresent()) {
-			
-			// .encode : Spring Security의 PasswordEncoder 인터페이스를 구현한 클래스(예: BCryptPasswordEncoder)를 사용하여 문자열을 해시화(암호화)하는 역할
-			// DB에 저장된 Id부분 암호화해주기
-			String encryptedId = passwordEncoder.encode(user.get().getUserId());
-			// get() 메서드는 Optional 클래스에서 사용되는 메서드 
-			
-			return "찾으시는 아이디는 \"" + encryptedId + "\" 입니다.";
+			String foundUserId = user.get().getUserId();
+			return "찾으시는 아이디는 \"" + foundUserId + "\" 입니다.";
 		} else {
 			return "입력하신 정보와 일치하는 아이디가 없습니다.";
 		}
@@ -257,49 +231,6 @@ public class UserService implements UserDetailsService{
             return "입력하신 아이디가 없습니다.";
         }
 	}
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
 	
 	/////////////////////// 상태 정보
 

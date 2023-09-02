@@ -48,6 +48,8 @@ public class UserRequest {
 				.userEmail(userEmail)
 				.userImg(userImg)
 				.userDescription(userDescription)
+				.userJoinDate(userJoinDate)
+				.userUpdateDate(userUpdateDate)
 				.stateId(stateId)
 				.role(role)
 				.socialYn(socialYn)

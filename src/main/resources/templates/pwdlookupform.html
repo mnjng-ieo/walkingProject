@@ -5,6 +5,15 @@
 <title>Password 찾기</title>
 </head>
 <body>
-
+<h1>비밀번호 찾기</h1>
+    <p>비밀번호를 찾기 위해 아이디를 입력하세요:</p>
+    <!-- 아이디 찾기 폼 -->
+    <form action="login/idlookup" method="post">
+        <label for="text">아이디 : </label>
+        <input type="text" id="userId" name="userId" required><br>
+        <button type="submit">비밀번호 찾기</button>
+    </form>
+    <p>비밀번호 조회 결과: <span th:text="${pwdlookup}"></span></p>
+    <p><a href="/login">로그인 화면으로 돌아가기</a></p>
 </body>
 </html>
