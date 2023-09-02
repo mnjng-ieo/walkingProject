@@ -92,6 +92,12 @@ public class TagService {
 		System.out.println("Success! -----> " + tagList);
 		log.info("생성된 TagList : {}", tagList.toString());
 	}
+	
+	// 5. 동일한 tag_id를 가진 board_tag_id의 tag_content 출력
+	// 메인화면에 지금 핫한 해시태그에 출력될 내용
+	public List<String> findTagsByBoardTagId() {
+		return tagRepository.findTagsByBoardTagId();
+	}
 
 	
 	/*---------------------------------------------------*/

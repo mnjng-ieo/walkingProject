@@ -59,10 +59,27 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 	
 	// 4. 해시태그가 있는지 확인하는 메서드(tagContent로 tagId 조회하는 쿼리)
 	boolean existsByTagContent(String tagContent);
+	
+	// 4. tag_content으로 tag_id 추출하기(save메서드에서 활용)
 	@Query(value = "SELECT"
 			+ " tag_id"
 			+ " FROM tag"
 			+ " WHERE tag_content = :tagContent", nativeQuery = true)
 	Tag findIdByTagContent(@Param("tagContent")String tagContent);
+	
+	// 5. 동일한 tag_id를 가진 board_tag_id의 tag_content 출력
+	// 메인화면에 지금 핫한 해시태그에 출력될 내용
+	@Query(value = "SELECT t.tag_content"
+			+ "    FROM tag t"
+			+ "    join board_tag bt"
+			+ "        on t.tag_id = bt.tag_id"
+			+ "    WHERE t.tag_id"
+			+ "    GROUP BY bt.tag_id"
+			+ "    ORDER BY COUNT(bt.tag_id) desc"
+			+ "    limit 12"
+			, nativeQuery = true)
+	List<String> findTagsByBoardTagId();
+	
+	
 
 }

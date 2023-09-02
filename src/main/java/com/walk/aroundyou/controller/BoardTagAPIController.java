@@ -50,6 +50,12 @@ public class BoardTagAPIController {
 	
 	// 4. 게시글에 저장된 해시태그 파싱하기(실패)
 
+	// 5. 동일한 tag_id를 가진 board_tag_id의 tag_content 출력
+	// 메인화면에 지금 핫한 해시태그에 출력될 내용
+	@GetMapping("api/main")
+	public List<String> findTagsByBoardTagId() {
+		return tagService.findTagsByBoardTagId();
+	}
 	
 	
 	
