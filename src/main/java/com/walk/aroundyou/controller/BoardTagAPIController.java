@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.walk.aroundyou.domain.Board;
-import com.walk.aroundyou.domain.BoardTag;
 import com.walk.aroundyou.service.TagService;
 
 import lombok.RequiredArgsConstructor;
@@ -55,15 +55,12 @@ public class BoardTagAPIController {
 	@GetMapping("api/main")
 	public List<String> findTagsByBoardTagId() {
 		return tagService.findTagsByBoardTagId();
-	}
-	
-	
+	}	
 	
 	/*------------------------------------------------------*/
 	/// BoardTagRepository 사용하여 출력 확인하기
 	
-	// 1. 게시물 삭제(수정)시 board_tag 테이블에서 삭제하기(기본 메서드 사용)
-	// 게시물이 수정되면 해시태그이력은 전체 삭제되고 전체 추가되는 로직임
+	// 1. 게시물 삭제 시 board_tag 테이블에서 삭제하기(기본 메서드 사용)
 	@DeleteMapping("/api/board/boardTag/{boardId}")
 	public ResponseEntity<Void> deleteByBoardId(@PathVariable Long boardId) {
 		tagService.deleteByBoardId(boardId);
@@ -72,9 +69,19 @@ public class BoardTagAPIController {
 	
 	// 2. 새로운 게시물의 태그 board_tag 테이블에 추가하기
 	@PostMapping("/api/board/boardTag")
-	public void saveBoardTag(@RequestBody BoardTag boardTag, String tagContent) {
-		tagService.deleteByBoardId(boardTag.getBoardTagId());
-		tagService.saveBoardTag(boardTag, tagContent);
+	public void saveBoardTag(@RequestParam Long boardId, @RequestParam String tagContent) {
+		/// 수정하는 경우에 추가
+		/// tagService.deleteByBoardId(boardTag.getBoardTagId());
+		log.info("/api/board/boardTag Post 매핑 들어옴....");
+		log.info("boardTag : {}, tagContent : {}", boardId, tagContent);
+		tagService.saveBoardTag(boardId, tagContent);
+	}
+	
+	// 3. 수정한 게시물의 태그 board_tag 테이블에 추가하기(삭제 후 추가)
+	@PatchMapping("/api/board/boardTag")
+	public void updateBoardTag(@RequestParam Long boardId, @RequestParam String tagContent) {
+		tagService.deleteByBoardId(boardId);
+		tagService.saveBoardTag(boardId, tagContent);
 	}
 	
 }

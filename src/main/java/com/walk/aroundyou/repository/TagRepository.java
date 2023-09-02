@@ -1,7 +1,6 @@
 package com.walk.aroundyou.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -62,7 +61,7 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 	
 	// 4. tag_content으로 tag_id 추출하기(save메서드에서 활용)
 	@Query(value = "SELECT"
-			+ " tag_id"
+			+ " *"
 			+ " FROM tag"
 			+ " WHERE tag_content = :tagContent", nativeQuery = true)
 	Tag findIdByTagContent(@Param("tagContent")String tagContent);
@@ -79,7 +78,5 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 			+ "    limit 12"
 			, nativeQuery = true)
 	List<String> findTagsByBoardTagId();
-	
-	
 
 }

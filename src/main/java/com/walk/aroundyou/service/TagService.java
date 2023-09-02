@@ -23,50 +23,28 @@ public class TagService {
 	private TagRepository tagRepository;
 	
 	/// TagRepository 사용하여 출력 확인하기
-	// 1. 기존 태그 tag 테이블에서 삭제하기[관리자용]
+	// 1. 기존 태그 tag 테이블에서 삭제하기
 	public void deleteByTagId(Long tagId) {
 		tagRepository.deleteByTagId(tagId);
 	}
 	
 	// 2. 새로운 태그 tag 테이블에 추가하기
-	// saveTag메소드 DTO 사용에서 엔티티 클래스 활용하는 방식으로 변경
-	/// 변경 전
-//	public void saveTag(AddTagRequest request) {
-//		tagRepository.saveTag(request.getTagContent());
-//	}
-	/// 변경 후
 	// 동일한 태그가 있으면 tag 테이블에 저장하지 않는 방식
 	public Tag saveTag(String tagContent) { 
-		Tag hashTag = new Tag();
-		hashTag.setTagContent(tagContent);
-		
-		if(tagRepository.existsByTagContent(tagContent)) {
-			// 해당 tagContent가 존재하는 경우 저장하지 않음
-		} else {
+		log.info("saveTag() 들어옴....");
+
+		// 저장하지 않는 경우를 else에 적용하기 위해 부정문을 사용함
+		if(!tagRepository.existsByTagContent(tagContent)) {
+			log.info("tag테이블에 {}가 없음...", tagContent);
 			// 해당 tagContent가 존재하지 않는 경우 저장
 			tagRepository.saveTag(tagContent);
-		}
+//		} else {
+//			// 해당 tagContent가 존재하는 경우 저장하지 않음
+		} log.info("tag테이블에 {}가 있음...", tagContent);
+		
+		log.info("saveTag() 조건문 완료....");
 		return tagRepository.findIdByTagContent(tagContent);
 	}
-	/// 또 변경해보기
-//	public void saveTagAndBoardTag(List<String> tags) {
-//		for (String tag : tags) {
-//			boolean existingTag = tagRepository.existsByTagContent(tag);
-//			
-//			if(existingTag == false) {
-//				Tag newTag = new Tag();
-//				newTag.setTagContent(tag);
-//				tagRepository.saveTag(tag);
-//				BoardTag newBoardTag = new BoardTag();
-//				boardTagRepository.saveBoardTag(newBoardTag);
-//			}
-//			
-//			BoardTag newBoardTag = new BoardTag();
-//			boardTagRepository.saveBoardTag(newBoardTag);
-//			
-//		}
-//	}
-
 	
 	// 3. 게시물 하나의 해시태그 리스트 조회하기
 	public List<String> findTagsByBoardId(Long boardId) {
@@ -94,7 +72,7 @@ public class TagService {
 	}
 	
 	// 5. 동일한 tag_id를 가진 board_tag_id의 tag_content 출력
-	// 메인화면에 지금 핫한 해시태그에 출력될 내용
+	// 메인화면에 '지금 핫한 해시태그'에 출력될 내용
 	public List<String> findTagsByBoardTagId() {
 		return tagRepository.findTagsByBoardTagId();
 	}
@@ -117,10 +95,26 @@ public class TagService {
 //	public void saveBoardTag(BoardTag boardTag) {
 //		boardTagRepository.saveBoardTag(boardTag);
 //	}
-	public void saveBoardTag(BoardTag boardTag, String tagContent) {
+	public void saveBoardTag(Long boardId, String tagContent) {
 		// 태그 테이블에 추가하기(saveTag() 사용하여 존재하는 id면 저장)
 		// saveTag(tagContent) : tagId를 반환
+		log.info("saveBoardTag() 들어옴....");
+		//
+		BoardTag boardTag = new BoardTag();
+		// Board.builder().boardId(boardId).build()
+		// == Board board = new Board();
+		//    board.setBoardId(boardId);
+		// boardTag 멤버에 값 부여
+		boardTag.setBoardId( // boardId는 Board객체이기 때문에 빌더패턴으로 객체 생성
+					Board.builder()
+						.boardId(boardId) // 빌더패턴으로 값 부여
+						.build()
+					);
 		boardTag.setTagId(saveTag(tagContent));
+//		Tag tag = saveTag(tagContent); // 상단의 코드와 동일한 내용 풀어쓰는 법
+//		boardTag.setTagId(tag);
+
+		log.info("saveBoardTag() boardTag에 TagId인 {}를 입력함....", boardId);
 		// 이력 테이블에 추가하기
 		boardTagRepository.saveBoardTag(boardTag);
 	}
