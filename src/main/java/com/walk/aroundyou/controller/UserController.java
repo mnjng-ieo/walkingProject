@@ -209,7 +209,7 @@ public class UserController {
 		}
 	}
 
-	
+	 
 	
 	
 	//////////////////// 탈퇴와 강퇴
