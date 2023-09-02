@@ -1,11 +1,14 @@
 package com.walk.aroundyou.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.dto.CourseResponseDTO;
 
 public interface CourseRepository 
 			extends JpaRepository<Course, Long>, 
@@ -55,4 +58,17 @@ public interface CourseRepository
 			WHERE course_id = :courseId
 			""", nativeQuery = true)
 	void updateViewCount(@Param("courseId") Long courseid);
+	
+	/**
+	 * [메인페이지] 검색창에 산책로 정보 검색하기 - 서비스에서 매개변수 앞뒤로 '%' 붙이기!
+	 */
+	@Query(value = """
+			SELECT * FROM Course c
+            WHERE REPLACE(wlk_cours_flag_nm, ' ', '') like :#{#keyword}
+	         or REPLACE(wlk_cours_nm, ' ', '') like :#{#keyword}
+	         or REPLACE(cours_dc, ' ', '') like :#{#keyword}
+	         or REPLACE(adit_dc, ' ', '') like :#{#keyword}
+			""", nativeQuery = true)
+	Page<CourseResponseDTO> findMainCourseByKeyword(
+			@Param("keyword") String keyword, Pageable pageable);
 }

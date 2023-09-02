@@ -31,7 +31,7 @@ public class CourseApiController {
 	private final CourseRepository courseRepository;
 	
 	// id로 산책로 하나로 조회
-	@GetMapping("/courses/{id}")
+	@GetMapping("/api/courses/{id}")
 	public ResponseEntity<Course> findCourse(@PathVariable long id){
 		Course course = courseService.findById(id);
 		
@@ -42,7 +42,7 @@ public class CourseApiController {
 	/**
 	 * [산책로 상세 조회페이지] 좋아요, 언급, 댓글 수 포함 산책로 상세 정보 조회
 	 */
-	@GetMapping("/courses/detail/{id}")
+	@GetMapping("/api/courses/detail/{id}")
 	public ResponseEntity<CourseResponseDTO> findDetailCourse(@PathVariable Long id){
 		log.info("courses/detail/{id} 들어감");
 		CourseResponseDTO courseResponseDTO = courseService.findByIdWithCounts(id);
@@ -55,7 +55,7 @@ public class CourseApiController {
 	 * ResponseEntity<Object> 으로 바꾸자.
 	 * 일단 반환을 object로 하면 dto를 어떻게 매핑해야 할지 모르겠어서 그대로 냅뒀다.
 	 */
-	@GetMapping("/courses/search")
+	@GetMapping("/api/courses/search")
 	public ResponseEntity<List<CourseResponseDTO>> findAllCourses(
 			// @RequestParam : 요청객체로부터 요청파라미터 자동추출
 			@RequestParam(required = false) String region,
@@ -96,7 +96,7 @@ public class CourseApiController {
 	/**
 	 * [관리자페이지] 산책로 생성 요청
 	 */
-	@PostMapping("/admin/courses")
+	@PostMapping("/api/admin/courses")
 	public ResponseEntity<Course> addCourse(
 			@RequestBody CourseRequestDTO request){
 		Course savedCourse = courseService.save(request);
@@ -108,7 +108,7 @@ public class CourseApiController {
 	/**
 	 * [관리자페이지] 산책로 수정 요청
 	 */
-	@PatchMapping("/admin/courses/{id}")
+	@PatchMapping("/api/admin/courses/{id}")
 	public ResponseEntity<Course> updateCourse(
 			@PathVariable long id, @RequestBody CourseRequestDTO request){
 		Course updatedCourse = courseService.updateCourse(id, request);
@@ -120,7 +120,7 @@ public class CourseApiController {
 	/**
 	 * [관리자페이지] 산책로 삭제 요청
 	 */
-	@DeleteMapping("/admin/courses/{id}")
+	@DeleteMapping("/api/admin/courses/{id}")
 	public ResponseEntity<Course> deleteCourse(@PathVariable long id){
 		courseService.deleteCourse(id);
 		

@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.dto.CourseResponseDTO;
 
 import jakarta.persistence.criteria.Predicate;
 

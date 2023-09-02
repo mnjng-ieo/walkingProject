@@ -9,33 +9,31 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Builder
 @Entity
-@Data
-@ToString
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="course_like")
-public class CourseLike {
+@Table(name="comment_like")
+public class CommentLike {
 
+	// 코멘트좋아요 식별번호 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="course_like_id",columnDefinition="bigint", nullable=false)
-	private long courseLikeId;
-	
+	@Column(name="comment_like_id", nullable=false)
+	private Long commentLikeId;
+
+	// 코멘트 식별번호 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "course_id", nullable = false)
-	private Course courseId;
-	
+	@JoinColumn(name="comment_id", nullable=false)
+	private Comment comment;
+
+	// 회원 ID 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name="user_id", nullable=false)
 	private User userId;
 
 }

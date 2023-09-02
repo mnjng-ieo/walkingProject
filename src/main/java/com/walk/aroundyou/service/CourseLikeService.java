@@ -70,6 +70,7 @@ public class CourseLikeService {
 		// 디비에 최종 저장한다.
 		courseLikeRepository.save(courseLike);
 	}
+
 	
 	/**
 	 * 한 명의 유저가 산책로에 좋아요 삭제

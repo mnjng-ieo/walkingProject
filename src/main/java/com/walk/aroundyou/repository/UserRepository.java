@@ -17,32 +17,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	// 1. 회원가입 시 User엔티티 전부 가져오기
 	User save(User user);
-
-	// 1-1. 회원정보 수정(업데이트)
-	@Modifying
-	@Transactional
-	// 엔티티 "User"의 "userPwd" 필드를 ":userPwd"라는 파라미터로 업데이트
-	// 파라미터 ":u.userPwd"는 실제로 쿼리 실행 시에 해당 파라미터에 할당된 값을 사용하여 엔티티의 필드를 업데이트할 때 사용
-	@Query(value = "UPDATE User u SET "
-		    + "u.userPwd = :userPwd, "
-		    + "u.userNickname = :userNickname, "
-		    + "u.userTelNumber = :userTelNumber, "
-		    + "u.userEmail = :userEmail, "
-		    + "WHERE u.userId = :userId")
-		void updateUserFields(
-		    @Param("userId") User user);
-
-	
 	
 	// 2. 아이디로 유저 찾기 (로그인할 때 id로 정보 받기, pw변경 및 찾기, 회원 정보 보기에서 아이디로 회원 찾기, 회원 삭제할 때 아이디로 조회해 삭제 | 관리자가 회원 검색)
 	Optional<User> findByUserId(String userId);
 	
 	
-	
 	// 3. Id찾기 : 이름(userName)과 이메일(userEmail) 정보를 입력 받아 아이디 찾기
 	Optional<User> findByUserNameAndUserEmail(String userName, String userEmail);
 
-	
 	
 	// 4. Nickname으로 유저 검색하기 - 유저 닉네임은 중복이 가능 | USER가 닉네임 검색해서 내가 쓴 글, 댓글 검색
 	// LIKE 연산자를 사용할 때, 필드 이름을 직접 사용하지 않아도 됨.
@@ -51,7 +33,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.userNickname LIKE :userNickname")
     List<User> searchByUserNickname(@Param(value = "userNickname")String userNickname);
 
-    
     
 	// 5. user entity의 모든 항목을 반환하기
 	List<User> findAll();

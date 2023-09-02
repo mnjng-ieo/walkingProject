@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}"
+      layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+    <title>산책로 전체 목록 조회</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+</head>
+<body>
+    <!-- 제목 및 조건 선택 박스 -->
+    <div class="top">
+        <h1>산책로 목록</h1>
+        <h4>이 자리에 검색창과 조건 선택 드롭박스가 올 겁니다.</h4>
+    </div>
+    <!-- 산책로 목록 카드 -->
+    <div class="container course-lists">
+        <div class="row">
+            <div class="col-4" th:each="item : ${courses}">
+                <div class="card course-list">
+                    <!-- 예정 : Course에 추가할 coursImg. 현재 default만 설정 -->
+                    <img class="card-img-top course-list_imgBox" 
+                        src="/images/defaultCourseImg.png" alt="산책로 사진" />
+                    <div class="card-img-overlay">
+                        <!-- 예정 : 산책로 난이도 
+                                - 글자 위에 올라가도록 가능할까?(card-img-overlay) 
+                                  아니면 산책로 옆에 -->
+                        <p class="card-text course-list_level"
+                           th:text="${item.coursLevelNm}">난이도</p>
+                    </div>
+                    <div class="card-body course-list_textbox">
+                        <!-- 산책로 이름 - 큰이름과 작은이름이 서로 같으면 큰 이름만 출력 되도록 -->
+                        <h3 class="card-title" th:text="${item.wlkCoursFlagNm}">산책로 큰이름</h3>
+                        <h6 class="card-text" 
+                            th:if="${item.wlkCoursNm} != ${item.wlkCoursFlagNm}" 
+                            th:text="${item.wlkCoursNm}">산책로 작은이름</h6>
+                        <!-- 지역 -->
+                        <p class="card-text" th:text="${item.signguCn}">지역</p>
+                        <!-- 예정 : "코스거리" | "소요시간"시간 분 소요 -->
+                        <p class="card-text">
+                            <span th:text="${item.coursDetailLtCn}">총코스거리</span> | 
+                            <span th:text="${#dates.format(item.coursTimeCn, 'HH시간 mm분 소요')}">
+                             소요 시간</p>
+                        <!-- 예정 : 산책로 설명 : 일정 길이 넘어가면 ... 되도록? -->
+                        <p class="card-text" 
+                           th:text="${#strings.length(item.aditDc) &gt; 100 ? 
+                                    #strings.substring(item.aditDc, 0, 100) + '...' 
+                                    : item.aditDc}">산책로 설명</p>
+                        <!-- 예정 : 좋아요 수 / 언급 수 / 댓글 수 -->
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+    
+    
+
+<script>
+
+</script>
+</body>
+</html>

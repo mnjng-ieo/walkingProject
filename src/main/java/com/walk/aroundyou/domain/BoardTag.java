@@ -9,33 +9,31 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Builder
+
 @Entity
 @Data
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name="course_like")
-public class CourseLike {
-
+@NoArgsConstructor
+@ToString
+@Table(name = "board_tag")
+public class BoardTag {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="course_like_id",columnDefinition="bigint", nullable=false)
-	private long courseLikeId;
+	@Column(name="board_tag_id", columnDefinition="bigint", nullable=false)
+	private Long boardTagId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "course_id", nullable = false)
-	private Course courseId;
+	@JoinColumn(name = "board_id", nullable = false)
+	private Board boards;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
-	private User userId;
+	@JoinColumn(name = "tag_id", nullable = false)
+	private Tag tagId;
 
 }
