@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>userpage</title>
+</head>
+<body>
+	<h1>회원 정보 변경</h1>
+
+	<form th:action="@{/userpage}" method="post">
+        <label for="userId">이름 :</label>
+        <input type="text" id="userId" name="userId" th:required="required">
+        <br>
+        <label for="userName">닉네임 :</label>
+        <input type="text" id="userName" name="userName" th:required="required">
+        <br>
+        <label for="userTelNumber">핸드폰 번호 :</label>
+        <input type="tel" id="userTelNumber" name="userTelNumber" placeholder="010-1234-5678">
+        <br>
+        <label for="userEmail">이메일 :</label>
+        <input type="email" id="userEmail" name="userEmail" placeholder="walkaroundyou@gmail.com" th:required="required">
+        <br>
+        <input type="submit" value="회원정보 변경하기">
+    </form>
+    <button id="pwdModal">비밀번호 변경</button>
+    <button id="withdrawModal">탈퇴하기</button>
+    
+</body>
+</html>

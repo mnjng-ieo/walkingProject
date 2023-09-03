@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>mypage</title>
+<script>
+	var editButton = document.getElementById("editButton");
+        var editForm = document.getElementById("editForm");
+
+        editButton.addEventListener("click", function() {
+            // 버튼을 클릭하면 폼을 표시하거나 숨김
+            if (editForm.style.display === "none") {
+                editForm.style.display = "block";
+            } else {
+                editForm.style.display = "none";
+            }
+        });
+</script>
+</head>
+<body>
+	
+	<h2>회원 정보</h2>
+    <p>닉네임: <span th:text="${user.userNickname}"></span></p>
+    <p>이미지: <img th:src="${user.userImg}" alt="프로필 사진"></p>
+    <p>게시글: <span th:text="${user.userDescription}"></span></p>
+    
+	<button id="editButton">정보 변경</button>
+	
+	<h3>정보 변경</h3>
+    <form action="/userpage/update" method="post" id="editForm" style="display: none;">
+        <input type="hidden" name="userId" th:value="${user.userId}">
+        <label for="userNickname">닉네임:</label>
+        <input type="text" id="userNickname" name="userNickname" th:value="${user.userNickname}">
+        <br>
+        <label for="userImg">이미지:</label>
+        <input type="text" id="userImg" name="userImg" th:value="${user.userImg}">
+        <br>
+        <label for="userDescription">게시글:</label>
+        <input type="text" id="userDescription" name="userDescription" th:value="${user.userDescription}">
+        <br>
+        <input type="submit" value="저장">
+    </form>
+	
+	
+</body>
+</html>
