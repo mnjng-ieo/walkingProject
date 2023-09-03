@@ -10,13 +10,18 @@
 
 </head>
 <body>
-	   <div class="container">
+	<div class="container">
         <!-- 하나의 게시물에 해당하는 해시태그 리스트 출력하기 -->
         <h5>후기 글 입니다.</h5>
-        <div th:each="tag : ${tagList}" class="d-flex flex-wrap justify-content-center">
-            <p th:text = "${tag}" class="badge rounded-pill bg-light text-dark m-1">
+        <div class = "row">
+        	<div class = "col d-flex justify-content-start" th:each="tag : ${tagList}">
+            	<button type="button" class="btn rounded-pill bg-light text-dark m-1">
+            		<div class="fs-6" style = "width: 100px; height: 30px; line-height: 30px;" th:text = "${tag}"></div>
+            	</button>
+        	</div>
         </div>
     </div>
+
 
 <script>
 

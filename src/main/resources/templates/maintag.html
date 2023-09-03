@@ -11,11 +11,15 @@
 </head>
 <body>
 	
-	<div class="container">
+	<div class="container p-3 rounded-4 border border-3 border-success ">
 	<!-- 가장 많이 사용된 태그 메인화면에 출력하기 -->
         <h5>지금 핫한 해시태그</h5>
-        <div th:each="tag : ${tagList}">
-            <p th:text = "${tag}">
+        <div class = "row">
+        	<div class = "p-2 col-lg-2 d-flex flex-wrap justify-content-center" th:each="tag : ${tagList}">
+            	<button type="button" class="btn btn-outline-success rounded-4">
+            		<div class="fs-5" style = "width: 120px; height: 40px; line-height: 40px;" th:text = "${tag}"></div>
+            	</button>
+        	</div>
         </div>
 	</div>
 	
