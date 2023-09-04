@@ -39,7 +39,7 @@ public class BoardLikeController {
 	
 		// 특정 게시물(boardId)에 대한 
 			// "좋아요 갯수" & "(좋아요 누른)회원들 목록" 둘 다 보여주기
-		@GetMapping("/")
+		@GetMapping("/boards/{boardId}")
 		public void showByBoardId(){
 			
 			boardLikeService.countUserIdByBoardId(boardId);
