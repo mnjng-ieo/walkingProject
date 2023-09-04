@@ -14,8 +14,8 @@ import com.walk.aroundyou.domain.User;
 
 @Repository
 public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
-	
 
+	
 	// 특정 게시물(boardId)에 대한 좋아요(userId)누른 회원들 목록 
 	// : 목록의 요소는 userId 대신 userId와 매칭되는 (프로필 사진 이미지/닉네임)으로 조회된다. (user 권한에서)
 	// : 목록의 요소는 userId 그리고 userId와 매칭되는 (프로필 사진 이미지/닉네임)으로 조회된다. (admin 권한에서)

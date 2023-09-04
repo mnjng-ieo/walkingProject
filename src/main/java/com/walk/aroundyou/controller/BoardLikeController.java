@@ -29,7 +29,6 @@ public class BoardLikeController {
 	
 		
 
-		
 	
 		// Controller/RestController 에서 
 		// GetMapping일 시, @RequestBody 를 통해서는 파라미터를 받을 수 없다.

@@ -71,7 +71,6 @@ public class BoardLikeService {
 		
 		
 		
-		
 		// boolean의 디폴트는 false
 		
 		// 현재는 값이 없으면(null) true, 있으면 false
