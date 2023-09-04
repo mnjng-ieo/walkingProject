@@ -41,6 +41,8 @@ public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
 	
 	// 사용자가 게시물 좋아요 표시 클릭 시 선택 + 해제
 	// 값의 유무 모르니까 에러 발생하지 않기 위해 Optional<>
+	Optional<BoardLike> findByUserIdAndBoardId(String userId, long boardId);
+
 	Optional<BoardLike> findByUserIdAndBoardId(User userId, Board boardId);
 	
 	

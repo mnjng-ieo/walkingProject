@@ -60,6 +60,10 @@ public class BoardLikeService {
         return boardLikeRepository.findLikedBoardIdByUserId(userId);
     }
 
+	BoardLikeService(String userId) {
+	}
+	BoardLikeService(Long boardId) {
+	}
 	
 	
 	// 사용자가 게시물 좋아요 표시 클릭 시 선택 + 해제
@@ -77,6 +81,27 @@ public class BoardLikeService {
 		// return !existingLike.isEmpty();
 		return boardLikeDTO.isEmpty();
 	}
+
+	
+	public boolean toggleLike(String userId, long boardId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	
+	public void deleteLike(BoardLikeDTO boardLikeDTO) {
+		
+		
+	}
+
+
+	public void insertLike(BoardLikeDTO boardLikeDTO) {
+		
+		
+	}
+
+
+
 
 
 
