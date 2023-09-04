@@ -1,0 +1,10 @@
+.top_img {
+	width: 100%;
+	border: 1px solid blue;
+}
+
+.name {
+	width: 100px;
+	text-align: center;
+	border: 1px solid red;
+}

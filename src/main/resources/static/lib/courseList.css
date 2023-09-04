@@ -1,0 +1,73 @@
+.course-list-top {
+	width: 100%;
+	height: 600px;
+	background-color: #f5f5f5;
+}
+
+.course-list-top_title {
+	font-size: 36px;
+	text-align: center;
+	padding-top: 70px;
+	font-weight: 800;
+}
+
+.course-list-top_subtitle {
+	margin: 30px 0 50px;
+    font-size: 18px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.course-list-top_searchBox {
+	height: 350px;
+	width: 80%;
+	margin: 0 auto;
+	border: 1px solid red;
+}
+
+.course-list-top_map {
+    border: 1px solid blue;
+}
+
+.course-list-top_conditionBox {
+	border: 1px solid orange;
+}
+
+.course-list-top_condition {
+	width: 40%;
+	height: 50px;
+	margin-: 20px 30px 0;
+}
+
+.course-lists {
+	margin-top: 70px;
+}
+
+.course-list {
+	cursor: pointer;
+	margin-bottom: 80px;
+	transform: scale(1);
+}
+
+.course-list:hover{
+	transform:scale(1.01);
+}
+
+.course-list_level {
+	font-size: 20px;
+}
+
+.course-list_small-title {
+	height: 45px;
+}
+
+.course-list_region {
+	height: 10px;
+}
+
+.course-list_distance {
+}
+
+.course-list_aditDc {
+	height: 90px;
+}
