@@ -37,9 +37,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	
 	// 2. Course에서 course_id를 이용한 Comment 목록 조회 ( 닉네임 / / 내용 / 수정날짜 / 좋아요 수 )
 	@Query(value="SELECT"
-			+ " c.user_nickname AS userNickname"
+			+ " c.user_nickname AS userNickname, "
 			+ " c.user_img AS userImg, "
-			+ " c.comment_content as commentContent, "
+			+ " c.comment_content AS commentContent, "
 			+ " c.comment_updated_date AS commentUpdatedDate, "
 			+ " IFNULL(COUNT(cl.comment_like_id), 0) AS commentLikeCnt"
 			+ "		FROM comment c"
