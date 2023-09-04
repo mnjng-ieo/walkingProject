@@ -78,6 +78,13 @@ public class CommentService {
 		log.info("/course/{courseId}/countcomment 서비스 접근");
 		return commentRepo.countCourseCommentByCourseId(courseId);
 	}
+
+	
+	// 
+	public List<ICommentResponseDto> findByBoardId(Long boardId) {
+	
+		return commentRepo.findByBoardId(boardId);
+	}
 	
 
 /* */
