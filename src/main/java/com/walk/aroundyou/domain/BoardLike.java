@@ -20,7 +20,6 @@ import lombok.ToString;
 @Table(name="board_like")
 public class BoardLike {
 
-	
 	@Id
 	@Column(name="board_like_id",columnDefinition="bigint", nullable=false)
 	private Long boardLikeId;

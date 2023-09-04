@@ -48,7 +48,6 @@ public class BoardLikeService {
 	
 	
 	
-	
 	// 마이페이지에서 좋아요 누른 누적 횟수 확인
 	public Long countLikedBoardIdByUserId(User userId) {
 		
