@@ -38,21 +38,36 @@
 		
 		<nav aria-label="Page navigation">
 		  <ul class="pagination justify-content-center">
-		    <li class="page-item disabled">
+		    <li class="page-item" id="pagePrev">
 		      <a class="page-link">Previous</a>
 		    </li>
-		    <li 
-		    th:each=" page : ${#numbers.sequence(pageStart : pageEnd)} " 
-	    	class="page-item">
-		    	<a class="page-link" href="#">[[${page}]]</a>
+		    <th:block th:each=" page : ${#numbers.sequence(pageStart, pageEnd)} ">
+		    <li th:if="${page == currentPage}" class="page-item active">
+		    	<a class="page-link" th:href="@{/board(page=${page - 1})}">[[${page}]]</a>
 		    </li>
-
-		    <li class="page-item">
+		    <li th:unless="${page == currentPage}" class="page-item">
+		    	<a class="page-link" th:href="@{/board(page=${page - 1})}">[[${page}]]</a>
+		    </li>
+		    </th:block>
+		    <li class="page-item" id="pageNext">
 		      <a class="page-link" href="#">Next</a>
 		    </li>
 		  </ul>
 		</nav>
+		
+		<!-- 페이지네이션 previous, next 자바스크립트로 구현시도중 -->
+		<script>
+		window.onload = function(){
+			
+			let pagePrev = document.getElementById("pagePrev")
+			let pageNext = document.getElementById("pageNext")
+			
+			pagePrev.addEventListener('click', function(){
+				window.location.href='/board?page=' + param.startPage;
 
+			})
+		}
+		</script>
 	</div>
 </body>
 </html>

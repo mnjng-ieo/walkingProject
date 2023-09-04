@@ -35,6 +35,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 				+ "SELECT board_id "
 				+ "FROM board_course "
 				+ "WHERE course_id = :#{#course.courseId})"
+				+ "		and b.board_secret = false"
 			, nativeQuery = true)
 	List<Board> findBoardByCourse(@Param("course") Course course);
 	
@@ -71,6 +72,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 						from board_like as bl
 						group by bl.board_id) as bll
 			on b.board_id = bll.board_id
+				and b.board_secret = false
 			GROUP BY b.board_id
 			ORDER BY b.board_id asc
 					""" // ORDER BY는 나중에 수정하기
@@ -103,6 +105,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 						group by bl.board_id) as bll
 				on b.board_id = bll.board_id
 			WHERE board_type = :#{#type}
+				and b.board_secret = false
 			GROUP BY b.board_id
 			ORDER BY b.board_id asc
 					""" // ORDER BY는 나중에 수정하기
@@ -137,6 +140,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 					group by bl.board_id) as bll
 			on b.board_id = bll.board_id
 		WHERE b.board_id = :#{#id}
+				and b.board_secret = false
 				"""
 			, nativeQuery = true)
 	Optional<IBoardDetailResponse> findBoardDetailById(@Param("id") Long id);
