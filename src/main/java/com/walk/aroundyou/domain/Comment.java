@@ -78,6 +78,10 @@ public class Comment {
 	@Column(name = "user_nickname", nullable = false)
 	private String userNickname;
 	
+	// 회원 이미지 
+	@Column(name="user_img", nullable=true)
+	private String userImg;
+	
 	// commentType = BOARD / COURSE 두 가지로 분류
 	@Column(name = "comment_type", nullable = true)
 	@Enumerated(EnumType.STRING)

@@ -1,5 +1,8 @@
 package com.walk.aroundyou.domain;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,10 +34,12 @@ public class CommentLike {
 	// 코멘트 식별번호 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="comment_id", nullable=false)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Comment commentId;	
 
 	// 회원 ID 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="user_id", nullable=false)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private User userId;
 }

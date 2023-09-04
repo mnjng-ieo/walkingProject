@@ -9,13 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.AddCommentRequest;
 import com.walk.aroundyou.dto.ICommentResponseDto;
 import com.walk.aroundyou.dto.UpdateCommentRequest;
 import com.walk.aroundyou.service.CommentService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,7 +62,7 @@ public class CommentApiController {
 	public void deleteComment(@PathVariable(name = "commentId") Long commentId){
 		log.info("/delete/board/comment 컨트롤러 접근");
 		// comment_id로 조회된 comment_like_id 삭제 
-		commentService.deleteCommentLikeByCommentId(commentId);
+		//commentService.deleteCommentLikeByCommentId(commentId);
 		// comment_id로 조회된 comment_id 삭제 
 		commentService.deleteCommentByCommentId(commentId);
 	}
