@@ -2,6 +2,7 @@ package com.walk.aroundyou.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,6 +63,7 @@ public class TagService {
 		// (\\S+) : 첫 번째 그룹에 하나 이상의 공백이 아닌 문자가 하나 이상 나온다는 의미
 		// 정규식을 활용해 문자열을 검증, 탐색을 돕는 Pattern, Matcher 클래스
 		Pattern MY_PATTERN = Pattern.compile("#(\\S+)"); // 패턴 생성(#해시태그)
+		// Optional<Board> post = boardRepository.findById(board.getBoardId());
 		Board post = boardRepository.findById(boardId).get();
 		Matcher mat = MY_PATTERN.matcher(post.getBoardContent()); // 게시물 가져오기
 		List<String> tagList = new ArrayList<>(); // 배열 생성
@@ -81,7 +83,11 @@ public class TagService {
 	public List<String> findTagsByBoardTagId() {
 		return tagRepository.findTagsByBoardTagId();
 	}
-
+	
+	// (추가)해시태그 클릭 시 게시물 목록 페이지 출력
+	public List<Board> findBoardByTag(String tagContent) {
+		return boardRepository.findBoardByTag(tagContent);
+	}
 	
 	/*---------------------------------------------------*/
 	/// BoardTagRepository 사용하여 출력 확인하기
