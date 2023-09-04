@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,30 +20,33 @@ import com.walk.aroundyou.service.BoardLikeService;
 
 public class BoardLikeController {
 	
+
 	@Autowired
 	BoardLikeService boardLikeService;
 	
 	@Autowired
 	BoardLikeDTO boardLikeDTO;
-	
-	
-	
-		
 
+	private Board boardId;
+	
 	
 		// Controller/RestController 에서 
 		// GetMapping일 시, @RequestBody 를 통해서는 파라미터를 받을 수 없다.
 		// @RequestParam, @PathVariable, @Param을 통해 받는다. 
 		// @Param은 주로 데이터베이스에 여러 개의 파라미터를 넘겨줄 때 사용
+	
+	
+	
+		// 특정 게시물(boardId)에 대한 
+			// "좋아요 갯수" & "(좋아요 누른)회원들 목록" 둘 다 보여주기
 		@GetMapping("/")
-		public ResponseEntity<List<Long>> findUserIdByBoardId(@RequestParam Board boardId){
-			List<Long> bls = boardLikeService.findUserIdByBoardId(boardId);
+		public void showByBoardId(){
 			
-			return ResponseEntity.ok()
-					.body(bls);
+			boardLikeService.countUserIdByBoardId(boardId);
+			boardLikeService.findUserIdByBoardId(boardId);
+			
+			return ;
 		}
-		
-		
 		
 		
 
