@@ -62,7 +62,7 @@ public class CommentApiController {
 	public void deleteComment(@PathVariable(name = "commentId") Long commentId){
 		log.info("/delete/board/comment 컨트롤러 접근");
 		// comment_id로 조회된 comment_like_id 삭제 
-		//commentService.deleteCommentLikeByCommentId(commentId);
+		//commentService.deleteCommentLikeByCommentId(commentId); 주석 처리
 		// comment_id로 조회된 comment_id 삭제 
 		commentService.deleteCommentByCommentId(commentId);
 	}

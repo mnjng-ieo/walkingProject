@@ -1,19 +1,16 @@
 package com.walk.aroundyou.repository;
 
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import com.walk.aroundyou.domain.Comment;
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.AddCommentRequest;
 import com.walk.aroundyou.dto.ICommentResponseDto;
 import com.walk.aroundyou.dto.UpdateCommentRequest;
-
 import jakarta.transaction.Transactional;
 
 @Repository
@@ -22,30 +19,36 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	
 	
 /* comment 조회 메서드  */
-	// 1. Board에서 board_id를 이용한 Comment 목록 조회 ( 닉네임 / 내용 / 수정날짜 / 좋아요 수 )
-	@Query(value="SELECT"
-			+ " c.user_nickname as userNickname"
-			+ ", c.comment_content as commentContent"
-			+ ", c.comment_updated_date as commentUpdatedDate"
-			+ ", IFNULL(COUNT(cl.comment_like_id), 0) AS commentLikeCnt"
-			+ "	FROM comment c"
-			+ "	LEFT JOIN comment_like cl ON c.comment_id  = cl.comment_id "
-			+ "	WHERE c.board_id = :#{#boardId}"
-			+ " GROUP BY c.comment_id ", nativeQuery = true)
+	// 1. Board에서 board_id를 이용한 Comment 목록 조회 ( 닉네임 / 유저이미지 / 내용 / 수정날짜 / 좋아요 수 )
+	@Query(value= "SELECT"
+			+ " c.user_nickname AS userNickname, "
+			+ " c.user_img AS userImg, "
+			+ " c.comment_content AS commentContent, "
+			+ " c.comment_updated_date AS commentUpdatedDate, "
+			+ " IFNULL(COUNT(cl.comment_like_id), 0) AS commentLikeCnt"
+			+ "		FROM comment c"
+			+ "		LEFT JOIN comment_like cl ON c.comment_id  = cl.comment_id "
+			+ "		INNER JOIN user u ON c.user_id = u.user_id "
+			+ "		WHERE c.board_id = :#{#boardId}"
+			+ "		GROUP BY c.comment_id ", nativeQuery = true)
 	List<ICommentResponseDto> findByBoardId(@Param("boardId") Long boardId);
+
 	
 	
-	// 2. Course에서 course_id를 이용한 Comment 목록 조회 ( 닉네임 / 내용 / 수정날짜 / 좋아요 수 )
+	// 2. Course에서 course_id를 이용한 Comment 목록 조회 ( 닉네임 / / 내용 / 수정날짜 / 좋아요 수 )
 	@Query(value="SELECT"
-			+ " c.user_nickname as userNickname"
-			+ ", c.comment_content as commentContent"
-			+ ", c.comment_updated_date as commentUpdatedDate"
-			+ ", IFNULL(COUNT(cl.comment_like_id), 0) AS commentLikeCnt"
-			+ "	FROM comment c"
-			+ "	LEFT JOIN comment_like cl ON c.comment_id  = cl.comment_id "
-			+ "	WHERE c.course_id = :#{#courseId}"
-			+ " GROUP BY c.comment_id ", nativeQuery = true)
+			+ " c.user_nickname AS userNickname"
+			+ " c.user_img AS userImg, "
+			+ " c.comment_content as commentContent, "
+			+ " c.comment_updated_date AS commentUpdatedDate, "
+			+ " IFNULL(COUNT(cl.comment_like_id), 0) AS commentLikeCnt"
+			+ "		FROM comment c"
+			+ "		LEFT JOIN comment_like cl ON c.comment_id  = cl.comment_id "
+			+ "		INNER JOIN user u ON c.user_id = u.user_id "
+			+ "		WHERE c.course_id = :#{#courseId}"
+			+ " 	GROUP BY c.comment_id ", nativeQuery = true)
 	List<ICommentResponseDto> findByCourseId(@Param("courseId") Long courseId);	
+
 	
 	
 	
@@ -57,7 +60,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 			+ "	(user_id, user_nickname, comment_content, board_id, comment_type)"
 			//+ "	(user_nickname, comment_content, comment_type)"
 			+ "	VALUES "
-			+ "	(:#{#create.userId.userId}, :#{#create.userNickname}, :#{#create.commentContent}, :#{#create.boardId.boardId} , 'BOARD')"
+			+ "	(:#{#create.userId.userId}, :#{#create.userNickname}, :#{#create.commentContent}, "
+			+ " :#{#create.boardId.boardId} , 'BOARD')"
 			//+ "	(:#{#create.userNickname}, :#{#create.commentContent}, 'BOARD')"
 			, nativeQuery = true)
 	void saveCommentAsBoard(@Param("create") AddCommentRequest commentReqDto);
@@ -69,7 +73,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	@Query(value = "INSERT INTO comment "
 			+ "	(user_id, user_nickname, comment_content, board_id, comment_type)"
 			+ "	VALUES "
-			+ "	(:#{#create.userId.userId}, :#{#create.userNickname}, :#{#create.commentContent}, :#{#create.courseId.courseId}, 'COURSE')"
+			+ "	(:#{#create.userId.userId}, :#{#create.userNickname}, :#{#create.commentContent}, "
+			+ " :#{#create.courseId.courseId}, 'COURSE')"
 			, nativeQuery = true)
 	void saveCommentAsCourse(@Param("create") AddCommentRequest create);
 
@@ -90,7 +95,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	@Modifying
 	@Query(value="DELETE FROM comment WHERE comment_id = :#{#commentId}", nativeQuery = true)
 	void deleteCommentByCommentId(@Param("commentId") Long commentId);
-	
+
 
 	
 /* comment 내용 수정 메서드 */
