@@ -146,6 +146,20 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	Optional<IBoardDetailResponse> findBoardDetailById(@Param("id") Long id);
 	
 	
+	
+	   // 1. (추가)findByTag : 태그 하나 검색하여 관련 게시물 가져오기
+	   @Query(value = "SELECT b.* FROM board b " +
+	         " INNER JOIN board_tag bt " + 
+	         "    ON b.board_id = bt.board_id " + 
+	         " INNER JOIN tag t " +
+	         "    ON bt.tag_id = t.tag_id  " +
+	         " WHERE t.tag_content = :tagContent"
+	         , nativeQuery = true)
+	   List<Board> findBoardByTag(@Param("tagContent") String tagContent);
+	
+	
+	
+	
 //			, CASE :#{#userId} IN (select user_id
 //	from board_like as bbl
 //	where b.board_id = :#{#id}

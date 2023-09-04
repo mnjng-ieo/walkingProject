@@ -35,6 +35,7 @@ public class MainViewController {
 		return "main";
 	}
 	
+	// 게시물 리스트
 	@GetMapping("/board")
 	public String getBoard(Optional<String> type, Optional<Integer> page, Model model) {
 		// Page 객체 선언
@@ -65,6 +66,12 @@ public class MainViewController {
 		// 페이지네이션 설정
 		
 		return "boardList";
+	}
+	
+	// 게시물 작성 폼
+	@GetMapping("/board-editor")
+	public String getBoardForm() {
+		return "boardForm";
 	}
 	
 	private int getPageStart(int currentPage, int totalPages) {
