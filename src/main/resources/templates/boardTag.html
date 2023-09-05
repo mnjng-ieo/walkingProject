@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/defaultLayout}"
-	  layout:fragment="Content">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}"
+      layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
-	<title>홈페이지</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <title>게시글 상세페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
 </head>
 <body>
+
 	<div class="container">
         <!-- 하나의 게시물에 해당하는 해시태그 리스트 출력하기 -->
         <h5>후기 글 입니다.</h5>
         <div class = "row d-flex flex-wrap justify-content-start">
             <div class = "col-lg-1 me-4" th:each="boardTag : ${boardTagList}">
-                <a class="btn bg-light text-dark btn-sm" th:href="@{/boardTagList/{tagContent}(tagContent = ${boardTag})}" role="button"
+                <a class="btn bg-light text-dark btn-sm" 
+                   th:href="@{/tagBoardList/{tagContent}(tagContent = ${boardTag})}" 
+                   role="button"
                    th:text = "${boardTag}" style = "height: 30px; line-height: 30px;"></a>             
             </div> 
         </div>
