@@ -2,6 +2,7 @@ package com.walk.aroundyou.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.walk.aroundyou.domain.Board;
+import com.walk.aroundyou.dto.BoardRequest;
+import com.walk.aroundyou.service.BoardService;
 import com.walk.aroundyou.service.TagService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +26,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BoardTagAPIController {
 
-	private final TagService tagService;
+	@Autowired
+	private TagService tagService;
+	
+	@Autowired
+	private BoardService boardService;
 	
 	/// TagRepository 사용하여 출력 확인하기
 	// 1. 기존 태그 tag 테이블에서 삭제하기(기본메서드 사용)
@@ -48,13 +55,29 @@ public class BoardTagAPIController {
 		return tagService.findTagsByBoardId(boardId);
 	}
 	
-	// 4. 게시글에 저장된 해시태그 파싱하기(확인용)
+	// 4. 게시글에 저장된 해시태그 파싱하기
+	// 4-1. 해시태그 리스트 확인
 	// 새로운 게시글이 저장되었을 때 작성된 해시태그 뽑아 tag, board_tag에 저장하기위한 용도
 	@GetMapping("/api/board/hashtag/{boardId}")
 	public List<String> createTagList(@PathVariable(name = "boardId") Long boardId) {
 		return tagService.createTagList(boardId);
 	}
-
+	
+	// 4-2. 파싱된 해시태그 리스트 저장하기
+	// 게시물 저장하면 해시태그 파싱하여 태그도 저장하기
+	@PostMapping("/board/post")
+    public ResponseEntity<Board> createBoard(@RequestBody BoardRequest board) {
+        Long boardId = boardService.save(board);
+        log.info("boardId : {}", boardId);
+        // 게시물에서 해시태그 파싱하여 리스트로 저장
+        List<String> createTagList = tagService.createTagList(boardId);
+        log.info("createList : {}", createTagList);
+        // for문 사용하여 태그 하나씩 저장 
+        for (String tagContent : createTagList) {
+        	tagService.saveBoardTag(boardId, tagContent);
+        }
+        return ResponseEntity.ok().build();
+    } 
 
 	// 5. 동일한 tag_id를 가진 board_tag_id의 tag_content 출력
 	// 메인화면에 지금 핫한 해시태그에 출력될 내용

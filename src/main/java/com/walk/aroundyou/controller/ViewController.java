@@ -31,10 +31,7 @@ public class ViewController {
 	
 	@Autowired
 	private BoardRepository boardRepository;
-	
-	@Autowired
-	private BoardService boardService;
-	
+		
 	
 	@GetMapping("/")
 	public String getMain() {
@@ -50,7 +47,7 @@ public class ViewController {
 		return "hotTag";
 	}
 	
-	// 하나의 게시물에 해당하는 해시태그 리스트 출력하기
+	// 하나의 게시물에 포함된 해시태그 리스트 출력하기
 	@GetMapping("/tagList/{boardId}")
 	// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
 	public String tagListInBoardContent(@PathVariable Long boardId, Model model) {
@@ -63,19 +60,8 @@ public class ViewController {
 		model.addAttribute("boardTagList", boardTagList);
 		return "boardTag";
 	}
-	
-	// 게시물 저장하면 태그도 저장하기(작성 중)
-	@PostMapping("/board/post")
-    public ResponseEntity<Board> createBoard(@RequestBody BoardRequest board, Long boardId) {
-        boardService.save(board);
-        List<String> createTagList = tagService.createTagList(boardId);
-        // for문 사용 
-        
-        //tagService.saveBoardTag(boardId, tagContent);
-        return ResponseEntity.ok().build();
-    } 
-	
-	// 하나의 해시태그가 가진 게시물 리턴
+		
+	// 하나의 해시태그가 가진 게시물 리스트 출력
 	@GetMapping("/tagBoardList/{tagContent}")
 	// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
 	public String boardListIntagContent(@PathVariable("tagContent") String tagContent, Model model) {

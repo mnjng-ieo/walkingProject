@@ -56,8 +56,7 @@ public class TagService {
 		return tagRepository.findTagsByBoardId(boardId);
 	}
 	
-	// 4. 태그를 테이블에 저장할 때 존재하는 태그인지 조회하고 저장하기
-	// 4-1. 게시글에 저장된 해시태그 파싱하기
+	// 4. 새로운 게시글에 저장된 해시태그 파싱하기
 	public List<String> createTagList(Long boardId) {
 		// 정규식 사용
 		// 정규식을 활용해 문자열을 검증, 탐색을 돕는 Pattern, Matcher 클래스
@@ -79,7 +78,6 @@ public class TagService {
 		log.info("생성된 TagList : {}", newTagList.toString());	
 		return newTagList;
 	}
-	// 4-2. 저장하기 구현
 	
 	// 5. 동일한 tag_id를 가진 board_tag_id의 tag_content 출력
 	// 메인화면에 '지금 핫한 해시태그'에 출력될 내용
@@ -105,10 +103,7 @@ public class TagService {
 
 	}
 	
-	// 2. 새로운 태그 board_tag 테이블에 추가하기
-//	public void saveBoardTag(BoardTag boardTag) {
-//		boardTagRepository.saveBoardTag(boardTag);
-//	}
+	// 2. 새로운 태그 board_tag 테이블에 추가하기	
 	public void saveBoardTag(Long boardId, String tagContent) {
 		// 태그 테이블에 추가하기(saveTag() 사용하여 존재하는 id면 저장)
 		// saveTag(tagContent) : tagId를 반환
