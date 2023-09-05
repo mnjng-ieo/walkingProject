@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>산책로 상세페이지</title>
+</head>
+<body>
+    <div class="top">
+        <img class="top_img" src="/images/defaultCourseMainImg.jpg" alt="메인사진" />
+    </div>
+    <div class="container" th:object="${course}">
+        <div class="infoBox">
+            <h3 class="flag-title"
+                th:text="*{wlkCoursFlagNm}">
+                산책로 큰이름</h3>
+            <h1 class="title"
+                th:text="*{wlkCoursNm}"></h1>
+            <table>
+                <tr>
+                    <td class="name">위치</td>
+                    <td th:text="*{signguCn} + ' | ' + *{lnmAddr}"></td>
+                </tr>
+                <tr>
+                    <td class="name">주요코스</td>
+                    <td th:text="*{coursDc}"></td>
+                </tr>
+                <tr>
+                    <td class="name">거리</td>
+                    <td th:text="*{coursDetailLtCn}"></td>
+                </tr>
+                <tr>
+                    <td class="name">소요시간</td>
+                    <td th:text="*{coursTimeCn}"></td>
+                </tr>
+                <tr>
+                    <td class="name">화장실</td>
+                    <td th:text="*{toiletDc}"></td>
+                </tr>
+                <tr>
+                    <td class="name">편의시설</td>
+                    <td th:text="*{cvntlNm}"></td>
+                </tr>
+                <tr>
+                    <td class="name">상세설명</td>
+                    <td th:text="*{aditDc}"></td>
+                </tr>
+            </table>
+
+        </div>
+        <div></div>
+    </div>
+</body>
+</html>
