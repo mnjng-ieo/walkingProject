@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/defaultLayout}"
-	  layout:fragment="Content">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}"
+      layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
-	<title>홈페이지</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <title>홈페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
 </head>
 <body>
-	
-	<div class="container p-3 rounded-4 border border-3 border-success ">
-	<!-- 가장 많이 사용된 태그 메인화면에 출력하기 -->
+    
+    <div class="container p-3 rounded-4 border border-3 border-success ">
+    <!-- 가장 많이 사용된 태그 메인화면에 출력하기 -->
         <h5>지금 핫한 해시태그</h5>
         <div class = "row">
-        	<div class = "p-2 col-lg-2 d-flex flex-wrap justify-content-center" th:each="tag : ${tagList}">
-            	<button type="button" class="btn btn-outline-success rounded-4">
-            		<div class="fs-5" style = "width: 120px; height: 40px; line-height: 40px;" th:text = "${tag}"></div>
-            	</button>
-        	</div>
+            <div class = "p-2 col-lg-2 d-flex flex-wrap justify-content-center" 
+                 th:each="hotTag : ${hotTagList}">
+                <a class="btn btn-outline-success rounded-4"
+                   style = "width: 120px; height: 50px; line-height: 50px;"
+                   th:href="@{/boardlist/{tagContent}(tagContent = ${hotTag})}"
+                   th:text = "${hotTag}" role="button">핫한 해시태그</a>              
+            </div>
         </div>
-	</div>
-	
+    </div>
+    
 <script>
 
 </script>

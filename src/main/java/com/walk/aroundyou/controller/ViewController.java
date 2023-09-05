@@ -50,7 +50,7 @@ public class ViewController {
 	}
 	
 	// 하나의 게시물에 해당하는 해시태그 리스트 출력하기
-	@GetMapping("/tagList-board/{boardId}")
+	@GetMapping("/tagList/{boardId}")
 	// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
 	public String tagListInBoardContent(@PathVariable Long boardId, Model model) {
 		// 존재하지 않는 boardId를 조회할때도 대비하기, 아직 구현하지 않음
@@ -73,7 +73,7 @@ public class ViewController {
         return ResponseEntity.ok().build();
     } 
 	
-	@GetMapping("/tagList/boardlist/{tagContent}")
+	@GetMapping("/boardlist/{tagContent}")
 	// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
 	public String boardListIntagContent(@PathVariable("tagContent") String tagContent, Model model) {
 		log.info("tagContent = {}", tagContent);
