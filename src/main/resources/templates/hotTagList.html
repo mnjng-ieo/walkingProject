@@ -19,7 +19,7 @@
                  th:each="hotTag : ${hotTagList}">
                 <a class="btn btn-outline-success rounded-4"
                    style = "width: 120px; height: 50px; line-height: 50px;"
-                   th:href="@{/boardlist/{tagContent}(tagContent = ${hotTag})}"
+                   th:href="@{/boardTagList/{tagContent}(tagContent = ${hotTag})}"
                    th:text = "${hotTag}" role="button">핫한 해시태그</a>              
             </div>
         </div>

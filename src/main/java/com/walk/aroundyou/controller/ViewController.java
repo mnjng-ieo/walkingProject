@@ -46,7 +46,7 @@ public class ViewController {
 		List<String> hotTagList = 
 			tagService.findTagsByBoardTagId();
 		model.addAttribute("hotTagList", hotTagList);
-		return "maintag";
+		return "hotTagList";
 	}
 	
 	// 하나의 게시물에 해당하는 해시태그 리스트 출력하기
@@ -73,15 +73,15 @@ public class ViewController {
         return ResponseEntity.ok().build();
     } 
 	
-	@GetMapping("/boardlist/{tagContent}")
+	@GetMapping("/boardTagList/{tagContent}")
 	// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
 	public String boardListIntagContent(@PathVariable("tagContent") String tagContent, Model model) {
 		log.info("tagContent = {}", tagContent);
 		// 존재하지 않는 tagContent를 조회할때도 대비하기, 아직 구현하지 않음
-		List<Board> boardList = 
+		List<Board> boardTagList = 
 			tagService.findBoardByTag(tagContent);
-		model.addAttribute("boardList", boardList);
-		return "boardlist";
+		model.addAttribute("boardTagList", boardTagList);
+		return "boardTagList";
 	}
 	
 }
