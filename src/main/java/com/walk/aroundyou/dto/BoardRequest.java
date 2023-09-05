@@ -7,9 +7,17 @@ import com.walk.aroundyou.domain.User;
 import com.walk.aroundyou.domainenum.BoardType;
 import com.walk.aroundyou.domainenum.StateId;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Getter
+@Data
+@Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardRequest {
 	private Long boardId;
 	private String userId;

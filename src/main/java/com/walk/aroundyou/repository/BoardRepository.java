@@ -74,7 +74,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			on b.board_id = bll.board_id
 				and b.board_secret = false
 			GROUP BY b.board_id
-			ORDER BY b.board_id asc
+			ORDER BY b.board_created_date desc
 					""" // ORDER BY는 나중에 수정하기
 			, nativeQuery = true)
 	Page<IBoardListResponse> findBoardAndCnt(Pageable pageable);
@@ -107,12 +107,53 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			WHERE board_type = :#{#type}
 				and b.board_secret = false
 			GROUP BY b.board_id
-			ORDER BY b.board_id asc
+			ORDER BY b.board_created_date desc
 					""" // ORDER BY는 나중에 수정하기
 			, nativeQuery = true)
 	Page<IBoardListResponse> findBoardAndCntByType(@Param("type") String type, Pageable pageable);
 //	List<BoardListResponse> findBoardAndCnt();
 //	List<BoardListResponse> findBoardAndCntByCourse(@Param("course") Course course);
+	
+	////// 좋아요 수와 댓글 수를 같이 출력
+	/// 특정 해시태그를 사용한 게시물을 출력
+	@Query(value ="""
+			SELECT 
+				b.board_id as boardId
+				, b.board_type as boardType
+				, b.board_title as boardTitle
+				, user_nickname as userNickname
+				, user_id as userId
+				, board_view_count as boardViewCount
+				, board_created_date as boardCreatedDate
+				, board_updated_date as boardUpdatedDate
+				, ifnull(comment_cnt, 0) as commentCnt
+				, ifnull(like_cnt, 0) as likeCnt
+			FROM board as b
+				LEFT JOIN 
+					(select board_id, count(board_id) as comment_cnt
+						from comment as c
+						group by c.board_id) as cc
+				on b.board_id = cc.board_id	
+				LEFT JOIN 
+					(select board_id, count(board_id) as like_cnt
+						from board_like as bl
+						group by bl.board_id) as bll
+			on b.board_id = bll.board_id
+				and b.board_secret = false
+			WHERE b.board_id IN
+				(SELECT bt.board_id
+					FROM board_tag bt
+					WHERE bt.tag_id = :#{#tagId})
+			GROUP BY b.board_id
+			ORDER BY b.board_created_date desc
+					""" // ORDER BY는 나중에 수정하기
+			, nativeQuery = true)
+	List<IBoardListResponse> findBoardAndCntByTagId(@Param("tagId") Long tagId);
+	
+	
+	
+	
+	
 	
 	// 게시글 상세와 좋아요 수를 출력
 	@Query(value = """
@@ -120,6 +161,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			b.board_id as boardId
 			, b.board_type as boardType
 			, b.board_title as boardTitle
+			, b.board_content as boardContent
 			, user_nickname as userNickname
 			, user_id as userId
 			, board_view_count as boardViewCount
@@ -127,7 +169,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			, board_updated_date as boardUpdatedDate
 			, ifnull(comment_cnt, 0) as commentCnt
 			, ifnull(like_cnt, 0) as likeCnt
-
 		FROM board as b
 			LEFT JOIN 
 				(select board_id, count(board_id) as comment_cnt
