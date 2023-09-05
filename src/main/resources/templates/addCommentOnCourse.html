@@ -11,19 +11,26 @@
 </head>
 <body>
 	<h5>Comment 작성 폼</h5>
-	<form class="border">
-		<!-- 코멘트 상단 : user 이미지, 닉네임 -->
-		<div class="border w-80 d-flex flex-row m-5" style="height: 70px;">
-			<p class="border h-100" th:text"${addCourseComment.userImg}" style="margin-right: 20px;" >이미지</p>
-			<p class="border h-75" th:text="${addCourseComment.userNickname}" style="margin-right: 20px;">닉네임</p>
+	<form action="/board/commentList/{courseId}" method="post"
+		class="border m-5 rounded text-bg-light shadow">
+	<!-- 코멘트 상단 : user 이미지, 닉네임 -->
+		<div class="d-flex align-items-center justify-content-between m-4" style="height: 65px;">
+			<!-- user 이미지, 닉네임 --> 
+			<div class="d-flex align-items-center ">
+				<img class="border rounded-circle m-1 " th:text"${addComment.userImg}" 
+					src="/images/userImg.jpg" style="width: 80px; height: 80px;" ></img>
+				<p class="border m-2" th:text="${addComment.userNickname}" >principal로 로그인된 사용자 닉네임 가져옴</p>
+			</div>
 		</div>
-		<!-- 코멘트 작성란 -->
-		<div class="border w-80 d-flex flex-row m-5">
-			<p class="border">댓글 입력란</p>
+		
+	<!-- 코멘트 작성란 -->
+		<div class="m-3" style="width: 93%;">
+			<input type="text" class="border mx-3 p-6 form-control" placeholder="댓글을 입력하세요">
 		</div>
-		<!-- 버튼 -->
-		<div class="border d-flex justify-content-end m-5">
-			<button type="button" class="btn btn-primary">작성</button> 
+		
+	<!-- 버튼 -->
+		<div class=" d-flex justify-content-end m-3">
+			<button type="button text-center" class="btn btn-primary btn-sm mx-3">등록</button> 
 		</div>
 	</form>
 </body>

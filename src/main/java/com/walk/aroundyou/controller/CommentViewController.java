@@ -7,9 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
 import com.walk.aroundyou.domain.Course;
-import com.walk.aroundyou.dto.CommentForm;
+import com.walk.aroundyou.dto.AddCommentRequest;
 import com.walk.aroundyou.dto.ICommentResponseDto;
 import com.walk.aroundyou.service.CommentService;
 
@@ -36,7 +35,6 @@ public class CommentViewController {
 	}
 	
 	
-	
 /* 상세페이지(commentType=COURSE)에 대한 코멘트 리스트 출력 */
 	@GetMapping("/course/commentList/{courseId}")
 	public String getCommentOnCourse(@PathVariable(name = "courseId") Long courseId, Model model) {
@@ -52,8 +50,8 @@ public class CommentViewController {
 	@GetMapping("/board/addComment/{boardId}")
 	public String addCommentOnBoard(@PathVariable(name = "boardId") Long boardId, Model model) {
 		
-		CommentForm commentForm = new CommentForm();
-		model.addAttribute("addBoardComment" ,commentForm.toBoardEntity());
+		AddCommentRequest request = new AddCommentRequest();
+		model.addAttribute("addComment" ,request.toCourseEntity());
 		
 		return "addCommentOnBoard";
 	}
@@ -63,8 +61,8 @@ public class CommentViewController {
 	@GetMapping("/course/addComment/{courseId}")
 	public String addCommentOnCourse(@PathVariable(name = "courseId") Long courseId, Model model) {
 		
-		CommentForm commentForm = new CommentForm();
-		model.addAttribute("addCourseComment" ,commentForm.toCourseEntity());
+		AddCommentRequest request = new AddCommentRequest();
+		model.addAttribute("addComment" ,request.toCourseEntity());
 		
 		return "addCommentOnCourse";
 	}
@@ -84,4 +82,5 @@ public class CommentViewController {
 		
 		return "commentCnt";
 	}
+	
 }

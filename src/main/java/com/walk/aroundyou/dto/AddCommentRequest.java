@@ -1,5 +1,7 @@
 package com.walk.aroundyou.dto;
 
+import java.sql.Timestamp;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.Comment;
@@ -22,9 +24,11 @@ import lombok.NoArgsConstructor;
 public class AddCommentRequest {
 	
 	private User userId;
-	private String commentContent;
 	private String userNickname;
+	private String commentContent;
 	private CommentType commentType;
+	private Timestamp commentCreatedDate;
+	private Timestamp commentUpdatedDate;
 	private Board boardId;
 	private Course courseId;
 	
@@ -33,9 +37,11 @@ public class AddCommentRequest {
 	public Comment toBoardEntity() {	
 		return Comment.builder()
 				.userId(userId)
-				.commentContent(commentContent)
 				.userNickname(userNickname)
+				.commentContent(commentContent)
 				.commentType(CommentType.BOARD)
+				.commentCreatedDate(new Timestamp(System.currentTimeMillis()))
+				.commentUpdatedDate(new Timestamp(System.currentTimeMillis()))
 				.boardId(boardId)
 				.build();
 	}
@@ -45,9 +51,11 @@ public class AddCommentRequest {
 	public Comment toCourseEntity() {	
 		return Comment.builder()
 				.userId(userId)
-				.commentContent(commentContent)
 				.userNickname(userNickname)
+				.commentContent(commentContent)
 				.commentType(CommentType.COURSE)
+				.commentCreatedDate(new Timestamp(System.currentTimeMillis()))
+				.commentUpdatedDate(new Timestamp(System.currentTimeMillis()))
 				.courseId(courseId)
 				.build();
 	}
