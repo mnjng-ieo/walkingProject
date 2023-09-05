@@ -66,7 +66,8 @@ public class BoardTagAPIController {
 	// 4-2. 파싱된 해시태그 리스트 저장하기
 	// 게시물 저장하면 해시태그 파싱하여 태그도 저장하기
 	@PostMapping("/board/post")
-    public ResponseEntity<Board> createBoard(@RequestBody BoardRequest board) {
+	public ResponseEntity<Board> createBoard(@RequestBody BoardRequest board) {
+		// 저장된 게시물의 boardId 가져오기
         Long boardId = boardService.save(board);
         log.info("boardId : {}", boardId);
         // 게시물에서 해시태그 파싱하여 리스트로 저장
@@ -107,10 +108,16 @@ public class BoardTagAPIController {
 	}
 	
 	// 3. 수정한 게시물의 태그 board_tag 테이블에 추가하기(삭제 후 추가)
-	@PatchMapping("/api/board/boardTag")
-	public void updateBoardTag(@RequestParam Long boardId, @RequestParam String tagContent) {
+	@PatchMapping("/api/board/boardTag/{boardId}")
+	public void updateBoardTag(@PathVariable Long boardId, @RequestBody BoardRequest board) {
+		board.setBoardId(boardId);
+		boardService.update(board);
 		tagService.deleteByBoardId(boardId);
-		tagService.saveBoardTag(boardId, tagContent);
+		List<String> createTagList = tagService.createTagList(boardId);
+        // for문 사용하여 태그 하나씩 저장 
+        for (String tagContent : createTagList) {
+        	tagService.saveBoardTag(boardId, tagContent);
+        }
 	}
 	
 }
