@@ -1,11 +1,11 @@
 package com.walk.aroundyou.dto;
 
-
-
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 
 // @Data 
@@ -13,22 +13,11 @@ import lombok.*;
 @Setter
 @Getter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BoardLikeDTO {
-
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "board_id", nullable = false)
 	private long boardId;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
 	private String userId;
-	
-	
-	
-	// 
-	public BoardLikeDTO() {
-		
-	}
-	
+
 }
