@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.walk.aroundyou.domain.Board;
+import com.walk.aroundyou.domain.Tag;
 import com.walk.aroundyou.dto.BoardRequest;
+import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.repository.BoardRepository;
+import com.walk.aroundyou.repository.TagRepository;
 import com.walk.aroundyou.service.BoardService;
 import com.walk.aroundyou.service.TagService;
 
@@ -31,6 +34,9 @@ public class ViewController {
 	
 	@Autowired
 	private BoardRepository boardRepository;
+	
+	@Autowired
+	private TagRepository tagRepository;
 		
 	
 	@GetMapping("/")
@@ -70,7 +76,31 @@ public class ViewController {
 		List<Board> tagBoardList = 
 			tagService.findBoardByTag(tagContent);
 		model.addAttribute("tagBoardList", tagBoardList);
-		return "tagBoardList";
+		return "tagBoardList"; // 카드 뷰(사용 안함)
 	}
 	
+	// 게시판 페이지 검색 뷰 구현
+	@GetMapping("/search/boardCondition")
+	public String boardCondition() {
+		return "boardSearchCondition";
+	}
+	
+	// 해시태그 클릭하여 출력되는 목록 페이지 구현(미사용 - 좋아요 수, 댓글 수 없음)
+//	@GetMapping("/searchBoard/{tagContent}")
+//	public String searchBoard(@PathVariable("tagContent") String tagContent, Model model) {
+//		List<Board> tagBoardList = 
+//			tagService.findBoardByTag(tagContent);
+//			model.addAttribute("tagBoardList", tagBoardList);
+//		return "searchBoardList";
+//	}
+	
+	// 검색하여 출력되는 목록 페이지 구현(좋아요 수, 댓글 수 포함)
+	@GetMapping("/searchBoard/{tagContent}")
+	public String searchBoardAndCnt(@PathVariable("tagContent") String tagContent, Model model) {
+		Tag tagId = tagRepository.findIdByTagContent(tagContent);
+		List<IBoardListResponse> tagBoardList = 
+			tagService.findBoardAndCntByTagId(tagId);
+		model.addAttribute("tagBoardList", tagBoardList);
+		return "searchBoardList";
+	}
 }

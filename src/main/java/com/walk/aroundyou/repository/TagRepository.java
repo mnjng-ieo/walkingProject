@@ -47,6 +47,7 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 		+ "			) bb"
 		+ "		ON bb.tag_id = t.tag_id"
 		, nativeQuery = true)
+	// boardId를 파라미터로 받아 해당 게시물에 해당하는 모든 해시태그를 반환
 	List<String> findTagsByBoardId(@Param("boardId") Long boardId);
 	
 	// 4. 해시태그가 있는지 확인하는 메서드
@@ -59,7 +60,7 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 	// 4. 해시태그가 있는지 확인하는 메서드(tagContent로 tagId 조회하는 쿼리)
 	boolean existsByTagContent(String tagContent);
 	
-	// 4. tag_content으로 tag_id 추출하기(save메서드에서 활용)
+	// 4. tag_content으로 tag_id 추출하기(save메서드, searchBoardAndCnt(컨트롤러)에서 활용)
 	@Query(value = "SELECT"
 			+ " *"
 			+ " FROM tag"

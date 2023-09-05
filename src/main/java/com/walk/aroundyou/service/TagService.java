@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.BoardTag;
 import com.walk.aroundyou.domain.Tag;
+import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.repository.BoardRepository;
 import com.walk.aroundyou.repository.BoardTagRepository;
 import com.walk.aroundyou.repository.TagRepository;
@@ -85,9 +86,13 @@ public class TagService {
 		return tagRepository.findTagsByBoardTagId();
 	}
 	
-	// (추가)해시태그 클릭 시 게시물 목록 페이지 출력
+	// 6. (추가)해시태그 클릭 시 게시물 목록 페이지 출력 - 미사용
 	public List<Board> findBoardByTag(String tagContent) {
 		return boardRepository.findBoardByTag(tagContent);
+	}
+	// 6. (수정)해시태그 클릭 시 게시물 목록 페이지 출력하는데 좋아요 수, 댓글 수를 포함한 게시물
+	public List<IBoardListResponse> findBoardAndCntByTagId(Tag tagId) {
+		return boardRepository.findBoardAndCntByTagId(tagId);
 	}
 	
 	/*---------------------------------------------------*/
