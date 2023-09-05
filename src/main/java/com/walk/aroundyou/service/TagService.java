@@ -1,8 +1,9 @@
 package com.walk.aroundyou.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,10 +60,8 @@ public class TagService {
 	// 4-1. 게시글에 저장된 해시태그 파싱하기
 	public List<String> createTagList(Long boardId) {
 		// 정규식 사용
-		// # : 으로 시작하는(해시태그를 나타냄)
-		// (\\S+) : 첫 번째 그룹에 하나 이상의 공백이 아닌 문자가 하나 이상 나온다는 의미
 		// 정규식을 활용해 문자열을 검증, 탐색을 돕는 Pattern, Matcher 클래스
-		Pattern MY_PATTERN = Pattern.compile("#(\\S+)"); // 패턴 생성(#해시태그)
+		Pattern MY_PATTERN = Pattern.compile("#([^\\s#]+)"); // 패턴 생성(#해시태그)
 		// Optional<Board> post = boardRepository.findById(board.getBoardId());
 		Board post = boardRepository.findById(boardId).get();
 		Matcher mat = MY_PATTERN.matcher(post.getBoardContent()); // 게시물 가져오기
@@ -73,8 +72,12 @@ public class TagService {
 			// Matcher 클래스의 group() : 매칭되는 문자열 중 첫번째 그룹의 문자열 반환
 			tagList.add((mat.group(1))); 
 		}
-		log.info("생성된 TagList : {}", tagList.toString());	
-		return tagList;
+		// 중복 값 지우기
+		Set<String> set = new HashSet<>(tagList);
+		List<String> newTagList = new ArrayList<>(set);
+		
+		log.info("생성된 TagList : {}", newTagList.toString());	
+		return newTagList;
 	}
 	// 4-2. 저장하기 구현
 	
