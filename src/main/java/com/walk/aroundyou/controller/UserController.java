@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +20,8 @@ import com.walk.aroundyou.domain.User;
 import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.service.UserService;
-import com.walk.aroundyou.service.UserDetailService;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+//import jakarta.servlet.http.HttpServletRequest;
+//import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
 public class UserController {
@@ -34,6 +32,7 @@ public class UserController {
 	public UserController(UserService userService) {
 		this.userService = userService;
 	}
+	
 	
 	//////////////////// 회원가입
 	// 회원가입 폼을 보여주는 페이지
@@ -61,6 +60,7 @@ public class UserController {
 		
 		boolean user = userService.isUserIdDuplicate(userId);
 		
+		// 중복 체크에 대한 조건문 -> ajax에서 요청 처리 결과 success와 error랑 다른 부분
 		if(user) {
 			return ResponseEntity.badRequest().body("다른 아이디를 입력하세요");
 		}else {
@@ -69,38 +69,67 @@ public class UserController {
 	}
 
 	
-	//////////////////// 로그인
-	@GetMapping("/loginForm")
-	public String loginForm(Model model) {
-		
-
-		model.addAttribute("j_username", "user");
-		model.addAttribute("j_password", "1234");
-		return "login";
-	}
-	//////////////////// 로그인 에러
-	@GetMapping("/loginError")
-	public String loginError(Model model) {
-		
-		return "loginerror";
-	}
+//	//////////////////// 로그인
+//	@GetMapping("/loginForm")
+//	public String loginForm(Model model) {
+//		
+//
+//		model.addAttribute("j_username", "user");
+//		model.addAttribute("j_password", "1234");
+//		return "login";
+//	}
+//	//////////////////// 로그인 에러
+//	@GetMapping("/loginError")
+//	public String loginError(Model model) {
+//		
+//		return "loginerror";
+//	}
+//	
+//	/////// 메인페이지 - 로그인 확인, 로그아웃 버튼
+//	@GetMapping("/main")
+//	public String main()
+//	{	
+//		return "main";
+//	}
 	
-	/////// 메인페이지 - 로그인 확인, 로그아웃 버튼
-	@GetMapping("/main")
-	public String main()
-	{	
-		return "main";
-	}
+	
+	// 로그인 메인 페이지(처음 시작 할 때의 화면)
+		@GetMapping("/login")
+		public String login() {
+			return "login";
+		}
+		// 로그인 입력 시 페이지
+		@PostMapping("/login")
+		public String processLoginForm(@RequestParam String userId, @RequestParam String userPwd, Model model) {
+
+			// loginResult 값이 true = 로그인 성공, false = 로그인 실패
+			boolean loginResult = userService.login(userId, userPwd);
+			
+			// loginResult == true
+			if(loginResult){
+				// 로그인 성공 시 메인 페이지로 redirect
+				return "redirect:/main";
+			} else {	
+				// loginResult == false
+				// model객체에 true 값으로 '실패 상태' 표시
+				model.addAttribute("resultFail", true);
+				// 로그인페이지로 가서 실패메시지 출력
+				return "/login";
+			}
+		}
+	
+	
+	
 	
 	//////////////////// 로그아웃
-	@GetMapping("/logout")
-	public String logout(HttpServletRequest request, HttpServletResponse response) {
-		// SecurityContextLogoutHandler() : 로그아웃 수행
-		// SecurityContextHolder.getContext().getAuthentication() : 현재 인증된 사용자의 인증 객체 -> SecurityContextHolder에서 해당 사용자의 인증 정보를 지우는 데 사용
-		new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-		return "redirect:/login";
-		
-	}
+//	@GetMapping("/logout")
+//	public String logout(HttpServletRequest request, HttpServletResponse response) {
+//		// SecurityContextLogoutHandler() : 로그아웃 수행
+//		// SecurityContextHolder.getContext().getAuthentication() : 현재 인증된 사용자의 인증 객체 -> SecurityContextHolder에서 해당 사용자의 인증 정보를 지우는 데 사용
+//		new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+//		return "redirect:/login";
+//		
+//	}
 	
 	
 	//////////////////// 아이디 찾기

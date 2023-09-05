@@ -26,6 +26,30 @@ public class UserService{
 		this.passwordEncoder = passwordEncoder;
 	}
 	
+	///////////////// 로그인
+	public boolean login(String userId, String currentPwd) {
+
+		// 아이디를 기준으로 비밀번호 확인해서 로그인하기
+		Optional<User> user = userRepository.findByUserId(userId);
+
+		// 아이디가 존재하면
+		if (user.isPresent()) {
+			
+			// PasswordEncoder의 matches : 입력한 평문 비밀번호와 암호화된 비밀번호가 일치하는지 검증하는 역할
+			// userPwd: 사용자가 입력한 평문 비밀번호
+			// user.get().getUserPwd(): 데이터베이스에 저장된 암호화된 비밀번호
+			// 디비에 저장된 비번과 사용자가 입력한 비번이 비번이 일치하면
+			if (passwordEncoder.matches(currentPwd, user.get().getUserPwd())) {
+				
+				return true; // 로그인 성공
+			} else {
+				return false; // 비밀번호 틀림
+			}
+		} else {
+			return false; // 아이디 없거나 실패
+		}
+	}
+	
 	
 	// 1. 회원가입 시 User엔티티 전부 가져오기
 	// 회원가입, User 엔티티들 변경 후에(update) save로 저장
