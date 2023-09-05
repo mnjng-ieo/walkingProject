@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,31 +15,15 @@ import com.walk.aroundyou.repository.UserRepository;
 
 
 @Service
-public class UserService implements UserDetailsService{
+public class UserService{
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
-	// 자동로그인
-	//private final DataSource dataSource;
 	
 	@Autowired
 	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
-	}
-	
-	
-	
-	///// 사용자 정보를 가져오는 로직
-	/// loadUserByUsername : Spring Security에서 사용자 인증과 권한 부여를 처리하는 메서드인 
-	/// loadUserByUsername(String userId) : userId를 기반으로 사용제 세부 정보를 로드
-	// UserDetailsService에 정의된 메서드를 오버라이드
-	@Override
-	// userId를 매개변수로 받고 사용자의 세부 정보(아이디, 비밀번호, 권한 등)을 나타내는 UserDetails객체를 반환
-	public UserDetails loadUserByUsername(String userId) {
-		// .orElseThrow(() -> new IllegalArgumentException((userId))); : 사용자가 리포지토리에서 찾을 수 없는 경우 처리
-		// Optional<User>객체를 반환했는데 비어있는 경우 userId를 메시지로 하는 IllegalArgumentException 예외를 던짐(throw)
-		return userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException((userId)));
 	}
 	
 	
@@ -116,11 +99,28 @@ public class UserService implements UserDetailsService{
 	public List<User> findAll() {
 		return userRepository.findAll();
 	}
+	
+	
+	
+	/////////////////////// 아이디 찾기
+	public String searchByUserId(String userName, String userEmail) {
 		
+		// 이름과 이메일을 입력 받아 이 둘을 기준으로 
+		Optional<User> user = userRepository.findByUserNameAndUserEmail(userName, userEmail);
+		
+		if (user.isPresent()) {
+			String foundUserId = user.get().getUserId();
+			return "찾으시는 아이디는 \"" + foundUserId + "\" 입니다.";
+		} else {
+			return "입력하신 정보와 일치하는 아이디가 없습니다.";
+		}
+	}
+	
+	
 
 	///////////////////// 6. 유저 삭제(탈퇴, 강제 삭제)
 	// 특정아이디 삭제 -> 탈퇴
-	public void deleteUserById(String userId, String currentPwd) {
+	public void deleteByUserId(String userId, String currentPwd) {
 		
 		// id를 기준으로 사용자 정보(비밀번호)를 가져옴
 		Optional<User> userOptional = userRepository.findByUserId(userId);
@@ -195,20 +195,6 @@ public class UserService implements UserDetailsService{
 				.build()).getUserId();
 	}
 	
-	
-	/////////////////////// 아이디 찾기
-	public String searchByUserId(String userName, String userEmail) {
-		
-		// 이름과 이메일을 입력 받아 이 둘을 기준으로 
-		Optional<User> user = userRepository.findByUserNameAndUserEmail(userName, userEmail);
-		
-		if (user.isPresent()) {
-			String foundUserId = user.get().getUserId();
-			return "찾으시는 아이디는 \"" + foundUserId + "\" 입니다.";
-		} else {
-			return "입력하신 정보와 일치하는 아이디가 없습니다.";
-		}
-	}
 	
 	
 	

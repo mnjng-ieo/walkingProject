@@ -19,6 +19,7 @@ import com.walk.aroundyou.domain.User;
 import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.service.UserService;
+import com.walk.aroundyou.service.UserDetailService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,7 +42,7 @@ public class UserController {
 	}
 	// 회원가입 처리하는 페이지
 	// 회원가입 후 작성한 데이터를 뷰에 보여주지 않으므로 Model객체 필요없음
-	@PostMapping("/signup")
+	@PostMapping("/user")
 	public String processSignup(UserRequest request) {
 		
 		// 회원가입 메서드 호출
@@ -50,13 +51,29 @@ public class UserController {
 		//회원가입이 완료된 이후에 로그인 페이지로 이동
 		return "redirect:/login";
 	}
-	
+
 	
 	//////////////////// 로그인
-	@GetMapping("/login")
-	public String login() {
+	@GetMapping("/loginForm")
+	public String loginForm(Model model) {
 		
+
+		model.addAttribute("j_username", "user");
+		model.addAttribute("j_password", "1234");
 		return "login";
+	}
+	//////////////////// 로그인 에러
+	@GetMapping("/loginError")
+	public String loginError(Model model) {
+		
+		return "loginerror";
+	}
+	
+	/////// 메인페이지 - 로그인 확인, 로그아웃 버튼
+	@GetMapping("/main")
+	public String main()
+	{	
+		return "main";
 	}
 	
 	//////////////////// 로그아웃
@@ -193,8 +210,7 @@ public class UserController {
 		return "changepwdform";
 	}
 	@PostMapping("/changePwd")
-	public String processChangePwd(@RequestParam String userId, @RequestParam String currentPwd,
-			@RequestParam String newPwd, String newPwdConfirm, Model model) {
+	public String processChangePwd(@RequestParam String userId, @RequestParam String currentPwd, @RequestParam String newPwd, String newPwdConfirm, Model model) {
 
 		boolean isPasswordChanged = userService.changePwd(userId, currentPwd, newPwd, newPwdConfirm);
 
@@ -228,7 +244,7 @@ public class UserController {
     	String userId = principal.getName();
         
         // 사용자 탈퇴 처리
-        userService.deleteUserById(userId, currentPwd);
+    	userService.deleteByUserId(userId, currentPwd);
 
         // 탈퇴 후 로그아웃하도록 리다이렉트
         return "redirect:/logout"; 
@@ -246,7 +262,7 @@ public class UserController {
         if (currentUser != null && user.getRole() == UserRole.ADMIN) {
   
             // 관리자가 강퇴 처리
-            userService.deleteByAdmin(userId, UserRole.ADMIN);
+        	userService.deleteByAdmin(userId, UserRole.ADMIN);
         }
         
         // 강퇴 후 관리자 대시보드로 리다이렉트
