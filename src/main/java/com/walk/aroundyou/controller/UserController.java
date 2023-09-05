@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,6 +51,21 @@ public class UserController {
 		
 		//회원가입이 완료된 이후에 로그인 페이지로 이동
 		return "redirect:/login";
+	}
+	
+	//////////////////// 아이디 중복 체크
+	@GetMapping("/checkId")
+	// ResponseEntity를 사용해 상태 코드를 설정
+	// 제네릭을 이용해서 상태에 따른 결과 확인
+	public ResponseEntity<?> checkUserId(@RequestParam String userId) {
+		
+		boolean user = userService.isUserIdDuplicate(userId);
+		
+		if(user) {
+			return ResponseEntity.badRequest().body("다른 아이디를 입력하세요");
+		}else {
+			return ResponseEntity.ok("사용 가능한 아이디입니다.");
+		}
 	}
 
 	

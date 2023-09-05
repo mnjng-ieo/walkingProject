@@ -33,6 +33,12 @@ public class UserService{
 		
 		return userRepository.save(user);
 	}
+	
+	/////////////////////// 아이디 중복 체크
+	public boolean isUserIdDuplicate(String userId) {
+	Optional<User> user = userRepository.findByUserId(userId);
+	return user != null;
+	}
 
 	///// 마이페이지에서 아이디 받아와서 정보변경하면 업데이트해주기
 	public User updateMypage(String userId, String userNickname, String userImg, String userDescription) {
@@ -154,7 +160,8 @@ public class UserService{
 		
 		// 유저가 있고(생략 가능-이미 로그인 된 상태니까)
 		// (암호화된)디비에 있는 비번과 현재 입력한 비번이 같을 경우
-		if (user != null && passwordEncoder.matches(currentPwd, user.getUserPwd())) {
+		if (user != null
+				&& passwordEncoder.matches(currentPwd, user.getUserPwd())) {
 
 			// 새로운 비밀번호를 두 번 입력해서 값이 동일하면
 			if (newPwd.equals(newPwdConfirm)) {
@@ -217,6 +224,8 @@ public class UserService{
             return "입력하신 아이디가 없습니다.";
         }
 	}
+	
+	
 	
 	/////////////////////// 상태 정보
 
