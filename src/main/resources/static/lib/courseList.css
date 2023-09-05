@@ -31,12 +31,34 @@
 
 .course-list-top_conditionBox {
 	border: 1px solid orange;
+	font-size: 20px;
+}
+
+.course-list-top_conditions {
+	justify-content: space-between;
 }
 
 .course-list-top_condition {
-	width: 40%;
+	width: 45%;
 	height: 50px;
-	margin-: 20px 30px 0;
+}
+
+.keyword-search {
+	height: 50px;
+	margin-bottom: 30px;
+}
+
+.searchbtn {
+	height: 50px;
+	border: 2px solid blue;
+	font-size: 20px;
+}
+
+.course-list-sort {
+	border: 1px solid red;
+	margin-top: 20px;
+	margin-left: 75%;
+	font-size: 20px;
 }
 
 .course-lists {
@@ -59,6 +81,7 @@
 
 .course-list_small-title {
 	height: 45px;
+	margin-bottom: 55px;
 }
 
 .course-list_region {
@@ -70,4 +93,38 @@
 
 .course-list_aditDc {
 	height: 90px;
+}
+
+.heart-icon {
+	width: 25px;
+	padding-bottom: 3px;
+}
+
+.pageInfo_wrap {
+	margin-bottom: 100px;
+}
+
+.page-link {
+  color: rgb(136,180,78); 
+  background-color: #fff;
+  border: 2px solid #dddddd; 
+}
+
+.page-item.active .page-link {
+ z-index: 1;
+ color: white;
+ font-weight:bold;
+ background-color: rgb(136,180,78);
+ border-color: #ccc;
+ 
+}
+
+.page-link:focus, .page-link:hover {
+  color: rgb(136,180,78);
+  background-color: #ecf2e1; 
+  border-color: rgb(136,180,78);
+}
+
+.arrow {
+	background-color: #fafafa; 
 }

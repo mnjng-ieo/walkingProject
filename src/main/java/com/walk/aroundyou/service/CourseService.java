@@ -63,10 +63,14 @@ public class CourseService {
 	/**
 	 * [산책로목록조회페이지] 모든 산책로 조회 메서드
 	 */
-	public List<Course> findAll() {
+	public Page<Course> findAll(int page) {
 		// 산책로명 가나다순으로 정렬
 		Sort sort = Sort.by(Direction.ASC, "wlkCoursFlagNm", "wlkCoursNm");
-		return courseRepository.findAll(sort);
+		//return courseRepository.findAll(sort);
+		
+		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(20), 정렬 설정) 
+		PageRequest pageRequest = PageRequest.of(page, SIZE_OF_PAGE, sort);
+		return courseRepository.findAll(pageRequest);
 	}
 	// ↳ 어차피 동적으로 작성되면 findAll 메소드 하나로도 될 것 같다.
 	//   일단 ajax로 경로 설정하기 전에는 findAll() 호출을 통해 '/courses'로는 전체 조회가 바로 보이도록 했다.
@@ -89,13 +93,13 @@ public class CourseService {
 		
 		//** 드롭박스 선택 검색조건 추가
 		// Specification의 and() : 검색 조건을 더하는 메소드
-		if (region != null)
+		if (region != null && !("".equals(region)))
 			spec = spec.and(
 					CourseSpecifications.equalRegion(region));
-		if (level != null)
+		if (level != null && !("".equals(level)))
 			spec = spec.and(
 					CourseSpecifications.equalLevel(level));
-		if (distance != null)
+		if (distance != null && !("".equals(distance)))
 			spec = spec.and(
 					CourseSpecifications.equalDistance(distance));
 		
