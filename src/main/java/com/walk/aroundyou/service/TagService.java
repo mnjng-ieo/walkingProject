@@ -8,6 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.Board;
@@ -27,6 +29,10 @@ public class TagService {
 	private TagRepository tagRepository;
 	@Autowired
 	private BoardRepository boardRepository;
+	
+	// 화면에 보이는 최대 게시글 수 10개
+	// 게시물 목록페이지에서 하나의 게시물이 차지하는 비율이 커졌으므로 10으로 수정
+	private final static int SIZE_OF_PAGE = 10;
 	
 	/// TagRepository 사용하여 출력 확인하기
 	// 1. 기존 태그 tag 테이블에서 삭제하기
@@ -87,12 +93,13 @@ public class TagService {
 	}
 	
 	// 6. (추가)해시태그 클릭 시 게시물 목록 페이지 출력 - 미사용
-	public List<Board> findBoardByTag(String tagContent) {
-		return boardRepository.findBoardByTag(tagContent);
-	}
+//	public List<Board> findBoardByTag(String tagContent) {
+//		return boardRepository.findBoardByTag(tagContent);
+//	}
 	// 6. (수정)해시태그 클릭 시 게시물 목록 페이지 출력하는데 좋아요 수, 댓글 수를 포함한 게시물
-	public List<IBoardListResponse> findBoardAndCntByTagId(Tag tagId) {
-		return boardRepository.findBoardAndCntByTagId(tagId);
+	public Page<IBoardListResponse> findBoardAndCntByTagId(Tag tagId, int page) {
+		// public static PageRequest of(int pageNumber, int pageSize) 사용
+		return boardRepository.findBoardAndCntByTagId(tagId, PageRequest.of(page, SIZE_OF_PAGE));
 	}
 	
 	/*---------------------------------------------------*/

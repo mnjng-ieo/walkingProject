@@ -17,7 +17,7 @@
         <div class = "row d-flex flex-wrap justify-content-start">
             <div class = "col-lg-1 me-4" th:each="boardTag : ${boardTagList}">
                 <a class="btn bg-light text-dark btn-sm" 
-                   th:href="@{/tagBoardList/{tagContent}(tagContent = ${boardTag})}" 
+                   th:href="@{/searchBoard/{tagContent}(tagContent = ${boardTag})}" 
                    role="button"
                    th:text = "${boardTag}" style = "height: 30px; line-height: 30px;"></a>             
             </div> 

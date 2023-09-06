@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +38,9 @@ public class ViewController {
 	
 	@Autowired
 	private TagRepository tagRepository;
+	
+	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
+	private final static int PAGINATION_SIZE = 5;
 		
 	
 	@GetMapping("/")
@@ -66,41 +70,49 @@ public class ViewController {
 		model.addAttribute("boardTagList", boardTagList);
 		return "boardTag";
 	}
-		
-	// 하나의 해시태그가 가진 게시물 리스트 출력
-	@GetMapping("/tagBoardList/{tagContent}")
-	// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
-	public String boardListIntagContent(@PathVariable("tagContent") String tagContent, Model model) {
-		log.info("tagContent = {}", tagContent);
-		// 존재하지 않는 tagContent를 조회할때도 대비하기, 아직 구현하지 않음
-		List<Board> tagBoardList = 
-			tagService.findBoardByTag(tagContent);
-		model.addAttribute("tagBoardList", tagBoardList);
-		return "tagBoardList"; // 카드 뷰(사용 안함)
-	}
 	
 	// 게시판 페이지 검색 뷰 구현
 	@GetMapping("/search/boardCondition")
 	public String boardCondition() {
 		return "boardSearchCondition";
 	}
-	
-	// 해시태그 클릭하여 출력되는 목록 페이지 구현(미사용 - 좋아요 수, 댓글 수 없음)
-//	@GetMapping("/searchBoard/{tagContent}")
-//	public String searchBoard(@PathVariable("tagContent") String tagContent, Model model) {
-//		List<Board> tagBoardList = 
-//			tagService.findBoardByTag(tagContent);
-//			model.addAttribute("tagBoardList", tagBoardList);
-//		return "searchBoardList";
-//	}
+
 	
 	// 검색하여 출력되는 목록 페이지 구현(좋아요 수, 댓글 수 포함)
 	@GetMapping("/searchBoard/{tagContent}")
-	public String searchBoardAndCnt(@PathVariable("tagContent") String tagContent, Model model) {
+	public String searchBoardAndCnt(
+				@PathVariable("tagContent") String tagContent,
+				@RequestParam(value = "page", required=false, defaultValue="0") int currentPage,
+				Model model) {
 		Tag tagId = tagRepository.findIdByTagContent(tagContent);
-		List<IBoardListResponse> tagBoardList = 
-			tagService.findBoardAndCntByTagId(tagId);
+		Page<IBoardListResponse> tagBoardList = 
+			tagService.findBoardAndCntByTagId(tagId, currentPage);
+		// pagination 설정
+		int totalPages = tagBoardList.getTotalPages();
+		int pageStart = getPageStart(currentPage, totalPages);
+		int pageEnd = 
+				(PAGINATION_SIZE < totalPages)? 
+						pageStart + PAGINATION_SIZE - 1
+						:totalPages;
+		
+		model.addAttribute("lastPage", totalPages);
+		model.addAttribute("currentPage", currentPage + 1);
+		model.addAttribute("pageStart", pageStart);
+		model.addAttribute("pageEnd", pageEnd);
 		model.addAttribute("tagBoardList", tagBoardList);
+		model.addAttribute("tagContent", tagContent);
 		return "searchBoardList";
+	}
+	
+	// pagination의 시작 숫자 얻는 메소드
+	private int getPageStart(int currentPage, int totalPages) {
+		int result = 1;
+		if(totalPages < currentPage + (int)Math.floor(PAGINATION_SIZE/2)) {
+			// 시작페이지의 최소값은 1!
+			result = Math.max(1, totalPages - PAGINATION_SIZE + 1);
+		} else if (currentPage > (int)Math.floor(PAGINATION_SIZE/2)) {
+			result = currentPage - (int)Math.floor(PAGINATION_SIZE/2) + 1;
+		}
+		return result;
 	}
 }

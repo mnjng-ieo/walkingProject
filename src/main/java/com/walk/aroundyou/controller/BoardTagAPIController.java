@@ -3,6 +3,7 @@ package com.walk.aroundyou.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.walk.aroundyou.domain.Board;
+import com.walk.aroundyou.domain.Tag;
 import com.walk.aroundyou.dto.BoardRequest;
+import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.service.BoardService;
 import com.walk.aroundyou.service.TagService;
 
@@ -86,6 +89,15 @@ public class BoardTagAPIController {
 	public List<String> findTagsByBoardTagId() {
 		return tagService.findTagsByBoardTagId();
 	}	
+	
+	// 6. 해시태그 클릭 시 게시물 목록 페이지 출력하는데 좋아요 수, 댓글 수를 포함한 게시물 출력(연습용)
+	@GetMapping("/api/findBoardAndCntByTagId/{tagId}")
+	public Page<IBoardListResponse> findBoardAndCntByTagId(
+			@PathVariable("tagId") Tag tagId,
+			@RequestParam(value="page", defaultValue="1") int page) {
+		return tagService.findBoardAndCntByTagId(tagId, page);
+		
+	}
 	
 	/*------------------------------------------------------*/
 	/// BoardTagRepository 사용하여 출력 확인하기
