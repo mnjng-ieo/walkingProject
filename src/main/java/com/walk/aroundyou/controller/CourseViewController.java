@@ -64,7 +64,10 @@ public class CourseViewController {
 		// pagination 설정
 		int totalPages = coursePage.getTotalPages();
 		int pageStart = getPageStart(currentPage, totalPages);
-		int pageEnd = pageStart + PAGINATION_SIZE - 1;
+		int pageEnd = 
+				(PAGINATION_SIZE < totalPages)? 
+						pageStart + PAGINATION_SIZE - 1
+						:totalPages;
 		model.addAttribute("lastPage", totalPages);
 		model.addAttribute("currentPage", currentPage + 1);
 		model.addAttribute("pageStart", pageStart);
@@ -122,8 +125,6 @@ public class CourseViewController {
 				region, level, distance, startTime, endTime,
 				searchTargetAttr, searchKeyword, sort, currentPage);
 		
-		log.info(""+coursePage.getNumberOfElements());
-		
 		List<CourseResponseDTO> courses = coursePage
 				.stream()
 				.map(course -> {
@@ -145,7 +146,10 @@ public class CourseViewController {
 		// pagination 설정
 		int totalPages = coursePage.getTotalPages();
 		int pageStart = getPageStart(currentPage, totalPages);
-		int pageEnd = pageStart + PAGINATION_SIZE - 1;
+		int pageEnd = 
+				(PAGINATION_SIZE < totalPages)? 
+						pageStart + PAGINATION_SIZE - 1
+						:totalPages;
 		model.addAttribute("lastPage", totalPages);
 		model.addAttribute("currentPage", currentPage + 1);
 		model.addAttribute("pageStart", pageStart);
@@ -154,7 +158,15 @@ public class CourseViewController {
 		// 산책로 리스트 저장
 		model.addAttribute("courses", courses);  
 		
-		log.info(""+courses.size());
+		// 파라미터 값을 모델에 저장 (페이지네이션에 쓰임) - 알아요 쓸데없이 긴 거ㅠㅠ
+		model.addAttribute("region", region);
+		model.addAttribute("level", level);
+		model.addAttribute("distance", distance);
+		model.addAttribute("startTime", startTime);
+		model.addAttribute("endTime", endTime);
+		model.addAttribute("searchTargetAttr", searchTargetAttr);
+		model.addAttribute("searchKeyword", searchKeyword);
+		model.addAttribute("sort", sort);
 		
 		// courseList.html라는 뷰 조회
 		return "courseList";
@@ -177,11 +189,24 @@ public class CourseViewController {
 	private int getPageStart(int currentPage, int totalPages) {
 		int result = 1; 
 		if(totalPages < currentPage + (int)Math.floor(PAGINATION_SIZE/2)) {
-			result = totalPages - PAGINATION_SIZE + 1;
+			// 시작페이지의 최소값은 1!
+			result = Math.max(1, totalPages - PAGINATION_SIZE + 1);
 		} else if (currentPage > (int)Math.floor(PAGINATION_SIZE/2)) {
 			result = currentPage - (int)Math.floor(PAGINATION_SIZE/2) + 1;
 		}
 		return result;
 	}
+	
+//	/**
+//	 * pagination의 마지막 숫자 얻는 메소드
+//	 */
+//	private int getPageEnd(int pageStart, int totalPages) {
+//		int result = pageStart + PAGINATION_SIZE - 1;
+//		if(totalPages < result) {
+//			result = totalPages;
+//			
+//		}
+//		return result;
+//	}
 	
 }
