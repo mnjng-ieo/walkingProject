@@ -81,12 +81,15 @@ public class ViewController {
 	// 검색하여 출력되는 목록 페이지 구현(좋아요 수, 댓글 수 포함)
 	@GetMapping("/searchBoard/{tagContent}")
 	public String searchBoardAndCnt(
-				@PathVariable("tagContent") String tagContent,
+				@PathVariable(name="tagContent") String tagContent,
 				@RequestParam(value = "page", required=false, defaultValue="0") int currentPage,
+				@RequestParam(value = "sort", required= false, defaultValue = "boardId") String sort,
 				Model model) {
+		// 검색된 tagContent가 가진 tagId 조회하기
 		Tag tagId = tagRepository.findIdByTagContent(tagContent);
+		// 조회된 게시물 목록
 		Page<IBoardListResponse> tagBoardList = 
-			tagService.findBoardAndCntByTagId(tagId, currentPage);
+			tagService.findBoardAndCntByTagId(tagId, currentPage, sort);
 		// pagination 설정
 		int totalPages = tagBoardList.getTotalPages();
 		int pageStart = getPageStart(currentPage, totalPages);
@@ -94,12 +97,14 @@ public class ViewController {
 				(PAGINATION_SIZE < totalPages)? 
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
-		
 		model.addAttribute("lastPage", totalPages);
-		model.addAttribute("currentPage", currentPage + 1);
+		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("pageStart", pageStart);
 		model.addAttribute("pageEnd", pageEnd);
+		model.addAttribute("sort", sort);
+		// 선택된 태그가 포함된 게시물 리스트
 		model.addAttribute("tagBoardList", tagBoardList);
+		// 선택된 태그를 사용하여 정렬에 사용
 		model.addAttribute("tagContent", tagContent);
 		return "searchBoardList";
 	}

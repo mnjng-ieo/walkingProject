@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.Board;
@@ -97,9 +99,19 @@ public class TagService {
 //		return boardRepository.findBoardByTag(tagContent);
 //	}
 	// 6. (수정)해시태그 클릭 시 게시물 목록 페이지 출력하는데 좋아요 수, 댓글 수를 포함한 게시물
-	public Page<IBoardListResponse> findBoardAndCntByTagId(Tag tagId, int page) {
-		// public static PageRequest of(int pageNumber, int pageSize) 사용
-		return boardRepository.findBoardAndCntByTagId(tagId, PageRequest.of(page, SIZE_OF_PAGE));
+	public Page<IBoardListResponse> findBoardAndCntByTagId(Tag tagId, int page, String sort) {
+		// 최신순, 조회수, 좋아요순으로 정렬
+		// HTML의 select option 태그의 value를 같은 이름으로 설정하기
+		Sort customSort;
+		if ("boardViewCount".equals(sort)) {
+			customSort = Sort.by(Direction.DESC, "boardViewCount");
+		} else if("likeCnt".equals(sort)) {
+			customSort = Sort.by(Direction.DESC, "likeCnt");
+		} else {
+			customSort = Sort.by(Direction.DESC, "boardId");
+		}
+		// public static PageRequest of(int pageNumber, int pageSize, Sort sort) 사용
+		return boardRepository.findBoardAndCntByTagId(tagId, PageRequest.of(page, SIZE_OF_PAGE, customSort));
 	}
 	
 	/*---------------------------------------------------*/
