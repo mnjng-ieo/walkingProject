@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.walk.aroundyou.dto.CourseLikeRequestDTO;
 import com.walk.aroundyou.service.CourseLikeService;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
