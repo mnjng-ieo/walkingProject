@@ -17,7 +17,7 @@
 	<div class = "d-flex">
         <!-- 검색된 tagContent 추출하여 자바스크립트에서 사용 -->
         <h5 id="tagContent" th:text="${tagContent}"></h5>
-        <h5>가 포함된 게시물입니다.</h5>
+        <h5>이 포함된 게시물입니다.</h5>
 	</div>
     
     
@@ -29,10 +29,11 @@
         <option value="boardViewCount">조회 순</option>
         <option value="likeCnt">좋아요 순</option>
     </select>
+    <p>게시물 수 : <span th:text="${tagBoardList.totalElements}"></span></p>
   
     <div id="needToChange">
     <!-- 테이블로 게시물 목록 출력 -->
-    <table class="table">
+    <table class="table table-hover">
       <thead>
         <tr>
           <th scope="col">글 번호</th>
@@ -41,13 +42,19 @@
 	    </tr>
 	  </thead>
 	  <tbody>
-	    <tr th:each="tagBoard : ${tagBoardList}">
+        <!-- 자바스트립트 redirectToDetail 메서드 사용 : 컬럼을 누르면 게시글 상세페이지로 이동하는 url 작성-->
+	    <tr th:each="tagBoard : ${tagBoardList}" 
+	       th:data-url="@{/board/{id}(id=${tagBoard.boardId})}" 
+	       onclick="redirectToDetail(this)"
+	       style="cursor:pointer;">
 	      <td>
 	        <span th:text = "${tagBoard.boardId}">글 번호</span>
 	      </td>
 	      <td>
-	        <div class = "first fs-4" th:text = "${#strings.length(tagBoard.boardTitle) &gt; 50 ? 
-	               #strings.substring(tagBoard.boardTitle, 0, 50) + '...' : tagBoard.boardTitle}">글 제목</div>
+            <!-- 제목의 글자수 길면 ...으로 생략 -->
+            <div class = "first fs-5" 
+                th:text = "${#strings.length(tagBoard.boardTitle) &gt; 50 ? 
+                #strings.substring(tagBoard.boardTitle, 0, 50) + '...' : tagBoard.boardTitle}">글 제목</div>
 	        <div class = "second d-flex">
                 <p class="border rounded-circle m-1" style="width: 30px; height: 30px;">
                     <img src = "/images/userimg.png" class="img-thumbnail"/>

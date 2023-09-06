@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.Tag;
 import com.walk.aroundyou.dto.BoardRequest;
+import com.walk.aroundyou.dto.IBoardDetailResponse;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.repository.BoardRepository;
 import com.walk.aroundyou.repository.TagRepository;
@@ -28,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
-public class ViewController {
+public class TagViewController {
 	
 	@Autowired
 	private TagService tagService;
@@ -38,6 +39,9 @@ public class ViewController {
 	
 	@Autowired
 	private TagRepository tagRepository;
+	
+	@Autowired 
+	private BoardService boardService;
 	
 	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
 	private final static int PAGINATION_SIZE = 5;
@@ -120,4 +124,5 @@ public class ViewController {
 		}
 		return result;
 	}
+	
 }
