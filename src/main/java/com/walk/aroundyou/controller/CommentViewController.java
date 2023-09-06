@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.AddCommentRequest;
 import com.walk.aroundyou.dto.ICommentResponseDto;
@@ -28,6 +30,14 @@ public class CommentViewController {
 /* 게시물(commentType=BOARD)에 대한 코멘트 리스트 출력 */
 	@GetMapping("/board/commentList/{boardId}")
 	public String getCommentOnBoard(@PathVariable(name = "boardId") Long boardId, Model model) {
+		List<ICommentResponseDto> comments = commentService.findByBoardId(boardId);
+		model.addAttribute("comments", comments);
+		 
+		return "commentOnBoard";
+	}
+	
+	@PostMapping("/board/commentList/{boardId}")
+	public String postCommentOnBoard(@PathVariable(name = "boardId") Long boardId, Model model) {
 		List<ICommentResponseDto> comments = commentService.findByBoardId(boardId);
 		model.addAttribute("comments", comments);
 		 

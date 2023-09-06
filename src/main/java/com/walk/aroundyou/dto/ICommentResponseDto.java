@@ -8,7 +8,10 @@ import com.walk.aroundyou.domainenum.CommentType;
 // * 응답을 위한 DTO
 public interface ICommentResponseDto {
 	
+	String getCourseId();
+	String getBoardId();
 	String getUserImg();
+	String getUserId();
 	String getUserNickname();
 	String getCommentContent();
 	long getCommentLikeCnt();
