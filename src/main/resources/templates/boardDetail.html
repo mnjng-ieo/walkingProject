@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/defaultLayout}"
-	  layout:fragment="Content">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/defaultLayout}"
+	layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
-	<title>홈페이지</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<title>홈페이지</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+	crossorigin="anonymous">
 
 </head>
 <body>
-	
+
 	<div class="container">
 		<h1>~~ 게시물 상세화면 ~~</h1>
 		<div class="bg-light rounded-5 p-3 mb-3">
@@ -20,30 +24,52 @@
 			<div class="d-flex justify-content-between">
 				<ul class="d-flex">
 					<p>
-						<img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1931&q=80" class="rounded-circle mx-2" style="width:30px; height:30px">
+						<img
+							src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1931&q=80"
+							class="rounded-circle mx-2" style="width: 30px; height: 30px">
 					</p>
 					<p>[[${ board.userNickname }]]</p>
 				</ul>
 				<ul class="d-flex mx-5">
-					<p class="px-2"><i class="fa-regular fa-calendar-days"></i> [[${ #dates.format(board.boardCreatedDate, 'yyyy-MM-dd HH:mm') }]]</p>
-					<p><i class="fa-regular fa-eye"></i> [[${ board.boardViewCount }]]</p>			
+					<p class="px-2">
+						<i class="fa-regular fa-calendar-days"></i> [[${
+						#dates.format(board.boardCreatedDate, 'yyyy-MM-dd HH:mm') }]]
+					</p>
+					<p>
+						<i class="fa-regular fa-eye"></i> [[${ board.boardViewCount }]]
+					</p>
 				</ul>
 			</div>
 			<div>
 				<!-- 내용 -->
-				<div  class="m-2 p-lg-5 pb-5 bg-white rounded-3">[[${ board.boardContent }]]</div>
+				<div class="m-2 p-lg-5 pb-5 bg-white rounded-3">[[${
+					board.boardContent }]]</div>
 				<!-- 좋아요/공유 -->
 				<div class="px-5 pt-2">
-					<p> <i class="fa-regular fa-heart"></i> [[${ board.likeCnt }]] </p>
+					<p>
+						<i class="fa-regular fa-heart"></i> [[${ board.likeCnt }]]
+					</p>
 				</div>
 				<!-- 해시태그 리스트 -->
-				<div></div>
+				<div class="m-lg-5">
+					<th:block th:each="boardTag : ${boardTagList}">
+						<a 
+							th:href="@{/tagBoardList/{tagContent}(tagContent = ${boardTag})}"
+							role="button" class="btn btn-outline-secondary btn-sm rounded-5">[[${boardTag}]]</a>
+<!-- 						<a ">
+						
+							<span th:text="${boardTag}"
+								class="badge bg-success-subtle text-dark px-2 py-1 me-1 fs-6 rounded-5"></span>
+						</a> -->
+					</th:block>
+				</div>
 			</div>
 			<!-- 댓글 -->
 			<div></div>
 		</div>
 		<div class="d-flex justify-content-center">
-			<form th:action="@{/board-editor/{id}(id=${board.boardId})}" method="get">
+			<form th:action="@{/board-editor/{id}(id=${board.boardId})}"
+				method="get">
 				<button class="w-40 btn btn-outline-primary" type="submit">수정하기</button>
 			</form>
 			<form th:action="@{/board/{id}(id=${board.boardId})}" method="post">
@@ -53,8 +79,8 @@
 	</div>
 
 
-<script>
-
-</script>
+	<script>
+		
+	</script>
 </body>
 </html>
