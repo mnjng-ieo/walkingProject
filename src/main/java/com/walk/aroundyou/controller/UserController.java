@@ -15,14 +15,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.walk.aroundyou.domain.User;
 import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.service.UserService;
+
+import lombok.extern.slf4j.Slf4j;
 //import jakarta.servlet.http.HttpServletRequest;
 //import jakarta.servlet.http.HttpServletResponse;
 
+@Slf4j
 @Controller
 public class UserController {
 	
@@ -42,7 +46,7 @@ public class UserController {
 	}
 	// 회원가입 처리하는 페이지
 	// 회원가입 후 작성한 데이터를 뷰에 보여주지 않으므로 Model객체 필요없음
-	@PostMapping("/user")
+	@PostMapping("/signup")
 	public String processSignup(UserRequest request) {
 		
 		// 회원가입 메서드 호출
@@ -52,8 +56,10 @@ public class UserController {
 		return "redirect:/login";
 	}
 	
+	
 	//////////////////// 아이디 중복 체크
-	@GetMapping("/checkId")
+	@GetMapping("/signup/checkId")
+	@ResponseBody
 	// ResponseEntity를 사용해 상태 코드를 설정
 	// 제네릭을 이용해서 상태에 따른 결과 확인
 	public ResponseEntity<?> checkUserId(@RequestParam String userId) {
@@ -62,9 +68,9 @@ public class UserController {
 		
 		// 중복 체크에 대한 조건문 -> ajax에서 요청 처리 결과 success와 error랑 다른 부분
 		if(user) {
-			return ResponseEntity.badRequest().body("다른 아이디를 입력하세요");
+			return ResponseEntity.ok().body("다른 아이디를 입력하세요");
 		}else {
-			return ResponseEntity.ok("사용 가능한 아이디입니다.");
+			return ResponseEntity.ok().body("사용 가능한 아이디입니다.");
 		}
 	}
 
@@ -139,7 +145,9 @@ public class UserController {
 		// 아이디 조회 폼을 보여주는 뷰 이름
 		return "idlookupform"; 
 	}
+	
 	@PostMapping("/login/idlookup")
+	@ResponseBody
 	public String processIdLookupForm(@RequestParam String userName, @RequestParam String userEmail, Model model) {
 		
 		// id 기능 구현해 놓은 서비스 가져옴
@@ -149,8 +157,7 @@ public class UserController {
 		// ${idlookup}와 같이 Thymeleaf 템플릿 문법 사용
 		model.addAttribute("idlookup", idlookup);	
 		
-		// id 조회 결과를 보여주는 폼으로 이동
-		return "idlookupform";
+		return "" + idlookup;
 	}
 	
 	
@@ -166,9 +173,10 @@ public class UserController {
 	public String showPwdLookupForm(@RequestParam String userId, Model model) {
 		
 		String pwdlookup = userService.searchByUserPwd(userId);
+		
 		model.addAttribute("pwdlookup", pwdlookup);
 		
-		return "pwdlookupform";
+		return "" + pwdlookup;
 	}
 	
 	
@@ -296,22 +304,22 @@ public class UserController {
     }
 
     // 관리자가 강퇴하는 곳 -> 관리자사이트 매핑?
-    @PostMapping("/ban/{userId}")
-    public String banUser(@PathVariable String userId, Principal principal) {
-    	
-        // 현재 로그인한 사용자 정보를 확인하여 관리자인지 확인
-        Optional<User> currentUser = userService.findByUserId(principal.getName());
-        User user = currentUser.get();
-
-        // 관리자 권한 가지고 있는지 확인
-        if (currentUser != null && user.getRole() == UserRole.ADMIN) {
-  
-            // 관리자가 강퇴 처리
-        	userService.deleteByAdmin(userId, UserRole.ADMIN);
-        }
-        
-        // 강퇴 후 관리자 대시보드로 리다이렉트
-        return "redirect:/admin/dashboard"; 
-    }
+//    @PostMapping("/ban/{userId}")
+//    public String banUser(@PathVariable String userId, Principal principal) {
+//    	
+//        // 현재 로그인한 사용자 정보를 확인하여 관리자인지 확인
+//        Optional<User> currentUser = userService.findByUserId(principal.getName());
+//        User user = currentUser.get();
+//
+//        // 관리자 권한 가지고 있는지 확인
+//        if (currentUser != null && user.getRole() == UserRole.ADMIN) {
+//  
+//            // 관리자가 강퇴 처리
+//        	userService.deleteByAdmin(userId, UserRole.ADMIN);
+//        }
+//        
+//        // 강퇴 후 관리자 대시보드로 리다이렉트
+//        return "redirect:/admin/dashboard"; 
+//    }
 
 }

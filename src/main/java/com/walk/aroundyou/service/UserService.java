@@ -1,14 +1,15 @@
 package com.walk.aroundyou.service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.role.StateId;
 import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.repository.UserRepository;
@@ -17,14 +18,39 @@ import com.walk.aroundyou.repository.UserRepository;
 @Service
 public class UserService{
 
-	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
-	
 	@Autowired
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
-	}
+	private UserRepository userRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+//	@Autowired
+//	public UserService(UserRepository userRepository) {
+//		this.userRepository = userRepository;
+//	}
+	
+	
+	
+	// 회원가입
+	public String join(String userId, String userPwd) {
+		
+		UserRequest request = new UserRequest();
+        User member = request.toEntity();
+        
+        validateDuplicateMember(member);
+        userRepository.save(member);
+
+        return member.getUserId();
+    }
+	// 중복 아이디 체크
+    private void validateDuplicateMember(User member) {
+    	userRepository.findByUserId(member.getUserId())
+                .ifPresent(m -> {
+                    throw new IllegalStateException("이미 존재하는 회원입니다.");
+                });
+    }
+	
+	
+	
 	
 	///////////////// 로그인
 	public boolean login(String userId, String currentPwd) {
@@ -39,11 +65,16 @@ public class UserService{
 			// userPwd: 사용자가 입력한 평문 비밀번호
 			// user.get().getUserPwd(): 데이터베이스에 저장된 암호화된 비밀번호
 			// 디비에 저장된 비번과 사용자가 입력한 비번이 비번이 일치하면
-			if (passwordEncoder.matches(currentPwd, user.get().getUserPwd())) {
+			if(passwordEncoder != null) {
 				
-				return true; // 로그인 성공
-			} else {
-				return false; // 비밀번호 틀림
+				if (passwordEncoder.matches(currentPwd, user.get().getUserPwd())) {
+					
+					return true; // 로그인 성공
+				} else {
+					return false; // 비밀번호 틀림
+				}
+			}else {
+				return false;
 			}
 		} else {
 			return false; // 아이디 없거나 실패
@@ -61,7 +92,7 @@ public class UserService{
 	/////////////////////// 아이디 중복 체크
 	public boolean isUserIdDuplicate(String userId) {
 	Optional<User> user = userRepository.findByUserId(userId);
-	return user != null;
+	return user.isPresent();
 	}
 
 	///// 마이페이지에서 아이디 받아와서 정보변경하면 업데이트해주기
@@ -212,21 +243,34 @@ public class UserService{
 	/////////////////////// 회원가입
 	public String registerUser(UserRequest dto) {
 		
-		// 사용자 정보 저장
-		return userRepository.save(User.builder()
+//        String encodedPassword = passwordEncoder.encode(unencodedPassword);
+//        // 암호화된 비밀번호 저장
+//        user.setUserPwd(encodedPassword);
+//        // 암호화되지 않은 비밀번호 저장
+//        user.setUnencodedPassword(unencodedPassword);
+		
+		// 사용자로부터 입력받은 평문 비밀번호
+        String rawPassword = dto.getUserPwd();
+
+        // 비밀번호를 암호화
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        
+		User user = User.builder()
 				.userId(dto.getUserId())
-				.userPwd(passwordEncoder.encode(dto.getUserPwd()))
+				.userPwd(encodedPassword)
 				.userName(dto.getUserName())
 				.userNickname(dto.getUserNickname())
 				.userTelNumber(dto.getUserTelNumber())
 				.userEmail(dto.getUserEmail())
-				.userJoinDate(dto.getUserJoinDate())
-				.userUpdateDate(dto.getUserUpdateDate())
+				.userJoinDate(new Timestamp(System.currentTimeMillis()))
+				.userUpdateDate(new Timestamp(System.currentTimeMillis()))
+				.role(UserRole.USER)
+				.stateId(StateId.NORMAL)
 				.socialYn(dto.isSocialYn())
-				.build()).getUserId();
+				.build();
+		
+		return userRepository.save(user).getUserId();
 	}
-	
-	
 	
 	
 	/////////////////////// 비밀번호 찾기 
@@ -234,19 +278,16 @@ public class UserService{
 		
 		// 유저 아이디를 입력 받아 비밀번호 찾기
 		Optional<User> user = userRepository.findByUserId(userId);
+		User user1 = user.get();
+		String user2 = user1.getUserPwd();
 		
 		// 아이디가 있다면
 		if (user.isPresent()) {
 			
-			// DB에 저장된 Pwd부분 암호화해주기
-			// encryptedPassword return값으로 가져오기 위해 string으로~
-			String encryptedPassword = passwordEncoder.encode(user.get().getUserPwd());
-			
-            return "찾으시는 비밀번호는 \"" + encryptedPassword  + "\" 입니다.";
-            
-        } else {
-            return "입력하신 아이디가 없습니다.";
-        }
+				return "찾으시는 비밀번호는 \"" + user2  + "\" 입니다.";
+		}else {
+				return "입력하신 아이디와 일치하는 값이 없습니다.";
+		}
 	}
 	
 	

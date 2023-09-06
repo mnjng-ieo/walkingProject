@@ -4,31 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Password 찾기</title>
+
    <!-- 부트스트랩 CSS 링크 -->
    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-   <script>
-// 폼이 제출될 때 실행되는 함수
-   function submitForm() {
-       // 폼에서 입력한 데이터를 가져와서 'formData'객체에 저장
-       // "pwdLookupForm"인 폼 엘리먼트를 찾아오기
-       var formData = new FormData(document.getElementById("pwdLookupForm"));
-       
-       //  XMLHttpRequest 객체를 생성해서 이 객체를 사용해 Ajax 요청을 통해 서버에 폼 데이터를 전송
-       var xhr = new XMLHttpRequest();
-       // xhr.open() 메서드는 Ajax 요청을 설정
-       // POST 메서드를 사용하여 서버의 "/login/idlookup" 엔드포인트로 요청을 보내도록 설정
-       xhr.open("POST", "/login/pwdlookup", true);
-       // XMLHttpRequest 객체의 상태 변화 이벤트에 대한 핸들러를 설정
-       // XMLHttpRequest의 상태가 변화할 때마다 이 함수가 호출됨
-       xhr.onreadystatechange = function () {
-       // 서버 응답이 도착하고 HTTP 상태 코드가 200 (성공)인 경우를 확인
-           if (xhr.readyState === 4 && xhr.status === 200) {
-               // Ajax 요청이 완료되면 서버에서 반환한 결과를 알림창으로 표시
-               alert(xhr.responseText);
-           }
-       };
-       xhr.send(formData);
-   }
+   <!-- 부트스트랩 JavaScript 및 jQuery 링크 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    
+  
+<script> 
+
+document.addEventListener("DOMContentLoaded", function() {
+	   
+	   var findPwdBtn = document.getElementById("findPwdBtn");
+	   var pwdLookupResult = document.getElementById("pwdLookupResult");
+	   
+	   findIdBtn.addEventListener("click", function() {
+	      
+	        var userId = document.getElementById("userId").value;
+
+	        // XMLHttpRequest 생성
+	        var xhr = new XMLHttpRequest();
+
+	        // POST 요청 설정
+	        xhr.open("POST", "/login/pwdlookup", true);
+	        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+	        // 요청 본문 생성
+	        var data = "userId=" + encodeURIComponent(userId);
+
+	        xhr.onreadystatechange = function () {
+	            if (xhr.readyState === XMLHttpRequest.DONE) { 
+	                if (xhr.status === 200) {
+	                  idLookupResult.textContent = xhr.response;
+	                  modal.show();
+	                }else {
+	                  alert("비밀번호 찾기 오류");
+	                  }
+	                }
+	            };
+
+	        // 요청 전송
+	        xhr.send(data);
+	       
+	    });
+	});
+
 </script>
 </head>
 <body>
@@ -49,18 +71,32 @@
             
             <br>
             <!-- 비밀번호 찾기 버튼 -->
-            <button type="submit" class="btn btn-primary">비밀번호 찾기</button>
+            <button type="button" id="findPwdBtn" class="btn btn-primary"data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop">비밀번호 찾기</button>
         </form>
     </div>
 
-    <!-- 부트스트랩 JavaScript 및 jQuery 링크 -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-    
-    <p>비밀번호 조회 결과: <span th:text="${pwdlookup}"></span></p>
-    
-    <p><a href="/login">로그인 화면으로 돌아가기</a></p>
+    <!-- 모달 창에 보이게 하기(button submit으로 하면 안 되겠지) -->
+   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+      data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h1 class="modal-title fs-5" id="staticBackdropLabel">비밀번호 찾기 결과</h1>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="pwdLookupResult">
+            </div>
+            <div class="modal-footer">
+               <form action="/login" method="get">
+                  <button type="submit" class="btn btn-primary">로그인 화면으로 가기</button>
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
 
 </body>
 </html>

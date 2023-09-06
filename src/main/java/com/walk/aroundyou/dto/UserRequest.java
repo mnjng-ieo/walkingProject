@@ -23,6 +23,7 @@ public class UserRequest {
 	// 맴버변수
 	private String userId;
 	private String userPwd;
+	//private String unencodedPwd;
 	private String userName;
 	private String userNickname;
 	private String userTelNumber;
@@ -42,16 +43,17 @@ public class UserRequest {
 		return User.builder()
 				.userId(userId)
 				.userPwd(userPwd)
+				//.unencodedPwd(unencodedPwd)
 				.userName(userName)
 				.userNickname(userNickname)
 				.userTelNumber(userTelNumber)
 				.userEmail(userEmail)
 				.userImg(userImg)
 				.userDescription(userDescription)
-				.userJoinDate(userJoinDate)
-				.userUpdateDate(userUpdateDate)
-				.stateId(stateId)
-				.role(role)
+				.userJoinDate(new Timestamp(System.currentTimeMillis()))
+				.userUpdateDate(new Timestamp(System.currentTimeMillis()))
+				.role(UserRole.USER)
+				.stateId(StateId.NORMAL)
 				.socialYn(socialYn)
 				.build();
 

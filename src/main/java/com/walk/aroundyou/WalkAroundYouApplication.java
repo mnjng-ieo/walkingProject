@@ -47,13 +47,9 @@ public class WalkAroundYouApplication implements CommandLineRunner {
 				.userEmail(userEmail)
 				.userImg(userImg)
 				.userDescription(userDescription)
-				.stateId(stateId)
-				.role(role)
 				.socialYn(socialYn)
 				.build();
 		
-		log.info("");
-		log.info("");
 		log.info("");
 		log.info("");
 		log.info("");
