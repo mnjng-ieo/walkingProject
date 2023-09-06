@@ -1,69 +1,54 @@
 let courseSearchBtn = document.getElementById('courseSearchBtn');
+let courseResetBtn = document.getElementById('courseResetBtn');
 
-function sendSelectedValue() {
+// 현재 페이지 초기화
+let currentPage = 0;
+
+// AJAX 요청 : 검색 조건 수집
+function updateViewWithSearchResults(){
     let region = document.getElementById('region').value;
     let level = document.getElementById('level').value;
     let distance = document.getElementById('distance').value;
-    
     let time = document.getElementById('time').value;
-    let startTime;
-    let endTime;
-    
-    if(time == 1) {
-        startTime = "00:00:00";
-        endTime = "00:59:00";
-    } else if (time == 2) {
-        startTime = "01:00:00";
-        endTime = "01:59:00";
-    } else if (time == 3) {
-        startTime = "02:00:00";
-        endTime = "02:59:00";
-    } else if (time == 4) {
-        startTime = "03:00:00";
-        endTime = "03:59:00";
-    } else if (time == 5) {
-        startTime = "04:00:00";
-        endTime = "99:00:00";
-    }
-    
     let searchTargetAttr = document.getElementById('searchTargetAttr').value;
     let searchKeyword = document.getElementById('searchKeyword').value;
     let sort = document.getElementById('sort').value;
-    let page = 0;
     
-    // 검색 조건을 JSON 형식으로 만들기
-    let searchConditions = {
-        region: region,
-        level: level,
-        distance: distance,
-        startTime: startTime,
-        endTime: endTime,
-        searchTargetAttr: searchTargetAttr,
-        searchKeyword: searchKeyword,
-        sort: sort,
-        page: page
-    };
+    let xhr = new XMLHttpRequest();
+    // 페이지 번호까지 쿼리 파라미터로 추가
+    xhr.open("GET", "/course/search?region=" + region + 
+            "&level=" + level + "&time=" + time + "&distance=" + distance
+            + "&searchTargetAttr=" + searchTargetAttr
+            + "&searchKeyword=" + searchKeyword
+            + "&sort=" + sort + "&page=" + currentPage, true);
     
-    let jsonData = JSON.stringify(searchConditions);
-    
-    // 서버로 데이터 보내는 Ajax POST 요청 생성
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/courses', true); // POST 요청으로 변경
-
-    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-    xhr.send(jsonData); // JSON 데이터를 Request Body에 넣음
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                console.log('성공적으로 전송되었습니다.');
-                // 응답 데이터 처리
-                const responseData = xhr.responseText;
-                console.log('응답 데이터:', responseData);
-            }
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            // AJAX 요청이 성공적으로 완료되었을 때 뷰 업데이트
+            let response = xhr.responseText;
+            
+            // response를 파싱해서 searchResults div 내용만 추출
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(response, 'text/html');
+            let searchResultsContent = 
+                    doc.querySelector('#searchResults').innerHTML;
+                    
+            // searchResults div 내용 교체
+            document.getElementById("searchResults").innerHTML = searchResultsContent;  
         }
     };
     
-};
+    xhr.send();
+}
 
-courseSearchBtn.addEventListener('click', sendSelectedValue);
+// 페이지 번호를 클릭할 때 해당 페이지로 Ajax 요청 보내기
+function loadPage(newPage) {
+    // 페이지 번호 업데이트
+    currentPage = newPage;    
+    updateViewWithSearchResults();
+}
+
+// 초기화 버튼 클릭 이벤트
+function loadReset() {
+    window.location.href = '/course';
+}

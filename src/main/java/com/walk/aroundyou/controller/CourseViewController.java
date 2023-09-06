@@ -69,7 +69,7 @@ public class CourseViewController {
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
 		model.addAttribute("lastPage", totalPages);
-		model.addAttribute("currentPage", currentPage + 1);
+		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("pageStart", pageStart);
 		model.addAttribute("pageEnd", pageEnd);
 		
@@ -144,6 +144,7 @@ public class CourseViewController {
 				.toList();
 		
 		// pagination 설정
+		// 헷갈리지 말자 : currentPage는 0부터 시작!
 		int totalPages = coursePage.getTotalPages();
 		int pageStart = getPageStart(currentPage, totalPages);
 		int pageEnd = 
@@ -151,7 +152,8 @@ public class CourseViewController {
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
 		model.addAttribute("lastPage", totalPages);
-		model.addAttribute("currentPage", currentPage + 1);
+		// 이전, 이후 버튼에 문제있어서 currentPage + 1 값을 수정했다.
+		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("pageStart", pageStart);
 		model.addAttribute("pageEnd", pageEnd);
 		
