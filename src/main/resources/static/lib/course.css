@@ -1,10 +1,18 @@
 .top_img {
-	width: 100%;
-	border: 1px solid blue;
+    width: 100%;
+    border: 1px solid blue;
+}
+
+.infoBox {
+    border: 1px solid red;
+}
+
+.flag-title {
+	margin-top: 70px;
 }
 
 .name {
-	width: 100px;
-	text-align: center;
-	border: 1px solid red;
+    width: 100px;
+    text-align: center;
+    border: 1px solid red;
 }

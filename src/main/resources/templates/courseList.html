@@ -18,7 +18,21 @@
         
         <div class="row course-list-top_searchBox">
             <!-- 지역 선택 지도 그림 -->
-            <div class="col-md-6 course-list-top_map"></div>
+            <div class="col-md-6 course-list-top_map">
+            
+                <!-- 기본 서울 지도 이미지 
+                <img usemap="#seoul-map" src="/images/---.png"
+                     alt="서울지도" class="seoul-map" />
+                <map name="seoul-map" id="seoul-map" 
+                     style="cursor:pointer;">
+                     <!-- shape : 직사각형 모양으로 영역 모양 잡음 
+                     <!-- coords : 영역의 좌표 
+                    <area shape="rect" coords="283, 70, 311, 80" alt="노원구"
+                          class="map1" onclick="eventRegion('노원구');"/>    
+                </map>
+                -->
+            </div>
+    
             <!-- 토글 & 검색창 -->
             <div class="col-md-6 course-list-top_conditionBox">
                 <!-- 지역 선택 | 난이도 선택 | 소요시간 선택 | 코스거리 선택 -->
@@ -83,24 +97,26 @@
                 </div>
                 <!-- 산책로 조회 검색어 입력박스 -->
                 <div class="row justify-content-evenly keyword-search">
-                    <select class="col-4 course-list-top_searchTarget" 
+                    <select class="col-4 course-list-top_searchTarget keyword" 
                             id="searchTargetAttr" name="searchTargetAttr">
                         <option value="total">전체</option>
                         <option value="title">산책로명</option>
                         <option value="coursDc">주요경로</option>
                         <option value="aditDc">산책로 설명</option>
                     </select>
-                    <input type="text" class="col-8 searchKeyword" 
+                    <input type="text" class="col-8 searchKeyword keyword" 
                            id="searchKeyword" name="searchKeyword" 
                            placeholder="원하는 키워드를 입력해보세요.">
                 </div>
                 <div class ="row justify-content-evenly">
                     <button type="button" class="col-5 searchbtn" 
                             id="courseSearchBtn"
-                            onclick="loadPage(0)">검색</button>
+                            onclick="loadPage(0)">
+                            검색 <i class="fa-solid fa-magnifying-glass"></i></button>
                     <button type="button" class="col-5 searchbtn" 
                             id="courseResetBtn"
-                            onclick="loadReset()">초기화</button>
+                            onclick="loadReset()">
+                            초기화 <i class="fa-solid fa-rotate"></i></button>
                 </div> 
             </div>
         </div>
@@ -118,33 +134,39 @@
     <div class="container course-lists" >
         <div class="row">
             <div class="col-4" th:each="item : ${courses}">
-                <div class="card course-list">
+                <div class="card course-list"
+                     th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
                     <!-- 예정 : Course에 추가할 coursImg. 현재 default만 설정 -->
                     <img class="card-img-top course-list_imgBox" 
                          src="/images/defaultCourseImg.png" alt="산책로 사진" />
-                    <div class="card-img-overlay">
-                        <!-- 예정 : 산책로 난이도 - 위치변경 예정 -->
-                        <p class="course-list_level
-                                  rounded-pill badge"
-                           th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : 
-				                             item.coursLevelNm == '쉬움' ? ' bg-info' : 
-				                             item.coursLevelNm == '보통' ? ' bg-success' : 
-				                             item.coursLevelNm == '어려움' ? ' bg-warning' : 
-				                             item.coursLevelNm == '매우어려움' ? ' bg-danger' : ''}"
-                           th:text="${item.coursLevelNm}">난이도</p>
-                    </div>
                     <div class="card-body course-list_textbox">
-                        <!-- 산책로 이름 - 큰이름과 작은이름이 서로 같으면 큰 이름만 출력 되도록 
-                             하려면 th:if="${item.wlkCoursNm} != ${item.wlkCoursFlagNm}" 붙이기 -->
-                        <h5 class="card-title course-list_big-title" 
-                            th:text="${item.wlkCoursFlagNm}">
-                            산책로 큰이름</h5>
-                        <!-- 산책로 큰이름과 작은 이름이 같은 경우 고려할 때
-                        <h5 class="card-text"
-                            th:if="${item.wlkCoursNm} == ${item.wlkCoursFlagNm}"
-                            >&nbsp;</h5> -->
-                        <h3 class="card-text course-list_small-title" 
-                            th:text="${item.wlkCoursNm}">산책로 작은이름</h3>
+                        <div class="course-list_titlebox">
+                            <div class="row course-list_title">
+                                <!-- 산책로 이름 - 큰이름과 작은이름이 서로 같으면 큰 이름만 출력 되도록 
+		                             하려면 th:if="${item.wlkCoursNm} != ${item.wlkCoursFlagNm}" 붙이기 -->
+		                        <h5 class="col-10 card-title course-list_big-title" 
+		                            th:text="${item.wlkCoursFlagNm}">
+		                            산책로 큰이름</h5>
+		                        <!-- 산책로 난이도 -->
+                                <p class="col-3 rounded-pill badge text-center course-list_level"
+                                   th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : 
+                                                     item.coursLevelNm == '쉬움' ? ' bg-info' : 
+                                                     item.coursLevelNm == '보통' ? ' bg-success' : 
+                                                     item.coursLevelNm == '어려움' ? ' bg-warning' : 
+                                                     item.coursLevelNm == '매우어려움' ? ' bg-danger' : ''}"
+                                   th:text="${item.coursLevelNm}">난이도</p>
+		                        
+                            </div>
+                            <div>
+		                        <!-- 산책로 큰이름과 작은 이름이 같은 경우 고려할 때
+                                <h5 class="card-text"
+                                    th:if="${item.wlkCoursNm} == ${item.wlkCoursFlagNm}"
+                                    >&nbsp;</h5> -->
+                                <h3 class="card-text course-list_small-title" 
+                                    th:text="${item.wlkCoursNm}">산책로 작은이름</h3>
+		                    </div>
+                        </div>
+                        
                         <!-- 지역 -->
                         <p class="card-text course-list_region" 
                            th:text="${item.signguCn}">지역</p>

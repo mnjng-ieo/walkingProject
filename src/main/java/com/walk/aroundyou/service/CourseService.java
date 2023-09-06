@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseService {
 
 	// 페이징 처리에 필요한, 한 페이지에 조회되는 데이터 수
-	private final static int SIZE_OF_PAGE = 20;
+	private final static int SIZE_OF_PAGE = 12;
 	private final CourseRepository courseRepository;
 	
 	/**
