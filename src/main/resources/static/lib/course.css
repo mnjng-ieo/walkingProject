@@ -1,0 +1,17 @@
+.top_img {
+	width: 100%;
+	border: 0px solid blue;
+}
+
+.name {
+	width: 100px;
+	text-align: center;
+	border: 0px solid red;
+}
+
+
+
+
+.comment {
+	border: 1px solid green;
+}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}"
+      layout:fragment="Content">
+<head>
+	<meta charset="UTF-8">
+	<title>산책로 상세페이지</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+	<link href="/lib/course.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	
+    <div class="top">
+        <img class="top_img" src="/images/defaultCourseMainImg.jpg" alt="메인사진" style="	width: 100%; border: 1px solid blue;" />
+    </div>
+    <div class="container" th:object="${course}">
+        <div class="infoBox">
+            <h3 class="flag-title"
+                th:text="*{wlkCoursFlagNm}">
+                산책로 큰이름</h3>
+            <h1 class="title"
+                th:text="*{wlkCoursNm}"></h1>
+            <div class="d-flex justify-content-between">
+				<div class="col-8">
+		            <table class="table">
+		                <tr>
+		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
+								위치</td>
+		                    <td th:text="*{signguNm} + ' | ' + *{lnmAddr}"></td>
+		                </tr>
+		                <tr>
+		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
+								주요코스</td>
+		                    <td th:text="*{coursDc}"></td>
+		                </tr>
+		                <tr>
+		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
+								거리</td>
+		                    <td th:text="*{coursDetailLtCn}"></td>
+		                </tr>
+		                <tr>
+		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
+								소요시간</td>
+		                    <td th:text="*{coursTimeCn}"></td>
+		                </tr>
+		                <tr>
+		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
+								화장실</td>
+		                    <td th:text="*{toiletDc}"></td>
+		                </tr>
+		                <tr>
+		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
+								편의시설</td>
+		                    <td th:text="*{cvntlNm}"></td>
+		                </tr>                	
+		                <tr>
+		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
+								상세설명</td>
+		                    <td th:text="*{aditDc}"></td>
+		                </tr>
+		            </table>
+	            </div>
+	            
+	            
+	            
+	            <!-- 아이콘 크기 설정하지 못함 -->
+	            
+	            
+	            
+	            
+	            <ul class="d-flex justify-content-end col-4" style="list-style-type:none">
+					<li>					
+						<img src="images/heart.png" alt="좋아요" />
+					</li>
+					<li>
+						<img src="images/addIcon.png" alt="내 목록 추가" />
+					</li>
+					<li>
+						<img src="images/pecilBoardIcon.png" alt="코멘트 달기" />
+					</li>
+					<li>
+						<img src="images/shareIcon.png" alt="공유" />
+					</li>
+				</ul>
+				
+			</div>
+				
+				<div class="comment">코멘트 작성 영역</div>
+				
+		
+			
+
+        </div>
+    </div>
+    <script src="/lib/course.js"></script>
+</body>
+
+</html>

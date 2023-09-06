@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.service.CourseService;
@@ -60,11 +60,23 @@ public class CourseViewController {
 	
 	/// 산책로 상세 페이지 조회
 	
-	@GetMapping("/course-detail/{courseId}")
-	public String getCourseDetail(Course courseId) {
+	@GetMapping("/course-detail/{id}")
+	public String getCourseDetail(@PathVariable Long id, Model model) {
+		CourseResponseDTO courseResponseDTO = courseService.findByIdWithCounts(id);
+		model.addAttribute("course", courseResponseDTO);
 		
 		// course.html 뷰 조회
 		return "course";
+	}
+	
+	
+	// 산책로 지도 조회 (카카오 맵 API)
+	
+	@GetMapping("/course-detail/")
+	public String getCourseMap(@PathVariable String container, String options) {
+		
+		return options;
+		
 	}
 
 }
