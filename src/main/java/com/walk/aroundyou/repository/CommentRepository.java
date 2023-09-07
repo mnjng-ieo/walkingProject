@@ -105,6 +105,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 
 	
 /* comment 내용 수정 메서드 */
+	@Transactional
+	@Modifying
 	@Query(value="UPDATE "
 			+ "comment c "
 			+ "	SET c.comment_content =:#{#update.commentContent}"
@@ -112,6 +114,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	void updateCommentContent(@Param("commentId") Long commentId, @Param("update") UpdateCommentRequest update);
 	
 	// 게시판 댓글 수정 메서드
+	@Transactional
+	@Modifying
 	@Query(value="UPDATE "
 			+ "comment c "
 			+ "	SET c.comment_content =:#{#update.commentContent}"
@@ -119,11 +123,13 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 			+ "	WHERE c.comment_id = :#{#update.commentId}", nativeQuery = true)
 	void updateBoardCommentByCommentId(@Param("update") Comment update);
 	// 산책로 댓글 수정 메서드
-		@Query(value="UPDATE "
-				+ "comment c "
-				+ "	SET c.comment_content =:#{#update.commentContent}"
-				+ " 	, c.comment_updated_date = :#{#update.commentUpdatedDate}"
-				+ "	WHERE c.comment_id = :#{#update.commentId}", nativeQuery = true)
+	@Transactional
+	@Modifying
+	@Query(value="UPDATE "
+			+ "comment c "
+			+ "	SET c.comment_content =:#{#update.commentContent}"
+			+ " 	, c.comment_updated_date = :#{#update.commentUpdatedDate}"
+			+ "	WHERE c.comment_id = :#{#update.commentId}", nativeQuery = true)
 	void updateCourseCommentByCommentId(@Param("update") Comment update);
 		
 	

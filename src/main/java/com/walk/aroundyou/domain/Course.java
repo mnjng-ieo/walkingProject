@@ -1,6 +1,7 @@
 package com.walk.aroundyou.domain;
 
 import java.sql.Timestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,17 +11,19 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Data
+@Builder
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="course")
-public class Course {
+public class Course {	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,4 +75,35 @@ public class Course {
 	
 	@Column(name="cours_spot_lo", nullable=false, columnDefinition="double")
 	private double coursSpotLo;	
+	// 값 수정 메서드
+	public void update(
+			String wlkCoursFlagNm,
+			String wlkCoursNm,
+			String coursDc,
+			String signguCn,
+			String coursLevelNm,
+			String coursLtCn,
+			Float coursDetailLtCn,
+			String aditDc,
+			Timestamp coursTimeCn,
+			String toiletDc,
+			String cvntlNm,
+			String lnmAddr,
+			double coursSpotLa,
+			double coursSpotLo) {
+		this.wlkCoursFlagNm = wlkCoursFlagNm;
+		this.wlkCoursNm = wlkCoursNm;
+		this.coursDc = coursDc;
+		this.signguCn = signguCn;
+		this.coursLevelNm = coursLevelNm;
+		this.coursLtCn = coursLtCn;
+		this.coursDetailLtCn = coursDetailLtCn;
+		this.aditDc = aditDc;
+		this.coursTimeCn = coursTimeCn;
+		this.toiletDc = toiletDc;
+		this.cvntlNm = cvntlNm;
+		this.lnmAddr = lnmAddr;
+		this.coursSpotLa = coursSpotLa;
+		this.coursSpotLo = coursSpotLo;
+	}
 }

@@ -51,6 +51,7 @@ dependencies {
 	// 개발할때 소스자동생성 실행시 필요한 라이브러리
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly 'org.projectlombok:lombok'
+	implementation 'org.springframework.boot:spring-boot-devtools'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	
 	// 테스트 라이브러리

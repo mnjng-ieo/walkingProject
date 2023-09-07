@@ -1,5 +1,6 @@
 package com.walk.aroundyou.controller;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,17 +8,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.walk.aroundyou.domain.Board;
+import com.walk.aroundyou.domain.Comment;
+import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.Tag;
+import com.walk.aroundyou.domain.User;
 import com.walk.aroundyou.domainenum.BoardType;
 import com.walk.aroundyou.dto.BoardRequest;
 import com.walk.aroundyou.dto.IBoardDetailResponse;
 import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICommentResponseDto;
 import com.walk.aroundyou.service.BoardService;
+import com.walk.aroundyou.service.CommentService;
+import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.TagService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +41,12 @@ public class BoardViewController {
 
 	@Autowired
 	private BoardService boardService;
+	
+	@Autowired
+	private CommentService commentService;	
+	
+	@Autowired
+	private CourseService courseService;	
 	
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
@@ -81,6 +96,20 @@ public class BoardViewController {
 		List<String> boardTagList = 
 			tagService.findTagsByBoardId(id);
 		model.addAttribute("boardTagList", boardTagList);
+		
+		// 댓글 리스트 불러오기
+		List<ICommentResponseDto> comments = commentService.findByBoardId(id);
+		model.addAttribute("comments", comments);
+		
+		// 산책로 정보 불러오기
+
+		Optional<Course> course = courseService.findByBoardId(id);
+		if(course.isPresent()) {			
+			log.info("course 값이 있음");
+		} else {
+			log.info("course 값이 없음");			
+		}
+		model.addAttribute("course", course.get());
 		
 		return "boardDetail";
 	}
@@ -178,6 +207,42 @@ public class BoardViewController {
 		model.addAttribute("tagBoardList", tagBoardList);
 		return "searchBoardList";
 	}
+	
+	
+	
+	/////////////// 댓글
+	// 댓글 
+	
+	// 댓글 수정
+	@PostMapping("/board-comment/{id}")
+	public String postCommentOnBoard(
+			@PathVariable(name = "id") Long id
+			, String boardId
+			, String commentId
+			, String userId
+			, String commentContent) {
+		Comment comment = Comment.builder()
+				.commentId(Long.parseLong(commentId))
+				.commentContent(commentContent)
+				.userId(User.builder().userId(userId).build())
+				.commentUpdatedDate(new Timestamp(System.currentTimeMillis()))
+				.build();
+		commentService.updateBoardCommentByCommentId(comment);
+		
+		return "redirect:/board/"+id;
+	}
+	// 댓글 삭제
+	@DeleteMapping("/api/comment/{commentId}")
+	@ResponseBody
+	public void deleteComment(@PathVariable(name = "commentId") Long commentId){
+		log.info("/delete/board/comment 컨트롤러 접근");
+		// comment_id로 조회된 comment_like_id 삭제 
+		//commentService.deleteCommentLikeByCommentId(commentId); 주석 처리
+		// comment_id로 조회된 comment_id 삭제 
+		commentService.deleteCommentByCommentId(commentId);
+	}
+	
+	
 	
 	// 페이지네이션 시작 페이지를 계산해주는 컨트롤러
 	private int getPageStart(int currentPage, int totalPages) {
