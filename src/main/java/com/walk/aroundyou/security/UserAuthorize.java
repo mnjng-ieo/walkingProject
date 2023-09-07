@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-// 권한에 따른 제어 (user)
+// 권한에 따른 제어 (user 어노테이션으로 만들어주기 -> @UserAuthorize)
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @PreAuthorize("hasAnyRole('USER')")

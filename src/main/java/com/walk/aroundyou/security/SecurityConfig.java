@@ -1,16 +1,15 @@
 package com.walk.aroundyou.security;
 
-import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import jakarta.servlet.DispatcherType;
 
 @Configuration
 @EnableMethodSecurity
@@ -29,7 +28,8 @@ public class SecurityConfig {
         	.cors((cors) -> cors.disable())
                 .authorizeHttpRequests(request -> request
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/status", "/images/**", "/signup", "/auth/join").permitAll()
+                        .requestMatchers("/status", "/images/**", "/login", "/main", "/signup/**", "/login/idlookup", "/login/pwdlookup").permitAll()
+                        //.requestMatchers("/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -37,11 +37,15 @@ public class SecurityConfig {
                         .loginProcessingUrl("/check")
                         .usernameParameter("userId")
                         .passwordParameter("userPwd")
-                        .defaultSuccessUrl("/main", true)
+                        .defaultSuccessUrl("/view/dashboard", true)
                         .permitAll()
-                )
-                .logout(withDefaults());
+                );
+        http.logout((logout) -> logout
+                    	.logoutUrl("/logout") // default
+                    	.logoutSuccessUrl("/main")
+                    	.permitAll());
 
         return http.build();
     }
+    
 }

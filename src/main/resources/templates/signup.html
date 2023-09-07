@@ -22,7 +22,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
     var checkUserIdBtn = document.getElementById("checkUserIdBtn");
-    var userIdInput = document.getElementById("userId");
+    var userIdInput = document.getElementById("duplicateId");
     var resultElement = document.getElementById("result");
 
     checkUserIdBtn.addEventListener("click", function () {
@@ -72,9 +72,10 @@ document.addEventListener("DOMContentLoaded", function () {
 			<!-- 아이디 입력 필드 -->
 			<div class="mb-3" id="checkId">
 				<div class="row align-items-center">
-					<label for="userId" class="form-label ">아이디 *</label>
+					<label for="duplicateId" class="form-label ">아이디 *</label>
 					<div class="col-md-10">
-						<input type="text" class="form-control" id="userId" name="userId">
+						<input type="text" class="form-control" id="duplicateId"
+							name="userId">
 					</div>
 					<input type="button" id="checkUserIdBtn" value="중복체크"
 						class="btn btn-primary col-md-2">
@@ -100,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			<div class="mb-3">
 				<label for="userEmail" class="form-label">이메일 *</label> <input
 					type="email" class="form-control" id="userEmail" name="userEmail"
-					placeholder="walkaroundyou@gmail.com" required>
+					placeholder="walkaroundyou@way.com" required>
 			</div>
 
 			<!-- 닉네임 입력 필드 -->

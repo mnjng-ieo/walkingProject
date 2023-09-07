@@ -1,7 +1,7 @@
 package com.walk.aroundyou.dto;
 import java.sql.Timestamp;
 
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.role.StateId;
 import com.walk.aroundyou.domain.role.UserRole;
 
@@ -23,7 +23,6 @@ public class UserRequest {
 	// 맴버변수
 	private String userId;
 	private String userPwd;
-	//private String unencodedPwd;
 	private String userName;
 	private String userNickname;
 	private String userTelNumber;
@@ -38,12 +37,11 @@ public class UserRequest {
 
 
 	// 멤버메소드
-	public User toEntity() {
+	public Member toEntity() {
 		
-		return User.builder()
+		return Member.builder()
 				.userId(userId)
 				.userPwd(userPwd)
-				//.unencodedPwd(unencodedPwd)
 				.userName(userName)
 				.userNickname(userNickname)
 				.userTelNumber(userTelNumber)
@@ -56,7 +54,6 @@ public class UserRequest {
 				.stateId(StateId.NORMAL)
 				.socialYn(socialYn)
 				.build();
-
 	}
 
 }

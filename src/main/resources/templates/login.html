@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="author"
-	content="Mark Otto, Jacob Thornton, 그리고 Bootstrap 기여자들">
 <meta name="generator" content="Hugo 0.88.1">
 <!-- 부트스트랩 CSS 링크 -->
 
@@ -57,17 +54,17 @@
                <!-- 로그인 form -->
 					<form class="" action="/check" method="post">
 					<p class="text-center">
-            <img src="/images/nahwasa-profile.png" class="img-thumbnail" style="width: 200px;" alt="이 글이 보인다면 시큐리티 설정 잘못한거임!">
+            <img src="/images/profile.jpg" class="img-thumbnail" style="width: 200px;" alt="이 글이 보인다면 시큐리티 설정 잘못한거임!">
         </p>
 						<div class="form-floating mb-3">
-							<input type="text" class="form-control rounded-4" id="userId"
+							<input type="text" class="form-control rounded-4" id="username"
 								name="userId" placeholder="id"> <label
-								for="userId">ID</label>
+								for="username">ID</label>
 						</div>
 						<div class="form-floating mb-3">
 							<input type="password" class="form-control rounded-4"
-								id="userPwd" name="userPwd" placeholder="Password"> <label
-								for="userPwd">PASSWORD</label>
+								id="password" name="userPwd" placeholder="Password"> <label
+								for="password">PASSWORD</label>
 						</div>
 						<button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary"
 							type="submit">Sign up</button>
@@ -81,6 +78,9 @@
 					</form>
 					<form action="/login/pwdlookup" method="get">
 						<input type="submit" value="비밀번호 찾기">
+					</form>
+					<form action="/signup" method="get">
+						<input type="submit" value="회원가입">
 					</form>
 
 

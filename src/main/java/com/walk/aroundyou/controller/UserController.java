@@ -1,11 +1,14 @@
 package com.walk.aroundyou.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -17,8 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.walk.aroundyou.domain.User;
-import com.walk.aroundyou.domain.role.UserRole;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.service.UserService;
 
@@ -49,6 +51,7 @@ public class UserController {
 	@PostMapping("/signup")
 	public String processSignup(UserRequest request) {
 		
+		log.info(request.toString());
 		// 회원가입 메서드 호출
 		userService.registerUser(request); 
 		
@@ -75,68 +78,41 @@ public class UserController {
 	}
 
 	
-//	//////////////////// 로그인
-//	@GetMapping("/loginForm")
-//	public String loginForm(Model model) {
-//		
 //
-//		model.addAttribute("j_username", "user");
-//		model.addAttribute("j_password", "1234");
-//		return "login";
-//	}
-//	//////////////////// 로그인 에러
-//	@GetMapping("/loginError")
-//	public String loginError(Model model) {
-//		
-//		return "loginerror";
-//	}
 //	
 //	/////// 메인페이지 - 로그인 확인, 로그아웃 버튼
-//	@GetMapping("/main")
-//	public String main()
-//	{	
-//		return "main";
-//	}
+	@GetMapping("/main")
+	public String main()
+	{	
+		return "main";
+	}
 	
 	
 	// 로그인 메인 페이지(처음 시작 할 때의 화면)
-		@GetMapping("/login")
-		public String login() {
-			return "login";
-		}
-		// 로그인 입력 시 페이지
-		@PostMapping("/login")
-		public String processLoginForm(@RequestParam String userId, @RequestParam String userPwd, Model model) {
+	@GetMapping("/login")
+	public String login() {
+		return "login";
+	}	
+	
+		
+	// 로그인 결과에 맞춰서 네비의 로그인, 회원가입, 로그아웃 버튼 숨기기	
+	@ResponseBody
+	@GetMapping("/checkLoginStatus")
+	// Authentication 객체를 매개변수로 받아서 로그인 상태를 확인하고 JSON 응답을 생성
+    public Map<String, Boolean> checkLoginStatus(Authentication authentication) {
+		
+        // Spring Security에서 제공하는 Authentication 객체를 통해 로그인 상태 확인
+		// authentication != null && authentication.isAuthenticated() : 로그인 상태
+		// loggedIn : true
+        boolean loggedIn = authentication != null && authentication.isAuthenticated();
 
-			// loginResult 값이 true = 로그인 성공, false = 로그인 실패
-			boolean loginResult = userService.login(userId, userPwd);
-			
-			// loginResult == true
-			if(loginResult){
-				// 로그인 성공 시 메인 페이지로 redirect
-				return "redirect:/main";
-			} else {	
-				// loginResult == false
-				// model객체에 true 값으로 '실패 상태' 표시
-				model.addAttribute("resultFail", true);
-				// 로그인페이지로 가서 실패메시지 출력
-				return "/login";
-			}
-		}
-	
-	
-	
-	
-	//////////////////// 로그아웃
-//	@GetMapping("/logout")
-//	public String logout(HttpServletRequest request, HttpServletResponse response) {
-//		// SecurityContextLogoutHandler() : 로그아웃 수행
-//		// SecurityContextHolder.getContext().getAuthentication() : 현재 인증된 사용자의 인증 객체 -> SecurityContextHolder에서 해당 사용자의 인증 정보를 지우는 데 사용
-//		new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-//		return "redirect:/login";
-//		
-//	}
-	
+        // JSON 응답 생성
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("loggedIn", loggedIn);
+
+        return response;
+    }
+		
 	
 	//////////////////// 아이디 찾기
 	@GetMapping("/login/idlookup")
@@ -186,67 +162,98 @@ public class UserController {
     // Principal 객체는 현재 로그인한 사용자에 대한 정보를 얻기 위해 컨트롤러 메서드에서 매개변수로 사용 가능
     // 로그인 된 상태에 탈퇴를 하는 거니까 인증된 사용자의 정보를 받아오는 principal 사용
 	// 처음 불러오는 정보
-	@GetMapping("/mypage")
-	public String showMypage(Model model, @AuthenticationPrincipal Principal principal) {
-		
-		// 현재 로그인한 사용자 아이디
-		String userId = principal.getName();
-		// 위에 가져온 아이디를 기준으로 사용자 정보 불러옴
-		Optional<User> user = userService.findByUserId(userId);
-		
-		if(user != null) {
-			// model에 user객체 추가해서 뷰로 넘겨줌
-			model.addAttribute("user", user);
-			return "mypage";
-		}else {
-			return "error";
-		}
+	@GetMapping("/main/mypage")
+	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
+	public String showMypage(Model model, Authentication authentication) {
+	    if (authentication != null && authentication.isAuthenticated()) {
+	        // 현재 로그인한 사용자 아이디
+	        String userId = authentication.getName();
+	        // 위에 가져온 아이디를 기준으로 사용자 정보 불러옴
+	        Optional<Member> member = userService.findByUserId(userId);
+
+	        if (member.isPresent()) {
+	            // model에 user 객체 추가해서 뷰로 넘겨줌
+	            model.addAttribute("user", member.get());
+	            return "mypage";
+	        } else {
+	            return "error";
+	        }
+	    } else {
+	        // 로그인되지 않은 경우 처리
+	        return "login"; // 로그인 페이지로 리다이렉트 또는 다른 처리를 수행
+	    }
 	}
 	
 	// 변경 후 블러오는 정보
-	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 허용
-	@PostMapping("/mypage")
-	public String processMypage(@PathVariable String userId, @RequestParam String userNickname, @RequestParam String userImg, @RequestParam String uesrDescription, Principal principal) {
-		
-		// 로그인 된 아이디를 가져옴
-		String userId1 = principal.getName();
-		
-		User updateUser = userService.updateMypage(userId, userNickname, userImg, uesrDescription);
-		
-		if(updateUser != null) {
-			// 정보 업데이트를 성공한 경우
-			return "redirect:mypage";
-		}else {
-			return "error";
-		}
+	//@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
+	@PostMapping("/main/mypage")
+	@ResponseBody
+	// Authentication authentication : 매개변수를 통해 사용자 정보를 확인
+	public String processMypage(@RequestParam String userId, @RequestParam String userNickname,
+			@RequestParam String userImg, @RequestParam String userDescription) {
+
+		Member updatedMember = userService.updateMypage(userId, userNickname, userImg, userDescription);
+
+		log.info("마이페이지 업데이트 성공: userId={}, userNickname={}, userImg={}, userDescription={}", userId.toString(),
+				userNickname.toString(), userImg.toString(), userDescription.toString());
+
+		if (updatedMember != null) {
+            return "redirect:/main/mypage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
+        } else {
+            return "error"; // 오류 처리
+        }
 	}
+		    
+//		// 로그인 된 아이디를 가져옴
+//		String loginid = principal.getName();
+//		
+//		Optional<Member> member = userService.findByUserId(loginid);
+//		
+//		if(member.isPresent()) {
+//			
+//			Member updateUser = userService.updateMypage(userId, userNickname, userImg, uesrDescription);
+//			
+//			if (updateUser != null) {
+//				// 정보 업데이트를 성공한 경우
+//				return "redirect:mypage";
+//			} else {
+//				return "error";
+//			}
+//		}else {
+//			return "error";
+//		}
 	
 	
 	//////////////////// 유저페이지
-	@GetMapping("/userpage/{userId}")
-	public String showUserpage(Model model, Principal principal) {
+	@GetMapping("/main/mypage/userpage")
+	public String showUserpage(Model model, Authentication authentication) {
+		
+	    if (authentication != null && authentication.isAuthenticated()) {
+	        // 현재 로그인한 사용자 아이디
+	        String userId = authentication.getName();
+	        // 위에 가져온 아이디를 기준으로 사용자 정보 불러옴
+	        Optional<Member> member = userService.findByUserId(userId);
 
-		// 현재 로그인한 사용자 아이디
-		String userId = principal.getName();
-		// 위에 가져온 아이디를 기준으로 사용자 정보 불러옴
-		Optional<User> user = userService.findByUserId(userId);
-				
-		if (user != null) {
-			// model에 user객체 추가해서 뷰로 넘겨줌
-			model.addAttribute("user", user);
-			return "userpage";
-		} else {
-			return "error";
-		}
+	        if (member.isPresent()) {
+	            // model에 user 객체 추가해서 뷰로 넘겨줌
+	            model.addAttribute("user", member.get());
+	            return "userpage";
+	        } else {
+	            return "error";
+	        }
+	    } else {
+	        // 로그인되지 않은 경우 처리
+	        return "login"; // 로그인 페이지로 리다이렉트 또는 다른 처리를 수행
+	    }
 	}
 	
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 허용
-	@PostMapping("/userpage/{userId}")
-	public String processUserpage(@PathVariable String userId, @RequestParam String userName, @RequestParam String userNickname, @RequestParam String userTelnumber, @RequestParam String userEmail, Principal principal) {
+	@PostMapping("/main/mypage/userpage/{userId}")
+	public String processUserpage(@PathVariable String userId, @RequestParam String userName, @RequestParam String userNickname, @RequestParam String userTelnumber, @RequestParam String userEmail, @AuthenticationPrincipal Principal principal) {
 		
 		String userId1 = principal.getName();
 		
-		User updateUser = userService.updateUserInfo(userId, userName, userNickname, userTelnumber, userEmail);
+		Member updateUser = userService.updateUserInfo(userId, userName, userNickname, userTelnumber, userEmail);
 		
 		if (updateUser != null) {
 			return "redirect:userpage";
@@ -291,7 +298,7 @@ public class UserController {
 
 	// 탈퇴 처리하는 곳
     @PostMapping("/withdraw")
-    public String processWithdrawForm(@RequestParam String currentPwd, Principal principal) {
+    public String processWithdrawForm(@RequestParam String currentPwd, @AuthenticationPrincipal Principal principal) {
        
     	// .getName() -> id불러옴
     	String userId = principal.getName();

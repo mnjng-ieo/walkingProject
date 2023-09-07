@@ -1,15 +1,17 @@
 package com.walk.aroundyou.security;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
+import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.service.UserService;
-
-import java.util.Optional;
 
 @Component
 public class MyUserDetailService implements UserDetailsService {
@@ -25,13 +27,13 @@ public class MyUserDetailService implements UserDetailsService {
     // 회원가입 기능
     @Override
     public UserDetails loadUserByUsername(String insertedId) throws UsernameNotFoundException {
-        Optional<User> findOne = memberService.findByUserId(insertedId);
-        User member = findOne.orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다 ㅠ"));
+        Optional<Member> findOne = memberService.findByUserId(insertedId);
+        Member member = findOne.orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다"));
 
         return User.builder()
-                .userId(member.getUserId())
-                .userPwd(member.getUserPwd())
-                .role(member.getRole())
+        		.username(member.getUserId())
+        		.password(member.getUserPwd())
+        		.roles(UserRole.USER.getRoleName(), UserRole.ADMIN.getRoleName(), UserRole.GUEST.getRoleName())
                 .build();
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.role.StateId;
 import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.dto.UserRequest;
@@ -18,23 +18,24 @@ import com.walk.aroundyou.repository.UserRepository;
 @Service
 public class UserService{
 
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
-//	@Autowired
-//	public UserService(UserRepository userRepository) {
-//		this.userRepository = userRepository;
-//	}
+	private final UserRepository userRepository;
+	
+	private final PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
+	}
 	
 	
 	
 	// 회원가입
-	public String join(String userId, String userPwd) {
+	public String join(String userid, String pw) {
 		
 		UserRequest request = new UserRequest();
-        User member = request.toEntity();
+        Member member = request.toEntity();
         
         validateDuplicateMember(member);
         userRepository.save(member);
@@ -42,7 +43,7 @@ public class UserService{
         return member.getUserId();
     }
 	// 중복 아이디 체크
-    private void validateDuplicateMember(User member) {
+    private void validateDuplicateMember(Member member) {
     	userRepository.findByUserId(member.getUserId())
                 .ifPresent(m -> {
                     throw new IllegalStateException("이미 존재하는 회원입니다.");
@@ -50,91 +51,59 @@ public class UserService{
     }
 	
 	
-	
-	
-	///////////////// 로그인
-	public boolean login(String userId, String currentPwd) {
-
-		// 아이디를 기준으로 비밀번호 확인해서 로그인하기
-		Optional<User> user = userRepository.findByUserId(userId);
-
-		// 아이디가 존재하면
-		if (user.isPresent()) {
-			
-			// PasswordEncoder의 matches : 입력한 평문 비밀번호와 암호화된 비밀번호가 일치하는지 검증하는 역할
-			// userPwd: 사용자가 입력한 평문 비밀번호
-			// user.get().getUserPwd(): 데이터베이스에 저장된 암호화된 비밀번호
-			// 디비에 저장된 비번과 사용자가 입력한 비번이 비번이 일치하면
-			if(passwordEncoder != null) {
-				
-				if (passwordEncoder.matches(currentPwd, user.get().getUserPwd())) {
-					
-					return true; // 로그인 성공
-				} else {
-					return false; // 비밀번호 틀림
-				}
-			}else {
-				return false;
-			}
-		} else {
-			return false; // 아이디 없거나 실패
-		}
-	}
-	
-	
 	// 1. 회원가입 시 User엔티티 전부 가져오기
 	// 회원가입, User 엔티티들 변경 후에(update) save로 저장
-	public User saveUser(User user) {
+	public Member saveUser(Member member) {
 		
-		return userRepository.save(user);
+		return userRepository.save(member);
 	}
 	
 	/////////////////////// 아이디 중복 체크
 	public boolean isUserIdDuplicate(String userId) {
-	Optional<User> user = userRepository.findByUserId(userId);
-	return user.isPresent();
+	Optional<Member> member = userRepository.findByUserId(userId);
+	return member.isPresent();
 	}
 
 	///// 마이페이지에서 아이디 받아와서 정보변경하면 업데이트해주기
-	public User updateMypage(String userId, String userNickname, String userImg, String userDescription) {
+	public Member updateMypage(String userId, String userNickname, String userImg, String userDescription) {
 		
 		// id로 user 확인
-		Optional<User> userOptional = userRepository.findByUserId(userId);
-		User user = userOptional.get();
+		Optional<Member> userOptional = userRepository.findByUserId(userId);
+		Member member = userOptional.get();
 		
 		// 유저가 있다면
-		if(user != null) {
+		if(member != null) {
 			
 			// 유저 정보 변경
-			user.setUserNickname(userNickname);
-			user.setUserImg(userImg);
-			user.setUserDescription(userDescription);
+			member.setUserNickname(userNickname);
+			member.setUserImg(userImg);
+			member.setUserDescription(userDescription);
 			
 			// 유저 정보 저장
-			return userRepository.save(user);
+			return userRepository.save(member);
 		}
 		// user == null
 		return null;
 	}
 	
 	///// 회원 정보 보기에서 정보 업데이트(유저 페이지)
-	public User updateUserInfo(String userId, String userName, String userNickname, String userTelnumber, String userEmail) {
+	public Member updateUserInfo(String userId, String userName, String userNickname, String userTelnumber, String userEmail) {
 		
 		// id로 user 확인
-		Optional<User> userOptional = userRepository.findByUserId(userId);
-	User user = userOptional.get();
+		Optional<Member> userOptional = userRepository.findByUserId(userId);
+	Member member = userOptional.get();
 	
 		// user 있다면
-		if ( user != null ) {
+		if ( member != null ) {
 			
 			// 유저 정보 변경
-			user.setUserName(userName);
-			user.setUserNickname(userNickname);
-			user.setUserTelNumber(userTelnumber);
-			user.setUserEmail(userEmail);
+			member.setUserName(userName);
+			member.setUserNickname(userNickname);
+			member.setUserTelNumber(userTelnumber);
+			member.setUserEmail(userEmail);
 			
 			// 유저 정보 저장
-			return userRepository.save(user);
+			return userRepository.save(member);
 		}
 		// user == null
 		return null;
@@ -142,41 +111,31 @@ public class UserService{
 	
 	///// 2. 아이디 검색
 	// 아이디를 통해 회원 정보 찾기에 이용 등
-	public Optional<User> findByUserId(String userId) {
+	public Optional<Member> findByUserId(String userId) {
 		
 		return userRepository.findByUserId(userId);
 	}
 	
 	
-	///// 4. 닉네임 찾기 
-	// '%'추가해주기
-	public List<User> searchByUserNickname(String userNickname) {
-	    String modifiedUserNickname = "%" + userNickname + "%"; // 검색어에 '%' 추가
-	    return userRepository.searchByUserNickname(modifiedUserNickname); // 수정된 검색어로 쿼리 호출
-	}
-	
-	
 	///// 5. user entity의 모든 항목을 반환하기
-	public List<User> findAll() {
+	public List<Member> findAll() {
 		return userRepository.findAll();
 	}
-	
 	
 	
 	/////////////////////// 아이디 찾기
 	public String searchByUserId(String userName, String userEmail) {
 		
 		// 이름과 이메일을 입력 받아 이 둘을 기준으로 
-		Optional<User> user = userRepository.findByUserNameAndUserEmail(userName, userEmail);
+		Optional<Member> member = userRepository.findByUserNameAndUserEmail(userName, userEmail);
 		
-		if (user.isPresent()) {
-			String foundUserId = user.get().getUserId();
+		if (member.isPresent()) {
+			String foundUserId = member.get().getUserId();
 			return "찾으시는 아이디는 \"" + foundUserId + "\" 입니다.";
 		} else {
 			return "입력하신 정보와 일치하는 아이디가 없습니다.";
 		}
 	}
-	
 	
 
 	///////////////////// 6. 유저 삭제(탈퇴, 강제 삭제)
@@ -184,12 +143,12 @@ public class UserService{
 	public void deleteByUserId(String userId, String currentPwd) {
 		
 		// id를 기준으로 사용자 정보(비밀번호)를 가져옴
-		Optional<User> userOptional = userRepository.findByUserId(userId);
-		User user = userOptional.get();
+		Optional<Member> userOptional = userRepository.findByUserId(userId);
+		Member member = userOptional.get();
 		
 		// 비밀번호 한 번 확인 작업 거친 후 탈퇴
 		// (암호화된)디비에 있는 비번과 현재 입력한 비번이 같을 경우
-		if (passwordEncoder.matches(currentPwd, user.getUserPwd())) {
+		if (passwordEncoder.matches(currentPwd, member.getUserPwd())) {
         userRepository.deleteByUserId(userId);
 		}
     }
@@ -201,22 +160,21 @@ public class UserService{
 	}
 	
 	
-	
 	/////////////////////// 비밀번호 변경
 	// 비밀번호 변경할 때 로그인 된 아이디를 기준으로 비밀번호 입력하고 맞으면 
 	public boolean changePwd(String userId, String currentPwd, String newPwd, String newPwdConfirm) {
 		
 		// 아이디 기준이므로 먼저 아이디 조회
-		Optional<User> userOptional = userRepository.findByUserId(userId);
+		Optional<Member> userOptional = userRepository.findByUserId(userId);
 		// Optional<User>객체는 실제 'User'객체를 감싸고 있는 래퍼 클래스이다. 
 		// 엔티티를 가져올 경우, Optional에서 제공하는 get()메서드를 사용하면 되는데 리포지토리 메서드는 가져올 수 없음.
 		// 그래서 Optional<User>객체에서 실제 User객체에 접근할 수 있도록 해줌
-		User user = userOptional.get();
+		Member member = userOptional.get();
 		
 		// 유저가 있고(생략 가능-이미 로그인 된 상태니까)
 		// (암호화된)디비에 있는 비번과 현재 입력한 비번이 같을 경우
-		if (user != null
-				&& passwordEncoder.matches(currentPwd, user.getUserPwd())) {
+		if (member != null
+				&& passwordEncoder.matches(currentPwd, member.getUserPwd())) {
 
 			// 새로운 비밀번호를 두 번 입력해서 값이 동일하면
 			if (newPwd.equals(newPwdConfirm)) {
@@ -225,10 +183,10 @@ public class UserService{
 				String encryptedPassword = passwordEncoder.encode(newPwd);
 				
 				// 새로운 비밀번호를 변경하기
-				user.setUserPwd(encryptedPassword);
+				member.setUserPwd(encryptedPassword);
 				
 				// 유저 객체에 업데이트하기
-				userRepository.save(user);
+				userRepository.save(member);
 				return true; // 변경 성공
 			}else {
 				return false; // 새로운 비밀번호가 일치하지 않음
@@ -242,20 +200,14 @@ public class UserService{
 	
 	/////////////////////// 회원가입
 	public String registerUser(UserRequest dto) {
-		
-//        String encodedPassword = passwordEncoder.encode(unencodedPassword);
-//        // 암호화된 비밀번호 저장
-//        user.setUserPwd(encodedPassword);
-//        // 암호화되지 않은 비밀번호 저장
-//        user.setUnencodedPassword(unencodedPassword);
-		
+	  
 		// 사용자로부터 입력받은 평문 비밀번호
         String rawPassword = dto.getUserPwd();
 
         // 비밀번호를 암호화
         String encodedPassword = passwordEncoder.encode(rawPassword);
         
-		User user = User.builder()
+		Member member = Member.builder()
 				.userId(dto.getUserId())
 				.userPwd(encodedPassword)
 				.userName(dto.getUserName())
@@ -269,7 +221,7 @@ public class UserService{
 				.socialYn(dto.isSocialYn())
 				.build();
 		
-		return userRepository.save(user).getUserId();
+		return userRepository.save(member).getUserId();
 	}
 	
 	
@@ -277,12 +229,12 @@ public class UserService{
 	public String searchByUserPwd(String userId) {
 		
 		// 유저 아이디를 입력 받아 비밀번호 찾기
-		Optional<User> user = userRepository.findByUserId(userId);
-		User user1 = user.get();
+		Optional<Member> member = userRepository.findByUserId(userId);
+		Member user1 = member.get();
 		String user2 = user1.getUserPwd();
 		
 		// 아이디가 있다면
-		if (user.isPresent()) {
+		if (member.isPresent()) {
 			
 				return "찾으시는 비밀번호는 \"" + user2  + "\" 입니다.";
 		}else {
