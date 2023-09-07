@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.CourseRequestDTO;
 import com.walk.aroundyou.dto.CourseResponseDTO;
+import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.repository.BoardRepository;
 import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.repository.CourseSpecifications;
 
@@ -30,6 +33,7 @@ public class CourseService {
 	// 페이징 처리에 필요한, 한 페이지에 조회되는 데이터 수
 	private final static int SIZE_OF_PAGE = 12;
 	private final CourseRepository courseRepository;
+	private final BoardRepository boardRepository;
 	
 	/**
 	 * [산책로상세조회페이지] id로 산책로 하나 조회
@@ -61,7 +65,25 @@ public class CourseService {
 	}
 	
 	/**
-	 * [산책로목록조회페이지] 모든 산책로 조회 메서드
+	 * [산책로상세조회페이지] 산책로 관련 게시물 조회 - 최신순, 조회수, 좋아요 순 정렬 (연서님 작성)
+	 */
+    public Page<IBoardListResponse> findBoardAndCntByCourseId(Long id, int page, String sort) {
+	      // 최신순, 조회수, 좋아요순으로 정렬
+	      // HTML의 select option 태그의 value를 같은 이름으로 설정하기
+	      Sort customSort;
+	      if ("boardViewCount".equals(sort)) {
+	         customSort = Sort.by(Direction.DESC, "boardViewCount");
+	      } else if("likeCnt".equals(sort)) {
+	         customSort = Sort.by(Direction.DESC, "likeCnt");
+	      } else {
+	         customSort = Sort.by(Direction.DESC, "boardId");
+	      }
+	      // public static PageRequest of(int pageNumber, int pageSize, Sort sort) 사용
+	      return boardRepository.findBoardAndCntByCourseId(id, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+	}
+	
+	/**
+	 * [산책로목록조회페이지] 모든 산책로 조회 메서드 : 검색, 페이징, 정렬 구현
 	 */
 	public Page<Course> findAll(int page) {
 		// 산책로명 가나다순으로 정렬
@@ -157,7 +179,14 @@ public class CourseService {
 			customSort = Sort.by(Direction.ASC, "coursDetailLtCn");
 		} else if("coursDetailLtCnDESC".equals(sort)) { // 상세코스거리 내림차순
 			customSort = Sort.by(Direction.DESC, "coursDetailLtCn");
-		} else { // 산책로명 가나다순
+		} 
+		
+		//// 작성 중! 
+//		else if("likeCnt".equals(sort)) {
+//			customSort = Sort.by(Direction.DESC, "")
+//		} 
+		
+		else { // 산책로명 가나다순
 			customSort = Sort.by(Direction.ASC, "wlkCoursFlagNm", "wlkCoursNm");
 		}
 		
@@ -211,4 +240,15 @@ public class CourseService {
 		courseRepository.deleteById(id);
 	}
 	
+	/**
+	 * [메인페이지] 산책로 인기순(조회순) 정렬 메소드
+	 */
+	public List<CourseResponseDTO> findAllOrderByViewCnt() {
+		Sort sort = Sort.by(Direction.DESC, "coursViewCount");
+		List<Course> courseList = courseRepository.findAll(sort);
+		return courseList
+				.stream()
+				.map(CourseResponseDTO::new)
+				.collect(Collectors.toList());
+	}
 }
