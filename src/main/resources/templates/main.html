@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/defaultLayout}"
+	  >
+<head>
+<meta charset="UTF-8">
+	<title>홈페이지</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+	<script type="text/javascript" src="/js/board/common.js"></script>
+</head>
+<body>
+	<!-- main 화면 -->
+	<div class="main border" style="height: 600px; 
+			background-image: url('/image/common/main_img.jpg'); background-size: cover; background-position:center;" 
+			layout:fragment="Content">
+		<div class="d-flex justify-content-center" style="height: 100%">
+			<div class="d-flex align-items-center" style="width: 55%;">	
+			  
+				<!-- 검색창 & 검색 버튼 -->
+				<div class="d-flex" style="width: 100%" >
+				
+			    	<!-- 검색창 --> 
+			    	<div class="search input-group flex-nowrap justify-content-center mx-2">
+			    		<input type="text" class="form-control" placeholder="검색하세요" aria-label="검색하세요" 
+			      		aria-describedby="addon-wrapping">
+			    	</div>
+			  
+			  		<!-- 검색 버튼 -->
+			 		<button class="btn btn-primary mx-2" type="submit">Search</button>
+				</div>
+			</div>
+		</div>	
+	</div>
+</body>
+</html>

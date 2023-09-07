@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org">
+	
+	<!-- 
+	p-3 : padding을 3크기로
+	mb-3 : margin-bottom을 3크기로
+	border-bottom : 하단에 테두리
+ -->	
+<th:block th:fragment="HeaderFragment">		
+	<!-- 
+		py-2 : padding의 y축(top, bottom)을 2크기만큼
+		bg-body-tertiary : body의 배경색을 tertiary(회색)으로
+		border-bottom : 아래 테두리
+	 -->	
+	<!-- 상단 메뉴 --> 
+	<nav class="py-2 border-bottom topnav">
+		<!-- 
+			d-flex : display:flex 활성화
+			flex-wrap : 줄바꿈 활성화
+			nav : navigation
+			nav-item : navigation의 항목
+			me-auto : margin-end(오른쪽)을 자동으로 하겠다
+			nav-link
+			link-body-emphasis : 링크의 색상 변경하겠다
+			px-2 : x축의 padding 크기를 2로
+			active : 활성화 상태로 설정
+		 --> 
+		<div class="container d-flex flex-wrap">
+			<ul class="nav me-auto">
+				<!-- Home --> 
+			    <li class="nav-item">
+					<a href="#" id="nav-link" class="nav-link px-2 active" 
+						aria-current="page" style="color: white;">Home</a>
+				</li>
+				
+				<!-- 산책로목록 --> 
+			    <li class="nav-item">
+					<a href="#" id="nav-link" class="nav-link px-2" style="color: white;">산책로목록</a>
+				</li>
+				
+				<!-- 커뮤니티 --> 
+			    <li class="nav-item">
+					<a href="#" id="nav-link" class="nav-link px-2" style="color: white;">커뮤니티</a>
+				</li>
+				
+				<!-- 마이페이지 --> 
+			    <li class="nav-item">
+					<a href="#" id="nav-link" class="nav-link px-2" style="color: white;">마이페이지</a>
+				</li>
+	    	</ul>
+		    <ul class="nav">
+				<!-- 로그인 --> 
+			    <li class="nav-item"><a href="#" class="nav-link px-2" style="color: white;">로그인</a></li>
+			    <!-- 회원가입 --> 
+			    <li class="nav-item"><a href="#" class="nav-link px-2" style="color: white;">회원가입</a></li>
+		    </ul>
+		</div>
+	</nav>
+	
+	<!-- 
+		py-3 : padding의 y축(top, bottom)을 3크기만큼
+		mb-4 : margin-bottom을 4크기만큼
+		border-bottom : 아래 테두리
+	 -->	
+	<!-- header 영역 -->
+	<header class="py-4 border-bottom header">
+		<!-- 
+			justify-content-center : 콘텐츠 채우기, 가운데에 추가간격없이 붙이기
+			align-items-center : 항목 정렬, 위아래 정렬에서 가운데로
+			mb-lg-0 : 창크기가 lg(max-width이 992px 이상)일때 margin-bottom을 0으로
+       		text-decoration-none : 밑줄 없음으로 설정
+			col-12 : 너비 설정, 총 너비에서 12칸을 차지하겠단 의미
+			col-lg-auto : 가변 너비, lg일때 자연스러운 너비로 설정
+			mb-md-0 : md(768px)에서는 margins-bottom을 0으로
+		 -->
+		 
+		<div class="container d-flex flex-wrap justify-content-center align-items-end">
+		    <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none">
+	    		<span class="fs-3 mt-4">Walk Around You</span>
+	    		<img src="/image/common/logo_img.png" class="logo mb-3"></img>
+	   		</a>
+	  	</div>
+	</header>
+
+</th:block>
+</html>
