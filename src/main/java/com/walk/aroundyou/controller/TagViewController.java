@@ -44,7 +44,7 @@ public class TagViewController {
 	private BoardService boardService;
 	
 	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
-	private final static int PAGINATION_SIZE = 5;
+	private final static int PAGINATION_SIZE = 10;
 		
 	
 	@GetMapping("/")
@@ -110,7 +110,7 @@ public class TagViewController {
 		model.addAttribute("tagBoardList", tagBoardList);
 		// 선택된 태그를 사용하여 정렬에 사용
 		model.addAttribute("tagContent", tagContent);
-		return "searchBoardList";
+		return "searchTagBoardList";
 	}
 	
 	// pagination의 시작 숫자 얻는 메소드

@@ -4,7 +4,7 @@ let currentPage = 0;
 
 // 검색 조건 수집
 function boardWithSearchResults() {
-    let sort = document.getElementById('boardSort').value;
+    let sort = document.getElementById('boardTagSort').value;
     let tagContent = document.getElementById('tagContent').innerText;
     
     let xhr = new XMLHttpRequest();
