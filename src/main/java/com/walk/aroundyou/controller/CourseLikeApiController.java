@@ -3,6 +3,7 @@ package com.walk.aroundyou.controller;
 import java.security.Principal;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 //@RequestMapping이 클래스 위에 선언될 경우, 메소드에 사용한 설정으로 덮어쓰인다.
-@RequestMapping("/courses/{courseId}")
+@RequestMapping("/api/courses/{courseId}")
 public class CourseLikeApiController {
 	
 	private final CourseLikeService courseLikeService;
@@ -35,10 +36,8 @@ public class CourseLikeApiController {
 	 *              로그인한 상태에서 좋아요 버튼 누르는 거니까 principal 사용
 	 * - @RequestBody : POST 방식의 HTTP 요청할 때
 	 *                  응답에 해당하는 JSON 형식의 값을, 애너테이션이 붙은 대상 객체에 매핑
-	 * - @Valid : dto 파라미터 앞에 붙여주면 들어오는 객체 값에 대한 검증 가능한데, 
-	 *            정확한 필요성을 모르겠어서 일단 떼줬습니다.
 	 */         
-	@PostMapping //("/courses/{courseId}")
+	@PostMapping
 	public ResponseEntity<CourseLikeRequestDTO> AddCourseLike(
 			@PathVariable long courseId,
 			Principal principal,

@@ -5,14 +5,16 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.dto.CourseRequestDTO;
 import com.walk.aroundyou.dto.CourseResponseDTO;
+import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.repository.CourseRepository;
+import com.walk.aroundyou.service.CourseLikeService;
 import com.walk.aroundyou.service.CourseService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class CourseViewController {
 
 	private final CourseService courseService;
 	private final CourseRepository courseRepository;
+	private final CourseLikeService courseLikeService;
 	
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
@@ -170,14 +173,50 @@ public class CourseViewController {
 		// courseList.html라는 뷰 조회
 		return "courseList";
 	}
+
 	
 	/**
-	 * [산책로 상세페이지] : 주영언니가 맡아서 윗부분 만들기로!
+	 * [산책로 상세페이지] 유저 정보 기반해서 서비스 사용 가능
+	 * + 연서님이 작성한 게시판 페이징 기능 관련 코드 추가
 	 */
-	@GetMapping("/course/{id}")
-	public String getCourse(@PathVariable Long id, Model model) {
-		CourseResponseDTO courseResponseDTO = courseService.findByIdWithCounts(id);
+	@GetMapping("/course/{courseId}")
+	public String getCourse(
+			@PathVariable Long courseId, 
+			//Principal principal,
+			@RequestParam(name = "page", required=false, defaultValue="0") int currentPage,
+	        @RequestParam(name = "sort", required= false, defaultValue = "boardId") String sort,
+			Model model) {
+		CourseResponseDTO courseResponseDTO = 
+				courseService.findByIdWithCounts(courseId);
 		model.addAttribute("course", courseResponseDTO);
+		model.addAttribute("courseId", courseId);
+		
+		//String userId = principal.getName(); // 실제 로그인한 유저 정보
+		String userId = "wayid1";          // 테스트용. 직접 부여
+		model.addAttribute("userId", userId);
+		
+		// 조회한 좋아요 상태 확인
+		boolean isLiked = courseLikeService.isCourseLiked(userId, courseId);
+		model.addAttribute("isLiked", isLiked);
+		
+		// 게시글 출력 용도
+		Page<IBoardListResponse> courseBoardList = 
+		         courseService.findBoardAndCntByCourseId(courseId, currentPage, sort);
+		model.addAttribute("courseBoardList", courseBoardList);
+		      
+	    // pagination 설정
+	    int totalPages = courseBoardList.getTotalPages();
+	    int pageStart = getPageStart(currentPage, totalPages);
+	    int pageEnd = 
+	            (PAGINATION_SIZE < totalPages)? 
+	                  pageStart + PAGINATION_SIZE - 1
+	                  :totalPages;
+	    model.addAttribute("lastPage", totalPages);
+	    model.addAttribute("currentPage", currentPage);
+	    model.addAttribute("pageStart", pageStart);
+	    model.addAttribute("pageEnd", pageEnd);
+	    model.addAttribute("sort", sort);
+
 		
 		return "course";
 	}
@@ -301,8 +340,17 @@ public class CourseViewController {
 		return "adminCourse";
 	}
 
-
-
+	/**
+	 * [관리자 페이지] 산책로 데이터 관리 - 산책로 생성
+	 * 수정 요청을 /admin/courses/{id} POST로 따로 만들까 고민 중
+	 */
+	@GetMapping("/admin/courses/new-course")
+	public String adminNewCourse(Model model) {
+		model.addAttribute("course", new CourseRequestDTO());
+		
+		// 생성·수정 뷰 똑같게 설정
+		return "adminPostCourse";
+	}
 }
 
 	
