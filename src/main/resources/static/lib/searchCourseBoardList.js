@@ -28,7 +28,7 @@ function boardWithSearchResults() {
     
     xhr.send();
 }
-
+    
 // 페이지 번호를 클릭할 때 해당 페이지로 Ajax 요청 보내기(HTML파일에서 사용할 함수)
 function loadPage(newPage) {
     // 페이지 번호 업데이트
