@@ -9,9 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="stylesheet" href="/lib/css/course.css">
     <script src="/lib/js/course.js"></script>
-    <!-- 페이징, 정렬 추후 처리
+    <!-- 페이징, 정렬하는 자바스크립트 -->
     <script src="/lib/searchCourseBoardList.js"></script>
-     -->
     
 </head>
 <body>
@@ -94,7 +93,7 @@
     </div>
     <div class="container commentBox">코멘트작성란과 리스트는 여기 붙이세요.</div>
     
-    <!-- 연관 게시물 -->
+    <!-- 연관 게시물 : 연서 -->
     <div class="container boardList">
         <div class = "d-flex">
             <!-- 자바스크립트에서 사용할 용도이므로 숨기기 -->
@@ -121,9 +120,9 @@
         <table class="table table-hover">
           <thead>
             <tr>
-              <th scope="col">글 번호</th>
-              <th scope="col">게시물</th>
-              <th scope="col">댓글 수</th>
+              <th class ="col-lg-1">글 번호</th>
+              <th class ="col-lg-9">게시물</th>
+              <th class ="col-lg-1">댓글 수</th>
             </tr>
           </thead>
           <tbody>
