@@ -11,26 +11,94 @@
 </head>
 <body>
 	<!-- main 화면 -->
-	<div class="main border" style="height: 600px; 
-			background-image: url('/image/common/main_img.jpg'); background-size: cover; background-position:center;" 
-			layout:fragment="Content">
-		<div class="d-flex justify-content-center" style="height: 100%">
-			<div class="d-flex align-items-center" style="width: 55%;">	
-			  
-				<!-- 검색창 & 검색 버튼 -->
-				<div class="d-flex" style="width: 100%" >
-				
-			    	<!-- 검색창 --> 
-			    	<div class="search input-group flex-nowrap justify-content-center mx-2">
-			    		<input type="text" class="form-control" placeholder="검색하세요" aria-label="검색하세요" 
-			      		aria-describedby="addon-wrapping">
-			    	</div>
-			  
-			  		<!-- 검색 버튼 -->
-			 		<button class="btn btn-primary mx-2" type="submit">Search</button>
+	<div class="main-section" style="height: 1200px">
+		<div class="main border" style="height: 600px; 
+				background-image: url('/images/common/main_img.jpg'); background-size: cover; background-position:center;" 
+				layout:fragment="Content">
+			<div class="d-flex justify-content-center" style="height: 100%">
+				<div class="d-flex align-items-center" style="width: 55%;">	
+				  
+					<!-- 검색창 & 검색 버튼 -->
+					<div class="d-flex" style="width: 100%" >
+					
+				    	<!-- 검색창 --> 
+				    	<div class="search input-group flex-nowrap justify-content-center mx-2">
+				    		<input type="text" class="form-control" placeholder="검색하세요" aria-label="검색하세요" 
+				      		aria-describedby="addon-wrapping">
+				    	</div>
+				  
+				  		<!-- 검색 버튼 -->
+				 		<button class="btn btn-primary mx-2" type="submit">Search</button>
+					</div>
 				</div>
-			</div>
-		</div>	
-	</div>
+			</div>	
+			
+			<!-- 좋아요 순 BEST 3 : 카드 형식으로 출력 -->
+			<h3 class="mt-5" style="margin-left: 90px;">가장 인기있는 산책로 BEST 3</h3>
+			<!-- 산책로 목록 카드 ; 검색 결과를 표시할 영역-->
+		    <div class="container course-lists" >
+		        <div class="row">
+		            <div class="col-4" th:each="item : ${courses}">
+		                <div class="card course-list"
+		                     th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
+		                    <!-- 예정 : Course에 추가할 coursImg. 현재 default만 설정 -->
+		                    <img class="card-img-top course-list_imgBox" 
+		                         src="/images/course/defaultCourseImg.png" alt="산책로 사진" />
+		                    <div class="card-body course-list_textbox">
+		                        <div class="course-list_titlebox">
+		                            <div class="row course-list_title">
+		                                <!-- 산책로 이름 - 큰이름과 작은이름이 서로 같으면 큰 이름만 출력 되도록 
+				                             하려면 th:if="${item.wlkCoursNm} != ${item.wlkCoursFlagNm}" 붙이기 -->
+				                        <h5 class="col-10 card-title course-list_big-title" 
+				                            th:text="${item.wlkCoursFlagNm}">
+				                            산책로 큰이름</h5>
+				                        <!-- 산책로 난이도 -->
+		                                <p class="col-3 rounded-pill badge text-center course-list_level"
+		                                   th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : 
+		                                                     item.coursLevelNm == '쉬움' ? ' bg-info' : 
+		                                                     item.coursLevelNm == '보통' ? ' bg-success' : 
+		                                                     item.coursLevelNm == '어려움' ? ' bg-warning' : 
+		                                                     item.coursLevelNm == '매우어려움' ? ' bg-danger' : ''}"
+		                                   th:text="${item.coursLevelNm}">난이도</p>
+		                            </div>
+		                            <div>
+				                        <!-- 산책로 큰이름과 작은 이름이 같은 경우 고려할 때
+		                                <h5 class="card-text"
+		                                    th:if="${item.wlkCoursNm} == ${item.wlkCoursFlagNm}"
+		                                    >&nbsp;</h5> -->
+		                                <h3 class="card-text course-list_small-title" 
+		                                    th:text="${item.wlkCoursNm}">산책로 작은이름</h3>
+				                    </div>
+		                        </div>
+		                        
+		                        <!-- 지역 -->
+		                        <p class="card-text course-list_region" 
+		                           th:text="${item.signguCn}">지역</p>
+		                        <!-- "코스거리" | "소요시간"시간 분 소요 -->
+		                        <p class="card-text course-list_distance">
+		                            <span th:text="${item.coursDetailLtCn}">총코스거리</span>km |  
+		                            <span th:text="${#dates.format(item.coursTimeCn, 'H시간 mm분 소요')}">
+		                             소요 시간</span>
+		                        </p>
+		                        <!-- 산책로 설명 : 일정 길이 넘어가면 ... 로 축약되도록 -->
+		                        <p class="card-text course-list_aditDc" 
+		                           th:text="${#strings.length(item.aditDc) &gt; 70 ? 
+		                                    #strings.substring(item.aditDc, 0, 70) + '...' 
+		                                    : item.aditDc}">산책로 설명
+		                        </p>
+		                        <!-- 예정 : 좋아요 수 / 언급 수 / 댓글 수 -->
+		                        <p class="card-text">
+		                            <img class="heart-icon"
+		                                 src="/images/heart-click.png" alt="좋아요" />
+		                            <span th:text="${item.likeCnt}">좋아요 수</span>개 언급
+		                            <span th:text="${item.mentionCnt}">언급 수</span>개 댓글
+		                            <span th:text="${item.commentCnt}">댓글 수</span>개
+		                        </p>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>	     
 </body>
 </html>

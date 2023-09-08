@@ -49,12 +49,29 @@
 					<a href="#" id="nav-link" class="nav-link px-2" style="color: white;">마이페이지</a>
 				</li>
 	    	</ul>
-		    <ul class="nav">
-				<!-- 로그인 --> 
-			    <li class="nav-item"><a href="#" class="nav-link px-2" style="color: white;">로그인</a></li>
-			    <!-- 회원가입 --> 
-			    <li class="nav-item"><a href="#" class="nav-link px-2" style="color: white;">회원가입</a></li>
-		    </ul>
+	    	
+			<!-- 회원가입, 로그인, 로그아웃 버튼 -->
+			<div class="nav">
+				<div th:if="${loginId == null}" class="d-flex flex-wrap">
+					<!-- 로그인 안 된 상태에서 nav에 로그인, 회원가입 버튼 보이기 -->
+					<a th:href="@{/login}" class="nav-link link-body-emphasis px-2">Login</a>
+					<a th:href="@{/signup}" class="nav-link link-body-emphasis px-2">Signup</a>
+				</div>
+
+				<!-- 로그인 된 상태에서 보이기 -->
+				<div th:if="${loginId != null}" class="d-flex flex-wrap">
+					<!-- 로그인 된 정보, 로그아웃 버튼 nav에 띄우기 -->
+					<div class="nav-item">
+						<span class="nav-link link-body-emphasis px-2"
+							th:text="${loginId} + ' 님'"></span>
+					</div>
+					<div class="nav-item">
+						<a th:href="@{/logout}" class="nav-link link-body-emphasis px-2">Logout</a>
+					</div>
+
+				</div>
+
+			</div>
 		</div>
 	</nav>
 	
@@ -78,7 +95,7 @@
 		<div class="container d-flex flex-wrap justify-content-center align-items-end">
 		    <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none">
 	    		<span class="fs-3 mt-4">Walk Around You</span>
-	    		<img src="/image/common/logo_img.png" class="logo mb-3"></img>
+	    		<img src="/images/common/logo_img.png" class="logo mb-3"></img>
 	   		</a>
 	  	</div>
 	</header>

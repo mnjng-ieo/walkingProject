@@ -1,4 +1,13 @@
-/* 폰트 */
+/* 목차 */
+/*
+	1. 폰트 
+	2. Header 영역
+	3. 중간 메인 영역
+	4. Footer 영역 	
+*/
+
+
+/* 1. 폰트 */
 @font-face {
     font-family: 'KimjungchulGothic-Bold';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
@@ -19,7 +28,8 @@ body{
 	font-family: 'KimjungchulGothic-Bold';
 }	
 
-/* Header 영역 */
+
+/* 2. Header 영역 */
 /* 상단 메뉴 배경색 변경 */
 .topnav {
 	background-color: #3D8361;
@@ -37,9 +47,16 @@ body{
 }
 
 
-/* Footer 영역 */
+/* 3. 중간 메인 영역 */
+/* 좋아요 순 BEST 3 */
+.heart-icon {
+	width: 25px;
+	padding-bottom: 3px;
+}
+
+
+/* 4. Footer 영역 */
 .footer{
 	width: 100%;
 	background-color: #EEF2E6;
-	z-index: 100;
 }
