@@ -23,7 +23,6 @@ public interface UserRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findByUserId(String userId);
 	
 	
-	
 	// 3. Id찾기 : 이름(userName)과 이메일(userEmail) 정보를 입력 받아 아이디 찾기
 	Optional<Member> findByUserNameAndUserEmail(String userName, String userEmail);
 

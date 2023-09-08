@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -29,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/status", "/images/**", "/login", "/main", "/signup/**", "/login/idlookup", "/login/pwdlookup").permitAll()
+                        .requestMatchers("/**").permitAll()
                         //.requestMatchers("/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/check")
                         .usernameParameter("userId")
                         .passwordParameter("userPwd")
-                        .defaultSuccessUrl("/view/dashboard", true)
+                        .defaultSuccessUrl("/dashboard", true)
                         .permitAll()
                 );
         http.logout((logout) -> logout

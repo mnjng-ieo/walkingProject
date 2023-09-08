@@ -1,60 +1,141 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/defaultLayout}">
 <head>
 <meta charset="UTF-8">
 <title>회원 정보 조회</title>
 
 <!-- 부트스트랩5 버전 -->
 <link
-   href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-   rel="stylesheet">
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet">
 <!-- Bootstrap5 JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
 <!-- Popper.js -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 </head>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+	integrity="sha384-Vk4y5BfJKL3tiSvg4Em053UJlO5R5v4Zw1TJw1y5xg5F5G5f5Bf5T5V5T5U5D5E5S5P5O5T5D5D5/"
+	crossorigin="anonymous">
 
 <!-- 비밀번호 변경 이벤트 -->
 <script>
-   
+const modifyBtn = document.getElementById('modifyBtn');
+
+if (modifyBtn) {
+    modifyBtn.addEventListener('click', event => {
+        let params = new URLSearchParams(location.search);
+        let userId = params.get('userId');
+
+        // 클라이언트 측에서 웹페이와 상호작용하는 url
+        fetch(`/main/mypage/userpage/${userId}`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                userName: document.getElementById('userName').value,
+                userNickname: document.getElementById('userNickname').value,
+                userTelnumber: document.getElementById('userTelnumber').value,
+                userEmail: document.getElementById('userEmail').value
+            })
+        })
+        .then(() => {
+            alert('수정이 완료되었습니다.');
+            location.replace(`/main/mypage/userpage/${userId}`);
+        })
+    });
+}
 </script>
 
 <!-- 탈퇴하기 이벤트 -->
 <script>
-   
+	
 </script>
 
 <body>
+	<th:block layout:fragment="Content">
 
-	<div class="container">
-		<h1 class="mt-4">회원 정보 조회</h1>
-		<br>
-		<hr>
-		<br>
-		<form th:action="@{/userpage/{userId}}" method="post">
-			<div class="form-group">
-				<label for="userId">이름</label> <input type="text"
-					class="form-control" id="userId" name="userId" th:field="*{userId}"
-					th:required="required">
-			</div>
-			<div class="form-group">
-				<label for="userName">닉네임</label> <input type="text"
-					class="form-control" id="userName" name="userName"
-					th:field="*{userName}" th:required="required">
-			</div>
-			<div class="form-group">
-				<label for="userTelNumber">핸드폰 번호</label> <input type="tel"
-					class="form-control" id="userTelNumber" name="userTelNumber"
-					placeholder="010-1234-5678" th:field="*{userTelNumber}">
-			</div>
-			<div class="form-group">
-				<label for="userEmail">이메일</label> <input type="email"
-					class="form-control" id="userEmail" name="userEmail"
-					placeholder="walkaroundyou@gmail.com" th:field="*{userEmail}"
-					th:required="required">
-			</div>
-			<button type="submit" class="btn btn-primary">회원 정보 변경하기</button>
-		</form>
+		<div class="container">
+			<h1 class="mt-4">회원 정보 조회</h1>
+			<br>
+			<hr>
+			<br>
+			<!-- <form th:action="@{/userpage/{userId}}" method="post"> -->
+			<form action="/main/mypage/userpage" method="post">
+
+				<div class="form-group mb-3">
+					<label for="userId">아이디</label> <input type="text"
+						class="form-control" id="userId" name="userName"
+						th:value="${user.userId}" readonly>
+				</div>
+
+				<div class="form-group mb-3">
+					<label for="userName">이름</label> <input type="text"
+						class="form-control" id="userName" name="userName"
+						th:value="${user.userName}">
+				</div>
+
+				<div class="form-group mb-3">
+					<label for="userNickname">닉네임</label> <input type="text"
+						class="form-control" id="userNickname" name="userNickname"
+						contenteditable="true" th:value="${user.userNickname}" required>
+				</div>
+
+				<div class="form-group mb-3">
+					<label for="userTelNumber">핸드폰 번호</label> <input type="tel"
+						class="form-control" id="userTelNumber" name="userTelNumber"
+						th:value="${user.userTelNumber}">
+				</div>
+
+				<div class="form-group mb-3">
+					<label for="userEmail">이메일</label> <input type="email"
+						class="form-control" id="userEmail" name="userEmail"
+						th:value="${user.userEmail}" required>
+				</div>
+
+				<div class="form-group mb-3 ">
+					<label for="userEmail">가입일</label> <input type="email"
+						class="form-control" id="userJoinDate" name="userJoinDate"
+						th:value="${user.userJoinDate}" readonly>
+				</div>
+
+
+				<label>소셜 로그인 여부</label>
+				<div class="form-group mb-3 d-flex flex-wrap">
+					<div class="form-check" style="margin-right: 20px;">
+						<i class="fab fa-google"></i>
+						<!-- disable -->
+						<input type="checkbox" class="form-check-input"
+							id="googleLoginCheckbox" name="googleLogin"> <label
+							class="form-check-label" for="googleLoginCheckbox">Google
+							로그인</label>
+					</div>
+					<div class="form-check" style="margin-right: 20px;">
+						<i class="fab fa-instagram"></i> <input type="checkbox"
+							class="form-check-input" id="instagramLoginCheckbox"
+							name="instagramLogin"> <label class="form-check-label"
+							for="instagramLoginCheckbox">Instagram 로그인</label>
+					</div>
+					<div class="form-check" style="margin-right: 20px;">
+						<i class="fab fa-github"></i> <input type="checkbox"
+							class="form-check-input" id="githubLoginCheckbox"
+							name="githubLogin"> <label class="form-check-label"
+							for="githubLoginCheckbox">GitHub 로그인</label>
+					</div>
+				</div>
+
+				<!-- 서버측에서 동적으로 생성된 url (서버에서 페이지를 렌더링할 때 URL 동적으로 생성)-->
+				<button type="button" id="modifyBtn"
+					class="btn btn-outline-dark btn-sm"
+					th:onclick="|location.href='@{/main/mypage/userpage?userId={userId}(userId=${user.userId})}'|">회원
+					정보 변경하기</button>
+			</form>
+		</div>
 		<br>
 
 
@@ -66,38 +147,38 @@
 		<!-- 비밀번호 변경하기 모달 버튼 -->
 		<button type="button" id="withdrawModal" class="btn btn-danger mt-2"
 			data-bs-toggle="modal" data-bs-target="#withdrawBtn">탈퇴하기</button>
-	</div>
+		</div>
 
 
-	<!-- 비밀번호 변경하기 모달 창 -->
-	<!-- Modal -->
-	<div class="modal fade" id="changePwdBtn" data-bs-backdrop="static"
-		data-bs-keyboard="false" tabindex="-1"
-		aria-labelledby="staticBackdropLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="passwordModalLabel">비밀번호 변경하기</h1>
-				</div>
-
-				<div class="modal-body">
-					<div class="form-group">
-						<label for="userId">현재 비밀번호</label> <input type="password"
-							class="form-control" id="currentPwd" name="currentPwd" required>
+		<!-- 비밀번호 변경하기 모달 창 -->
+		<!-- Modal -->
+		<div class="modal fade" id="changePwdBtn" data-bs-backdrop="static"
+			data-bs-keyboard="false" tabindex="-1"
+			aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="passwordModalLabel">비밀번호
+							변경하기</h1>
 					</div>
-					<div class="form-group">
-						<label for="userId">새로운 비밀번호</label> <input type="password"
-							class="form-control" id="newPwd" name="newPwd" required>
-					</div>
-					<div class="form-group">
-						<label for="userId">비밀번호 확인</label> <input type="password"
-							class="form-control" id="newPwdConfirm" name="newPwdConfirm"
-							required>
-					</div>
-				</div>
 
-				
-footer">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="currentPwd">현재 비밀번호</label> <input type="password"
+								class="form-control" id="currentPwd" name="currentPwd" required>
+						</div>
+						<div class="form-group">
+							<label for="newPwd">새로운 비밀번호</label> <input type="password"
+								class="form-control" id="newPwd" name="newPwd" required>
+						</div>
+						<div class="form-group">
+							<label for="newPwdConfirm">비밀번호 확인</label> <input type="password"
+								class="form-control" id="newPwdConfirm" name="newPwdConfirm"
+								required>
+						</div>
+					</div>
+
+
 					<button type="button" class="btn btn-secondary"
 						data-bs-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary" id="resultPwdBtn"
@@ -105,37 +186,37 @@ footer">
 				</div>
 			</div>
 		</div>
-	</div>
 
 
-	<!-- 탈퇴하기 모달 창 -->
-	<!-- Modal -->
-	<div class="modal fade" id="withdrawBtn" data-bs-backdrop="static"
-		data-bs-keyboard="false" tabindex="-1"
-		aria-labelledby="staticBackdropLabel" aria-hidden="true">
-		
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="staticBackdropLabel">탈퇴하기</h1>
-				</div>
+		<!-- 탈퇴하기 모달 창 -->
+		<!-- Modal -->
+		<div class="modal fade" id="withdrawBtn" data-bs-backdrop="static"
+			data-bs-keyboard="false" tabindex="-1"
+			aria-labelledby="staticBackdropLabel" aria-hidden="true">
 
-				<div class="modal-body">
-					<div class="form-group">
-						<label for="userId">현재 비밀번호</label> <input type="password"
-							class="form-control" id="currentPwd" name="currentPwd" required>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="staticBackdropLabel">탈퇴하기</h1>
 					</div>
-				</div>
 
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-bs-dismiss="modal">Close</button>
-					<button type="button" id="resultWdBtn" name="resultWdBtn"
-						class="btn btn-primary">탈퇴하기</button>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="userId">현재 비밀번호</label> <input type="password"
+								class="form-control" id="currentPwd" name="currentPwd" required>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Close</button>
+						<button type="button" id="resultWdBtn" name="resultWdBtn"
+							class="btn btn-primary">탈퇴하기</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
+	</th:block>
 </body>
 </html>

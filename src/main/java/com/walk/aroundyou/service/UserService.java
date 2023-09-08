@@ -90,24 +90,26 @@ public class UserService{
 	public Member updateUserInfo(String userId, String userName, String userNickname, String userTelnumber, String userEmail) {
 		
 		// id로 user 확인
-		Optional<Member> userOptional = userRepository.findByUserId(userId);
-	Member member = userOptional.get();
-	
-		// user 있다면
-		if ( member != null ) {
-			
-			// 유저 정보 변경
-			member.setUserName(userName);
-			member.setUserNickname(userNickname);
-			member.setUserTelNumber(userTelnumber);
-			member.setUserEmail(userEmail);
-			
-			// 유저 정보 저장
-			return userRepository.save(member);
-		}
-		// user == null
-		return null;
+	    Optional<Member> userOptional = userRepository.findByUserId(userId);
+
+	    if (userOptional.isPresent()) {
+	        Member member = userOptional.get();
+
+	        // 유저 정보 변경
+	        member.setUserName(userName);
+	        member.setUserNickname(userNickname);
+	        member.setUserTelNumber(userTelnumber);
+	        member.setUserEmail(userEmail);
+
+	        // 변경된 유저 정보 저장
+	        return userRepository.save(member);
+	    }
+
+	    // user가 존재하지 않을 경우 null 반환
+	    return null;
 	}
+
+
 	
 	///// 2. 아이디 검색
 	// 아이디를 통해 회원 정보 찾기에 이용 등
