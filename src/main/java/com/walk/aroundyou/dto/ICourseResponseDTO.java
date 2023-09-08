@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 // 산책로 목록 조회에 대한 응답을 위한 DTO
 // (좋아요 수, 게시물 언급 수, 댓글 수 포함 전송)
 // 코스 리포지토리에서 쓸 수 있게 인터페이스로 새로 만들었다.
+// jpa 쿼리문에서 인식하도록 쿼리문 작성 시 as로 별칭주기!
 public interface ICourseResponseDTO {
 	Long getCourseId();
 	String getEsntlId(); 
@@ -35,5 +36,25 @@ public interface ICourseResponseDTO {
 	Integer getLikeCnt();     // 좋아요 수
 	Integer getMentionCnt();  // 게시물 언급 수
 	Integer getCommentCnt();  // 댓글 수
+	
+	// 쿼리문에 작성 할 별칭
+	//	CourseId
+	//	EsntlId
+	//	WlkCoursFlagNm
+	//	WlkCoursNm
+	//	CoursDc
+	//	SignguCn
+	//	CoursLevelNm
+	//	CoursLtCn
+	//	CoursDetailLtCn
+	//	AditDc
+	//	CoursTimeCn
+	//	ToiletDc
+	//	CvntlNm
+	//	LnmAddr
+	//	CoursSpotLa
+	//	CoursSpotLo
+	//	LikeCnt
+	//	CommentCnt
 	
 }
