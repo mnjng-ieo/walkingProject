@@ -1,5 +1,6 @@
 package com.walk.aroundyou.dto;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -25,7 +26,7 @@ public interface ICourseResponse {
 	String getAditDc();
 	
 	@JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
-	Timestamp getCoursTimeCn();
+	Time getCoursTimeCn();
 	
 	String getToiletDc();
 	String getCvntlNm();
@@ -35,6 +36,7 @@ public interface ICourseResponse {
 	
 	// [뷰 추가 정보]
 	Integer getLikeCnt();     // 좋아요 수
+	Integer getMentionCnt();  // 게시글 언급 수
 	Integer getCommentCnt();  // 댓글 수
 	
 	// 쿼리문에 작성 할 별칭

@@ -65,41 +65,49 @@ public interface CourseRepository
 	/**
 	 * [메인페이지] 검색창에 산책로 정보 검색하기 - 서비스에서 매개변수 앞뒤로 '%' 붙이기!
 	 */
-	@Query(value = """
-			SELECT  
-					c.course_id as CourseId
-					, c.esntl_id as EsntlId
-					, c.wlk_cours_flag_nm as WlkCoursFlagNm
-					, c.wlk_cours_nm as WlkCoursNm
-					, c.cours_dc as CoursDc
-					, c.signgu_cn as SignguCn
-					, c.cours_level_nm as CoursLevelNm
-					, c.cours_lt_cn as CoursLtCn
-					, c.cours_detail_lt_cn as CoursDetailLtCn
-					, c.adit_dc as AditDc
-					, c.cours_time_cn as CoursTimeCn
-					, c.toilet_dc as ToiletDc
-					, c.cvntl_nm as CvntlNm
-					, c.lnm_addr as LnmAddr
-					, c.cours_spot_la as CoursSpotLa
-					, c.cours_spot_lo as CoursSpotLo
-					, ifnull(comment_cnt, 0) as commentCnt
-		            , ifnull(like_cnt, 0) as likeCnt
-				FROM course as c
-		            LEFT JOIN 
-		               (select course_id, count(course_id) as comment_cnt
-		                  from comment as c
-		                  group by c.course_id) as cc
-		            on c.course_id = cc.course_id   
-		            LEFT JOIN 
-		               (select course_id, count(course_id) as like_cnt
-		                  from course_like as cl
-		                  group by cl.course_id) as cll
-				    on c.course_id = cll.course_id				
+	@Query(value ="""
+			SELECT 
+				c.course_id as courseId
+				, c.adit_dc as aditDc
+				, c.cours_dc as coursDc
+				, c.cours_detail_lt_cn as coursDetailLtCn
+				, c.cours_level_nm as coursLevelNm
+				, c.cours_lt_cn as coursLtCn
+				, c.cours_spot_la as coursSpotLa
+				, c.cours_time_cn as coursTimeCn
+				, c.cvntl_nm as cvntlNm
+				, c.lnm_addr as lnmAddr
+				, c.esntl_id as esntlId
+				, c.signgu_cn as signguCn
+				, c.toilet_dc as toiletDc
+				, c.wlk_cours_flag_nm as wlkCoursFlagNm
+				, c.wlk_cours_nm as wlkCoursNm
+				, c.cours_view_count as coursViewCount
+				, ifnull(like_cnt, 0) as likeCnt
+				, ifnull(mention_cnt, 0) as mentionCnt
+				, ifnull(comment_cnt, 0) as commentCnt
+			FROM Course as c 
+				LEFT JOIN
+					(select course_id, count(course_id) as like_cnt
+						from course_like as cl
+						group by cl.course_id) as cll
+				on c.course_id = cll.course_id
+				LEFT JOIN
+					(select course_id, count(course_id) as mention_cnt
+						from board_course as bc
+						group by bc.course_id) as bcc
+				on c.course_id = bcc.course_id
+				LEFT JOIN
+					(select course_id, count(course_id) as comment_cnt
+						from comment as c
+						group by c.course_id) as cc
+				on c.course_id = cc.course_id				
 	            WHERE REPLACE(wlk_cours_flag_nm, ' ', '') like :#{#keyword}
 		         or REPLACE(wlk_cours_nm, ' ', '') like :#{#keyword}
 		         or REPLACE(cours_dc, ' ', '') like :#{#keyword}
 		         or REPLACE(adit_dc, ' ', '') like :#{#keyword}
+		         ORDER BY c.course_id DESC
+			  	 limit 5
 			""", nativeQuery = true)
 	List<ICourseResponse> findMainCourseByKeyword(
 			@Param("keyword") String keyword);
