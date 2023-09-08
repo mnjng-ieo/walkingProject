@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/status", "/images/**", "/login", "/main", "/signup/**", "/login/idlookup", "/login/pwdlookup").permitAll()
+                        .requestMatchers("/**").permitAll()
                         //.requestMatchers("/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
