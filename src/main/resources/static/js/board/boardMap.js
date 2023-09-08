@@ -10,6 +10,7 @@ window.onload = function(){
 		return document.getElementById(valueName).value
 	}
 	
+	let courseId = getValue("courseId")
 	let flagName = getValue("flagName")
 	let courseName = getValue("courseName")
 	let courseLat = getValue("courseLat")
@@ -35,9 +36,10 @@ window.onload = function(){
 	// 커스텀 오버레이에 표시할 컨텐츠 입니다
 	// 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
 	// 별도의 이벤트 메소드를 제공하지 않습니다 
-	let content = `<div class="wrap">
+	let content = `<div class="wrap fa-bounce">
 					  <div class="info">
 	                    <div class="title">
+	                    	<i class="icon fa-solid fa-person-walking fa-lg fa-bounce"></i>
 	                        ${flagName} 
 	                        <div class="close" id="close" title="닫기"><i class="fa-solid fa-x"></i></div>
 	                    </div>
@@ -47,9 +49,10 @@ window.onload = function(){
 	                       </div>
 	                        <div class="desc">
 	                            <div class="ellipsis">${courseName}</div>
-	                            <div class="jibun ellipsis">${courseAddr}</div> 
-	                            <div class="jibun ellipsis">${courseLength}km / ${courseTime}</div> 
-	                            <div><a href="https://www.kakaocorp.com/main" target="_blank" class="link">바로가기</a></div>
+	                            <div class="textsm ellipsis">${courseAddr}</div> 
+	                            <div class="textsm ellipsis">${courseLength}km / ${courseTime}</div> 
+	                            <div><a href="/course/${courseId}" target="_blank" class="link">
+	                            <i class="fa-solid fa-arrow-up-right-from-square icon fa-xs"></i> 바로가기</a></div>
 	                        </div>
 	                    </div>
 	                </div>  
@@ -71,6 +74,6 @@ window.onload = function(){
 	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
 	function closeOverlay() {
 	    overlay.setMap(null);     
-	}
+	}s
 
 }
