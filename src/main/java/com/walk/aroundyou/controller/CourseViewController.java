@@ -3,6 +3,8 @@ package com.walk.aroundyou.controller;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.CourseRequestDTO;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.service.CourseLikeService;
 import com.walk.aroundyou.service.CourseService;
@@ -40,27 +43,13 @@ public class CourseViewController {
 	 */
 	@GetMapping("/course")
 	public String getCourses(
+			@RequestParam(name="sort", required= false) String sort,
 			@RequestParam(name="page", required= false, 
-			defaultValue = "0") int currentPage, Model model) {
+			defaultValue = "0") int currentPage, 
+			Model model) {
 		
-		Page<Course> coursePage = courseService.findAll(currentPage);
-		List<CourseResponseDTO> courses = coursePage
-				.stream()
-				.map(course -> {
-					CourseResponseDTO dto = new CourseResponseDTO(course);
-					// 좋아요 수, 언급 수, 댓글 수 추가
-					dto.setLikeCnt(
-							courseRepository.countCourseLikesByCourseId(
-									course.getCourseId()));;
-					dto.setMentionCnt(
-							courseRepository.countCourseMentionsByCourseId(
-									course.getCourseId()));
-					dto.setCommentCnt(
-							courseRepository.countCourseCommentsByCourseId(
-									course.getCourseId()));;
-					return dto;
-				})
-				.toList();
+		Page<ICourseResponseDTO> coursePage = 
+				courseService.findAll(sort, currentPage);
 		
 		// pagination 설정
 		int totalPages = coursePage.getTotalPages();
@@ -75,7 +64,7 @@ public class CourseViewController {
 		model.addAttribute("pageEnd", pageEnd);
 		
 		// 산책로 리스트 저장
-		model.addAttribute("courses", courses);  
+		model.addAttribute("courses", coursePage);  
 		
 		// courseList.html라는 뷰 조회
 		return "courseList";
@@ -119,29 +108,11 @@ public class CourseViewController {
 		    	startTime = "04:00:00";
 		    	endTime = "99:00:00";
 		    }
-			
-		Page<Course> coursePage = 
+		
+		Page<ICourseResponseDTO> coursePage = 
 				courseService.findAllByCondition(
 				region, level, distance, startTime, endTime,
 				searchTargetAttr, searchKeyword, sort, currentPage);
-		
-		List<CourseResponseDTO> courses = coursePage
-				.stream()
-				.map(course -> {
-					CourseResponseDTO dto = new CourseResponseDTO(course);
-					// 좋아요 수, 언급 수, 댓글 수 추가
-					dto.setLikeCnt(
-							courseRepository.countCourseLikesByCourseId(
-									course.getCourseId()));;
-					dto.setMentionCnt(
-							courseRepository.countCourseMentionsByCourseId(
-									course.getCourseId()));
-					dto.setCommentCnt(
-							courseRepository.countCourseCommentsByCourseId(
-									course.getCourseId()));;
-					return dto;
-				})
-				.toList();
 		
 		// pagination 설정
 		// 헷갈리지 말자 : currentPage는 0부터 시작!
@@ -158,7 +129,7 @@ public class CourseViewController {
 		model.addAttribute("pageEnd", pageEnd);
 		
 		// 산책로 리스트 저장
-		model.addAttribute("courses", courses);  
+		model.addAttribute("courses", coursePage);  
 		
 		// 파라미터 값을 모델에 저장 (페이지네이션에 쓰임) - 알아요 쓸데없이 긴 거ㅠㅠ
 		model.addAttribute("region", region);
@@ -216,7 +187,6 @@ public class CourseViewController {
 	    model.addAttribute("pageStart", pageStart);
 	    model.addAttribute("pageEnd", pageEnd);
 	    model.addAttribute("sort", sort);
-
 		
 		return "course";
 	}
@@ -275,28 +245,11 @@ public class CourseViewController {
 		    	endTime = "99:00:00";
 		    }
 			
-		Page<Course> coursePage = 
+		Page<ICourseResponseDTO> coursePage = 
 				courseService.findAllByCondition(
 				region, level, distance, startTime, endTime,
-				searchTargetAttr, searchKeyword, sort, currentPage);
-		
-		List<CourseResponseDTO> courses = coursePage
-				.stream()
-				.map(course -> {
-					CourseResponseDTO dto = new CourseResponseDTO(course);
-					// 좋아요 수, 언급 수, 댓글 수 추가
-					dto.setLikeCnt(
-							courseRepository.countCourseLikesByCourseId(
-									course.getCourseId()));;
-					dto.setMentionCnt(
-							courseRepository.countCourseMentionsByCourseId(
-									course.getCourseId()));
-					dto.setCommentCnt(
-							courseRepository.countCourseCommentsByCourseId(
-									course.getCourseId()));;
-					return dto;
-				})
-				.toList();
+				searchTargetAttr, searchKeyword, 
+				sort, currentPage);
 		
 		// pagination 설정
 		// 헷갈리지 말자 : currentPage는 0부터 시작!
@@ -313,7 +266,7 @@ public class CourseViewController {
 		model.addAttribute("pageEnd", pageEnd);
 		
 		// 산책로 리스트 저장
-		model.addAttribute("courses", courses);  
+		model.addAttribute("courses", coursePage);  
 		
 		// 파라미터 값을 모델에 저장 (페이지네이션에 쓰임) - 알아요 쓸데없이 긴 거ㅠㅠ
 		model.addAttribute("region", region);

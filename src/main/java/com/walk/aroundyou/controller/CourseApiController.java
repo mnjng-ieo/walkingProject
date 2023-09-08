@@ -2,6 +2,9 @@ package com.walk.aroundyou.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.CourseRequestDTO;
 import com.walk.aroundyou.dto.CourseResponseDTO;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.service.CourseService;
 
@@ -56,7 +60,7 @@ public class CourseApiController {
 	 * 일단 반환을 object로 하면 dto를 어떻게 매핑해야 할지 모르겠어서 그대로 냅뒀다.
 	 */
 	@GetMapping("/api/courses/search")
-	public ResponseEntity<List<CourseResponseDTO>> findAllCourses(
+	public ResponseEntity<Page<ICourseResponseDTO>> findAllCourses(
 			// @RequestParam : 요청객체로부터 요청파라미터 자동추출
 			@RequestParam(required = false) String region,
 		    @RequestParam(required = false) String level,
@@ -68,29 +72,14 @@ public class CourseApiController {
 		    @RequestParam(required = false) String sort,
 		    @RequestParam(required = false, defaultValue = "0") Integer page
 			){
-		
-		List<CourseResponseDTO> courses = courseService.findAllByCondition(
+			
+		Page<ICourseResponseDTO> coursePage = 
+				courseService.findAllByCondition(
 				region, level, distance, startTime, endTime,
-				searchTargetAttr, searchKeyword, sort, page)
-				.stream()
-				.map(course -> {
-					CourseResponseDTO dto = new CourseResponseDTO(course);
-					// 좋아요 수, 언급 수, 댓글 수 추가
-					dto.setLikeCnt(
-							courseRepository.countCourseLikesByCourseId(
-									course.getCourseId()));;
-					dto.setMentionCnt(
-							courseRepository.countCourseMentionsByCourseId(
-									course.getCourseId()));
-					dto.setCommentCnt(
-							courseRepository.countCourseCommentsByCourseId(
-									course.getCourseId()));;
-					return dto;
-				})
-				.toList();
+				searchTargetAttr, searchKeyword, sort, page);
 		
 		return ResponseEntity.ok()
-				.body(courses);
+				.body(coursePage);
 	}
 
 	/**

@@ -7,8 +7,8 @@
 <meta charset="UTF-8">
     <title>산책로 전체 목록 조회</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" href="lib/css/course/courseList.css">
-    <script src="/lib/js/course/courseList.js"></script>
+    <link rel="stylesheet" href="/css/course/courseList.css">
+    <script src="/js/course/courseList.js"></script>
 </head>
 <body>
     <!-- 제목 및 조건 선택 박스 -->
@@ -126,6 +126,8 @@
             id="sort" name="sort" 
             onchange="updateViewWithSearchResults();">
         <option value="default">산책로명 가나다순</option>
+        <option value="coursViewCount">조회수 순</option>
+        <option value="likeCnt">좋아요 순</option>
         <option value="coursDetailLtCnASC">거리 짧은 순</option>
         <option value="coursDetailLtCnDESC">거리 먼 순</option>
     </select>
