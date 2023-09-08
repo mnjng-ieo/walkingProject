@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/check")
                         .usernameParameter("userId")
                         .passwordParameter("userPwd")
-                        .defaultSuccessUrl("/view/dashboard", true)
+                        .defaultSuccessUrl("/dashboard", true)
                         .permitAll()
                 );
         http.logout((logout) -> logout

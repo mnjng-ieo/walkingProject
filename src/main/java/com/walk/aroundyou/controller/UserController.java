@@ -1,8 +1,8 @@
 package com.walk.aroundyou.controller;
 
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
+//import java.util.HashMap;
+//import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -80,10 +81,15 @@ public class UserController {
 	
 //
 //	
-//	/////// 메인페이지 - 로그인 확인, 로그아웃 버튼
-	@GetMapping("/main")
-	public String main()
-	{	
+//	/////// 메인페이지 - 로그인, 회원가입 버튼 | 로그인 확인, 로그아웃 버튼
+	@GetMapping("/mainn")
+	public String processmain(@AuthenticationPrincipal User user, Model model) {
+		
+		// 로그인 된 상태일 경우로 조건을 줘야지 /main페이지를 public으로 불러올 수 있음
+		if(user != null) {
+		model.addAttribute("loginId", user.getUsername());
+		}
+		
 		return "main";
 	}
 	
@@ -96,22 +102,22 @@ public class UserController {
 	
 		
 	// 로그인 결과에 맞춰서 네비의 로그인, 회원가입, 로그아웃 버튼 숨기기	
-	@ResponseBody
-	@GetMapping("/checkLoginStatus")
-	// Authentication 객체를 매개변수로 받아서 로그인 상태를 확인하고 JSON 응답을 생성
-    public Map<String, Boolean> checkLoginStatus(Authentication authentication) {
-		
-        // Spring Security에서 제공하는 Authentication 객체를 통해 로그인 상태 확인
-		// authentication != null && authentication.isAuthenticated() : 로그인 상태
-		// loggedIn : true
-        boolean loggedIn = authentication != null && authentication.isAuthenticated();
-
-        // JSON 응답 생성
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("loggedIn", loggedIn);
-
-        return response;
-    }
+//	@ResponseBody
+//	@GetMapping("/checkLoginStatus")
+//	// Authentication 객체를 매개변수로 받아서 로그인 상태를 확인하고 JSON 응답을 생성
+//    public Map<String, Boolean> checkLoginStatus(Authentication authentication) {
+//		
+//        // Spring Security에서 제공하는 Authentication 객체를 통해 로그인 상태 확인
+//		// authentication != null && authentication.isAuthenticated() : 로그인 상태
+//		// loggedIn : true
+//        boolean loggedIn = authentication != null && authentication.isAuthenticated();
+//
+//        // JSON 응답 생성
+//        Map<String, Boolean> response = new HashMap<>();
+//        response.put("loggedIn", loggedIn);
+//
+//        return response;
+//    }
 		
 	
 	//////////////////// 아이디 찾기
@@ -165,6 +171,7 @@ public class UserController {
 	@GetMapping("/main/mypage")
 	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
 	public String showMypage(Model model, Authentication authentication) {
+		
 	    if (authentication != null && authentication.isAuthenticated()) {
 	        // 현재 로그인한 사용자 아이디
 	        String userId = authentication.getName();
@@ -187,7 +194,7 @@ public class UserController {
 	// 변경 후 블러오는 정보
 	//@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
 	@PostMapping("/main/mypage")
-	@ResponseBody
+	//@ResponseBody
 	// Authentication authentication : 매개변수를 통해 사용자 정보를 확인
 	public String processMypage(@RequestParam String userId, @RequestParam String userNickname,
 			@RequestParam String userImg, @RequestParam String userDescription) {
