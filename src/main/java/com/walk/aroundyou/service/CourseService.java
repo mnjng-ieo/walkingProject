@@ -114,6 +114,23 @@ public class CourseService {
 		
 		return coursePage;
 	}
+	
+	/**
+	 * [메인페이지] 산책로 좋아요순 정렬 메서드
+	 */
+		public Page<ICourseResponseDTO> findCoursesOrderByLikes() {
+		
+		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
+		Sort sort = Sort.by(Direction.DESC, "likeCnt");
+		
+		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(3), 정렬 설정) 
+		PageRequest pageRequest = PageRequest.of(0, 3, sort);
+		
+		Page<ICourseResponseDTO> coursePage = 
+				courseRepository.findCoursesWithCounts(pageRequest);
+		
+		return coursePage;
+	}
 
 	/**
 	 * [산책로목록조회페이지] 조건에 따른 산책로 목록 조회 메서드
