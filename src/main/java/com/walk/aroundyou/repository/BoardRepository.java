@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.Tag;
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domainenum.BoardType;
 import com.walk.aroundyou.dto.IBoardDetailResponse;
 import com.walk.aroundyou.dto.IBoardListResponse;
@@ -183,7 +183,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			, nativeQuery = true)
 	void updateByTitleAndContentAndUserInfo(@Param("post") Board post);
 	
-	List<Board> findByUserId(User userId);
+	List<Board> findByUserId(Member userId);
 	
 	void deleteByBoardTitle(String boardTitle);
 

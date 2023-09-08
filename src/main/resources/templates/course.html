@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/defaultLayout}"
-      layout:fragment="Content">
+      layout:decorate="~{common/layouts/defaultLayout}">
 <head>
 <meta charset="UTF-8">
     <title>산책로 상세 페이지</title>
@@ -12,6 +11,7 @@
     <script src="/js/course/searchCourseBoardList.js"></script>
 </head>
 <body>
+<th:block layout:fragment="Content">
     <div class="top-imgBox" th:object="${course}">
         <img class="top-imgBox_img" src="/images/defaultCourseMainImg.jpg" alt="메인사진" />
     </div>
@@ -215,5 +215,6 @@
 	        </div>
         </div>
     </div>
+</th:block>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.walk.aroundyou.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -81,7 +83,8 @@ public interface CourseRepository
 	public Page<ICourseResponseDTO> findCoursesWithCounts(Pageable pageable);
 	
 	/**
-	 * 조건 + 정렬 + 페이징 처리한 전체 산책로 목록 반환
+	 * 조건 + 정렬 + 페이징 처리한 전체 산책로 목록 반환 -> 조건검색 불가능... 못쓰는 메소드
+	 * specificaton은 엔티티에 대해서만 가능하다.
 	 */
 	@Query(value ="""
 			SELECT 
@@ -158,16 +161,43 @@ public interface CourseRepository
 	 * [메인페이지] 검색창에 산책로 정보 검색하기 - 서비스에서 매개변수 앞뒤로 '%' 붙이기!
 	 */
 	@Query(value = """
-			SELECT * FROM Course c
-            WHERE REPLACE(wlk_cours_flag_nm, ' ', '') like :#{#keyword}
-	         or REPLACE(wlk_cours_nm, ' ', '') like :#{#keyword}
-	         or REPLACE(cours_dc, ' ', '') like :#{#keyword}
-	         or REPLACE(adit_dc, ' ', '') like :#{#keyword}
+			SELECT  
+					c.course_id as CourseId
+					, c.esntl_id as EsntlId
+					, c.wlk_cours_flag_nm as WlkCoursFlagNm
+					, c.wlk_cours_nm as WlkCoursNm
+					, c.cours_dc as CoursDc
+					, c.signgu_cn as SignguCn
+					, c.cours_level_nm as CoursLevelNm
+					, c.cours_lt_cn as CoursLtCn
+					, c.cours_detail_lt_cn as CoursDetailLtCn
+					, c.adit_dc as AditDc
+					, c.cours_time_cn as CoursTimeCn
+					, c.toilet_dc as ToiletDc
+					, c.cvntl_nm as CvntlNm
+					, c.lnm_addr as LnmAddr
+					, c.cours_spot_la as CoursSpotLa
+					, c.cours_spot_lo as CoursSpotLo
+					, ifnull(comment_cnt, 0) as commentCnt
+		            , ifnull(like_cnt, 0) as likeCnt
+				FROM course as c
+		            LEFT JOIN 
+		               (select course_id, count(course_id) as comment_cnt
+		                  from comment as c
+		                  group by c.course_id) as cc
+		            on c.course_id = cc.course_id   
+		            LEFT JOIN 
+		               (select course_id, count(course_id) as like_cnt
+		                  from course_like as cl
+		                  group by cl.course_id) as cll
+				    on c.course_id = cll.course_id				
+	            WHERE REPLACE(wlk_cours_flag_nm, ' ', '') like :#{#keyword}
+		         or REPLACE(wlk_cours_nm, ' ', '') like :#{#keyword}
+		         or REPLACE(cours_dc, ' ', '') like :#{#keyword}
+		         or REPLACE(adit_dc, ' ', '') like :#{#keyword}
 			""", nativeQuery = true)
-	Page<CourseResponseDTO> findMainCourseByKeyword(
-			@Param("keyword") String keyword, Pageable pageable);
+	List<ICourseResponseDTO> findMainCourseByKeyword(
+			@Param("keyword") String keyword);
 
 	
-
-
 }

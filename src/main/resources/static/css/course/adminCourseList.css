@@ -84,17 +84,17 @@ select option:checked {
 
 .sortBox {
 	margin: 0 auto;
-	width: 70%; height: 100px;
+	height: 100px;
 	display: flex;
 	margin-top: -100px;
-	align-items: center;
-	align-content: center;
+	/* align-items: center; */
+	align-content: center; 
+	justify-content:space-between;
 }
 
 .sortBox > * {
 	/* margin-right: 50px; */
 	height: 50px;
-	margin: 0 auto;
 }
 
 .user-check-button {

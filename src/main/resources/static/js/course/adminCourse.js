@@ -31,3 +31,29 @@ if(deleteButton) {
 		}
 	});
 }
+
+// 수정 기능
+const updateFinishButton = document.getElementById('updateFinishButton');
+if (modifyButton) {
+    modifyFinishButton.addEventListener('click', event => {
+        // 현재 페이지의 URL에서 쿼리 문자열 부분을 나타냄
+        // get() 을 통해 해당 매개변수의 값을 가져올 수 있다.
+        let params = new URLSearchParams(location.search);
+        let id = params.get('id');
+        
+        fetch(`/api/admin/courses/${id}`, {
+            method: 'PUT',
+            header: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value
+            })
+        })
+        .then(() => {
+            alert('수정이 완료되었습니다.');
+            location.replace(`/admin/courses/${id}`);
+        });
+    });
+}

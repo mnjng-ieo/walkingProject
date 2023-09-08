@@ -83,4 +83,7 @@ public class CourseResponseDTO {
 		this.mentionCnt = mentionCnt;
 		this.commentCnt = commentCnt;
 	}
+
+	public CourseResponseDTO() {
+	}
 }

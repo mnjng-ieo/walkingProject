@@ -50,7 +50,7 @@ function loadPage(newPage) {
 
 // 초기화 버튼 클릭 이벤트
 function loadReset() {
-    window.location.href = '/course';
+    window.location.href = '/admin/courses';
 }
 
 // 사용자 페이지에서 목록 확인하기 버튼 클릭 이벤트

@@ -26,10 +26,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @Table(name = "user")
 @Entity
-public class User {
+public class Member {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="user_id", nullable=false)
 	private String userId;
 	

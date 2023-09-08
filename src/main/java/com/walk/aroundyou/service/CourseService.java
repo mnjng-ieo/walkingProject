@@ -86,9 +86,8 @@ public class CourseService {
 	
 	/**
 	 * [산책로목록조회페이지] 모든 산책로 조회 메서드 : 페이징, 정렬 구현
-	 * [메인페이지] 산책로 좋아요순 정렬 메서드
 	 */
-	public Page<ICourseResponseDTO> findAll(String sort, int page) {
+	public Page<CourseResponseDTO> findAll(String sort, int page) {
 		
 		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
 		Sort customSort;
@@ -98,9 +97,10 @@ public class CourseService {
 			customSort = Sort.by(Direction.ASC, "coursDetailLtCn");
 		} else if("coursDetailLtCnDESC".equals(sort)) { // 상세코스거리 내림차순   coursDetailLtCn
 			customSort = Sort.by(Direction.DESC, "coursDetailLtCn");
-		} else if("likeCnt".equals(sort)) { // 좋아요 내림차순
-			customSort = Sort.by(Direction.DESC, "likeCnt");
-		} else if("coursViewCount".equals(sort)) { // 조회수 내림차순
+		} //else if("likeCnt".equals(sort)) { // 좋아요 내림차순 - 불가능
+		//	customSort = Sort.by(Direction.DESC, "likeCnt");
+		//} 
+		  else if("coursViewCount".equals(sort)) { // 조회수 내림차순
 			customSort = Sort.by(Direction.DESC, "coursViewCount");
 		} else { // 산책로명 가나다순  "wlkCoursFlagNm", "wlkCoursNm"
 			customSort = Sort.by(Direction.ASC, "wlkCoursFlagNm", "wlkCoursNm");
@@ -109,33 +109,31 @@ public class CourseService {
 		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(20), 정렬 설정) 
 		PageRequest pageRequest = PageRequest.of(page, SIZE_OF_PAGE, customSort);
 		
-		Page<ICourseResponseDTO> coursePage = 
-				courseRepository.findCoursesWithCounts(pageRequest);
+		Page<Course> coursePage = 
+				courseRepository.findAll(pageRequest);
+		Page<CourseResponseDTO> courseDTOPage = coursePage
+				.map(course -> {
+					CourseResponseDTO dto = new CourseResponseDTO(course);
+					// 좋아요 수, 언급 수, 댓글 수 추가
+					dto.setLikeCnt(
+							courseRepository.countCourseLikesByCourseId(
+									course.getCourseId()));;
+					dto.setMentionCnt(
+							courseRepository.countCourseMentionsByCourseId(
+									course.getCourseId()));
+					dto.setCommentCnt(
+							courseRepository.countCourseCommentsByCourseId(
+									course.getCourseId()));;
+					return dto;
+				});
 		
-		return coursePage;
+		return courseDTOPage;
 	}
 	
 	/**
-	 * [메인페이지] 산책로 좋아요순 정렬 메서드
-	 */
-		public Page<ICourseResponseDTO> findCoursesOrderByLikes() {
-		
-		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
-		Sort sort = Sort.by(Direction.DESC, "likeCnt");
-		
-		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(3), 정렬 설정) 
-		PageRequest pageRequest = PageRequest.of(0, 3, sort);
-		
-		Page<ICourseResponseDTO> coursePage = 
-				courseRepository.findCoursesWithCounts(pageRequest);
-		
-		return coursePage;
-	}
-
-	/**
 	 * [산책로목록조회페이지] 조건에 따른 산책로 목록 조회 메서드
 	 */
-	public Page<ICourseResponseDTO> findAllByCondition(
+	public Page<CourseResponseDTO> findAllByCondition(
 			String region, String level, String distance, 
 			String startTime, String endTime, 
 			String searchTargetAttr, String searchKeyword, 
@@ -149,9 +147,15 @@ public class CourseService {
 		
 		//** 드롭박스 선택 검색조건 추가
 		// Specification의 and() : 검색 조건을 더하는 메소드
-		if (region != null && !("".equals(region)))
-			spec = spec.and(
-					CourseSpecifications.equalRegion(region));
+		if (region != null && !("".equals(region))) {
+			Specification<Course> regionSpec = CourseSpecifications.equalRegion(region);
+		    spec = spec.and(regionSpec);
+		    System.out.println("Region Specification: " + regionSpec.toString());
+				//spec = spec.and(
+				//		CourseSpecifications.equalRegion(region));
+			
+		}
+			
 		if (level != null && !("".equals(level)))
 			spec = spec.and(
 					CourseSpecifications.equalLevel(level));
@@ -184,10 +188,11 @@ public class CourseService {
 		
 		if (searchTargetAttr != null) {
 			switch(searchTargetAttr) {
-			case "total" :
-				spec = spec.and(
-						CourseSpecifications.likeTotalKeyword(searchKeyword));
-				break;
+			// total의 경우 default로 넣었다.
+//			case "total" :
+//				spec = spec.and(
+//						CourseSpecifications.likeTotalKeyword(searchKeyword));
+//				break;
 			case "title" :
 				spec = spec.and(
 						CourseSpecifications.likeTotalKeyword(searchKeyword));
@@ -201,9 +206,17 @@ public class CourseService {
 						CourseSpecifications.likeTotalKeyword(searchKeyword));
 				break;
 			default :
+				// 전체(total) 검색
+				spec = spec.and(
+						CourseSpecifications.likeTotalKeyword(searchKeyword));
 				break;
 			}
-		}	
+		} else {
+			// 메인 창에서의 검색을 위한, 타겟 설정 없는 전체 검색
+			spec = spec.and(
+					CourseSpecifications.likeTotalKeyword(searchKeyword));
+			
+		}
 		
 		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
 		Sort customSort;
@@ -213,9 +226,10 @@ public class CourseService {
 			customSort = Sort.by(Direction.ASC, "coursDetailLtCn");
 		} else if("coursDetailLtCnDESC".equals(sort)) { // 상세코스거리 내림차순   coursDetailLtCn
 			customSort = Sort.by(Direction.DESC, "coursDetailLtCn");
-		} else if("likeCnt".equals(sort)) { // 좋아요 내림차순
-			customSort = Sort.by(Direction.DESC, "likeCnt");
-		} else if("coursViewCount".equals(sort)) { // 조회수 내림차순
+		} // else if("likeCnt".equals(sort)) { // 좋아요 내림차순 - 불가능
+		//	customSort = Sort.by(Direction.DESC, "likeCnt");
+		//} 
+		  else if("coursViewCount".equals(sort)) { // 조회수 내림차순
 			customSort = Sort.by(Direction.DESC, "coursViewCount");
 		} else { // 산책로명 가나다순  "wlkCoursFlagNm", "wlkCoursNm"
 			customSort = Sort.by(Direction.ASC, "wlkCoursFlagNm", "wlkCoursNm");
@@ -224,10 +238,26 @@ public class CourseService {
 		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(20), 정렬 설정) 
 		PageRequest pageRequest = PageRequest.of(page, SIZE_OF_PAGE, customSort);
 		
-		Page<ICourseResponseDTO> coursePage = 
-				courseRepository.findCoursesWithCountsAndConditions(spec, pageRequest);
+		Page<Course> coursePage = 
+				courseRepository.findAll(spec, pageRequest);
 		
-		return coursePage;
+		Page<CourseResponseDTO> courseDTOPage = coursePage
+				.map(course -> {
+					CourseResponseDTO dto = new CourseResponseDTO(course);
+					// 좋아요 수, 언급 수, 댓글 수 추가
+					dto.setLikeCnt(
+							courseRepository.countCourseLikesByCourseId(
+									course.getCourseId()));;
+					dto.setMentionCnt(
+							courseRepository.countCourseMentionsByCourseId(
+									course.getCourseId()));
+					dto.setCommentCnt(
+							courseRepository.countCourseCommentsByCourseId(
+									course.getCourseId()));;
+					return dto;
+				});
+		
+		return courseDTOPage;
 	}
 	
 	/**
@@ -285,6 +315,23 @@ public class CourseService {
 				.stream()
 				.map(CourseResponseDTO::new)
 				.collect(Collectors.toList());
+	}
+
+	/**
+	 * [메인페이지] 산책로 좋아요순 정렬 메서드
+	 */
+		public Page<ICourseResponseDTO> findCoursesOrderByLikes() {
+		
+		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
+		Sort sort = Sort.by(Direction.DESC, "likeCnt");
+		
+		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(3), 정렬 설정) 
+		PageRequest pageRequest = PageRequest.of(0, 3, sort);
+		
+		Page<ICourseResponseDTO> coursePage = 
+				courseRepository.findCoursesWithCounts(pageRequest);
+		
+		return coursePage;
 	}
 
 }

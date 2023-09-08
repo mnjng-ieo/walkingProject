@@ -41,7 +41,7 @@ public class Board {
 	// users 테이블과 연결된 외래키
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
-	private User userId;
+	private Member userId;
 	
 	@Column(name = "user_nickname", nullable = false)
 	private String userNickname;

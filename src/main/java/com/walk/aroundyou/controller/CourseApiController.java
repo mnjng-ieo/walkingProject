@@ -60,7 +60,7 @@ public class CourseApiController {
 	 * 일단 반환을 object로 하면 dto를 어떻게 매핑해야 할지 모르겠어서 그대로 냅뒀다.
 	 */
 	@GetMapping("/api/courses/search")
-	public ResponseEntity<Page<ICourseResponseDTO>> findAllCourses(
+	public ResponseEntity<Page<CourseResponseDTO>> findAllCourses(
 			// @RequestParam : 요청객체로부터 요청파라미터 자동추출
 			@RequestParam(required = false) String region,
 		    @RequestParam(required = false) String level,
@@ -73,7 +73,7 @@ public class CourseApiController {
 		    @RequestParam(required = false, defaultValue = "0") Integer page
 			){
 			
-		Page<ICourseResponseDTO> coursePage = 
+		Page<CourseResponseDTO> coursePage = 
 				courseService.findAllByCondition(
 				region, level, distance, startTime, endTime,
 				searchTargetAttr, searchKeyword, sort, page);

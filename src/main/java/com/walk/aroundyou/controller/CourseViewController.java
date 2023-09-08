@@ -1,21 +1,17 @@
 package com.walk.aroundyou.controller;
 
-import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.walk.aroundyou.domain.Course;
-import com.walk.aroundyou.dto.CourseRequestDTO;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
-import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.service.CourseLikeService;
 import com.walk.aroundyou.service.CourseService;
@@ -48,7 +44,7 @@ public class CourseViewController {
 			defaultValue = "0") int currentPage, 
 			Model model) {
 		
-		Page<ICourseResponseDTO> coursePage = 
+		Page<CourseResponseDTO> coursePage = 
 				courseService.findAll(sort, currentPage);
 		
 		// pagination 설정
@@ -86,7 +82,8 @@ public class CourseViewController {
 			@RequestParam(name="page", required= false, 
 			defaultValue = "0") int currentPage,
 			Model model) {
-			
+			log.info("level : " + level);
+			log.info("searchKeyword : " + searchKeyword);
 			String startTime = null;
 			String endTime = null; 
 			
@@ -109,7 +106,7 @@ public class CourseViewController {
 		    	endTime = "99:00:00";
 		    }
 		
-		Page<ICourseResponseDTO> coursePage = 
+		Page<CourseResponseDTO> coursePage = 
 				courseService.findAllByCondition(
 				region, level, distance, startTime, endTime,
 				searchTargetAttr, searchKeyword, sort, currentPage);
@@ -245,7 +242,7 @@ public class CourseViewController {
 		    	endTime = "99:00:00";
 		    }
 			
-		Page<ICourseResponseDTO> coursePage = 
+		Page<CourseResponseDTO> coursePage = 
 				courseService.findAllByCondition(
 				region, level, distance, startTime, endTime,
 				searchTargetAttr, searchKeyword, 
@@ -296,13 +293,28 @@ public class CourseViewController {
 	/**
 	 * [관리자 페이지] 산책로 데이터 관리 - 산책로 생성
 	 * 수정 요청을 /admin/courses/{id} POST로 따로 만들까 고민 중
+	 * 일단 수정 요청에 해당하는 메소드부터 만들자
 	 */
-	@GetMapping("/admin/courses/new-course")
-	public String adminNewCourse(Model model) {
-		model.addAttribute("course", new CourseRequestDTO());
+//	@GetMapping("/admin/courses/new-course")
+//	public String adminNewCourse(Model model) {
+//		model.addAttribute("course", new CourseResponseDTO());
+//		
+//		// 생성·수정 뷰 똑같게 설정
+//		return "adminInsertCourse";
+//	}
+	
+	/**
+	 * [관리자 페이지] 산책로 데이터 관리 - 산책로 수정
+	 * @PatchMapping 어노테이션은 어떻게 쓰는 거지?
+	 */
+	@GetMapping("/admin/courses/update/{id}")
+	public String adminNewCourse(
+			@PathVariable Long id, Model model) {
+		Course course = courseService.findById(id);
+		model.addAttribute("course", new CourseResponseDTO(course));
 		
 		// 생성·수정 뷰 똑같게 설정
-		return "adminPostCourse";
+		return "adminUpdateCourse";
 	}
 }
 

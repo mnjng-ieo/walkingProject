@@ -20,8 +20,8 @@
 
 .course-list-top_searchBox {
 	height: 350px;
-	width: 70%;
 	margin: 0 auto;
+	border: 1px solid blue;
 }
 
 .course-list-top_map {
@@ -89,9 +89,14 @@ select option:checked {
 	background-color: #fddc3f;
 }
 
+.sortBox {
+	display: flex; 
+	justify-content: flex-end;
+}
+
 .course-list-sort {
 	border: 2px solid #ccc;
-	margin: 20px 0 50px 73%;
+	margin: 20px 0 50px 0;
 	width: 230px; height: 50px;
 	padding-left: 10px;
 	font-size: 20px;
