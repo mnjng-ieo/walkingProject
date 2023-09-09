@@ -83,7 +83,7 @@ public class TagViewController {
 
 	
 	// 검색하여 출력되는 목록 페이지 구현(좋아요 수, 댓글 수 포함)
-	@GetMapping("/searchBoard/{tagContent}")
+	@GetMapping("/tag/search/{tagContent}")
 	public String searchBoardAndCnt(
 				@PathVariable(name="tagContent") String tagContent,
 				@RequestParam(value = "page", required=false, defaultValue="0") int currentPage,

@@ -2,8 +2,11 @@ package com.walk.aroundyou.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,10 +16,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.Course;
-import com.walk.aroundyou.domain.Tag;
 import com.walk.aroundyou.dto.CourseRequestDTO;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.repository.BoardRepository;
 import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.repository.CourseSpecifications;
@@ -31,25 +34,9 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseService {
 
 	// 페이징 처리에 필요한, 한 페이지에 조회되는 데이터 수
-	private final static int SIZE_OF_PAGE = 10;
+	private final static int SIZE_OF_PAGE = 12;
 	private final CourseRepository courseRepository;
 	private final BoardRepository boardRepository;
-	
-	// 연서 추가
-	public Page<IBoardListResponse> findBoardAndCntByCourseId(Long id, int page, String sort) {
-		// 최신순, 조회수, 좋아요순으로 정렬
-		// HTML의 select option 태그의 value를 같은 이름으로 설정하기
-		Sort customSort;
-		if ("boardViewCount".equals(sort)) {
-			customSort = Sort.by(Direction.DESC, "boardViewCount");
-		} else if("likeCnt".equals(sort)) {
-			customSort = Sort.by(Direction.DESC, "likeCnt");
-		} else {
-			customSort = Sort.by(Direction.DESC, "boardId");
-		}
-		// public static PageRequest of(int pageNumber, int pageSize, Sort sort) 사용
-		return boardRepository.findBoardAndCntByCourseId(id, PageRequest.of(page, SIZE_OF_PAGE, customSort));
-	}
 	
 	/**
 	 * [산책로상세조회페이지] id로 산책로 하나 조회
@@ -60,7 +47,7 @@ public class CourseService {
 				.orElseThrow(() 
 						-> new IllegalArgumentException(
 								"not found: " + id));
-	}
+	}	
 	
 	/**
 	 * [산책로상세조회페이지] id로 산책로 하나 조회(좋아요, 언급, 댓글 수 포함 + 조회수 1 증가) 
@@ -81,25 +68,73 @@ public class CourseService {
 	}
 	
 	/**
-	 * [산책로목록조회페이지] 모든 산책로 조회 메서드
+	 * [산책로상세조회페이지] 산책로 관련 게시물 조회 - 최신순, 조회수, 좋아요 순 정렬 (연서님 작성)
 	 */
-	public Page<Course> findAll(int page) {
-		// 산책로명 가나다순으로 정렬
-		Sort sort = Sort.by(Direction.ASC, "wlkCoursFlagNm", "wlkCoursNm");
-		//return courseRepository.findAll(sort);
+    public Page<IBoardListResponse> findBoardAndCntByCourseId(Long id, int page, String sort) {
+	      // 최신순, 조회수, 좋아요순으로 정렬
+	      // HTML의 select option 태그의 value를 같은 이름으로 설정하기
+	      Sort customSort;
+	      if ("boardViewCount".equals(sort)) {
+	         customSort = Sort.by(Direction.DESC, "boardViewCount");
+	      } else if("likeCnt".equals(sort)) {
+	         customSort = Sort.by(Direction.DESC, "likeCnt");
+	      } else {
+	         customSort = Sort.by(Direction.DESC, "boardId");
+	      }
+	      // public static PageRequest of(int pageNumber, int pageSize, Sort sort) 사용
+	      return boardRepository.findBoardAndCntByCourseId(id, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+	}
+	
+	/**
+	 * [산책로목록조회페이지] 모든 산책로 조회 메서드 : 페이징, 정렬 구현
+	 */
+	public Page<CourseResponseDTO> findAll(String sort, int page) {
+		
+		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
+		Sort customSort;
+
+		// 상세코스거리에 null이 있으면 마치 0처럼 asc에서는 가장 위에, desc에서는 가장 아래에 보인다. 
+		if("coursDetailLtCnASC".equals(sort)) { // 상세코스거리 오름차순   coursDetailLtCn
+			customSort = Sort.by(Direction.ASC, "coursDetailLtCn");
+		} else if("coursDetailLtCnDESC".equals(sort)) { // 상세코스거리 내림차순   coursDetailLtCn
+			customSort = Sort.by(Direction.DESC, "coursDetailLtCn");
+		} //else if("likeCnt".equals(sort)) { // 좋아요 내림차순 - 불가능
+		//	customSort = Sort.by(Direction.DESC, "likeCnt");
+		//} 
+		  else if("coursViewCount".equals(sort)) { // 조회수 내림차순
+			customSort = Sort.by(Direction.DESC, "coursViewCount");
+		} else { // 산책로명 가나다순  "wlkCoursFlagNm", "wlkCoursNm"
+			customSort = Sort.by(Direction.ASC, "wlkCoursFlagNm", "wlkCoursNm");
+		}
 		
 		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(20), 정렬 설정) 
-		PageRequest pageRequest = PageRequest.of(page, SIZE_OF_PAGE, sort);
-		return courseRepository.findAll(pageRequest);
+		PageRequest pageRequest = PageRequest.of(page, SIZE_OF_PAGE, customSort);
+		
+		Page<Course> coursePage = 
+				courseRepository.findAll(pageRequest);
+		Page<CourseResponseDTO> courseDTOPage = coursePage
+				.map(course -> {
+					CourseResponseDTO dto = new CourseResponseDTO(course);
+					// 좋아요 수, 언급 수, 댓글 수 추가
+					dto.setLikeCnt(
+							courseRepository.countCourseLikesByCourseId(
+									course.getCourseId()));;
+					dto.setMentionCnt(
+							courseRepository.countCourseMentionsByCourseId(
+									course.getCourseId()));
+					dto.setCommentCnt(
+							courseRepository.countCourseCommentsByCourseId(
+									course.getCourseId()));;
+					return dto;
+				});
+		
+		return courseDTOPage;
 	}
-	// ↳ 어차피 동적으로 작성되면 findAll 메소드 하나로도 될 것 같다.
-	//   일단 ajax로 경로 설정하기 전에는 findAll() 호출을 통해 '/courses'로는 전체 조회가 바로 보이도록 했다.
 	
 	/**
 	 * [산책로목록조회페이지] 조건에 따른 산책로 목록 조회 메서드
-	 * - 페이징 처리하면서 메소드의 반환 형을 List에서 Page로 바꿨다.
 	 */
-	public Page<Course> findAllByCondition(
+	public Page<CourseResponseDTO> findAllByCondition(
 			String region, String level, String distance, 
 			String startTime, String endTime, 
 			String searchTargetAttr, String searchKeyword, 
@@ -113,9 +148,15 @@ public class CourseService {
 		
 		//** 드롭박스 선택 검색조건 추가
 		// Specification의 and() : 검색 조건을 더하는 메소드
-		if (region != null && !("".equals(region)))
-			spec = spec.and(
-					CourseSpecifications.equalRegion(region));
+		if (region != null && !("".equals(region))) {
+			Specification<Course> regionSpec = CourseSpecifications.equalRegion(region);
+		    spec = spec.and(regionSpec);
+		    System.out.println("Region Specification: " + regionSpec.toString());
+				//spec = spec.and(
+				//		CourseSpecifications.equalRegion(region));
+			
+		}
+			
 		if (level != null && !("".equals(level)))
 			spec = spec.and(
 					CourseSpecifications.equalLevel(level));
@@ -148,10 +189,11 @@ public class CourseService {
 		
 		if (searchTargetAttr != null) {
 			switch(searchTargetAttr) {
-			case "total" :
-				spec = spec.and(
-						CourseSpecifications.likeTotalKeyword(searchKeyword));
-				break;
+			// total의 경우 default로 넣었다.
+//			case "total" :
+//				spec = spec.and(
+//						CourseSpecifications.likeTotalKeyword(searchKeyword));
+//				break;
 			case "title" :
 				spec = spec.and(
 						CourseSpecifications.likeTotalKeyword(searchKeyword));
@@ -165,25 +207,58 @@ public class CourseService {
 						CourseSpecifications.likeTotalKeyword(searchKeyword));
 				break;
 			default :
+				// 전체(total) 검색
+				spec = spec.and(
+						CourseSpecifications.likeTotalKeyword(searchKeyword));
 				break;
 			}
-		}	
+		} else {
+			// 메인 창에서의 검색을 위한, 타겟 설정 없는 전체 검색
+			spec = spec.and(
+					CourseSpecifications.likeTotalKeyword(searchKeyword));
+			
+		}
 		
 		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
 		Sort customSort;
 
 		// 상세코스거리에 null이 있으면 마치 0처럼 asc에서는 가장 위에, desc에서는 가장 아래에 보인다. 
-		if("coursDetailLtCnASC".equals(sort)) { // 상세코스거리 오름차순
+		if("coursDetailLtCnASC".equals(sort)) { // 상세코스거리 오름차순   coursDetailLtCn
 			customSort = Sort.by(Direction.ASC, "coursDetailLtCn");
-		} else if("coursDetailLtCnDESC".equals(sort)) { // 상세코스거리 내림차순
+		} else if("coursDetailLtCnDESC".equals(sort)) { // 상세코스거리 내림차순   coursDetailLtCn
 			customSort = Sort.by(Direction.DESC, "coursDetailLtCn");
-		} else { // 산책로명 가나다순
+		} // else if("likeCnt".equals(sort)) { // 좋아요 내림차순 - 불가능
+		//	customSort = Sort.by(Direction.DESC, "likeCnt");
+		//} 
+		  else if("coursViewCount".equals(sort)) { // 조회수 내림차순
+			customSort = Sort.by(Direction.DESC, "coursViewCount");
+		} else { // 산책로명 가나다순  "wlkCoursFlagNm", "wlkCoursNm"
 			customSort = Sort.by(Direction.ASC, "wlkCoursFlagNm", "wlkCoursNm");
 		}
 		
 		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(20), 정렬 설정) 
 		PageRequest pageRequest = PageRequest.of(page, SIZE_OF_PAGE, customSort);
-		return courseRepository.findAll(spec, pageRequest);
+		
+		Page<Course> coursePage = 
+				courseRepository.findAll(spec, pageRequest);
+		
+		Page<CourseResponseDTO> courseDTOPage = coursePage
+				.map(course -> {
+					CourseResponseDTO dto = new CourseResponseDTO(course);
+					// 좋아요 수, 언급 수, 댓글 수 추가
+					dto.setLikeCnt(
+							courseRepository.countCourseLikesByCourseId(
+									course.getCourseId()));;
+					dto.setMentionCnt(
+							courseRepository.countCourseMentionsByCourseId(
+									course.getCourseId()));
+					dto.setCommentCnt(
+							courseRepository.countCourseCommentsByCourseId(
+									course.getCourseId()));;
+					return dto;
+				});
+		
+		return courseDTOPage;
 	}
 	
 	/**
@@ -201,29 +276,28 @@ public class CourseService {
 	 * 해당 매서드의 실행이 종료(commit)되면 JPA의 엔티티 매니저에 의해서
 	 * 영속성 컨텍스트에 저장된 엔티티 객체의 값이 변경되어 update 쿼리가 자동 실행됨.  
 	 */
-	// 연서 - 오류나서 주석처리함
-//	@Transactional
-//	public Course updateCourse (long id, CourseRequestDTO request) {
-//		Course course = courseRepository.findById(id)
-//				.orElseThrow(()-> new IllegalArgumentException("Course not found : " + id));
-//		
-//		course.update(request.getWlkCoursFlagNm(),
-//				request.getWlkCoursNm(),
-//				request.getCoursDc(),
-//				request.getSignguNm(),
-//				request.getCoursLevelNm(),
-//				request.getCoursLtCn(),
-//				request.getCoursDetailLtCn(),
-//				request.getAditDc(),
-//				request.getCoursTimeCn(),
-//				request.getToiletDc(),
-//				request.getCvntlNm(),
-//				request.getLnmAddr(),
-//				request.getCoursSpotLa(),
-//				request.getCoursSpotLo()
-//		);
-//		return course;
-//	}
+	@Transactional
+	public Course updateCourse (long id, CourseRequestDTO request) {
+		Course course = courseRepository.findById(id)
+				.orElseThrow(()-> new IllegalArgumentException("Course not found : " + id));
+		
+		course.update(request.getWlkCoursFlagNm(),
+				request.getWlkCoursNm(),
+				request.getCoursDc(),
+				request.getSignguCn(),
+				request.getCoursLevelNm(),
+				request.getCoursLtCn(),
+				request.getCoursDetailLtCn(),
+				request.getAditDc(),
+				request.getCoursTimeCn(),
+				request.getToiletDc(),
+				request.getCvntlNm(),
+				request.getLnmAddr(),
+				request.getCoursSpotLa(),
+				request.getCoursSpotLo()
+		);
+		return course;
+	}
 	
 	/**
 	 * [관리자페이지] 산책로데이터 삭제 메소드
@@ -232,4 +306,42 @@ public class CourseService {
 		courseRepository.deleteById(id);
 	}
 	
+	// 검색에서 해당 값이 없는 것을 체크(09/09 - 연서 수정)
+	public Optional<Course> findByBoardId(Long id) {
+		List<Course> courses = courseRepository.findByBoardId(id);
+		if(courses.isEmpty()) {
+			return Optional.ofNullable(null);
+		} else {
+			return Optional.ofNullable(courses.get(0));			
+		}
+	}
+	/**
+	 * [메인페이지] 산책로 조회순 정렬 메소드
+	 */
+	public List<CourseResponseDTO> findAllOrderByViewCnt() {
+		Sort sort = Sort.by(Direction.DESC, "coursViewCount");
+		List<Course> courseList = courseRepository.findAll(sort);
+		return courseList
+				.stream()
+				.map(CourseResponseDTO::new)
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * [메인페이지] 산책로 좋아요순 정렬 메서드
+	 */
+		public Page<ICourseResponseDTO> findCoursesOrderByLikes() {
+		
+		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
+		Sort sort = Sort.by(Direction.DESC, "likeCnt");
+		
+		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(3), 정렬 설정) 
+		PageRequest pageRequest = PageRequest.of(0, 3, sort);
+		
+		Page<ICourseResponseDTO> coursePage = 
+				courseRepository.findCoursesWithCounts(pageRequest);
+		
+		return coursePage;
+	}
+
 }
