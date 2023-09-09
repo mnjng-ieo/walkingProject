@@ -6,11 +6,13 @@
 <meta charset="UTF-8">
 	<title>홈페이지</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <script type="text/javascript" src="/js/board/searchCourseList.js"></script>
+    <script type="text/javascript" src="/js/common/mainSearchList.js"></script>
 </head>
 <body>
 	<th:block layout:fragment="Content">
+	
 	<div class="container SearchList">
+	<p>검색된 키워드: <span th:text="${keyword}"></span></p>
 		<!-- 검색한 단어가 포함된 해시태그 -->
 		<h5>검색하신 단어가 포함된 해시태그</h5>
         <div id="tagResults" class= "d-flex">        
@@ -25,6 +27,7 @@
 
 		<!-- 검색한 단어가 포함된 산책로 -->
 		<hr>
+		<!-- 검색된 키워드 출력 -->
 		<h5>검색하신 단어가 포함된 산책로</h5>
 		<div id="courseResults" class = "border p-3">
 			<div th:each="courseResult : ${courseResults}"
@@ -88,13 +91,16 @@
 			    </div><!-- 글 부분 끝 -->
 			    
 			  </div>
-			</div>
+			</div><!-- 반복문 끝 -->
 
             <!-- 더보기 버튼 -->
             <!-- 메인페이지에서 입력된 검색어 가지고 와서 /course/search 페이지에 적용할 것
             자바스크립트 지수씨 내용 참고해서 클릭이벤트가 오면 url 주기 -->
-            <a id="loadMoreCourse" class="btn btn-sm btn-outline-success w-100" 
-                th:href="@{/course/search}" role="button">산책로 더보기-></a>
+		    
+		    <a class="btn btn-success w-100 btm-sm"
+               style = "text-decoration-line: none; cursor:pointer;" 
+               th:href="@{/course/search(searchKeyword=${keyword})}">
+		    산책로 더보기 -></a>
 
 		</div><!-- 산책로 끝 -->
 
@@ -140,9 +146,10 @@
 		  </div><!-- 카드 하나 끝 -->
 		</div><!-- 반복문 끝 -->   
         <!-- 더보기 -->
-        <a id="loadMoreCourse" class="btn btn-sm btn-outline-success w-100" 
-            th:href="@{/board}" role="button">게시글-></a>
-
+        <a class="btn btn-success w-100 btm-sm"
+           style = "text-decoration-line: none; cursor:pointer;" 
+           th:href="@{/board}">게시물 더보기 -></a>       
+        
 		 		
 		</div><!-- 커뮤니티 끝 -->
 		

@@ -2,13 +2,10 @@ package com.walk.aroundyou.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
-import com.walk.aroundyou.dto.ICourseResponse;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.dto.ITagResponse;
 import com.walk.aroundyou.repository.BoardRepository;
 import com.walk.aroundyou.repository.CourseRepository;
@@ -29,12 +26,12 @@ public class MainSearchService {
 	/**
 	 * [메인페이지] 검색창으로 산책로 정보 조회
 	 */
-	public List<ICourseResponse> findCourseByKeyword(String keyword){
+	public List<ICourseResponseDTO> findCourseByKeyword(String keyword){
 		
 		// 검색 키워드의 공백 제거 + SQL LIKE 연산에 쓰기 위해 앞뒤로 '%' 붙임
 		String formattedKeyword = '%' + keyword.replace(" ", "") + '%';
 		
-		return (List<ICourseResponse>) courseRepository.findMainCourseByKeyword(formattedKeyword);
+		return (List<ICourseResponseDTO>) courseRepository.findMainCourseByKeyword(formattedKeyword);
 	}
 	
 	/**
