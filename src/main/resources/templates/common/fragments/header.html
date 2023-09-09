@@ -1,69 +1,110 @@
 <!DOCTYPE html>
-<html
-	xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<!-- 부트스트랩 JavaScript 및 jQuery 링크 -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+<!-- 부트스트랩 CSS 링크 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<script
+	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 
 
+<!-- 
+   p-3 : padding을 3크기로
+   mb-3 : margin-bottom을 3크기로
+   border-bottom : 하단에 테두리
+ -->
+<th:block th:fragment="HeaderFragment">
 	<!-- 
-	p-3 : padding을 3크기로
-	mb-3 : margin-bottom을 3크기로
-	border-bottom : 하단에 테두리
- -->	
-<th:block th:fragment="HeaderFragment">		
-	<!-- 
-		py-2 : padding의 y축(top, bottom)을 2크기만큼
-		bg-body-tertiary : body의 배경색을 tertiary(회색)으로
-		border-bottom : 아래 테두리
-	 -->	
+      py-2 : padding의 y축(top, bottom)을 2크기만큼
+      bg-body-tertiary : body의 배경색을 tertiary(회색)으로
+      border-bottom : 아래 테두리
+    -->
 	<nav class="py-2 bg-body-tertiary border-bottom">
 		<!-- 
-			d-flex : display:flex 활성화
-			flex-wrap : 줄바꿈 활성화
-			nav : navigation
-			nav-item : navigation의 항목
-			me-auto : margin-end(오른쪽)을 자동으로 하겠다
-			nav-link
-			link-body-emphasis : 링크의 색상 변경하겠다
-			px-2 : x축의 padding 크기를 2로
-			active : 활성화 상태로 설정
-		 -->
+         d-flex : display:flex 활성화
+         flex-wrap : 줄바꿈 활성화
+         nav : navigation
+         nav-item : navigation의 항목
+         me-auto : margin-end(오른쪽)을 자동으로 하겠다
+         nav-link
+         link-body-emphasis : 링크의 색상 변경하겠다
+         px-2 : x축의 padding 크기를 2로
+         active : 활성화 상태로 설정
+       -->
+
 		<div class="container d-flex flex-wrap">
 			<ul class="nav me-auto">
-			    <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a></li>
-			    <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Features</a></li>
-			    <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Pricing</a></li>
-			    <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">FAQs</a></li>
-			    <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">About</a></li>
-	    	</ul>
-		    <ul class="nav">
-			    <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Login</a></li>
-			    <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Sign up</a></li>
-		    </ul>
+				<li class="nav-item"><a href="#"
+					class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a></li>
+				<li class="nav-item"><a href="#"
+					class="nav-link link-body-emphasis px-2">Features</a></li>
+				<li class="nav-item"><a href="#"
+					class="nav-link link-body-emphasis px-2">Pricing</a></li>
+				<li class="nav-item"><a href="#"
+					class="nav-link link-body-emphasis px-2">FAQs</a></li>
+				<li class="nav-item"><a href="#"
+					class="nav-link link-body-emphasis px-2">About</a></li>
+			</ul>
+
+			<!-- 회원가입, 로그인, 로그아웃 버튼 -->
+			<div class="nav">
+				<div th:if="${loginId == null}" class="d-flex flex-wrap">
+					<!-- 로그인 안 된 상태에서 nav에 로그인, 회원가입 버튼 보이기 -->
+					<a th:href="@{/login}" class="nav-link link-body-emphasis px-2">Login</a>
+					<a th:href="@{/signup}" class="nav-link link-body-emphasis px-2">Signup</a>
+				</div>
+
+				<!-- 로그인 된 상태에서 보이기 -->
+				<div th:if="${loginId != null}" class="d-flex flex-wrap">
+					<!-- 로그인 된 정보, 로그아웃 버튼 nav에 띄우기 -->
+					<div class="nav-item">
+						<span class="nav-link link-body-emphasis px-2"
+							th:text="${loginId} + ' 님'"></span>
+					</div>
+					<div class="nav-item">
+						<a th:href="@{/logout}" class="nav-link link-body-emphasis px-2">Logout</a>
+					</div>
+
+				</div>
+
+			</div>
 		</div>
 	</nav>
+
 	<!-- 
-		py-3 : padding의 y축(top, bottom)을 3크기만큼
-		mb-4 : margin-bottom을 4크기만큼
-		border-bottom : 아래 테두리
-	 -->	
+      py-3 : padding의 y축(top, bottom)을 3크기만큼
+      mb-4 : margin-bottom을 4크기만큼
+      border-bottom : 아래 테두리
+    -->
 	<header class="py-3 mb-4 border-bottom">
 		<!-- 
-			justify-content-center : 콘텐츠 채우기, 가운데에 추가간격없이 붙이기
-			align-items-center : 항목 정렬, 위아래 정렬에서 가운데로
-			mb-lg-0 : 창크기가 lg(max-width이 992px 이상)일때 margin-bottom을 0으로
-       		text-decoration-none : 밑줄 없음으로 설정
-			col-12 : 너비 설정, 총 너비에서 12칸을 차지하겠단 의미
-			col-lg-auto : 가변 너비, lg일때 자연스러운 너비로 설정
-			mb-md-0 : md(768px)에서는 margins-bottom을 0으로
-		 -->
+         justify-content-center : 콘텐츠 채우기, 가운데에 추가간격없이 붙이기
+         align-items-center : 항목 정렬, 위아래 정렬에서 가운데로
+         mb-lg-0 : 창크기가 lg(max-width이 992px 이상)일때 margin-bottom을 0으로
+            text-decoration-none : 밑줄 없음으로 설정
+         col-12 : 너비 설정, 총 너비에서 12칸을 차지하겠단 의미
+         col-lg-auto : 가변 너비, lg일때 자연스러운 너비로 설정
+         mb-md-0 : md(768px)에서는 margins-bottom을 0으로
+       -->
 		<div class="container d-flex flex-wrap justify-content-center">
-		    <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none">
-	    		<i class="fa-solid fa-person-walking" style="font-size: 30px; margin:10px;"></i>
-	      		<span class="fs-4">Double header</span>
-	   		</a>
-	    	<form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
-	      		<input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-	    	</form>
-	  	</div>
+			<a href="/"
+				class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none">
+				<i class="fa-solid fa-person-walking"
+				style="font-size: 30px; margin: 10px;"></i> <span class="fs-4">Double
+					header</span>
+			</a>
+			<form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">
+				<input type="search" class="form-control" placeholder="Search..."
+					aria-label="Search">
+			</form>
+		</div>
 	</header>
 
 </th:block>

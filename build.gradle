@@ -57,6 +57,12 @@ dependencies {
 	// 테스트 라이브러리
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.2'
+	
+	// Spring Security를 사용하기 위한 스타터 의존성 추가
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// 스프링 시큐리티를 테스트하기 위한 의존성 추가
+	testImplementation 'org.springframework.security:spring-security-test'
+
 }
 
 tasks.named('test') {
