@@ -1,0 +1,49 @@
+server:
+  port: 80
+ 
+#spring:
+#  mvc:
+#    view:
+#      prefix: /WEB-INF/views/
+#      suffix: .jsp 
+
+# 데이터 소스 등록
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/wayproject
+    username: walkaroundyou
+    password: way0818
+  jpa:
+    # jpa로 데이터베이스 처리하는 실제 sql 명령문을 로그로 보이게 하기
+    show-sql: true
+    hibernate:
+    #ddl-auto: update
+      ddl-auto: none
+    properties:
+      hibernate:
+        # jpa 기술 스펙의 실제 구현 패키지인 hibernate에서 sql생성시 잘 정렬해서 보이게하기
+        format-sql: true
+        show-sql: true
+    # resource 폴더의 schema.sql, data.sql파일을 이용하여 테이블을 만들고 초기화
+    defer-datasource-initialization: true  
+  # 타임리프 레이아웃 설정
+  thymeleaf:
+    cache: false
+    check-template-location: true
+    prefix: classpath:/templates/
+    suffix: .html
+    enabled: true
+    
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+    
+#  sql:
+#    init:
+#      data-locations: classpath*:data.sql
+#      mode: always
+#      platform: h2
+  

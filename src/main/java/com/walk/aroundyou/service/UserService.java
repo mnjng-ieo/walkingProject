@@ -12,7 +12,10 @@ import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.role.StateId;
 import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.dto.UserRequest;
+import com.walk.aroundyou.dto.UserpageRequest;
 import com.walk.aroundyou.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
 
 
 @Service
@@ -64,6 +67,7 @@ public class UserService{
 	return member.isPresent();
 	}
 
+	
 	///// 마이페이지에서 아이디 받아와서 정보변경하면 업데이트해주기
 	public Member updateMypage(String userId, String userNickname, String userImg, String userDescription) {
 		
@@ -87,26 +91,16 @@ public class UserService{
 	}
 	
 	///// 회원 정보 보기에서 정보 업데이트(유저 페이지)
-	public Member updateUserInfo(String userId, String userName, String userNickname, String userTelnumber, String userEmail) {
+	@Transactional
+	public Member updateUserInfo(String userId, UserpageRequest req) {
 		
-		// id로 user 확인
-	    Optional<Member> userOptional = userRepository.findByUserId(userId);
-
-	    if (userOptional.isPresent()) {
-	        Member member = userOptional.get();
-
-	        // 유저 정보 변경
-	        member.setUserName(userName);
-	        member.setUserNickname(userNickname);
-	        member.setUserTelNumber(userTelnumber);
-	        member.setUserEmail(userEmail);
-
-	        // 변경된 유저 정보 저장
-	        return userRepository.save(member);
-	    }
-
-	    // user가 존재하지 않을 경우 null 반환
-	    return null;
+		
+		Member member = userRepository.findByUserId(userId).orElseThrow(()->new IllegalArgumentException("not found: " + userId));
+		
+		member.update(req.getUserId(), req.getUserName(), req.getUserNickname(), req.getUserTelNumber(), req.getUserEmail(), req.getUserJoinDate());
+		
+		return member;
+		
 	}
 
 
@@ -142,7 +136,7 @@ public class UserService{
 
 	///////////////////// 6. 유저 삭제(탈퇴, 강제 삭제)
 	// 특정아이디 삭제 -> 탈퇴
-	public void deleteByUserId(String userId, String currentPwd) {
+	public boolean deleteByUserId(String userId, String currentPwd) {
 		
 		// id를 기준으로 사용자 정보(비밀번호)를 가져옴
 		Optional<Member> userOptional = userRepository.findByUserId(userId);
@@ -152,8 +146,12 @@ public class UserService{
 		// (암호화된)디비에 있는 비번과 현재 입력한 비번이 같을 경우
 		if (passwordEncoder.matches(currentPwd, member.getUserPwd())) {
         userRepository.deleteByUserId(userId);
+        return true;
+		}else {
+			return false;
 		}
     }
+	
 	// 관리자가 삭제(강제 탈퇴) - 실제로 삭제하는 곳은 서비스 클래스
 	public void deleteByAdmin(String userId, UserRole userRole) {
 		if (userRole == UserRole.ADMIN) {

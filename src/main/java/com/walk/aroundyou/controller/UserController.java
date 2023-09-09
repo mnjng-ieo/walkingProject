@@ -6,25 +6,26 @@ import java.security.Principal;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.dto.UserRequest;
+import com.walk.aroundyou.dto.UserpageRequest;
 import com.walk.aroundyou.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -149,10 +150,15 @@ public class UserController {
 	// Principal 객체는 현재 로그인한 사용자에 대한 정보를 얻기 위해 컨트롤러 메서드에서 매개변수로 사용 가능
 	// 로그인 된 상태에 탈퇴를 하는 거니까 인증된 사용자의 정보를 받아오는 principal 사용
 	// 처음 불러오는 정보
-	@PreAuthorize("isAuthenticated()")
+	// @PreAuthorize("isAuthenticated()")
 	@GetMapping("/main/mypage")
 	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
-	public String showMypage(Model model, Authentication authentication) {
+	public String showMypage(Model model, Authentication authentication, @AuthenticationPrincipal User user) {
+
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+		}
 
 		if (authentication != null && authentication.isAuthenticated()) {
 			// 현재 로그인한 사용자 아이디
@@ -176,7 +182,7 @@ public class UserController {
 	// 변경 후 블러오는 정보
 	// @PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
 	// Authentication authentication : 매개변수를 통해 사용자 정보를 확인
-	@PreAuthorize("isAuthenticated()")
+	// @PreAuthorize("isAuthenticated()")
 	@PostMapping("/main/mypage")
 	public String processMypage(@RequestParam String userId, @RequestParam String userNickname,
 			@RequestParam String userImg, @RequestParam String userDescription,
@@ -205,9 +211,14 @@ public class UserController {
 	}
 
 	//////////////////// 유저페이지
+	// import org.springframework.security.core.userdetails.User;
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/main/mypage/userpage")
-	public String showUserpage(Model model, Authentication authentication) {
+	public String showUserpage(Model model, Authentication authentication, @AuthenticationPrincipal User user) {
+
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+		}
 
 		if (authentication != null && authentication.isAuthenticated()) {
 			// 현재 로그인한 사용자 아이디
@@ -242,41 +253,30 @@ public class UserController {
 //			return "error";
 //		}
 //	}
-	@PostMapping("/main/mypage/userpage/{userId}")
+	
+	@PatchMapping("/main/mypage/userpage/{id}")
 	@ResponseBody
-	public ResponseEntity<Member> processUserpage(@PathVariable String userId, @RequestParam String userName,
-			@RequestParam String userNickname, @RequestParam String userTelnumber, @RequestParam String userEmail,
-			Authentication authentication) {
-
-		if (authentication != null && authentication.isAuthenticated()) {
-			
-			// 현재 로그인한 사용자 아이디
-			String loginId = authentication.getName();
-			
-			Member updateUser = userService.updateUserInfo(loginId, userName, userNickname, userTelnumber, userEmail);
-
-			if (updateUser != null) {
-				return ResponseEntity.ok(updateUser);
-			} else {
-				// 사용자가 존재하지 않을 경우 404 응답 반환
-				return ResponseEntity.notFound().build();
-			}
-		} return ResponseEntity.notFound().build();
+	public ResponseEntity<Member> processUserpage(@PathVariable String userId, @RequestBody UserpageRequest req) {
+		
+		Member updateUser = userService.updateUserInfo(userId, req);
+		log.info("user id : " + userId);
+		
+		return ResponseEntity.ok().body(updateUser);
 	}
 
 	//////////////////// 비밀번호 변경
-	@GetMapping("/changePwd")
-	public String showChangePwd() {
-		return "changepwdform";
-	}
-
+//	@GetMapping("/changePwd")
+//	public String showChangePwd() {
+//		return "changepwdform";
+//	}
 	@PostMapping("/changePwd")
 	public String processChangePwd(@RequestParam String userId, @RequestParam String currentPwd,
-			@RequestParam String newPwd, String newPwdConfirm, Model model) {
+			@RequestParam String newPwd, @RequestParam String newPwdConfirm, Model model) {
 
 		boolean isPasswordChanged = userService.changePwd(userId, currentPwd, newPwd, newPwdConfirm);
 
 		if (isPasswordChanged) {
+			model.addAttribute("success", "비밀번호 변경에 성공하셨습니다.");
 			// 비밀번호 변경 성공 시 메인 페이지 또는 다른 페이지로 리디렉션
 			return "redirect:/userpage";
 		} else {
@@ -292,21 +292,22 @@ public class UserController {
 	@GetMapping("/withdraw")
 	public String showWithdrawForm() {
 		// 탈퇴 폼 템플릿을 보여줌
-		return "withdraw";
+		return "userpage";
 	}
 
 	// 탈퇴 처리하는 곳
 	@PostMapping("/withdraw")
-	public String processWithdrawForm(@RequestParam String currentPwd, @AuthenticationPrincipal Principal principal) {
+	public String processWithdrawForm(@RequestParam String currentPwd, @AuthenticationPrincipal User user, Model model) {
+		
+		boolean result = userService.deleteByUserId(user.getUsername(), currentPwd);
 
-		// .getName() -> id불러옴
-		String userId = principal.getName();
-
-		// 사용자 탈퇴 처리
-		userService.deleteByUserId(userId, currentPwd);
-
-		// 탈퇴 후 로그아웃하도록 리다이렉트
-		return "redirect:/logout";
+		if (result) {
+			// 탈퇴 후 로그아웃하도록 리다이렉트
+			return "redirect:/logout";
+		}else {
+			model.addAttribute("wrongPassword", "비밀번호가 맞지 않습니다");
+		}
+		return "redirect:/userpage";
 	}
 
 	// 관리자가 강퇴하는 곳 -> 관리자사이트 매핑?

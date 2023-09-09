@@ -25,13 +25,13 @@ public class ViewController {
 		return "dashboard";
 	}
 	
-	@GetMapping("/setting/admin")
+	@GetMapping("/admin")
     @AdminAuthorize
     public String adminSettingPage() {
         return "admin_setting";
     }
 
-	@GetMapping("/setting/user")
+	@GetMapping("/user")
 	@UserAuthorize
 	public String userSettingPage() {
 		return "user_setting";

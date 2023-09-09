@@ -87,5 +87,14 @@ public class Member{
     @ColumnDefault("false")
     private boolean socialYn;
     
+    
+    public void update(String userId, String userName, String userNickname, String userTelNumber, String userEmail, Timestamp userJoinDate) {
+    	this.userId = userId;
+    	this.userName = userName;
+    	this.userNickname = userNickname;
+    	this.userTelNumber = userTelNumber;
+    	this.userEmail = userEmail;
+    	this.userJoinDate = userJoinDate;
+    }
 
 }
