@@ -112,17 +112,20 @@ function insertCourse() {
     });
 }
 
+// 필수 입력 필드의 유효성 검사 -> 왜인지 수정페이지에서는 값이 다 지워져도 적용되지 않는다. 
 window.onload = function() {
     
     // 필수 입력 필드의 배열 가져오기
     const requiredFields = document.querySelectorAll('[required]');
     
-    // 등록 버튼 가져오기
+    // 등록, 수정 버튼 가져오기
+    const updateFinishButton = document.getElementById('updateFinishButton');
     const insertFinishButton = document.getElementById('insertFinishButton');
     
     // 필수 입력 필드가 변경될 때마다 확인
     requiredFields.forEach(field => {
-        field.addEventListener('input', validateFields);
+        field.addEventListener('input', validateFields);  // 값 수정할 때마다 발생 ; 등록페이지에서 비어있는 필드를 채울 때 확인
+        field.addEventListener('change', validateFields); // 요소 변경이 끝나면 발생; 수정페이지에서 원래 채워져있다가 값 수정(지울 때)도 확인 
     });
     
     // 입력 필드 검증 함수
@@ -144,8 +147,12 @@ window.onload = function() {
         // 모든 필수 입력 필드가 채워져 있으면 버튼 활성화, 그렇지 않으면 비활성화
         if (allFieldsValid) {
             insertFinishButton.removeAttribute('disabled');
+            updateFinishButton.removeAttribute('disabled');
         } else {
             insertFinishButton.setAttribute('disabled', 'true');
+            updateFinishButton.removeAttribute('disabled', 'true');
+            //alert('필수 입력 조건이 충족되지 않았습니다.');
+            // => 아예 해당 버튼이 클릭되지 않도록 함!
         }
     }
     
