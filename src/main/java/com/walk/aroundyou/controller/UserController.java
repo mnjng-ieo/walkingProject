@@ -265,10 +265,10 @@ public class UserController {
 	}
 
 	//////////////////// 비밀번호 변경
-//	@GetMapping("/changePwd")
-//	public String showChangePwd() {
-//		return "changepwdform";
-//	}
+	@GetMapping("/changePwd")
+	public String showChangePwd() {
+		return "userpage";
+	}
 	@PostMapping("/changePwd")
 	public String processChangePwd(@RequestParam String userId, @RequestParam String currentPwd,
 			@RequestParam String newPwd, @RequestParam String newPwdConfirm, Model model) {

@@ -146,7 +146,7 @@ function updateUserInfo(userId) {
 					</div>
 				</div>
 
-				<!-- 버튼 클릭하면 자바스크립트 함수 실행 -->
+				<!-- 버튼 클릭하면 자바스크립트 함수 실행 
 				<button type="button" id="modifyBtn"
 					class="btn btn-outline-dark btn-sm"
 					th:onclick="'updateUserInfo(' + ${user.userId} + ')'">회원
@@ -232,17 +232,18 @@ function updateUserInfo(userId) {
 
 					<!-- 탈퇴하기 모달 뷰 -->
 					<form action="/withdraw" method="post">
-					<input type="hidden" id="userId" th:value="${user.userId}">
 						<div class="modal-body" th:if="${wrongPassword == null}">
 							<div class="form-group">
-								<label for="currentPwd">현재 비밀번호</label> <input type="password"
+								<label for="currentPwd">현재 비밀번호</label> 
+								<input type="password"
 									class="form-control" id="currentPwd" name="currentPwd">
 							</div>
 						</div>
 						
 						<div class="modal-body" th:unless="${wrongPassword == null}">
 							<div class="form-group">
-								<label for="currentPwd">현재 비밀번호</label> <input type="password"
+								<label for="currentPwd">현재 비밀번호</label> 
+								<input type="password"
 									class="form-control" id="currentPwd" name="currentPwd" required>
 							<div class="invalid-feedback" th:text="${wrongPassword}"></div>
 							</div>
