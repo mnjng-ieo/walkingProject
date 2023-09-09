@@ -30,8 +30,8 @@ public interface UserRepository extends JpaRepository<Member, Long> {
 	// LIKE 연산자를 사용할 때, 필드 이름을 직접 사용하지 않아도 됨.
 	// 파라미터에 전달되는 값을 사용할 때, 필드 이름을 사용하는 것이 아니라 파라미터 이름을 사용하여 매칭시키기 때문
 	// '%'연산자 jpql에서 사용하지 않음 -> 서비스 클래스에 추가
-    @Query("SELECT u FROM User u WHERE u.userNickname LIKE :userNickname")
-    List<Member> searchByUserNickname(@Param(value = "userNickname")String userNickname);
+    //@Query("SELECT u FROM User u WHERE u.userNickname LIKE :userNickname")
+    //List<User> searchByUserNickname(@Param(value = "userNickname")String userNickname);
 
     
 	// 5. user entity의 모든 항목을 반환하기

@@ -295,17 +295,15 @@ public class CourseViewController {
 	 * 수정 요청을 /admin/courses/{id} POST로 따로 만들까 고민 중
 	 * 일단 수정 요청에 해당하는 메소드부터 만들자
 	 */
-//	@GetMapping("/admin/courses/new-course")
-//	public String adminNewCourse(Model model) {
-//		model.addAttribute("course", new CourseResponseDTO());
-//		
-//		// 생성·수정 뷰 똑같게 설정
-//		return "adminInsertCourse";
-//	}
+	@GetMapping("/admin/courses/new-course")
+	public String adminNewCourse(Model model) {
+		model.addAttribute("course", new CourseResponseDTO());
+		
+		return "adminInsertCourse";
+	}
 	
 	/**
 	 * [관리자 페이지] 산책로 데이터 관리 - 산책로 수정
-	 * @PatchMapping 어노테이션은 어떻게 쓰는 거지?
 	 */
 	@GetMapping("/admin/courses/update/{id}")
 	public String adminNewCourse(
@@ -313,7 +311,6 @@ public class CourseViewController {
 		Course course = courseService.findById(id);
 		model.addAttribute("course", new CourseResponseDTO(course));
 		
-		// 생성·수정 뷰 똑같게 설정
 		return "adminUpdateCourse";
 	}
 }

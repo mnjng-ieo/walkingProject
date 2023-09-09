@@ -19,7 +19,7 @@
 }
 
 .name {
-    width: 20%;
+    width: 180px;
     margin-right: 50px;
 }
 
@@ -67,4 +67,17 @@ input {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+select {
+	width: 150px;
+}
+
+#coursDetailLtCn {
+	width: 150px;
+}
+
+.timeInput {
+	width: 50px;
+	text-align: center;
 }

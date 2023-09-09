@@ -57,3 +57,28 @@ function loadReset() {
 function openUserPageInNewTab() {
 	window.open('/course', '_blank');
 }
+
+// [목록, 상세 페이지] 수정 페이지로 이동
+function loadUpdatePage(courseId) {
+    window.location.href = '/admin/courses/update/' + courseId;
+}
+
+// [목록, 상세, 수정 페이지] 삭제 기능
+function deleteCourse(courseId) {
+        
+    // 삭제 요청 확인 대화 상자 표시
+    const confirmDelete = confirm('정말로 ' + courseId + '번 산책로를 삭제하시겠습니까?');
+    
+    if(confirmDelete) {
+        fetch(`/api/admin/courses/${courseId}`, {
+        method: 'DELETE'
+        })
+        .then(() => {
+            alert('삭제가 완료되었습니다.');
+            location.replace('/admin/courses');
+        });
+    } else {
+        // 아니오를 선택한 경우 아무 작업 수행하지 않고 현재 페이지에 머무르기
+    }
+}
+

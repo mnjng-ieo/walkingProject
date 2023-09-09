@@ -26,14 +26,17 @@
 	            <button type="button" class="col goToUserPageButton"
 	            		th:onclick="'openUserPageInNewTab(' + ${course.courseId} + ')'">
 	            		사용자 페이지에서 보기</button>
-	            <button type="button" class="col goBackToLiskButton"
+	            <button type="button" class="col goBackToListButton"
 	            		onclick="redirectToCourses()">목록으로 돌아가기</button>
             </div>
             <div class="row gx-5  course-top_bottomButton">
                 <!-- 예정 : 상단 바 바로 아래에 위치하도록 조절하기 -->
-                <button type="button" class="col updateButton">수정</button>
+                <button type="button" class="col updateButton"
+                        id="updateButton" 
+                        th:onclick="'loadUpdatePage(' + ${course.courseId} + ')'">수정</button>
                 <button type="button" class="col deleteButton"
-                		id="deleteButton">삭제</button>
+                		id="deleteButton"
+                		th:onclick="'deleteCourse(' + ${course.courseId} + ')'">삭제</button>
             </div>
         </div>
     </div>

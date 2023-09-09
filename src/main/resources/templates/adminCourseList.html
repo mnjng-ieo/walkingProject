@@ -112,7 +112,7 @@
          		 onclick="openUserPageInNewTab()">사용자 화면에서 목록 확인하기</button>
          <!-- 생성 페이지 있어야! -->
          <button type="button" class="new-course-button"
-                onclick="location.href='/admin/courses/new-course'">새로 생성하기</button>
+                onclick="location.href='/admin/courses/new-course'">새로 등록하기</button>
         <!-- 정렬 방식 선택 : onchange 속성으로 값이 변경될 때마다 Ajax 요청 실행 -->
         <select class="course-list-sort sort" 
                 id="sort" name="sort" 
@@ -139,7 +139,7 @@
 	                    <div class="row course-list_titlebox">
 	                        <div class="col-7 course-list_title">
 	                            <h5 class="card-title course-list_big-title" 
-	                                th:text="${item.wlkCoursFlagNm}">
+	                                th:text="${item.courseId + ' ' + item.wlkCoursFlagNm}">
 	                                산책로 큰이름</h5>
 	                            <h4 class="card-text course-list_small-title" 
                                     th:text="${item.wlkCoursNm}">산책로 작은이름</h4>
@@ -177,9 +177,11 @@
 		                                  th:onclick="'location.href=\'' + @{/admin/courses/{id}(id=${item.courseId})} + '\''"
 		                                  >상세보기</button>
 	                                  <button type="button" class="col-3"
-                                          id="" onclick="">수정하기</button>
+                                          id="updateButton" 
+                                          th:onclick="'loadUpdatePage(' + ${item.courseId} + ')'">수정하기</button>
                                       <button type="button" class="col-3"
-                                          id="" onclick="">삭제하기</button>
+                                          id="deleteButton" 
+                                          th:onclick="'deleteCourse(' + ${item.courseId} + ')'">삭제하기</button>
 		                        </div>
 	                        </div>
 	                    </div>
