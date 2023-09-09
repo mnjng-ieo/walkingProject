@@ -7,11 +7,11 @@
 	mb-3 : margin-bottom을 3크기로
 	border-bottom : 하단에 테두리
 	 -->
-	<div class="footer"> 
+	<div class="footer "> 
 		<div class="container w-auto" >
-		  <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5">
+		  <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 mt-5">
 		    <div class="col mb-3 mx-5" style="width: 300px;">
-		      <a href="/" class="d-flex align-items-center mb-3 link-body-emphasis text-decoration-none">
+		      <a href="/" class="d-flex align-items-center mb-1 link-body-emphasis text-decoration-none">
 		     		<p class="title fs-5 fw-bold px-5">Walk Around You</p>
 		      </a>
 		      <p class="mb-1 px-5" style="font-size: 13px;">서울특별시 서대문구</p>
@@ -26,8 +26,9 @@
 		      <h6 class="mt-2">산책로 목록</h6>
 		      <ul class="nav flex-column">
 		        <li class="nav-item mt-2">
-					<a href="#" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">전체 검색</a></li>
+					<a th:href="@{/course}" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">전체 검색</a></li>
 		        <li class="nav-item mt-1">
+		<!-- 테마별 산책 추천 : url 아직 설정 안함 -->
 					<a href="#" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">테마별 산책 추천</a></li>
 		      </ul>
 		    </div>
