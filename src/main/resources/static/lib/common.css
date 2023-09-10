@@ -49,11 +49,12 @@ body{
 
 /* 3. 중간 메인 영역 */
 /* 좋아요 순 BEST 9 */
+	/* 산책로명이 2줄을 차지할 경우, 말줄임 이용 */
 .ellipsis{
-	white-space: nowrap; /* 텍스트를 한 줄에 표시 */
-    overflow: hidden; /* 넘치는 부분을 숨김 */
-    text-overflow: ellipsis; /* 넘치는 부분에 "..." 추가 */
-    width: 100%; /* 너비를 100%로 설정하여 부모 요소의 크기에 맞게 텍스트를 자름 */
+	white-space: nowrap; 		/* 텍스트를 한 줄에 표시 */
+    overflow: hidden; 			/* 넘치는 부분을 숨김 */
+    text-overflow: ellipsis; 	/* 넘치는 부분에 "..." 추가 */
+    width: 100%; 				/* 너비를 100%로 설정하여 부모 요소의 크기에 맞게 텍스트를 자름 */
 }
 
 /* 하트 아이콘 크기 설정 */
