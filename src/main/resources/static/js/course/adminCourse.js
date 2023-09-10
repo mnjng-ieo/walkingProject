@@ -112,6 +112,35 @@ function insertCourse() {
     });
 }
 
+// 이미지 업로드 기능
+function uploadImage() {
+	const imageUploadInput = document.getElementById('imageUploadInput');
+	// input 내용에 변화가 생기면, courseMainImage 요소의 src 속성 변경시키기
+	imageUploadInput.addEventListener('change', function() {
+		const file = this.files[0];
+		if (file) {
+			// 서버로 파일 업로드 요청을 보내는 코드 작성
+			// 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경
+			const reader = new FileReader();
+			reader.onload = function(e) {
+				const courseMainImage = document.getElementById('courseMainImage');
+				courseMainImage.src = e.target.result;
+			};
+			reader.readAsDataURL(file);
+		}
+	});
+	
+	// input 요소 클릭하여 파일 선택 다이얼로그 열기
+	imageUploadInput.click();
+}
+
+// 이미지 업로드 취소 기능 ; 이미지를 기본 이미지로 변경
+function deleteImage() {
+	const courseMainImage = document.getElementById('courseMainImage');
+	courseMainImage.src = '/images/defaultCourseMainImg.jpg';
+}
+
+
 // 필수 입력 필드의 유효성 검사 -> 왜인지 수정페이지에서는 값이 다 지워져도 적용되지 않는다. 
 window.onload = function() {
     

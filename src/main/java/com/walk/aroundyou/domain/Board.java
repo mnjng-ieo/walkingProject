@@ -2,6 +2,7 @@ package com.walk.aroundyou.domain;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.hibernate.annotations.ColumnDefault;
 
@@ -88,5 +89,17 @@ public class Board {
 	@Enumerated(EnumType.STRING)
 	@ColumnDefault("'NORMAL'")
 	private StateId stateId;
+	
+	// 0910 추가 - 파일 업로드 기능
+	// mappedBy : board와 upload_image 사이 연관관계의 주인은 image! 그것의 board 필드에 의해 연관관계가 맺어짐. 
+	// cascade - All : 상위 엔티티의 모든 상태 변경이 하위 엔티티에 적용
+	// fetch - LAZY : 지연 로딩. 참조 중이 아닐 때는 board를 읽지 않아서 성능에 좋음.
+	// orphanRemoval = true : 하위 엔티티의 참조가 더 이상 없는 상태가 되었을 때 실제 삭제가 이뤄지도록 함.
+	// 엔티티 클래스에서 초기화해줌으로써, NPE 예외 발생 가능성 없앰.
+	@OneToMany(mappedBy = "board", 
+			cascade = {CascadeType.ALL},
+			fetch = FetchType.LAZY,
+			orphanRemoval = true)
+	private List<UploadImage> boardImagesId = new ArrayList<>();
 }
 

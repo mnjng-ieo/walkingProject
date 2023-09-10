@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseApiController {
 	
 	private final CourseService courseService;
-	private final CourseRepository courseRepository;
 	
 	// id로 산책로 하나로 조회
 	@GetMapping("/api/courses/{id}")

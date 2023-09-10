@@ -53,20 +53,37 @@ input {
     overflow-y: auto;
 }
 
-.course-mapBox {
-    background-color: #ffff80;
-}
-
+/* 산책로 사용자 페이지에서 산책로 메인 사진은 높이 300px로 고정되어 있음 */
 .course-imgBox {
-    width: 100%; height: 100%;
-    margin-top: 50px;
-    overflow: hidden;
+	width: 100%; height: 350px;
+	margin-top: 50px;
+	overflow: hidden;
 }
 
+.course-imgTop {
+	display: flex;
+	height: 50px;
+}
+
+.course-imgTop > p {
+	line-height: 50px;
+}
+
+.course-imgTop > button {
+	margin-left: 20px;
+	height: 30px; margin-top: 10px;
+	background-color: #eee;
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* 브레이크 포인트 사용해서 화면 가로폭이 줄 때 자연스럽게 사이즈 변하게 만들자 */
 .course-main-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 select {

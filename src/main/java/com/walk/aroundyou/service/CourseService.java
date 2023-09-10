@@ -293,7 +293,8 @@ public class CourseService {
 				request.getCvntlNm(),
 				request.getLnmAddr(),
 				request.getCoursSpotLa(),
-				request.getCoursSpotLo()
+				request.getCoursSpotLo(),
+				request.getCourseImageId()
 		);
 		return course;
 	}

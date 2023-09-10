@@ -58,6 +58,7 @@ public interface CourseRepository
 				, c.wlk_cours_flag_nm as wlkCoursFlagNm
 				, c.wlk_cours_nm as wlkCoursNm
 				, c.cours_view_count as coursViewCount
+				, c.course_image as courseImageId
 				, ifnull(like_cnt, 0) as likeCnt
 				, ifnull(mention_cnt, 0) as mentionCnt
 				, ifnull(comment_cnt, 0) as commentCnt
@@ -104,6 +105,7 @@ public interface CourseRepository
 				, c.wlk_cours_flag_nm as wlkCoursFlagNm
 				, c.wlk_cours_nm as wlkCoursNm
 				, c.cours_view_count as coursViewCount
+				, c.course_image as courseImageId
 				, ifnull(like_cnt, 0) as likeCnt
 				, ifnull(mention_cnt, 0) as mentionCnt
 				, ifnull(comment_cnt, 0) as commentCnt
@@ -178,6 +180,7 @@ public interface CourseRepository
 					, c.lnm_addr as LnmAddr
 					, c.cours_spot_la as CoursSpotLa
 					, c.cours_spot_lo as CoursSpotLo
+					, c.course_image as courseImageId
 					, ifnull(comment_cnt, 0) as commentCnt
 		            , ifnull(like_cnt, 0) as likeCnt
 				FROM course as c

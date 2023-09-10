@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseViewController {
 
 	private final CourseService courseService;
-	private final CourseRepository courseRepository;
 	private final CourseLikeService courseLikeService;
 	
 	// 페이지네이션 사이즈
@@ -160,7 +159,7 @@ public class CourseViewController {
 		model.addAttribute("courseId", courseId);
 		
 		//String userId = principal.getName(); // 실제 로그인한 유저 정보
-		String userId = "wayid1";          // 테스트용. 직접 부여
+		String userId = "wayid1";              // 테스트용. 직접 부여
 		model.addAttribute("userId", userId);
 		
 		// 조회한 좋아요 상태 확인

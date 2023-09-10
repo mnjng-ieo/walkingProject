@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.domain.UploadImage;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,7 @@ public class CourseResponseDTO {
 	private String lnmAddr;
 	private Double coursSpotLa;
 	private Double coursSpotLo;	
+	private UploadImage courseImageId;
 	
 	// [뷰 추가 정보]
 	private Integer likeCnt;     // 좋아요 수
@@ -60,6 +62,7 @@ public class CourseResponseDTO {
 		this.lnmAddr = entity.getLnmAddr();
 		this.coursSpotLa = entity.getCoursSpotLa();
 		this.coursSpotLo = entity.getCoursSpotLo();
+		this.courseImageId = entity.getCourseImageId();
 	}
 	
 	public CourseResponseDTO(Course entity, int likeCnt, int mentionCnt, int commentCnt) {
@@ -79,6 +82,7 @@ public class CourseResponseDTO {
 		this.lnmAddr = entity.getLnmAddr();
 		this.coursSpotLa = entity.getCoursSpotLa();
 		this.coursSpotLo = entity.getCoursSpotLo();
+		this.courseImageId = entity.getCourseImageId();
 		this.likeCnt = likeCnt;
 		this.mentionCnt = mentionCnt;
 		this.commentCnt = commentCnt;

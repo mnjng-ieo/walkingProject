@@ -259,10 +259,19 @@
             </div>
         </div>
         <div class="row course-imgBox">
-            <!-- 메인 사진 (업로드, 다운로드 가능하면 좋겠다.) 
-                가능하면 글자 옆에 사진만 수정(업로드), 다운로드, 삭제 버튼 만들자 -->
-            <p><i class="fa-solid fa-square-check" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
-            <img class="course-main-img" 
+            <!-- 메인 사진 (업로드 가능하면 좋겠다.) 
+                가능하면 글자 옆에 사진만 수정(업로드), 삭제 버튼 만들자 -->
+            <div class="course-imgTop">
+            	<p><i class="fa-solid fa-square-check" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
+            	
+            	<button type="button" class="imageUploadButton"
+            			onclick="uploadImage()">업로드</button>
+            	<button type="button" class="imageDeleteButton"
+            			onclick="deleteImage()">업로드 취소</button>
+            </div>
+            <!-- 파일 업로드를 위한 숨겨진 input 요소. 업로드 버튼을 클릭하면 input을 클릭한 것처럼 작동하여 파일 선택 다이얼로그을 열게 됨 -->
+            <input type="file" id="imageUploadInput" style="display:none;" accept="image/*">
+            <img class="course-main-img" id="courseMainImage"
                  src="/images/defaultCourseMainImg.jpg" alt="산책로 사진" />
         </div>
     </div>
