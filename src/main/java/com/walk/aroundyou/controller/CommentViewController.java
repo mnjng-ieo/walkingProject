@@ -20,12 +20,7 @@ public class CommentViewController {
 	@Autowired
 	private CommentService commentService;
 	
-	
-	@GetMapping("/")
-	public String getMain() {
-		return "main";
-	}
-	
+
 	
 /* 게시물(commentType=BOARD)에 대한 코멘트 리스트 출력 */
 	@GetMapping("/board/commentList/{boardId}")
@@ -61,7 +56,7 @@ public class CommentViewController {
 	public String addCommentOnBoard(@PathVariable(name = "boardId") Long boardId, Model model) {
 		
 		AddCommentRequest request = new AddCommentRequest();
-		model.addAttribute("addComment" ,request.toCourseEntity());
+		model.addAttribute("addComment" ,request.toBoardEntity());
 		
 		return "addCommentOnBoard";
 	}
