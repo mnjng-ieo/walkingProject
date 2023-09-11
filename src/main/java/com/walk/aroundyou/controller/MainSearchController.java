@@ -62,17 +62,17 @@ public class MainSearchController {
 	// 검색 후 더보기의 게시물 목록 시도 중 
 	// 검색하여 출력되는 목록 페이지 구현(좋아요 수, 댓글 수 포함)	
 	
-	// 게시물 리스트(검색된) (키워드는 어떻게 활용하지?)
-	@GetMapping("/board-search/{boardId}")
+	// 메인 페이지 검색 결과에서 게시물 더보기 클릭하면 나오는 페이지(게시물 리스트)
+	@GetMapping("/board/search/{keyword}")
 	public String searchBoard(
-			@PathVariable(name="boardId") Long boardId,
+			@PathVariable(name = "keyword",  required=false) String keyword,
 			@RequestParam(value = "page", required=false, defaultValue="0") int currentPage,
 			@RequestParam(value = "sort", required= false, defaultValue = "boardId") String sort,
 			Model model) {
 		// Page 객체 선언
 		Page<IBoardListResponse> boardList = 
-				boardService.findBoardAndCntByBoardId(boardId, currentPage, sort);
-		
+				boardService.findBoardAndCntByKeyword(keyword, currentPage, sort);
+		log.info("출력이 되나요? : {}", boardList.isEmpty());
 		// pagination 설정
 		int totalPages = boardList.getTotalPages();
 		int pageStart = getPageStart(currentPage, totalPages);
@@ -85,8 +85,8 @@ public class MainSearchController {
 		model.addAttribute("pageStart", pageStart);
 		model.addAttribute("pageEnd", pageEnd);
 		model.addAttribute("sort", sort);
-		
-		// 페이지네이션 설정
+		model.addAttribute("boardList", boardList);
+		model.addAttribute("keyword", keyword);
 		
 		return "searchBoardList";
 	}
@@ -102,4 +102,5 @@ public class MainSearchController {
 		}
 		return result;
 	}
+		
 }

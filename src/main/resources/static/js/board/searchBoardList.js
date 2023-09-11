@@ -1,14 +1,14 @@
 // 현재 페이지 초기화
 let currentPage = 0; 
 
-// 해시태그를 클릭하면 나오는 게시물 목록 페이지
+// 메인 페이지 검색 결과에서 게시물 더보기 클릭하면 나오는 페이지(게시물 리스트)
 // 검색 조건 수집
 function boardWithSearchResults() {
-    let sort = document.getElementById('boardTagSort').value;
-    let tagContent = document.getElementById('tagContent').innerText;
+    let sort = document.getElementById('boardSort').value;
+    let keyword = document.getElementById('keyword').innerText;
     
     let xhr = new XMLHttpRequest();
-    xhr.open("GET", `/tag/search/${tagContent}?sort=${sort}&page=${currentPage}`, true);
+    xhr.open("GET", `/board/search/${keyword}?sort=${sort}&page=${currentPage}`, true);
             
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
