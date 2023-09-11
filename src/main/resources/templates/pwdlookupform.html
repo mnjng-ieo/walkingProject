@@ -8,71 +8,93 @@
    <!-- 부트스트랩 CSS 링크 -->
    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
    <!-- 부트스트랩 JavaScript 및 jQuery 링크 -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     
-  
-<script> 
 
-document.addEventListener("DOMContentLoaded", function() {
-	   
-	   var findPwdBtn = document.getElementById("findPwdBtn");
-	   var pwdLookupResult = document.getElementById("pwdLookupResult");
-	   
-	   findIdBtn.addEventListener("click", function() {
-	      
-	        var userId = document.getElementById("userId").value;
+<script>
 
-	        // XMLHttpRequest 생성
-	        var xhr = new XMLHttpRequest();
+//const header = $("meta[name='_csrf_header']").attr('content');
+//const token = $("meta[name='_csrf']").attr('content');
 
-	        // POST 요청 설정
-	        xhr.open("POST", "/login/pwdlookup", true);
-	        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+document.addEventListener("DOMContentLoaded", function () {
+        const checkEmailButton = document.getElementById("checkEmail");
+        checkEmailButton.addEventListener("click", checkEmail);
 
-	        // 요청 본문 생성
-	        var data = "userId=" + encodeURIComponent(userId);
+        function checkEmail() {
+            const userEmail = document.getElementById("userEmail").value;
 
-	        xhr.onreadystatechange = function () {
-	            if (xhr.readyState === XMLHttpRequest.DONE) { 
-	                if (xhr.status === 200) {
-	                  idLookupResult.textContent = xhr.response;
-	                  modal.show();
-	                }else {
-	                  alert("비밀번호 찾기 오류");
-	                  }
-	                }
-	            };
+            if (!userEmail || userEmail.trim() === "") {
+                alert("이메일을 입력하세요.");
+            } else {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", '/login/pwdlookup/check?userEmail=' + encodeURIComponent(userEmail), true);
+                //xhr.setRequestHeader(header, token);
 
-	        // 요청 전송
-	        xhr.send(data);
-	       
-	    });
-	});
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        const result = xhr.responseText;
+                        console.log("result: " + result);
+                        if (result === "true") {
+                            sendEmail();
+                            alert("임시비밀번호를 전송했습니다.");
+                            window.location.href = "/login";
+                        } else if (result === "false") {
+                            alert("가입되지 않은 이메일입니다.");
+                        }
+                    } else {
+                        alert("서버 오류: " + xhr.status);
+                    }
+                };
 
+                xhr.onerror = function () {
+                    alert("요청 실패");
+                };
+
+                xhr.send();
+            }
+        }
+
+        function sendEmail() {
+            const userEmail = document.getElementById("userEmail").value;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/login/pwdlookup/send", true);
+            //xhr.setRequestHeader(header, token);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send("userEmail=" + encodeURIComponent(userEmail));
+
+            xhr.onerror = function () {
+                alert("요청 실패");
+            };
+        }
+    });
+   
 </script>
+
 </head>
 <body>
     
      <div class="container">
         <h1 class="mt-5">비밀번호 찾기</h1>
-        <h6>아이디를 입력하세요</h6>
+        <h6>가입 시 입력한 이메일로 임시비밀번호가 전송됩니다.</h6>
         <br>
         <hr>
         <br>
-        <form action="/login/idlookup" method="post" id="pwdLookupForm">
+        <form action="/login/idlookup" method="post" id="pwdLookupForm" name="sendEmail">
         
             <!-- 아이디 입력 필드 -->
             <div class="mb-3">
-                <label for="userId" class="form-label">등록한 아이디</label>
-                <input type="text" class="form-control" id="userId" name="userId" required>
+                <label for="userEmail" class="form-label">입력한 이메일로 임시비밀번호가 전송됩니다.</label>
+                <input type="text" class="form-control" id="userEmail" name="userEmail" required>
             </div>
             
             <br>
             <!-- 비밀번호 찾기 버튼 -->
-            <button type="button" id="findPwdBtn" class="btn btn-primary"data-bs-toggle="modal"
-            data-bs-target="#staticBackdrop">비밀번호 찾기</button>
+            <button type="button" id="checkEmail" class="btn btn-primary" data-bs-toggle="modal"
+            >비밀번호 발송</button>
+            <!-- data-bs-target="#staticBackdrop" -->
         </form>
     </div>
 
@@ -83,7 +105,8 @@ document.addEventListener("DOMContentLoaded", function() {
       <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header">
-               <h1 class="modal-title fs-5" id="staticBackdropLabel">비밀번호 찾기 결과</h1>
+               <h1 class="modal-title fs-5" id="staticBackdropLabel"></h1>
+               
                <button type="button" class="btn-close" data-bs-dismiss="modal"
                   aria-label="Close"></button>
             </div>

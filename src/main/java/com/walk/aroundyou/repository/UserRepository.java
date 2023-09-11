@@ -34,5 +34,9 @@ public interface UserRepository extends JpaRepository<Member, Long> {
 	
 	// 6. Id로 검색한 엔터티 삭제하기
 	void deleteByUserId(String userId);
+	
+	
+	// 7. userEmail로 비밀번호 보내기
+	Optional<Member> findByUserEmail(String userEmail);
 
 }

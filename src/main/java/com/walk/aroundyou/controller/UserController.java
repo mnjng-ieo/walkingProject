@@ -1,6 +1,6 @@
 package com.walk.aroundyou.controller;
 
-import java.security.Principal;
+import java.util.Objects;
 //import java.util.HashMap;
 //import java.util.Map;
 import java.util.Optional;
@@ -16,18 +16,24 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.walk.aroundyou.domain.Member;
+import com.walk.aroundyou.dto.UpdateMypageDTO;
+import com.walk.aroundyou.dto.UpdateUserpageDTO;
+import com.walk.aroundyou.dto.UserPasswordChangeDTO;
+import com.walk.aroundyou.dto.UserPasswordSendDTO;
 import com.walk.aroundyou.dto.UserRequest;
-import com.walk.aroundyou.dto.UserpageRequest;
+import com.walk.aroundyou.service.MailService;
 import com.walk.aroundyou.service.UserService;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 //import jakarta.servlet.http.HttpServletRequest;
 //import jakarta.servlet.http.HttpServletResponse;
@@ -43,6 +49,15 @@ public class UserController {
 		this.userService = userService;
 	}
 
+	///////////////// 로그인 메인 페이지(처음 시작 할 때의 화면)
+	@GetMapping("/login")
+	public String login() {
+		return "login";
+	}
+
+	
+	
+	
 	//////////////////// 회원가입
 	// 회원가입 폼을 보여주는 페이지
 	@GetMapping("/signup")
@@ -62,6 +77,10 @@ public class UserController {
 		// 회원가입이 완료된 이후에 로그인 페이지로 이동
 		return "redirect:/login";
 	}
+	
+	
+	
+	
 
 	//////////////////// 아이디 중복 체크
 	@GetMapping("/signup/checkId")
@@ -72,37 +91,16 @@ public class UserController {
 
 		boolean user = userService.isUserIdDuplicate(userId);
 
-		// 중복 체크에 대한 조건문 -> ajax에서 요청 처리 결과 success와 error랑 다른 부분
+		// 중복 체크에 대한 조건문 -> ajax에서 요청 처리 결과
 		if (user) {
 			return ResponseEntity.ok().body("다른 아이디를 입력하세요");
 		} else {
 			return ResponseEntity.ok().body("사용 가능한 아이디입니다.");
 		}
 	}
-
-	// 로그인 메인 페이지(처음 시작 할 때의 화면)
-	@GetMapping("/login")
-	public String login() {
-		return "login";
-	}
-
-	// 로그인 결과에 맞춰서 네비의 로그인, 회원가입, 로그아웃 버튼 숨기기
-//	@ResponseBody
-//	@GetMapping("/checkLoginStatus")
-//	// Authentication 객체를 매개변수로 받아서 로그인 상태를 확인하고 JSON 응답을 생성
-//    public Map<String, Boolean> checkLoginStatus(Authentication authentication) {
-//		
-//        // Spring Security에서 제공하는 Authentication 객체를 통해 로그인 상태 확인
-//		// authentication != null && authentication.isAuthenticated() : 로그인 상태
-//		// loggedIn : true
-//        boolean loggedIn = authentication != null && authentication.isAuthenticated();
-//
-//        // JSON 응답 생성
-//        Map<String, Boolean> response = new HashMap<>();
-//        response.put("loggedIn", loggedIn);
-//
-//        return response;
-//    }
+	
+	
+	
 
 	//////////////////// 아이디 찾기
 	@GetMapping("/login/idlookup")
@@ -125,25 +123,56 @@ public class UserController {
 
 		return "" + idlookup;
 	}
+	
+	
+	
+	
 
-	//////////////////// 비밀번호 찾기
+	///////////////////////////// 비밀번호 찾기 - 이메일로 받기
 	@GetMapping("/login/pwdlookup")
 	public String showPwdLookupForm() {
+		log.info("들어왔다");
 
 		// 아이디 조회 폼을 보여주는 뷰 이름
 		return "pwdlookupform";
 	}
 
-	@PostMapping("/login/pwdlookup")
-	public String showPwdLookupForm(@RequestParam String userId, Model model) {
-
-		String pwdlookup = userService.searchByUserPwd(userId);
-
-		model.addAttribute("pwdlookup", pwdlookup);
-
-		return "" + pwdlookup;
+	// 뷰에서 userEmail을 파라미터로 받아 이메일 유무를 확인하는 서비스 호출
+	@PostMapping("/login/pwdlookup/check")
+	@ResponseBody
+	public boolean checkEmail(@RequestParam(name = "userEmail") String userEmail) {
+		log.info("checkEmail 진입");
+		// 아이디 조회 폼을 보여주는 뷰 이름
+		return userService.checkEmail(userEmail);
 	}
 
+	// 임시 비밀번호 생성하고 메일을 생성 & 전송하는 컨트롤러
+	// 이메일로 임시 비밀번호 보내기
+	@PostMapping("/login/pwdlookup/send")
+	public String sendEmail(@RequestParam("userEmail") String userEmail) {
+		log.info("sendEmail진입");
+		log.info("이메일 : " + userEmail);
+
+		// 임시 비밀번호 생성
+		String tmpPwd = userService.getTmpPwd();
+
+		// 임시 비밀번호 저장
+		userService.updatePwd(tmpPwd, userEmail);
+
+		// 메일 생성 & 전송
+		MailService mailService = new MailService();
+		UserPasswordSendDTO mail = mailService.createMail(tmpPwd, userEmail);
+		mailService.sendMail(mail);
+
+		log.info("임시 비밀번호 전송 완료");
+
+		return "/login";
+	}
+
+	
+	
+	
+	
 	//////////////////// 마이페이지
 	// Principal은 Spring Security에서 인증된 사용자 정보를 제공하는 객체
 	// 보통 사용자의 아이디(username)이나 식별자(identifier)와 같은 정보를 포함
@@ -180,35 +209,29 @@ public class UserController {
 	}
 
 	// 변경 후 블러오는 정보
-	// @PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
-	// Authentication authentication : 매개변수를 통해 사용자 정보를 확인
-	// @PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
 	@PostMapping("/main/mypage")
-	public String processMypage(@RequestParam String userId, @RequestParam String userNickname,
-			@RequestParam String userImg, @RequestParam String userDescription,
-			@AuthenticationPrincipal Principal principal) {
+	public String processMypage(String userId, UpdateMypageDTO dto, Model model) {
 
-		log.info("processMypage Controller 진입");
+		model.addAttribute("user", dto);
+		Member updatedMember = userService.updateMypage(userId, dto);
 
-		// 로그인 된 아이디를 가져옴
-		String loginid = principal.getName();
+		// log.info("마이페이지 업데이트 성공: userId={}, userNickname={}, userImg={},
+		// userDescription={}", userId.toString(),
+		// userNickname.toString(), userImg.toString(), userDescription.toString());
 
-		Optional<Member> member = userService.findByUserId(loginid);
-
-		if (member.isPresent()) {
-
-			Member updateUser = userService.updateMypage(userId, userNickname, userImg, userDescription);
-
-			if (updateUser != null) {
-				// 정보 업데이트를 성공한 경우
-				return "redirect:mypage";
-			} else {
-				return "error";
-			}
+		if (updatedMember != null) {
+			return "redirect:/main/mypage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
 		} else {
-			return "error";
+			model.addAttribute("showAlert", false);
+
+			// ${showAlert}가 있는 폼으로 이동
+			return "mypage"; // 오류 처리
 		}
 	}
+
+	
+	
 
 	//////////////////// 유저페이지
 	// import org.springframework.security.core.userdetails.User;
@@ -239,77 +262,90 @@ public class UserController {
 		}
 	}
 
-//	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 허용
-//	@PostMapping("/main/mypage/userpage/{userId}")
-//	public String processUserpage(@PathVariable String userId, @RequestParam String userName, @RequestParam String userNickname, @RequestParam String userTelnumber, @RequestParam String userEmail, @AuthenticationPrincipal Principal principal) {
-//		
-//		String userId1 = principal.getName();
-//		
-//		Member updateUser = userService.updateUserInfo(userId, userName, userNickname, userTelnumber, userEmail);
-//		
-//		if (updateUser != null) {
-//			return "redirect:userpage";
-//		}else {
-//			return "error";
-//		}
-//	}
-	
-	@PatchMapping("/main/mypage/userpage/{id}")
-	@ResponseBody
-	public ResponseEntity<Member> processUserpage(@PathVariable String userId, @RequestBody UserpageRequest req) {
-		
-		Member updateUser = userService.updateUserInfo(userId, req);
-		log.info("user id : " + userId);
-		
-		return ResponseEntity.ok().body(updateUser);
-	}
+	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
+	@PostMapping("/main/mypage/userpage")
+	public String processuserpage(UpdateUserpageDTO dto, Model model) {
 
-	//////////////////// 비밀번호 변경
-	@GetMapping("/changePwd")
-	public String showChangePwd() {
-		return "userpage";
-	}
-	@PostMapping("/changePwd")
-	public String processChangePwd(@RequestParam String userId, @RequestParam String currentPwd,
-			@RequestParam String newPwd, @RequestParam String newPwdConfirm, Model model) {
+		model.addAttribute("user", dto);
+		Member updatedMember = userService.updateUserInfo(dto);
 
-		boolean isPasswordChanged = userService.changePwd(userId, currentPwd, newPwd, newPwdConfirm);
-
-		if (isPasswordChanged) {
-			model.addAttribute("success", "비밀번호 변경에 성공하셨습니다.");
-			// 비밀번호 변경 성공 시 메인 페이지 또는 다른 페이지로 리디렉션
-			return "redirect:/userpage";
+		if (updatedMember != null) {
+			return "redirect:/main/mypage/userpage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
 		} else {
-			// 비밀번호 변경 실패 시 에러 메시지를 모델에 추가하여 폼 다시 표시
-			model.addAttribute("error", "비밀번호 변경에 실패했습니다. 입력 정보를 확인해 주세요.");
-			// 변경 실패 시 다시 폼 템플릿을 보여줌
-			return "changepwdform";
+			model.addAttribute("showAlert", false);
+
+			// ${showAlert}가 있는 폼으로 이동
+			return "userpage"; // 오류 처리
 		}
 	}
 
-	//////////////////// 탈퇴와 강퇴
+	
+	
+	
+	
+	//////////////////// 비밀번호 변경
+	@GetMapping("/main/mypage/userpage/changepwd")
+	public String showChangePwd() {
+		return "userpage";
+	}
+
+	@PostMapping("/main/mypage/userpage/changepwd")
+	public String processChangePwd(@Valid UserPasswordChangeDTO dto, Model model, Authentication authentication,
+			@AuthenticationPrincipal User user) {
+
+		// new password 끼리 비교
+		// Objects.equals(a, b) : a와 b가 같으면 true 반환, 다르면 false 반환
+		if (!Objects.equals(dto.getNewPwd(), dto.getComfirmPwd())) {
+
+			model.addAttribute("dto", dto);
+			model.addAttribute("differentPassword", "비밀번호가 같지 않습니다.");
+			return "/main/mypage/userpage";
+		}
+
+		String result = userService.updateMemberPassword(dto, user.getUsername());
+
+		// 현재 비밀번호가 틀렸을 경우(디비와)
+		if (result == null) {
+			model.addAttribute("dto", dto);
+			model.addAttribute("wrongPassword", "비밀번호가 맞지 않습니다.");
+			return "/main/mypage/userpage";
+		}
+
+		// 비밀번호 변경 시 자동 로그아웃으로 재 로그인 알림! (페이지는 로그인 페이지로)
+		return "redirect:/login";
+	}
+
+	
+	
+	
+	
+	//////////////////// 탈퇴
 	// 탈퇴 버튼 누르면 나오는 화면
-	@GetMapping("/withdraw")
+	@GetMapping("/main/mypage/userpage/withdraw")
 	public String showWithdrawForm() {
 		// 탈퇴 폼 템플릿을 보여줌
 		return "userpage";
 	}
 
 	// 탈퇴 처리하는 곳
-	@PostMapping("/withdraw")
-	public String processWithdrawForm(@RequestParam String currentPwd, @AuthenticationPrincipal User user, Model model) {
-		
+	@PostMapping("/main/mypage/userpage/withdraw")
+	public String processWithdrawForm(@RequestParam String currentPwd, @AuthenticationPrincipal User user,
+			Model model) {
+
 		boolean result = userService.deleteByUserId(user.getUsername(), currentPwd);
 
 		if (result) {
 			// 탈퇴 후 로그아웃하도록 리다이렉트
 			return "redirect:/logout";
-		}else {
+		} else {
 			model.addAttribute("wrongPassword", "비밀번호가 맞지 않습니다");
 		}
 		return "redirect:/userpage";
 	}
 
+	
+	
+	
 	// 관리자가 강퇴하는 곳 -> 관리자사이트 매핑?
 //    @PostMapping("/ban/{userId}")
 //    public String banUser(@PathVariable String userId, Principal principal) {

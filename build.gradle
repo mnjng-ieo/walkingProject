@@ -79,6 +79,12 @@ dependencies {
     // 타임리프에서 스프링 시큐리티를 사용하기 위한 의존성 추가
     //implementation 'org.thmeleaf.extras:thymeleaf-extras-springsecurity6'
     
+    // Spring Boot Starter Validation 유효성 검증
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    
+    // 이메일로 임시 비밀번호 전송해주는 Gmail SMTP
+    implementation 'org.springframework.boot:spring-boot-starter-mail'  
+    
 }
 
 tasks.named('test') {

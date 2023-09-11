@@ -37,7 +37,7 @@ public class SecurityConfig {
 		http.csrf((csrf) -> csrf.disable()).cors((cors) -> cors.disable())
 		
 				.authorizeHttpRequests(request -> request.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-						.requestMatchers("/status", "/images/**", "/css/**", "/js/**", "/login", "/main", "/signup/**", "/login/idlookup", "/login/pwdlookup")
+						.requestMatchers("/status", "/images/**", "/css/**", "/js/**", "/login", "/main", "/signup/**", "/login/idlookup", "/login/pwdlookup/**")
 						.permitAll()
 						// .requestMatchers("/**").permitAll()
 						.requestMatchers("/**").hasAnyRole("USER")
