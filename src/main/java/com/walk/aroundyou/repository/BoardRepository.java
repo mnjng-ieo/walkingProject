@@ -276,35 +276,37 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			@Param("keyword") String keyword);
 	
 	// 메인 검색 결과에서 게시물 더보기에 출력될 페이지
-		@Query(value = """
-				SELECT 
-					b.board_id as boardId
-		            , b.board_type as boardType
-		            , b.board_title as boardTitle
-		            , b.board_content as boardContent
-		            , user_nickname as userNickname
-		            , user_id as userId
-		            , board_view_count as boardViewCount
-		            , board_created_date as boardCreatedDate
-		            , board_updated_date as boardUpdatedDate
-		            , ifnull(comment_cnt, 0) as commentCnt
-		            , ifnull(like_cnt, 0) as likeCnt
-				  FROM board as b
-		            LEFT JOIN 
-		               (select board_id, count(board_id) as comment_cnt
-		                  from comment as c
-		                  group by c.board_id) as cc
-		            on b.board_id = cc.board_id   
-		            LEFT JOIN 
-		               (select board_id, count(board_id) as like_cnt
-		                  from board_like as bl
-		                  group by bl.board_id) as bll
-				    on b.board_id = bll.board_id
-		            and b.board_secret = false
-		            WHERE REPLACE(board_title, ' ', '') like :#{#keyword}
-				      or REPLACE(board_content, ' ', '') like :#{#keyword}
-				""", nativeQuery = true)
-		Page<IBoardListResponse> findBoardAndCntByKeyword(
-				@Param("keyword") String keyword, Pageable pageable);	
+	// 제목, 내용, 작성자 검색 가능
+	@Query(value = """
+			SELECT 
+				b.board_id as boardId
+	            , b.board_type as boardType
+	            , b.board_title as boardTitle
+	            , b.board_content as boardContent
+	            , user_nickname as userNickname
+	            , user_id as userId
+	            , board_view_count as boardViewCount
+	            , board_created_date as boardCreatedDate
+	            , board_updated_date as boardUpdatedDate
+	            , ifnull(comment_cnt, 0) as commentCnt
+	            , ifnull(like_cnt, 0) as likeCnt
+			  FROM board as b
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as comment_cnt
+	                  from comment as c
+	                  group by c.board_id) as cc
+	            on b.board_id = cc.board_id   
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as like_cnt
+	                  from board_like as bl
+	                  group by bl.board_id) as bll
+			    on b.board_id = bll.board_id
+	            and b.board_secret = false
+	            WHERE REPLACE(board_title, ' ', '') like :#{#keyword}
+			      or REPLACE(board_content, ' ', '') like :#{#keyword}
+			      or REPLACE(user_nickname, ' ', '') like :#{#keyword}
+			""", nativeQuery = true)
+	Page<IBoardListResponse> findBoardAndCntByKeyword(
+			@Param("keyword") String keyword, Pageable pageable);	
 	
 }

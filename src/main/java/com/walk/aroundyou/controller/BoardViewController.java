@@ -52,35 +52,45 @@ public class BoardViewController {
 	
 	// 게시물 리스트
 	@GetMapping("/board")
-	public String getBoard(Optional<String> type, Optional<Integer> page, Model model) {
+	public String getBoard(
+			@RequestParam(name = "keyword", required = false) String keyword,
+			@RequestParam(name = "type", required = false) Optional<String> type, 
+			@RequestParam(name = "sort", required = false) String sort,
+			@RequestParam(value = "page", required=false, defaultValue="0") int currentPage, 
+			Model model) {
+		
 		// Page 객체 선언
-		Page<IBoardListResponse> boardList;
-		// page 크기 설정
-		int paramPage = 0;
-		if(page.isPresent()) {
-			paramPage = page.get();
-		}
+		Page<IBoardListResponse> boardList = 
+				boardService.findBoardAndCntByKeyword(keyword, currentPage, sort);
+		log.info("리스트가 비어있나요? : {}", boardList.isEmpty());
+		log.info("키워드는? : {}", keyword);
+		// pagination 설정
+		int totalPages = boardList.getTotalPages();
+		int pageStart = getPageStart(currentPage, totalPages);
+		int pageEnd = 
+				(PAGINATION_SIZE < totalPages)? 
+						pageStart + PAGINATION_SIZE - 1
+						:totalPages;
 		
 		// type 설정
 		if(type.isEmpty()) {
-			boardList = boardService.findboardAllList(paramPage);
+			boardList = boardService.findboardAllList(currentPage);
 			model.addAttribute("boardList", boardList);
 		} else {
-			boardList = boardService.findboardAllListByType(type.get(), paramPage);
+			boardList = boardService.findboardAllListByType(type.get(), currentPage);
 			model.addAttribute("boardList", boardList);
 		}
 		
-		// pagination 설정
-		int totalPages = boardList.getTotalPages();
-		int pageStart = getPageStart(paramPage, totalPages);
-		int pageEnd = pageStart + PAGINATION_SIZE - 1;
-		model.addAttribute("currentPage", paramPage + 1);
+		model.addAttribute("lastPage", totalPages);
+		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("pageStart", pageStart);
 		model.addAttribute("pageEnd", pageEnd);
+		model.addAttribute("sort", sort);
+		model.addAttribute("boardList", boardList);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("type", type);
 		
-		// 페이지네이션 설정
-		
-		return "boardList";
+		return "boardConditionList";
 	}
 	
 	// 게시물 조회(09/09 - 연서 수정)

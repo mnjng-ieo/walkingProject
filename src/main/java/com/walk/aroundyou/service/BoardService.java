@@ -29,8 +29,10 @@ public class BoardService {
 	// 메인 페이지 검색 결과에서 게시물 더보기 클릭하면 나오는 페이지(게시물 리스트)
 	public Page<IBoardListResponse> findBoardAndCntByKeyword(String keyword, int page, String sort) {
 		// 최신순, 조회수, 좋아요순으로 정렬
-		// 검색 키워드 공백 제거
-		String formattedKeyword = '%' + keyword.replace(" ", "") + '%';
+		// 검색 키워드 공백 제거(검색어가 존재하지 않을 경우 대비)
+		if (keyword != null) {
+			keyword = '%' + keyword.replace(" ", "") + '%';
+		}
 		// HTML의 select option 태그의 value를 같은 이름으로 설정하기
 		Sort customSort;
 		if ("boardViewCount".equals(sort)) {
@@ -41,7 +43,7 @@ public class BoardService {
 			customSort = Sort.by(Direction.DESC, "boardId");
 		}
 		// public static PageRequest of(int pageNumber, int pageSize, Sort sort) 사용
-		return BoardRepo.findBoardAndCntByKeyword(formattedKeyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+		return BoardRepo.findBoardAndCntByKeyword(keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
 	}
 	
 	public Page<IBoardListResponse> findboardAllList(int page) {
