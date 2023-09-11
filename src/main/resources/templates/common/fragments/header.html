@@ -81,7 +81,7 @@
 		border-bottom : 아래 테두리
 	 -->	
 	<!-- header 영역 -->
-	<header class="py-4 border-bottom header">
+	<header class="py-4 border-bottom">
 		<!-- 
 			justify-content-center : 콘텐츠 채우기, 가운데에 추가간격없이 붙이기
 			align-items-center : 항목 정렬, 위아래 정렬에서 가운데로
@@ -94,9 +94,13 @@
 		 
 		<div class="container d-flex flex-wrap justify-content-center align-items-end">
 		    <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none">
-	    		<span class="fs-3 mt-4">Walk Around You</span>
+	    		<span class="fs-3 mt-4 logoName">Walk Around You</span>
 	    		<img src="/images/common/logo_img.png" class="logo mb-3"></img>
 	   		</a>
+	   		<form class="col-12 col-lg-auto mb-3 mb-lg-0 " role="search">
+				<input type="search" class="form-control" placeholder="Search..."
+					aria-label="Search" style="margin-bottom: 10px;">
+			</form>
 	  	</div>
 	</header>
 
