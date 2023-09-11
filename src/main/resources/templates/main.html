@@ -194,8 +194,8 @@
 		<!-- 해시태그 출력 : 해시태그 데이터 넣고 다시 작업해야 함 -->
 		<div class="container p-3 rounded-4 border border-3 hotTagBorder">
 	    	<!-- 가장 많이 사용된 태그 메인화면에 출력하기 -->
-	        <h3 class="mt-1 mx-4 mb-3">지금 핫한 해시태그</h3>
-			<div class = "d-flex flex-wrap justify-content-around hotTags">		
+	        <h3 class="mt-1 mx-3 mb-3">지금 핫한 해시태그</h3>
+			<div class = "d-flex flex-wrap justify-content-between hotTags">		
 				<span class = "p-2" 
 	                 th:each="hotTag, i : ${hotTagList}"
 	                 th:if="${i.index < 6}">
@@ -206,7 +206,7 @@
 	                   th:text = "${hotTag}" role="button">핫한 해시태그</a>              
 	            </span>
             </div>
-            <div class = "d-flex flex-wrap justify-content-around hotTags">	
+            <div class = "d-flex flex-wrap justify-content-between hotTags">	
             	<span class = "p-2" 
 	                 th:each="hotTag, i : ${hotTagList}"
 	                 th:if="${ 6 <= i.index  && i.index < 12}">
@@ -221,7 +221,7 @@
     	 
     	<!-- 선택한 해시태그와 관련된 게시물 : Ajax 이용 -->
     	<div id="needToChange" class="container">
-    	<h4 class="mt-5">현재 핫한 해시태그가 포함된 게시물 목록</h4>
+    	<h4 class="container mt-5 mb-3">현재 핫한 해시태그가 포함된 게시물 목록</h4>
     	    <table class="table table-hover">
 				<thead>
 			        <tr>
