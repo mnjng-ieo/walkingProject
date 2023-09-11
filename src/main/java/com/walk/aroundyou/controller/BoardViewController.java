@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,8 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.Comment;
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.Tag;
-import com.walk.aroundyou.domain.User;
 import com.walk.aroundyou.domainenum.BoardType;
 import com.walk.aroundyou.dto.BoardRequest;
 import com.walk.aroundyou.dto.IBoardDetailResponse;
@@ -87,30 +89,41 @@ public class BoardViewController {
 	
 	// 게시물 조회
 	@GetMapping("/board/{id}")
-	public String getBoardDetail(@PathVariable Long id, Model model) {
+	public String getBoardDetail(@PathVariable Long id, Model model, @AuthenticationPrincipal User user) {
 		// 게시글 내용 불러오기
 		Optional<IBoardDetailResponse> board = boardService.findBoardDetail(id);
-		model.addAttribute("board", board.get());
+		log.info("board가 있나요? : {}", board.isPresent());
+		if(board.isPresent()) {			
+			model.addAttribute("board", board.get());
+		} else {
+			return "redirect:/board";
+		}
 		
-		// 해시태그 리스트 불러오기
+		// 해시태그 리스트 불러오기(값 없을 때 체크)
 		List<String> boardTagList = 
 			tagService.findTagsByBoardId(id);
-		model.addAttribute("boardTagList", boardTagList);
+		if(!boardTagList.isEmpty()) {		
+			log.info("tag 값이 있음");			
+			model.addAttribute("boardTagList", boardTagList);
+		}
 		
-		// 댓글 리스트 불러오기
+		// 댓글 리스트 불러오기(값 없을 때 체크)
 		List<ICommentResponseDto> comments = commentService.findByBoardId(id);
-		model.addAttribute("comments", comments);
 		
+		if(!comments.isEmpty()) {			
+			log.info("comment 값이 있음");	
+			model.addAttribute("comments", comments);
+		}
 		// 산책로 정보 불러오기
 
 		Optional<Course> course = courseService.findByBoardId(id);
 		if(course.isPresent()) {			
 			log.info("course 값이 있음");
+			model.addAttribute("course", course.get());
 		} else {
-			log.info("course 값이 없음");			
+			log.info("course 값이 없음");	
 		}
-		model.addAttribute("course", course.get());
-		
+		log.info("컨트롤러 끝");
 		return "boardDetail";
 	}
 	
@@ -124,11 +137,21 @@ public class BoardViewController {
 	
 	// 게시물 작성 폼
 	@GetMapping("/board-editor")
-	public String getBoardForm() {
+	public String getBoardForm(Model model, Optional<Long> course) {
+		// 산책로 지역 선택 항목 가져오기
+		List<String> allSignguCn = courseService.findAllSignguCn();
+		model.addAttribute("allSignguCn", allSignguCn);
+		if(course.isPresent()) {
+			Course resultCourse = courseService.findById(course.get());
+			model.addAttribute("courseId", resultCourse.getCourseId());
+			model.addAttribute("wlkCoursFlagNm", resultCourse.getWlkCoursFlagNm());
+			model.addAttribute("wlkCoursNm", resultCourse.getWlkCoursNm());
+		}
+		
 		return "boardForm";
 	}
 	
-	// 게시물 작성
+	// 게시물 작성	
 	@PostMapping("/board-editor")
 	public String postBoardForm(String boardType, String boardTitle, String boardContent) {
 		// 뷰에서 유저 데이터 불러오는 로직 대체
@@ -224,7 +247,7 @@ public class BoardViewController {
 		Comment comment = Comment.builder()
 				.commentId(Long.parseLong(commentId))
 				.commentContent(commentContent)
-				.userId(User.builder().userId(userId).build())
+				.userId(Member.builder().userId(userId).build())
 				.commentUpdatedDate(new Timestamp(System.currentTimeMillis()))
 				.build();
 		commentService.updateBoardCommentByCommentId(comment);

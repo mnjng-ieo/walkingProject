@@ -51,7 +51,7 @@ window.onload = function(){
 	                            <div class="ellipsis">${courseName}</div>
 	                            <div class="textsm ellipsis">${courseAddr}</div> 
 	                            <div class="textsm ellipsis">${courseLength}km / ${courseTime}</div> 
-	                            <div><a href="/course/${courseId}" target="_blank" class="link">
+	                            <div><a href="/course/${courseId}" class="link">
 	                            <i class="fa-solid fa-arrow-up-right-from-square icon fa-xs"></i> 바로가기</a></div>
 	                        </div>
 	                    </div>
@@ -74,6 +74,6 @@ window.onload = function(){
 	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
 	function closeOverlay() {
 	    overlay.setMap(null);     
-	}s
+	}
 
 }

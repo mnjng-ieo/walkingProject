@@ -72,7 +72,7 @@ public class Comment {
 	@JoinColumn(name="user_id", referencedColumnName="user_id" )
 	// 오류창에 JoinColumn과 같이 사용하지 않을수있다고해서 주석처리
 	// @Column(nullable=false, columnDefinition="varchar(100)")
-	private User userId;
+	private Member userId;
 	
 	// 회원 닉네임
 	@Column(name = "user_nickname", nullable = false)

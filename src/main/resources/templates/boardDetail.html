@@ -7,7 +7,6 @@
 <title>게시판 상세 : [[${ board.boardTitle }]]</title>
 
 	<link href="/css/board/boardMap.css" rel="stylesheet"></link> 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f5041361e9b1c4d5fd6a9c27cfadb45e"></script>
 	<script type="text/javascript" src="/js/board/boardComment.js"></script> 
 	<script type="text/javascript" src="/js/board/boardMap.js"></script> 
@@ -65,7 +64,7 @@
 				</div>
 			</div>
 			<!-- 산책로 정보 -->
-			<div class="px-4 mx-lg-5 px-lg-5">
+			<div class="px-4 mx-lg-5 px-lg-5" th:unless="${course == null}">
 				<div id="map" style="width:100%;height:300px;" class="rounded-4"></div>
 				<input type="hidden" id="courseId" th:value="${course.courseId}">
 				<input type="hidden" id="flagName" th:value="${course.wlkCoursFlagNm}">
@@ -78,7 +77,30 @@
 			</div>
 			
 			
-			<!-- 댓글 -->
+			<!-- 댓글 입력창 -->
+				<form action="/board/commentList/{boardId}" method="post"
+					class="border m-5 rounded text-bg-light shadow">
+					<!-- 코멘트 상단 : user 이미지, 닉네임 -->
+					<div class="d-flex align-items-center justify-content-between m-4" style="height: 65px;">
+						<!-- user 이미지, 닉네임 --> 
+						<div class="d-flex align-items-center ">
+							<img class="border rounded-circle m-1 " 
+								src="/images/userImg.jpg" style="width: 80px; height: 80px;" ></img>
+							<p class="border m-2" >principal로 로그인된 사용자 닉네임 가져옴</p>
+						</div>
+					</div>
+					
+					<!-- 코멘트 작성란 -->
+					<div class="p-3" style="width: 93%;">
+						<input type="text" class="border mx-3 p-6 form-control" placeholder="댓글을 입력하세요">
+					</div>
+					
+					<!-- 버튼 -->
+					<div class=" d-flex justify-content-end m-3">
+						<button type="button" class=" text-center btn btn-primary btn-sm mx-3">등록</button> 
+					</div>
+				</form>
+			<!-- 댓글 리스트 -->
 			<div class="commentList pb-2">
 				<div class="border mx-5 my-4 rounded text-bg-light shadow" th:each="comment : ${comments}" 
 						style="text-align: auto">
