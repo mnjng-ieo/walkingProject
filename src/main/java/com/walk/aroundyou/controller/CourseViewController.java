@@ -1,20 +1,23 @@
 package com.walk.aroundyou.controller;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
-import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.service.CourseLikeService;
 import com.walk.aroundyou.service.CourseService;
+import com.walk.aroundyou.service.UploadImageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,7 @@ public class CourseViewController {
 
 	private final CourseService courseService;
 	private final CourseLikeService courseLikeService;
+	private final UploadImageService uploadImageService;
 	
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
@@ -61,6 +65,26 @@ public class CourseViewController {
 		// 산책로 리스트 저장
 		model.addAttribute("courses", coursePage);  
 		
+		// 이미지 경로 넘기기
+		// for 문을 돌려서 리스트 항목 각각의 이미지 경로를 얻어보자.
+		// imagePaths 리스트의 순서와 coursePage 순서는 일치한다!
+		// -> page 객체라 한 번 로드되는 courseResponseDTO는 12개 뿐이다.
+		List<String> imagePaths = new ArrayList<>();
+		for (CourseResponseDTO courseResponseDTO : coursePage.getContent()) {
+			UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			if (uploadImage != null) {
+				String imagePath = 
+						uploadImageService.findCourseFullPathById(
+								uploadImage.getFileId());
+				imagePaths.add(imagePath);
+			} else {
+				// 여기 기본 이미지를 어떤 걸로 해야할지 약간 고민스럽다. 
+				imagePaths.add("/images/defaultCourseImg.png");
+			}
+		}
+		// 모델에 이미지 경로 리스트 추가
+		model.addAttribute("imagePaths", imagePaths);
+		
 		// courseList.html라는 뷰 조회
 		return "courseList";
 	}
@@ -77,12 +101,10 @@ public class CourseViewController {
 			@RequestParam(name = "distance", required = false) String distance, 
 			@RequestParam(name = "searchTargetAttr", required = false) String searchTargetAttr,
 			@RequestParam(name = "searchKeyword", required = false) String searchKeyword, 
-			@RequestParam(name="sort", required= false) String sort,
-			@RequestParam(name="page", required= false, 
-			defaultValue = "0") int currentPage,
+			@RequestParam(name= "sort", required= false) String sort,
+			@RequestParam(name= "page", required= false, 
+						  defaultValue = "0") int currentPage,
 			Model model) {
-			log.info("level : " + level);
-			log.info("searchKeyword : " + searchKeyword);
 			String startTime = null;
 			String endTime = null; 
 			
@@ -127,6 +149,27 @@ public class CourseViewController {
 		// 산책로 리스트 저장
 		model.addAttribute("courses", coursePage);  
 		
+		// 이미지 경로 넘기기
+		// for 문을 돌려서 리스트 항목 각각의 이미지 경로를 얻어보자.
+		// imagePaths 리스트의 순서와 coursePage 순서는 일치한다!
+		// -> page 객체라 한 번 로드되는 courseResponseDTO는 12개 뿐이다.
+		List<String> imagePaths = new ArrayList<>();
+		for (CourseResponseDTO courseResponseDTO : coursePage.getContent()) {
+			UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			if (uploadImage != null) {
+				String imagePath = 
+						uploadImageService.findCourseFullPathById(
+								uploadImage.getFileId());
+				imagePaths.add(imagePath);
+			} else {
+				// 여기 기본 이미지를 어떤 걸로 해야할지 약간 고민스럽다. 
+				imagePaths.add("/images/defaultCourseImg.png");
+			}
+		}
+		
+		// 모델에 이미지 경로 리스트 추가
+		model.addAttribute("imagePaths", imagePaths);
+		
 		// 파라미터 값을 모델에 저장 (페이지네이션에 쓰임) - 알아요 쓸데없이 긴 거ㅠㅠ
 		model.addAttribute("region", region);
 		model.addAttribute("level", level);
@@ -157,6 +200,13 @@ public class CourseViewController {
 				courseService.findByIdWithCounts(courseId);
 		model.addAttribute("course", courseResponseDTO);
 		model.addAttribute("courseId", courseId);
+		
+		// 이미지 경로 넘기기
+		UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+		String imagePath = 
+			uploadImageService.findCourseFullPathById(
+					uploadImage.getFileId());
+		model.addAttribute("imagePath", imagePath);
 		
 		//String userId = principal.getName(); // 실제 로그인한 유저 정보
 		String userId = "wayid1";              // 테스트용. 직접 부여
@@ -264,6 +314,27 @@ public class CourseViewController {
 		// 산책로 리스트 저장
 		model.addAttribute("courses", coursePage);  
 		
+		// 이미지 경로 넘기기
+		// for 문을 돌려서 리스트 항목 각각의 이미지 경로를 얻어보자.
+		// imagePaths 리스트의 순서와 coursePage 순서는 일치한다!
+		// -> page 객체라 한 번 로드되는 courseResponseDTO는 12개 뿐이다.
+		List<String> imagePaths = new ArrayList<>();
+		for (CourseResponseDTO courseResponseDTO : coursePage.getContent()) {
+			UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			if (uploadImage != null) {
+				String imagePath = 
+						uploadImageService.findCourseFullPathById(
+								uploadImage.getFileId());
+				imagePaths.add(imagePath);
+			} else {
+				// 여기 기본 이미지를 어떤 걸로 해야할지 약간 고민스럽다. 
+				imagePaths.add("/images/defaultCourseImg.png");
+			}
+		}
+		
+		// 모델에 이미지 경로 리스트 추가
+		model.addAttribute("imagePaths", imagePaths);
+		
 		// 파라미터 값을 모델에 저장 (페이지네이션에 쓰임) - 알아요 쓸데없이 긴 거ㅠㅠ
 		model.addAttribute("region", region);
 		model.addAttribute("level", level);
@@ -283,7 +354,20 @@ public class CourseViewController {
 	 */
 	@GetMapping("/admin/courses/{id}")
 	public String adminGetCourse(@PathVariable Long id, Model model) {
+		
 		CourseResponseDTO courseResponseDTO = courseService.findByIdWithCounts(id);
+		
+		// 이미지 경로 넘기기
+		UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+		
+		String imagePath;
+		if (uploadImage != null) {
+			imagePath = 
+					uploadImageService.findCourseFullPathById(
+							uploadImage.getFileId());
+			log.info("imagePath : " + imagePath);
+			model.addAttribute("imagePath", imagePath);
+		} 
 		model.addAttribute("course", courseResponseDTO);
 		
 		return "adminCourse";
@@ -307,7 +391,20 @@ public class CourseViewController {
 	@GetMapping("/admin/courses/update/{id}")
 	public String adminNewCourse(
 			@PathVariable Long id, Model model) {
+		
 		Course course = courseService.findById(id);
+		
+		// 이미지 경로 넘기기
+		UploadImage uploadImage = course.getCourseImageId();
+		
+		String imagePath;
+		if (uploadImage != null) {
+			imagePath = 
+					uploadImageService.findCourseFullPathById(
+							uploadImage.getFileId());
+			log.info("imagePath : " + imagePath);
+			model.addAttribute("imagePath", imagePath);
+		} 
 		model.addAttribute("course", new CourseResponseDTO(course));
 		
 		return "adminUpdateCourse";

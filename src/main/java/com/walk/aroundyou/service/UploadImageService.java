@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -20,9 +21,11 @@ import com.walk.aroundyou.repository.UploadImageRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UploadImageService {
 	
 	private final UploadImageRepository uploadImageRepository;
@@ -37,15 +40,37 @@ public class UploadImageService {
 	private final String fileDir = rootPath + "/src/main/resources/static/upload-images/";
 	
 	/**
-	 * 파일 경로 얻기; 
+	 * 파일 경로 얻기(만들기); 
 	 * upload-images 폴더 하위에, uuid로 서버에 저장된 이름이 매개변수로 들어가서 최종 경로 나타냄.
 	 */
-	public String getFullPath(String filename) {
-		return fileDir + filename;
+	public String getBoardFullPath(String filename) {
+		return fileDir + "board/" + filename;
+	}
+	public String getCourseFullPath(String filename) {
+		return fileDir + "course/" + filename;
+	}
+	public String getUserFullPath(String filename) {
+		return fileDir + "user/" + filename;
+	}
+	
+	/**
+	 * UploadImageId로 지정 경로의 파일 찾기
+	 */
+	public String findCourseFullPathById(Long UploadImageId) {
+		Optional<UploadImage> uploadImage = 
+				uploadImageRepository.findById(UploadImageId);
+		if (uploadImage.isPresent()) {
+			String savedFileName = uploadImage.get().getSavedFileName();
+			return "/upload-images/course/" + savedFileName;
+		} else {
+			return null;  // null 외에 더 좋은 처리 방법이 있을까?
+		}
 	}
 	
 	
 	///// 이미지 저장할 때 UUID 앞에 Board, Course, User라 붙여서 서로 식별되도록 했다.
+	// -> 원래 Board, Course, User 객체를 매개변수로 넣어줬는데,
+	//    각 객체를 새로 생성하면서 이미지를 업로드하는 경우 id를 넣을 수 없어서 일단 제거했다.
 	/**
 	 * 게시물 이미지 저장 -> 여러 개의 사진 동시 저장 가능! DTO롤 LIST로 묶어서 동시 처리 및 순번 부여해줬다.
 	 * : HTTP 요청으로 전송된 파일(multipartFile)을 서버에 저장하고 디비에 파일 정보를 저장하는 역할
@@ -59,8 +84,9 @@ public class UploadImageService {
 	 *          File 객체에는 파일의 경로와 파일명이 포함되어 있어야 한다!
 	 *          복사 또는 이동 작업 중에 발생 가능한 IOException 처리해야!
 	 */
-	public List<UploadImage> saveBoardImages(List<UploadImageRequestDTO> imageDTOs, Board board) 
-			throws IllegalStateException, IOException {
+	public List<UploadImage> saveBoardImages(
+			List<UploadImageRequestDTO> imageDTOs, Board board) 
+			throws IllegalStateException, IOException { 
 		
 		List<UploadImage> savedImages = new ArrayList<>();
 		
@@ -83,7 +109,7 @@ public class UploadImageService {
 			String savedFileName = "Course" + UUID.randomUUID() + "." + extractExt(originalFileName);
 			
 			// 파일 저장 ; multipartFile에 저장된 파일을 서버에 지정된 경로로 저장
-			multipartFile.transferTo(new File(getFullPath(savedFileName)));
+			multipartFile.transferTo(new File(getBoardFullPath(savedFileName)));
 			
 			// 파일 순번 설정
 			imageDTO.setImageOrd(i + 1); // i는 0부터 시작하므로 +1을 해서 1부터 시작
@@ -114,28 +140,42 @@ public class UploadImageService {
 	 *          File 객체에는 파일의 경로와 파일명이 포함되어 있어야 한다!
 	 *          복사 또는 이동 작업 중에 발생 가능한 IOException 처리해야!
 	 */
-	public UploadImage saveUserImage(UploadImageRequestDTO uploadImageRequestDTO, Course course) 
+	public UploadImage saveCourseImage(
+			MultipartFile multipartFile, Course course) 
 			throws IllegalStateException, IOException {
 		
 		// 블로그로 참고한 코드에는 매개변수로 MultipartFile multipartFile을 넘기고
 		// if 문으로 내용이 시작되었다. DTO 클래스에 MultipartFile을 적어주는 게 어떤 차이를 낳을까?
-		MultipartFile multipartFile = uploadImageRequestDTO.getMultipartFile();
+		// 메소드의 매개변수에 UploadImageRequestDTO를 없애고 다시 MultipartFile로 바꿨다.
+		//UploadImageRequestDTO uploadImageRequestDTO = new UploadImageRequestDTO();
+		//uploadImageRequestDTO.setMultipartFile(multipartFile);
+		//MultipartFile multipartFile = uploadImageRequestDTO.getMultipartFile();
 		
 		if (multipartFile.isEmpty()) {
-			return null;
+			throw new IllegalArgumentException("업로드된 파일이 비어 있습니다. 다른 파일을 올려주세요.");
 		}
 		
 		// 원본 파일명; 클라이언트가 업로드한 파일의 원래 파일 이름 반환
 		String originalFileName = multipartFile.getOriginalFilename();
+		log.info("upload file : {}", originalFileName);
 		
 		// 원본 파일명 -> 서버에 저장된 파일명 (중복 X)
 		// 파일명이 중복되지 않도록 UUID로 설정 + 확장자 유지
 		String savedFileName = "Course" + UUID.randomUUID() + "." + extractExt(originalFileName);
 		
 		// 파일 저장 ; multipartFile에 저장된 파일을 서버에 지정된 경로로 저장
-		multipartFile.transferTo(new File(getFullPath(savedFileName)));
+		multipartFile.transferTo(new File(getCourseFullPath(savedFileName)));
 		
-		return uploadImageRepository.save(uploadImageRequestDTO.toEntity());
+		// UploadImage 엔티티 생성 -> 여기에 setCourse(course) 추가 필요함
+		UploadImage uploadImage = UploadImage.builder()
+				.originalFileName(originalFileName)
+				.savedFileName(savedFileName)
+				.course(course)
+				.build();
+		
+		// 엔티티 저장
+		return uploadImageRepository.save(uploadImage);
+		//return uploadImageRepository.save(uploadImageRequestDTO.toEntity());
 	}
 	
 	/**
@@ -151,7 +191,8 @@ public class UploadImageService {
 	 *          File 객체에는 파일의 경로와 파일명이 포함되어 있어야 한다!
 	 *          복사 또는 이동 작업 중에 발생 가능한 IOException 처리해야!
 	 */
-	public UploadImage saveUserImage(UploadImageRequestDTO uploadImageRequestDTO, Member user) 
+	public UploadImage saveUserImage(
+			UploadImageRequestDTO uploadImageRequestDTO, Member user) 
 			throws IllegalStateException, IOException {
 		
 		// 블로그로 참고한 코드에는 매개변수로 MultipartFile multipartFile을 넘기고
@@ -170,9 +211,31 @@ public class UploadImageService {
 		String savedFileName = "User" + UUID.randomUUID() + "." + extractExt(originalFileName);
 		
 		// 파일 저장 ; multipartFile에 저장된 파일을 서버에 지정된 경로로 저장
-		multipartFile.transferTo(new File(getFullPath(savedFileName)));
+		multipartFile.transferTo(new File(getUserFullPath(savedFileName)));
 		
 		return uploadImageRepository.save(uploadImageRequestDTO.toEntity());
+	}
+	
+	////// Course, Board, User로 이미지 찾기 -> 컨트롤러에서 null 처리 반드시 해야 함!
+	/**
+	 * Course로 이미지 찾기
+	 */
+	public UploadImage findByCourse(Course course) {
+		return uploadImageRepository.findByCourse(course);
+	}
+	
+	/**
+	 * Board로 이미지 찾기
+	 */
+	public List<UploadImage> findByBoard(Board board) {
+		return uploadImageRepository.findByBoard(board);
+	}
+	
+	/**
+	 * User로 이미지 찾기
+	 */
+	public UploadImage findByUser(Member user) {
+		return uploadImageRepository.findByUser(user);
 	}
 	
 	/**
@@ -183,7 +246,10 @@ public class UploadImageService {
 	@Transactional
 	public void deleteImage(UploadImage uploadImage) throws IOException {
 		uploadImageRepository.delete(uploadImage);
-		Files.deleteIfExists(Paths.get(getFullPath(uploadImage.getSavedFileName())));
+		// 게시판, 산책로, 유저 파일 경로 중에 하나에서 찾아서 파일을 삭제하라!
+		Files.deleteIfExists(Paths.get(getBoardFullPath(uploadImage.getSavedFileName())));
+		Files.deleteIfExists(Paths.get(getCourseFullPath(uploadImage.getSavedFileName())));
+		Files.deleteIfExists(Paths.get(getUserFullPath(uploadImage.getSavedFileName())));
 	}
 	
 	/**

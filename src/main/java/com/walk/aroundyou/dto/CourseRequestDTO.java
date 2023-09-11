@@ -55,6 +55,7 @@ public class CourseRequestDTO {
 				.coursSpotLa(coursSpotLa)
 				.coursSpotLo(coursSpotLo)
 				.courseImageId(courseImageId)
+				.coursViewCount(0)
 				.build();
 	}
 }

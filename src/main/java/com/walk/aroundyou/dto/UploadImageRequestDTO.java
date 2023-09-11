@@ -31,7 +31,7 @@ public class UploadImageRequestDTO {
 	private Course course;
 	private Member user;
 	
-	// 업로드된 파일의 정보를 담고 있는 객체. 
+	// 업로드된 파일의 정보를 담고 있는 객체
 	private MultipartFile multipartFile;
 	
 	// 게시물, 산책로, 유저 프로필 등 경우에 따라 필요한 필드만 가져와서 build

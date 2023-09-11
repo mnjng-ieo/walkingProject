@@ -39,34 +39,63 @@ function deleteCourse(courseId) {
 // [수정 페이지] 수정 기능 - 수정 완료 버튼
 function updateCourse(courseId) {
     console.log('courseId : ' + courseId);
-            
+    
+    // 이미지 업로드를 위한 FormData 객체 생성 (수정되거나 유지된 기존 파일 그대로 읽어온다.)
+    const formData = new FormData();
+    const imageUploadInput = document.getElementById('imageUploadInput');
+    formData.append('file', imageUploadInput.files[0]);
+    
+    // HH:mm:ss 형식으로 들어가기 위한 설정
+    // 세 개의 input 태그가 모두 '' 이 아닐 경우 사이에 :가 들어간 문자열 데이터가 들어감.
+    // 아니면 coursTimeCn 전체가 null로 들어감.
+    let hours = document.getElementById('hours').value;
+    let minutes = document.getElementById('minutes').value;
+    let seconds = document.getElementById('seconds').value;
+    
+    let coursTimeCn;
+    if (hours != '' && minutes != '' && seconds != ''){
+        coursTimeCn = hours + ':' + minutes + ':' + seconds;
+    } else {
+        coursTimeCn = null;
+    }
+    
+    // 산책로 데이터를 포함한 요청 데이터 생성
+    const dto = {
+        courseId: courseId,
+        wlkCoursFlagNm: document.getElementById('wlkCoursFlagNm').value,
+        wlkCoursNm: document.getElementById('wlkCoursNm').value,
+        coursDc: document.getElementById('coursDc').value,
+        signguCn: document.getElementById('signguCn').value,
+        coursLevelNm: document.getElementById('coursLevelNm').value,
+        coursLtCn: document.getElementById('coursLtCn').value,
+        coursDetailLtCn: document.getElementById('coursDetailLtCn').value,
+        aditDc: document.getElementById('aditDc').value,
+        coursTimeCn: coursTimeCn,
+        toiletDc: document.getElementById('toiletDc').value,
+        cvntlNm: document.getElementById('cvntlNm').value,
+        lnmAddr: document.getElementById('lnmAddr').value,
+        coursSpotLa: document.getElementById('coursSpotLa').value,
+        coursSpotLo: document.getElementById('coursSpotLo').value
+    };
+    
+    // 문자열 데이터를 JSON으로 변환하여 FormData에 추가
+    // - Blob : 데이터를 처리하는 객체
+    formData.append('dto', 
+            new Blob([JSON.stringify(dto)], 
+                    {type: "application/json"}));
+    
+    // 이미지 업로드 및 산책로 데이터 수정 요청        
     fetch(`/api/admin/courses/${courseId}`, {
         method: 'PATCH',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            courseId: courseId,
-            wlkCoursFlagNm: document.getElementById('wlkCoursFlagNm').value,
-            wlkCoursNm: document.getElementById('wlkCoursNm').value,
-            coursDc: document.getElementById('coursDc').value,
-            signguCn: document.getElementById('signguCn').value,
-            coursLevelNm: document.getElementById('coursLevelNm').value,
-            coursLtCn: document.getElementById('coursLtCn').value,
-            coursDetailLtCn: document.getElementById('coursDetailLtCn').value,
-            aditDc: document.getElementById('aditDc').value,
-            coursTimeCn: document.getElementById('hours').value
-                         + ':' + document.getElementById('minutes').value
-                         + ':' + document.getElementById('seconds').value,
-            toiletDc: document.getElementById('toiletDc').value,
-            cvntlNm: document.getElementById('cvntlNm').value,
-            lnmAddr: document.getElementById('lnmAddr').value,
-            coursSpotLa: document.getElementById('coursSpotLa').value,
-            coursSpotLo: document.getElementById('coursSpotLo').value
-        })
+        body: formData
     })
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => {
+        if(!response.ok) {
+            throw new Error('수정 오류 발생');
+        }
+        return response.json();
+    })
+    .then((data) => {
         alert('수정이 완료되었습니다.');
         location.replace(`/admin/courses/${courseId}`);
     })
@@ -76,43 +105,85 @@ function updateCourse(courseId) {
 }
 
 // [등록페이지] 등록 기능
+//  : 이미지를 먼저 업로드하고 이미지 URL을 받아온 후
+//    이를 courseRequestDTO에 추가하여 전체 데이터를 서버로 보내는 방식
 function insertCourse() {
+    
+    // 이미지 업로드를 위한 FormData 객체 생성
+    const formData = new FormData();
+    const imageUploadInput = document.getElementById('imageUploadInput');
+    formData.append('file', imageUploadInput.files[0]);
+    
+    // HH:mm:ss 형식으로 들어가기 위한 설정
+    // 세 개의 input 태그가 모두 '' 이 아닐 경우 사이에 :가 들어간 문자열 데이터가 들어감.
+    // 아니면 coursTimeCn 전체가 null로 들어감.
+    let hours = document.getElementById('hours').value;
+    let minutes = document.getElementById('minutes').value;
+    let seconds = document.getElementById('seconds').value;
+    
+    let coursTimeCn;
+    if (hours != '' && minutes != '' && seconds != ''){
+            coursTimeCn = hours + ':' + minutes + ':' + seconds;
+        } else {
+            coursTimeCn = null;
+        }
+        
+    // 산책로 데이터를 포함한 요청 데이터 생성
+    const dto = {
+        wlkCoursFlagNm: document.getElementById('wlkCoursFlagNm').value,
+        wlkCoursNm: document.getElementById('wlkCoursNm').value,
+        coursDc: document.getElementById('coursDc').value,
+        signguCn: document.getElementById('signguCn').value,
+        coursLevelNm: document.getElementById('coursLevelNm').value,
+        coursLtCn: document.getElementById('coursLtCn').value,
+        coursDetailLtCn: document.getElementById('coursDetailLtCn').value,
+        aditDc: document.getElementById('aditDc').value,
+        coursTimeCn: coursTimeCn,
+        toiletDc: document.getElementById('toiletDc').value,
+        cvntlNm: document.getElementById('cvntlNm').value,
+        lnmAddr: document.getElementById('lnmAddr').value,
+        coursSpotLa: document.getElementById('coursSpotLa').value,
+        coursSpotLo: document.getElementById('coursSpotLo').value
+    };
+    
+    // 문자열 데이터를 JSON으로 변환하여 FormData에 추가
+    // - Blob : 데이터를 처리하는 객체
+    formData.append('dto', 
+                    new Blob([JSON.stringify(dto)], 
+                             {type: "application/json"}));
+    // 생성 요청 처리하면서 헤더에 저장한 courseId - 외부에 먼저 정의
+    let courseId;
+    
+    // 이미지 업로드 및 산책로 데이터 생성 요청
+    // -> Content-Type이 달라서 두 번에 나눠 따로 요청한다.
     fetch("/api/admin/courses", {
         method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            wlkCoursFlagNm: document.getElementById('wlkCoursFlagNm').value,
-            wlkCoursNm: document.getElementById('wlkCoursNm').value,
-            coursDc: document.getElementById('coursDc').value,
-            signguCn: document.getElementById('signguCn').value,
-            coursLevelNm: document.getElementById('coursLevelNm').value,
-            coursLtCn: document.getElementById('coursLtCn').value,
-            coursDetailLtCn: document.getElementById('coursDetailLtCn').value,
-            aditDc: document.getElementById('aditDc').value,
-            coursTimeCn: document.getElementById('hours').value
-                         + ':' + document.getElementById('minutes').value
-                         + ':' + document.getElementById('seconds').value,
-            toiletDc: document.getElementById('toiletDc').value,
-            cvntlNm: document.getElementById('cvntlNm').value,
-            lnmAddr: document.getElementById('lnmAddr').value,
-            coursSpotLa: document.getElementById('coursSpotLa').value,
-            coursSpotLo: document.getElementById('coursSpotLo').value
-        })
+        body: formData,   // 이미지를 담고 있는 FormData 객체
     })
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => {
+        if(!response.ok) {
+            throw new Error('등록 오류 발생');
+        }
+        // 응답 헤더에서 courseId 값 가져오기
+        courseId = response.headers.get('courseId');
+        console.log('courseId : ' + courseId);
+        return response.json();
+    })
+    .then((data) => {
         alert('등록이 완료되었습니다.');
-        // `/admin/courses/${courseId}`로 이동하면 좋겠는데 courseId는 어떻게 바로 얻을까?
-        location.replace(`/admin/courses`);
+        // `/admin/courses/${courseId}`로 이동 가능
+        if(courseId) {
+            location.replace(`/admin/courses/${courseId}`);
+        } else {
+            location.replace(`/admin/courses`);
+        }
     })
     .catch(error => {
         console.error('등록 중 오류 발생 : ', error);
     });
 }
 
-// 이미지 업로드 기능
+// 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
 function uploadImage() {
 	const imageUploadInput = document.getElementById('imageUploadInput');
 	// input 내용에 변화가 생기면, courseMainImage 요소의 src 속성 변경시키기
@@ -128,6 +199,9 @@ function uploadImage() {
 			};
 			reader.readAsDataURL(file);
 		}
+	// 등록화면에서는, 이미지를 등록해주세요라는 기본이미지가 보이고,
+	// 등록하지 않으면 이게 기본이미지라고 보여주면 되겠다.
+	// 등록 누르면 업로드한 사진만 보이도록!
 	});
 	
 	// input 요소 클릭하여 파일 선택 다이얼로그 열기
@@ -135,6 +209,7 @@ function uploadImage() {
 }
 
 // 이미지 업로드 취소 기능 ; 이미지를 기본 이미지로 변경
+// 취소하면 다시 이미지를 등록해주세요와 기본이미지 두 개 보이기
 function deleteImage() {
 	const courseMainImage = document.getElementById('courseMainImage');
 	courseMainImage.src = '/images/defaultCourseMainImg.jpg';

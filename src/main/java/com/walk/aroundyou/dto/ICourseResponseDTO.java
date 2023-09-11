@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.walk.aroundyou.domain.UploadImage;
 
 // 산책로 목록 조회에 대한 응답을 위한 DTO
 // (좋아요 수, 게시물 언급 수, 댓글 수 포함 전송)
@@ -31,6 +32,7 @@ public interface ICourseResponseDTO {
 	String getLnmAddr();
 	Double getCoursSpotLa();
 	Double getCoursSpotLo();
+	UploadImage courseImageId();
 	
 	// [뷰 추가 정보]
 	Integer getLikeCnt();     // 좋아요 수
@@ -56,5 +58,5 @@ public interface ICourseResponseDTO {
 	//	CoursSpotLo
 	//	LikeCnt
 	//	CommentCnt
-	
+	//  courseImageId
 }
