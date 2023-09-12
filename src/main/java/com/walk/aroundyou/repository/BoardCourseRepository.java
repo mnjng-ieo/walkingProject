@@ -3,6 +3,7 @@ package com.walk.aroundyou.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -11,9 +12,19 @@ import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.BoardCourse;
 import com.walk.aroundyou.domain.Course;
 
+import jakarta.transaction.Transactional;
+
 @Repository
 public interface BoardCourseRepository extends JpaRepository<BoardCourse, Long> {
 
+	@Modifying
+	@Transactional
+	@Query(value = """
+			DELETE FROM board_course
+				WHERE board_id = :#{#id}
+			""", nativeQuery = true)
+	void deleteByBoardId(@Param("id")Long id);
+	
 	// Board의 식별번호와 Course의 식별번호를 연결해 특정 "보드글(게시글)" 조회
 	/* 
 		하나의 산책로(courseId)에 대한 

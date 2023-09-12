@@ -151,58 +151,26 @@ public class BoardViewController {
 		return "boardForm";
 	}
 	
-	// 게시물 작성	
-	@PostMapping("/board-editor")
-	public String postBoardForm(String boardType, String boardTitle, String boardContent) {
-		// 뷰에서 유저 데이터 불러오는 로직 대체
-		BoardRequest form = BoardRequest.builder()
-				.boardType(BoardType.valueOf(boardType))
-				.boardTitle(boardTitle)
-				.boardContent(boardContent)
-				.userId("wayid10")
-				.userNickname("가나다")
-				.build();
-
-		log.info(form.toString());
-		if(boardService.save(form)) {
-			log.info("게시물 저장 성공");
-			return "redirect:/board";			
-		} else {
-			log.info("게시물 저장 실패");
-			return "redirect:/board-editor";
-		}	
-	}
-	
-	
 	// 게시물 수정 폼
 	@GetMapping("/board-editor/{id}")
 	public String getBoardFormById(@PathVariable Long id, Model model) {
 		Optional<IBoardDetailResponse> board = boardService.findBoardDetail(id);
 		model.addAttribute("board", board.get());
-		return "boardFormById";
-	}
-	
-	// 게시물 수정
-	@PostMapping("/board-editor/{id}")
-	public String postBoardFormById(String boardType, String boardTitle, String boardContent,@PathVariable Long id) {
-		// 뷰에서 유저 데이터 불러오는 로직 대체
-		BoardRequest form = BoardRequest.builder()
-				.boardId(id)
-				.boardType(BoardType.valueOf(boardType))
-				.boardTitle(boardTitle)
-				.boardContent(boardContent)
-				.userId("wayid10")
-				.userNickname("가나다")
-				.build();
-
-		log.info(form.toString());
-		if(boardService.save(form)) {
-			log.info("게시물 저장 성공");
-			return "redirect:/board/"+id;			
+		List<String> allSignguCn = courseService.findAllSignguCn();
+		model.addAttribute("allSignguCn", allSignguCn);
+		Optional<Course> course = courseService.findByBoardId(id);
+		if(course.isPresent()) {
+			log.info("course 값이 있음");
+			Course resultCourse = course.get();
+			model.addAttribute("courseId", resultCourse.getCourseId());
+			model.addAttribute("wlkCoursFlagNm", resultCourse.getWlkCoursFlagNm());
+			model.addAttribute("wlkCoursNm", resultCourse.getWlkCoursNm());
 		} else {
-			log.info("게시물 저장 실패");
-			return "redirect:/board-editor/"+id;
-		}	
+			log.info("course 값이 없음");	
+		}
+		if(course.isPresent()) {
+		}
+		return "boardFormById";
 	}
 	
 	

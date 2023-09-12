@@ -344,6 +344,7 @@ public class CourseService {
 		}
 	}
 	
+	//// 게시판 산책로 지도처리를 위한 메소드
 	// 산책로 지역 선택 항목 가져오기
 	public List<String> findAllSignguCn() {
 		return courseRepository.findAllSignguCn();

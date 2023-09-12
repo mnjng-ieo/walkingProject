@@ -98,6 +98,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			on b.board_id = bll.board_id
 			WHERE b.board_secret = false
 			GROUP BY b.board_id
+			ORDER BY b.board_id desc
 					""" // ORDER BY는 나중에 수정하기
 			, nativeQuery = true)
 	Page<IBoardListResponse> findBoardAndCnt(Pageable pageable);
@@ -130,6 +131,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			WHERE board_type = :#{#type}
 				and b.board_secret = false
 			GROUP BY b.board_id
+			ORDER BY b.board_id desc
 					""" // ORDER BY는 나중에 수정하기
 			, nativeQuery = true)
 	Page<IBoardListResponse> findBoardAndCntByType(@Param("type") String type, Pageable pageable);

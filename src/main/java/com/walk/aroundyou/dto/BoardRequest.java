@@ -3,7 +3,7 @@ package com.walk.aroundyou.dto;
 import java.sql.Timestamp;
 
 import com.walk.aroundyou.domain.Board;
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domainenum.BoardType;
 import com.walk.aroundyou.domainenum.StateId;
 
@@ -25,12 +25,15 @@ public class BoardRequest {
 	private BoardType boardType;
 	private String boardTitle;
 	private String boardContent;
+	private Timestamp boardCreatedDate;
+	private int boardViewCount;
+	private Long courseId;
 	
-	public Board toEntity() {
+	public Board toInsertEntity() {
 		return Board.builder()
-				.boardId(boardId)
+				.boardId(null)
 				.userId(
-						User.builder()
+						Member.builder()
 						.userId(userId)
 						.build())
 				.userNickname(userNickname)
@@ -40,6 +43,24 @@ public class BoardRequest {
 				.boardCreatedDate(new Timestamp(System.currentTimeMillis()))
 				.boardUpdatedDate(new Timestamp(System.currentTimeMillis()))
 				.stateId(StateId.NORMAL)
+				.build();
+	}
+	
+	public Board toUpdateEntity() {
+		return Board.builder()
+				.boardId(boardId)
+				.userId(
+						Member.builder()
+						.userId(userId)
+						.build())
+				.userNickname(userNickname)
+				.boardType(boardType)
+				.boardTitle(boardTitle)
+				.boardContent(boardContent)
+				.boardCreatedDate(boardCreatedDate)
+				.boardUpdatedDate(new Timestamp(System.currentTimeMillis()))
+				.stateId(StateId.NORMAL)
+				.boardViewCount(boardViewCount)
 				.build();
 	}
 }

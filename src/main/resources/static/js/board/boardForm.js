@@ -7,6 +7,19 @@ window.onload = function(){
 	const boardContent = document.getElementById("boardContent")
 	const tagList = document.getElementById("tagList")
 	tagList.innerHTML = "";
+	if(boardContent != ''){
+		let str =  boardContent.value
+		let arr = str.match(/(#[^\s#]+)/g)
+		const set = new Set(arr)
+		arr = [...set]
+		let result = ""
+		if(arr != null){
+			arr.forEach(function(tag){
+				result += " <span class='badge px-2 py-1 my-1 fs-6 rounded-5 tagItem'>" + tag + "</span> "
+			})
+			tagList.innerHTML = result
+		}
+	}
 	boardContent.addEventListener('keyup', function(){
 		let str =  boardContent.value
 		let arr = str.match(/(#[^\s#]+)/g)
@@ -196,5 +209,29 @@ window.onload = function(){
 	function closeOverlay() {
 	    overlay.setMap(null);     
 	}
+	
+	
+	
+	
+	// 생성처리
+	document.getElementById("submitBtn").addEventListener("click",
+		function(){
+			fetch('/api'+window.location.pathname,{
+				method: 'PUT',
+				headers:{
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					boardType : document.getElementById("boardType").value,
+					boardTitle : document.getElementById("boardTitle").value,
+					boardContent : document.getElementById("boardContent").value,
+					courseId : document.getElementById("courseId").value
+				})
+			})
+			.then(()=>	{
+				alert('등록/수정이 완료되었습니다.');
+				location.replace('/board');
+			})
+	})
 
 }

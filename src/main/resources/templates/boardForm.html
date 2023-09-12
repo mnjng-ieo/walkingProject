@@ -14,8 +14,8 @@
 <th:block layout:fragment="Content">
     <h1 class="my-5 text-center formTitle">글 작성하기</h1>
 	<div class="container rounded-5 p-4 p-lg-5 my-4 wrapForm">
-	<div>
-        <form class="needs-validation formBox" method="post">
+	<div class="formBox">
+        <form class="needs-validation" id="formData" method="post">
         	<div class="m-3 justify-content-between">
         		
         		<label for="boardType" class="form-label">게시판</label>
@@ -53,14 +53,9 @@
 				<label class="form-label">산책로 정보</label>
 				<div class="input-group d-flex justify-content-between">
 					<span class="input-group-text">관련 산책로</span>
-					<th:block th:if="${courseId == null}">
-					<input id="courseId" name="courseId" class="form-control" type="hidden">
-					<input id="selectedCourse" class="form-control text-center" type="text" value="산책로를 선택해주세요" readonly>
-					</th:block>
-					<th:block th:unless="${courseId == null}">
-					<input id="courseId" name="courseId" class="form-control" type="hidden" th:value="${courseId}">
-					<input id="selectedCourse" class="form-control" type="text" th:value="|${wlkCoursFlagNm} : ${wlkCoursNm}|" readonly>
-					</th:block>
+					<input id="courseId" name="courseId" class="form-control" type="hidden" th:value="${courseId!=null}?${courseId}:''">
+					<input id="selectedCourse" class="form-control text-center" type="text" th:value="${wlkCoursFlagNm!=null}?|${wlkCoursFlagNm} : ${wlkCoursNm}|:|산책로를 선택해주세요|" readonly>
+
 				</div>				
 				<div class="mb-3 d-flex justify-content-between">
 					<select class="form-select" id="signguCn" name="signguCn">
@@ -91,7 +86,7 @@
 			</div>
         	
         	<div class="text-center">
-	        	<button class="mt-3 mx-auto btn btn-lg submitBtn" type="submit">등록하기</button>
+	        	<button class="mt-5 mx-auto btn btn-lg submitBtn" id="submitBtn" type="button">등록하기</button>
         	</div>	
         </form>
       </div>

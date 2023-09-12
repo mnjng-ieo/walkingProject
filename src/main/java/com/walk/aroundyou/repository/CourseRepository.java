@@ -227,11 +227,11 @@ public interface CourseRepository
 			""", nativeQuery = true)
 	List<Course> findCourseNamesByCourseFlagName(@Param("courseFlag") String courseFlag);
 	
-
 	// 산책로 지역 선택 항목 가져오기
 	@Query(value = """
 			SELECT DISTINCT signgu_cn
 				FROM course
+				ORDER BY 1
 			""", nativeQuery = true)
 	List<String> findAllSignguCn();
 	
@@ -240,6 +240,7 @@ public interface CourseRepository
 			SELECT DISTINCT wlk_cours_flag_nm 
 				FROM course c 
 				WHERE signgu_cn = :#{#signguCn}
+				ORDER BY 1
 			""", nativeQuery = true)
 	public List<String> findFlagNameBySignguCn(@Param("signguCn") String signguCn);
 
@@ -248,6 +249,7 @@ public interface CourseRepository
 			SELECT *
 				FROM course c 
 				WHERE wlk_cours_flag_nm = :#{#wlkCoursFlagNm}
+				ORDER BY 1
 			""", nativeQuery = true)
 	public List<Course> findCourseNameByWlkCoursFlagNm(@Param("wlkCoursFlagNm")String wlkCoursFlagNm);
 	
