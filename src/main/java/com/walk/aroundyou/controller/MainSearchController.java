@@ -1,6 +1,7 @@
 package com.walk.aroundyou.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,7 +34,7 @@ public class MainSearchController {
 	private BoardService boardService;
 	
 	@Autowired
-	private CourseService courseService;
+	private TagRepository tagRepository;
 	
 	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
 	private final static int PAGINATION_SIZE = 5;
@@ -44,10 +45,16 @@ public class MainSearchController {
 			
 			Model model) {
 		// 검색 서비스로부터 검색 결과를 가져온다 
-		// 1. 태그
+		// 1-1. 태그
 		List<ITagResponse> tagResults = 
 				mainSearchService.findTagByKeyword(keyword);
-
+		
+		// 1-2. board_tag 테이블에 있는 tag_id만 남기기
+	    List<Long> tagIdsInBoardTag = tagRepository.existsByBoardTag();
+	    tagResults = tagResults.stream()
+	            .filter(tag -> tagIdsInBoardTag.contains(tag.getTagId()))
+	            .collect(Collectors.toList());
+		
 		// 2. 코스
 		List<ICourseResponseDTO> courseResults = 
 				mainSearchService.findCourseByKeyword(keyword);

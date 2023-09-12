@@ -18,17 +18,14 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long>{
 	
-	// 1. 기존 태그 tag 테이블에서 삭제하기(게시물 삭제로 더 이상 존재하지 않는 tagContent)
+	// 1. 기존 태그 tag 테이블에서 삭제하기
 	// (기본 메서드도 사용 가능)
 	@Modifying
 	@Transactional
-	void deleteByTagId(Long TagId); // 기본 메소드
-	// 작동하는 삭제 쿼리문이나 기본 메서드를 사용하여 주석처리
-	// 직접 쿼리문 보내기
-//	@Query(value = 
-//		"DELETE FROM tag WHERE tag_id = ?1", 
-//		nativeQuery = true)
-//	void deleteByTagId(Long tagId);
+	@Query(value= "DELETE FROM tag"
+			+ " WHERE tag_id NOT IN (SELECT DISTINCT tag_id FROM board_tag)"
+			, nativeQuery = true)
+	void deleteUnusedTags(Long TagId); // 기본 메소드
 	
 	// 2. 새로운 태그 tag 테이블에 추가하기
 	@Modifying
@@ -94,4 +91,11 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 	          WHERE REPLACE(tag_content, ' ', '') like :#{#keyword}
 			""", nativeQuery = true)
 	List<ITagResponse> findMainTagByKeyword(@Param("keyword") String keyword);
+	
+	// 검색 결과 태그이력테이블에 사용되는 tag_id만 출력
+	@Query(value = "SELECT tag_id"
+			+ " FROM tag t"
+			+ " WHERE t.tag_id IN (SELECT DISTINCT bt.tag_id FROM board_tag bt)"
+			, nativeQuery = true)
+	List<Long> existsByBoardTag();
 }
