@@ -2,8 +2,6 @@ package com.walk.aroundyou.repository;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -49,6 +47,7 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 		+ "			) bb"
 		+ "		ON bb.tag_id = t.tag_id"
 		, nativeQuery = true)
+	// boardId를 파라미터로 받아 해당 게시물에 해당하는 모든 해시태그를 반환
 	List<String> findTagsByBoardId(@Param("boardId") Long boardId);
 	
 	// 4. 해시태그가 있는지 확인하는 메서드
@@ -61,7 +60,7 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 	// 4. 해시태그가 있는지 확인하는 메서드(tagContent로 tagId 조회하는 쿼리)
 	boolean existsByTagContent(String tagContent);
 	
-	// 4. tag_content으로 tag_id 추출하기(save메서드에서 활용)
+	// 4. tag_content으로 tag_id 추출하기(save메서드, searchBoardAndCnt(컨트롤러)에서 활용)
 	@Query(value = "SELECT"
 			+ " *"
 			+ " FROM tag"
@@ -80,15 +79,5 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 			+ "    limit 12"
 			, nativeQuery = true)
 	List<String> findTagsByBoardTagId();
-	
-	
-	/**
-	 * [메인페이지] 검색창에 태그 정보 검색하기 - 서비스에서 매개변수 앞뒤로 '%' 붙이기!
-	 */
-	@Query(value = """
-			SELECT * FROM Course c
-	          WHERE REPLACE(tag_content, ' ', '') like :#{#keyword}
-			""", nativeQuery = true)
-	Page<Tag> findMainCourseByKeyword(
-			@Param("keyword") String keyword, Pageable pageable);
+
 }

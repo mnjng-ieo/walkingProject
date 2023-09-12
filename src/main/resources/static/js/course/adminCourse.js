@@ -226,11 +226,11 @@ function deleteImage() {
 
 // 이미지 업로드 input에 기존 이미지 경로를 채우는 함수
 // ↳ 수정 폼에서 이미지의 변화가 없었을 때도 처리하기 위해 필요!
-function fillImageInputWithExistingImage(imagePath) {
+/*function fillImageInputWithExistingImage(imagePath) {
     const imageUploadInput = document.getElementById('imageUploadInput');
     // 이미지 업로드 input의 value를 기존 이미지 경로로 설정
     imageUploadInput.value = imagePath;
-}
+}*/
 
 // 필수 입력 필드의 유효성 검사 -> 왜인지 수정페이지에서는 값이 다 지워져도 적용되지 않는다. 
 window.onload = function() {

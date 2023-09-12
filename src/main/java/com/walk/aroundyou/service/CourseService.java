@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -333,6 +334,32 @@ public class CourseService {
 				courseRepository.findCoursesWithCounts(pageRequest);
 		
 		return coursePage;
+	}
+		
+	// 검색에서 해당 값이 없는 것을 체크(09/09 - 연서 수정)
+	public Optional<Course> findByBoardId(Long id) {
+		List<Course> courses = courseRepository.findByBoardId(id);
+		if(courses.isEmpty()) {
+			return Optional.ofNullable(null);
+		} else {
+			return Optional.ofNullable(courses.get(0));			
+		}
+	}
+	
+	//// 게시판 산책로 지도처리를 위한 메소드
+	// 산책로 지역 선택 항목 가져오기
+	public List<String> findAllSignguCn() {
+		return courseRepository.findAllSignguCn();
+	}
+	// 지역에 따른 산책로이름(산책로 큰분류) 가져오기
+	public List<String> findFlagNameBySignguCn(String signguCn) {
+		log.info("findFlagNameBySignguCn() 서비스 접근");
+		return courseRepository.findFlagNameBySignguCn(signguCn);
+	}
+	// 산책로이름에 따른 코스이름(산책로 작은분류) 정보 가져오기
+	public List<Course> findCourseNameByWlkCoursFlagNm(String wlkCoursFlagNm) {
+		log.info("findFlagNameBySignguCn() 서비스 접근");
+		return courseRepository.findCourseNameByWlkCoursFlagNm(wlkCoursFlagNm);
 	}
 
 }

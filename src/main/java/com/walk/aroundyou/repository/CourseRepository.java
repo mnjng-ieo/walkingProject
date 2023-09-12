@@ -201,6 +201,55 @@ public interface CourseRepository
 			""", nativeQuery = true)
 	List<ICourseResponseDTO> findMainCourseByKeyword(
 			@Param("keyword") String keyword);
-
 	
+////9/7 변경
+	// 특정 게시물의 산책로 정보를 얻어오는 메소드
+	// 현재 게시물당 산책로는 하나만 선택되게 할 예정이지만, 더미데이터에는 여러개 있어서 임시로 List로 설정
+	// 이후엔 Optional로
+	@Query(value = """
+			SELECT c.*
+				FROM course c
+				WHERE c.course_id in (
+					SELECT bc.course_id
+						FROM board_course bc
+						WHERE bc.board_id = :#{#id}
+				)
+			""", nativeQuery = true)
+	List<Course> findByBoardId(@Param("id")Long id);
+	
+	// 특정 산책로의 코스리스트를 출력하는 메소드
+	@Query(value = """
+			SELECT *
+				FROM course
+				WHERE wlk_cours_flag_nm = :#{#courseFlag}
+				ORDER BY wlk_cours_nm
+			""", nativeQuery = true)
+	List<Course> findCourseNamesByCourseFlagName(@Param("courseFlag") String courseFlag);
+	
+	// 산책로 지역 선택 항목 가져오기
+	@Query(value = """
+			SELECT DISTINCT signgu_cn
+				FROM course
+				ORDER BY 1
+			""", nativeQuery = true)
+	List<String> findAllSignguCn();
+	
+	// 지역에 따른 산책로이름(산책로 큰분류) 가져오기
+	@Query(value = """
+			SELECT DISTINCT wlk_cours_flag_nm 
+				FROM course c 
+				WHERE signgu_cn = :#{#signguCn}
+				ORDER BY 1
+			""", nativeQuery = true)
+	public List<String> findFlagNameBySignguCn(@Param("signguCn") String signguCn);
+
+	// 산책로이름에 따른 코스이름(산책로 작은분류) 정보 가져오기
+	@Query(value = """
+			SELECT *
+				FROM course c 
+				WHERE wlk_cours_flag_nm = :#{#wlkCoursFlagNm}
+				ORDER BY 1
+			""", nativeQuery = true)
+	public List<Course> findCourseNameByWlkCoursFlagNm(@Param("wlkCoursFlagNm")String wlkCoursFlagNm);
+
 }

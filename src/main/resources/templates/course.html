@@ -14,7 +14,10 @@
 <th:block layout:fragment="Content">
 	<!-- 산책로 메인 사진 : upload된 것 있으면 해당 사진이 보이고, 아니면 default로 보임 -->
     <div class="top-imgBox" th:object="${course}">
-        <img class="top-imgBox_img" src="/images/defaultCourseMainImg.jpg" alt="메인사진" />
+        <img class="top-imgBox_img" 
+            th:src="${imagePath}? 
+                    ${imagePath}: '/images/defaultCourseMainImg.jpg'" 
+            alt="산책로 메인사진" />        
     </div>
     <div class="container course-infoBox" th:object="${course}">
         <div class="d-flex course-header">
@@ -44,10 +47,10 @@
                     onmouseout="restoreLikeImage(this)"
                     onclick="toggleLikeImage(this)">                    
                     <img th:if="${isLiked}" 
-                         th:src="@{/images/heart-click.png}"
+                         th:src="@{/images/common/heart-click.png}"
                         alt="좋아요" />
                     <img th:if="${not isLiked}" 
-                         th:src="@{/images/heart-nonclick.png}"
+                         th:src="@{/images/common/heart-nonclick.png}"
                         alt="좋아요" />
                     <p>좋아요</p>
                 </div>
@@ -170,7 +173,7 @@
 	                    </p>
 	                    <div class="m-1" th:text = "${courseBoard.boardViewCount}">조회수</div>
 	                    <p class="m-1" style="width: 20px; height: 20px;">
-	                        <img src = "/images/heart-click.png" class="img-fluid"/>
+	                        <img src = "/images/common/heart-click.png" class="img-fluid"/>
 	                    </p>
 	                    <div class="m-1" th:text = "${courseBoard.likeCnt}">좋아요 수</div>
 	                </div>

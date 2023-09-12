@@ -1,0 +1,87 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/defaultLayout}"
+	  layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+	<title>게시판</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+</head>
+<body>
+	<div class="container">
+		<h1>~~~ 게시판 리스트 ~~~</h1>
+		<h3>전체페이지 [[${boardList.totalElements}]]</h3>
+		<table class="table table-responsive text-center">
+			<thead>
+				<tr>
+					<th scope="col" class="col-1">번호</th>
+					<th scope="col" class="col-5">제목</th>
+					<th scope="col" class="col-2">작성자</th>
+					<th scope="col" class="col-2">작성일</th>
+					<th scope="col" ><i class="fa-regular fa-eye"></i></th>
+					<th scope="col"><i class="fa-regular fa-heart"></i></th>
+					<th scope="col"><i class="fa-regular fa-comment"></i></th>
+				</tr>
+			</thead>
+			<tbody class="table-group-divider">
+				<tr th:each="board:${boardList}">
+					<td scope="row">[[${ board.boardId }]]</td>
+					<td style="max-width:200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+						<a th:href="@{/board/{id}(id=${board.boardId})}">
+						[[${ board.boardTitle }]]
+						</a>
+						</td>
+					<td>[[${ board.userNickname }]]</td>
+					<td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">[[${ #dates.format(board.boardCreatedDate, 'yyyy-MM-dd') }]]</td>
+					<td>[[${ board.boardViewCount }]]</td>
+					<td>[[${ board.likeCnt }]]</td>
+					<td>[[${ board.commentCnt }]]</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<nav aria-label="Page navigation">
+		  <ul class="pagination justify-content-center">
+ 		    <li class="page-item" id="pagePrev" th:if="${currentPage > 1}" >
+		      <a class="page-link" th:href="@{/board(page=${currentPage - 2})}">Previous</a>
+		    </li>
+		    <li class="page-item disabled" id="pagePrev" th:unless="${currentPage > 1}" >
+		      <a class="page-link">Previous</a>
+		    </li>
+		    
+		    <th:block th:each=" page : ${#numbers.sequence(pageStart, pageEnd)} ">
+		    <li th:if="${page == currentPage}" class="page-item active">
+		    	<a class="page-link" th:href="@{/board(page=${page - 1})}">[[${page}]]</a>
+		    </li>
+		    <li th:unless="${page == currentPage}" class="page-item">
+		    	<a class="page-link" th:href="@{/board(page=${page - 1})}">[[${page}]]</a>
+		    </li>
+		    </th:block>
+		    
+		    <li class="page-item" id="pageNext" th:if="${currentPage < pageEnd}" >
+		      <a class="page-link" th:href="@{/board(page=${currentPage})}">Next</a>
+		    </li>	
+		    <li class="page-item disabled" id="pageNext" th:unless="${currentPage < pageEnd}" >
+		      <a class="page-link">Next</a>
+		    </li>	
+		    
+		  </ul>
+		</nav>
+		
+		<!-- 페이지네이션 previous, next 자바스크립트로 구현시도중 -->
+		<script>
+		window.onload = function(){
+			
+			let pagePrev = document.getElementById("pagePrev")
+			let pageNext = document.getElementById("pageNext")
+			
+			pagePrev.addEventListener('click', function(){
+				window.location.href='/board?page=' + param.startPage;
+
+			})
+		}
+		</script>
+	</div>
+</body>
+</html>

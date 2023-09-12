@@ -392,8 +392,6 @@ public class CourseViewController {
 
 	/**
 	 * [관리자 페이지] 산책로 데이터 관리 - 산책로 생성
-	 * 수정 요청을 /admin/courses/{id} POST로 따로 만들까 고민 중
-	 * 일단 수정 요청에 해당하는 메소드부터 만들자
 	 */
 	@GetMapping("/admin/courses/new-course")
 	public String adminNewCourse(Model model) {

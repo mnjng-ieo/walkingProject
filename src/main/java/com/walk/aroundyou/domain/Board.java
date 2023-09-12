@@ -1,15 +1,12 @@
 package com.walk.aroundyou.domain;
 
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.ArrayList;
 
 import org.hibernate.annotations.ColumnDefault;
 
 import com.walk.aroundyou.domainenum.BoardType;
 import com.walk.aroundyou.domainenum.StateId;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -20,15 +17,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Data
+@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor

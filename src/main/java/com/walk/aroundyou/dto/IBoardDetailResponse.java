@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.Getter;
+
 // 게시물 상세를 보여주는 DTO
 public interface IBoardDetailResponse {
 	Long getBoardId();
@@ -19,5 +21,6 @@ public interface IBoardDetailResponse {
 	Timestamp getBoardUpdatedDate();
 	Integer getCommentCnt();
 	Integer getLikeCnt();
+	
 //	boolean getIsBoardLike();
 }

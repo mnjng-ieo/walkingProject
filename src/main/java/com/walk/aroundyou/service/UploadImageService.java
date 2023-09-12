@@ -68,6 +68,30 @@ public class UploadImageService {
 			return null; // null 외에 더 좋은 처리 방법이 있을까?
 		}
 	}
+	///// Board의 경우 경로를 어떻게 가져올까?
+	///// 그냥 직접 src에 /upload-images/board/savedImageName을 붙이는 방법도 있다.
+	public List<String> findBoardFullPathsById(List<UploadImage> uploadImages) {
+		if (uploadImages != null && !uploadImages.isEmpty()) {
+			List<String> imagesPaths = new ArrayList<>();
+			for (UploadImage uploadImage : uploadImages) {
+				String savedFileName = uploadImage.getSavedFileName();
+				imagesPaths.add("/upload-images/board/" + savedFileName);
+			}
+			return imagesPaths;
+		} else {
+			return null; // null 외에 더 좋은 처리 방법이 있을까?
+		}
+	}
+	
+	public String findUserFullPathById(Long UploadImageId) {
+		Optional<UploadImage> uploadImage = uploadImageRepository.findById(UploadImageId);
+		if (uploadImage.isPresent()) {
+			String savedFileName = uploadImage.get().getSavedFileName();
+			return "/upload-images/user/" + savedFileName;
+		} else {
+			return null; // null 외에 더 좋은 처리 방법이 있을까?
+		}
+	}
 
 	///// 이미지 저장할 때 UUID 앞에 Board, Course, User라 붙여서 서로 식별되도록 했다.
 	// -> 원래 Board, Course, User 객체를 매개변수로 넣어줬는데,

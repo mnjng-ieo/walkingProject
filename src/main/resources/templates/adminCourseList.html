@@ -126,13 +126,14 @@
     
     <div id="searchResults">
     <!-- 산책로 목록  ; 검색 결과를 표시할 영역-->
-    <div class="container course-lists" th:each="item : ${courses}">
+    <div class="container course-lists" 
+         th:each="item, stat : ${courses}">
         <div class="card course-list" >
             <div class="row no-gutters">
                 <div class="col-3 course-list_imgBox">
-	                <!-- 예정 : Course에 추가할 coursImg. 현재 default만 설정 -->
+	                <!-- 기본 src="/images/defaultCourseImg.png" -->
 	                <img class="card-img-top course-list_img" 
-	                     src="/images/defaultCourseImg.png" alt="산책로 사진" />
+	                     th:src="${imagePaths[stat.index]}" alt="산책로 사진" />
                 </div>
 	            <div class="col-9">
 	                <div class="card-body course-list_textbox">
@@ -167,10 +168,10 @@
 	                            <!-- 좋아요 수 / 언급 수 / 댓글 수 -->
 		                        <p class="card-text count">
 		                            <img class="heart-icon"
-		                                 src="/images/heart-click.png" alt="좋아요" />
-		                            <span th:text="${item.likeCnt}">좋아요 수</span>개 언급
-		                            <span th:text="${item.mentionCnt}">언급 수</span>개 댓글
-		                            <span th:text="${item.commentCnt}">댓글 수</span>개
+		                                 src="/images/common/heart-click.png" alt="좋아요" />
+		                            <span th:text="${item.likeCnt}">좋아요 수</span>개 댓글
+		                            <span th:text="${item.commentCnt}">댓글 수</span>개 언급
+		                            <span th:text="${item.mentionCnt}">언급 수</span>개 
 		                        </p>
 		                        <div class="row justify-content-evenly buttons">
 		                              <button type="button" class="col-3"

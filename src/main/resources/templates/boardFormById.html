@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8">
+	<title>홈페이지</title>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f5041361e9b1c4d5fd6a9c27cfadb45e"></script>
+    <script type="text/javascript" src="/js/board/boardForm.js"></script>
+	<link href="/css/board/boardMap.css" rel="stylesheet"></link> 
+	<link href="/css/board/boardForm.css" rel="stylesheet"></link> 
+</head>
+<body>
+<th:block layout:fragment="Content">
+	<h1 class="my-5 text-center formTitle">글 작성하기</h1>
+	<div class="container rounded-5 p-4 p-lg-5 my-4 wrapForm">
+	<div class="formBox">
+		<form class="needs-validation" id="formData" method="post">
+			<div class="m-3 justify-content-between">
+        		<label for="boardType" class="form-label">게시판</label>
+        		<select class="form-select" id="boardType" name="boardType" required>
+        			<option th:selected="${board.boardType == FREE}" value="FREE">자유 게시판</option>
+        			<option th:selected="${board.boardType == COMMUNITY}" value="COMMUNITY">모임 게시판</option>
+        			<option th:selected="${board.boardType == REVIEW}" value="REVIEW">후기 게시판</option>
+        		</select>
+        		<div class="invalid-feedback">
+	              	게시판을 선택해주세요!
+	            </div>
+        	</div>
+            <div class="m-3">
+        		<lable for="boardTitle" class="form-label">제목</lable>
+        		<input type="text" class="form-control" id="boardTitle" name="boardTitle" placeholder="제목을 입력해주세요" th:value="${board.boardTitle}" required>
+        		<div class="invalid-feedback">
+	              	제목을 입력해주세요!
+	            </div>
+            </div>
+        	<div class="m-3">
+        		<lable for="boardContent" class="form-label">본문</lable>
+        		<textarea class="form-control" placeholder="내용을 입력해주세요" id="boardContent"  name="boardContent" rows="10" required>[[${board.boardContent}]]</textarea>
+        		<div class="invalid-feedback">
+	              	본문을 입력해주세요!
+	            </div>
+        	</div>
+        	
+        	<!-- 해시태그-->
+        	<div class="m-3">
+			  <label class="form-label">#</label>
+			  <div id="tagList" class="form-control border p-2 text-break tagList"></div>
+			</div>
+			
+			<!-- 산책로 -->
+        	<div class="m-3">
+				<label class="form-label">산책로 정보</label>
+				<div class="input-group d-flex justify-content-between">
+					<span class="input-group-text">관련 산책로</span>
+					<input id="courseId" name="courseId" class="form-control" type="hidden" th:value="${courseId!=null}?${courseId}:''">
+					<input id="selectedCourse" class="form-control text-center" type="text" th:value="${wlkCoursFlagNm!=null}?|${wlkCoursFlagNm} : ${wlkCoursNm}|:|산책로를 선택해주세요|" readonly>
+				</div>				
+				<div class="mb-3 d-flex justify-content-between">
+					<select class="form-select" id="signguCn" name="signguCn">
+	        			<option>지역 선택</option>
+						<th:block th:each="signguCn : ${allSignguCn}">
+	        			<option th:value="${signguCn}">[[${signguCn}]]</option>
+	        			</th:block>
+	        		</select>
+					<select class="form-select" id="wlkCoursFlagNm" name="wlkCoursFlagNm">
+	        			<option>산책로 선택</option>
+	        			<option th:unless="${wlkCoursFlagNm == null}" th:value="${wlkCoursFlagNm}" selected>[[${wlkCoursFlagNm}]]</option>
+	        		</select>
+					<select class="form-select" id="wlkCoursNm" name="wlkCoursNm">
+	        			<option>경로 선택</option>
+	        			<option th:unless="${wlkCoursNm == null}" th:value="${wlkCoursNm}" selected>[[${wlkCoursNm}]]</option>
+	        		</select>
+				</div>
+			</div>
+        	<div class="px-4 mx-lg-5 px-lg-5">
+				<div id="map" style="width:100%; height:300px; display: none;" class="rounded-4"></div>
+				<input type="hidden" id="flagName">
+				<input type="hidden" id="courseName">
+				<input type="hidden" id="courseLat">
+				<input type="hidden" id="courseLng">
+				<input type="hidden" id="courseAddr">
+				<input type="hidden" id="courseLength">
+				<input type="hidden" id="courseTime">
+			</div>
+        		
+        	<div class="text-center">
+	        	<button class="mt-5 mx-auto btn btn-lg submitBtn" id="submitBtn" type="button">수정하기</button>
+        	</div>
+        </form>
+      </div>
+  	</div>
+</th:block>
+</body>
+</html>
