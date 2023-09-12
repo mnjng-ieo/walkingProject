@@ -1,0 +1,176 @@
+/* 1. 폰트 */
+@font-face {
+    font-family: 'KimjungchulGothic-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Yeongdo-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/Yeongdo-Rg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 전체 폰트 적용 */
+body{
+	font-family: 'KimjungchulGothic-Bold';
+}	
+
+/* 2. 메인이미지 영역 */
+.main {
+    height: 85vh;
+    background-image: url('/images/common/main_img.jpg');
+    background-size: cover; /* 배경 이미지를 화면에 가득 채우도록 설정 */
+    background-position: center; /* 배경 이미지를 가운데 정렬 */
+}
+
+.search{
+	text-indent: 2rem;
+	margin-top : 25%;
+}
+
+.searchbtn {
+	width: 12%;
+	margin-top : 25%;
+	background-color: #EEF2E6;
+	color: #3D8361;
+}
+
+.searchbtn:hover,
+.searchbtn:active,
+.searchbtn:focus {
+    background-color: #EEF2E6 !important;	/* !important : 다른 모든 스타일 규칙보다 우선시하도록. */
+    color: #3D8361 !important;
+}
+
+/* 3. 중간 메인 영역 */
+/* 1)좋아요 순 BEST 9 */
+.best9 {
+	padding-top	 : 150px;
+	height: 105vh;
+    align-items: center; /* 수직 중앙 정렬 */
+}
+
+.course-lists {
+	margin-top: 30px;
+}
+
+.course-list {
+	cursor: pointer;
+	margin-bottom: 50px;
+	transform: scale(1);
+	/* position: relative; */
+}
+
+.course-list:hover{
+	transform:scale(1.01);
+}
+
+.course-list_titlebox {
+	position: relative;
+}
+
+.course-list_level {
+	font-size: 20px;
+	top: -85%; right: 2%;
+	position: absolute;
+	display: inline-block;
+	padding: 0.25rem 0.5rem;
+	min-width: 5rem;
+	white-space: nowrap;
+	height: 2rem;
+	text-align: center;
+	line-height: 1.5rem;
+}
+
+.bg-info, .bg-success {
+	width: 4.5rem;
+}
+
+.bg-danger {
+    width: 7rem;	
+}
+
+.course-list_imgBox {
+	height: 230px;
+}
+
+.course-list_small-title {
+	height: 45px;
+	margin-bottom: 55px;
+}
+
+.course-list_region {
+	height: 10px;
+	margin-top: 55px;
+}
+
+.course-list_aditDc {
+	height: 90px;
+}
+
+.heart-icon {
+	width: 25px;
+	padding-bottom: 3px;
+}
+
+
+/* 2)핫한 해시태그 출력 영역 */
+.hotTagBorder{
+	height: 260px;
+}
+
+.hotTags{
+  	height: 100%;
+}
+
+.tags{
+	background-color: white;
+	color: #1C6758;
+	font-family: 'NanumSquareRound';
+	font-weight: bold;
+	font-size: 25px;
+	width: 100%; height: 60px;
+	border: 1px solid #1C6758;
+	text-align: center; line-height: 50px;
+}
+
+.tags1{
+	margin-top: 35px;
+}
+
+.tags2{
+	margin-top: 15px;
+	margin-bottom: 25px;
+}
+
+.tags:hover{
+	color: white;
+	background-color: #3D8361;
+	border: 1px solid #3D8361;
+	box-shadow: 1px 1px 1px 2px lightgrey;
+}
+
+/* 캐러셀 컨트롤러 버튼의 위치 조정 및 z-index 설정 */
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    z-index: 100; /* 다른 요소보다 위로 표시 */
+}
+
+.carousel-control-prev {
+    top: 0;
+    left: -140px; /* 이전 버튼을 원하는 위치로 조정 */
+}
+
+.carousel-control-next {
+    top: 0;
+    right: -140px; /* 다음 버튼을 원하는 위치로 조정 */
+}

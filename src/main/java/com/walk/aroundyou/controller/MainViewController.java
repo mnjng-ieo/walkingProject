@@ -20,9 +20,7 @@ public class MainViewController {
 	private final CourseService courseService;
 	private final TagService tagService;
 	
-	/**
-	 * [메인페이지] 산책로 인기순(조회순) 정렬 메소드
-	 */	
+	
 	@GetMapping("/")
 	public String getMain(Model model) {
 		
@@ -32,7 +30,7 @@ public class MainViewController {
 		// 가장 많이 사용된 태그 메인화면에 출력하기 
 		List<String> hotTagList = tagService.findTagsByBoardTagId();
 
-		// 좋아요 순이 가장 많은 태그의 게시물 출력됨 
+		// 좋아요 순이 가장 많은 태그(=hotTagList.get(0))의 게시물 출력됨 
 		List<IBoardListResponse> tagBoardList = tagService.findBoardAndCntByMainTagDefault(hotTagList.get(0));
 		
 		model.addAttribute("courses", coursePage);  
