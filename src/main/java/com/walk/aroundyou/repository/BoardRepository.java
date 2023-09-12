@@ -243,7 +243,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	 * [메인페이지] 검색창에 게시판 정보 검색하기 - 서비스에서 매개변수 앞뒤로 '%' 붙이기!
 	 */
 	// 게시물 출력 시 좋아요, 댓글도 같이 출력할 것이므로 join하기
-	// 메인 페이지 검색 결과에서 5개만 출력 후 더보기 버튼 존재
+	// 메인 페이지 검색 결과에서 5개만 출력 후 더보기 버튼 존재(컨트롤러에서 개수 제한)
 	@Query(value = """
 			SELECT 
 				b.board_id as boardId
@@ -272,10 +272,18 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	          WHERE REPLACE(board_title, ' ', '') like :#{#keyword}
 			      or REPLACE(board_content, ' ', '') like :#{#keyword}
 			  ORDER BY b.board_id DESC
-			  limit 5
 			""", nativeQuery = true)
 	List<IBoardListResponse> findMainBoardByKeyword(
 			@Param("keyword") String keyword);
+	
+	// 검색어를 기반으로 게시물 결과의 전체 개수를 반환하는 메서드
+    @Query(value ="""
+    		SELECT COUNT(*) 
+    		FROM board b
+            WHERE REPLACE(board_title, ' ', '') like :#{#keyword}
+			      or REPLACE(board_content, ' ', '') like :#{#keyword}
+	         """, nativeQuery = true)
+	int countBoardResults(@Param("keyword") String keyword);
 	
 	// 메인 검색 결과에서 게시물 더보기에 출력될 페이지
 	// 게시판 검색용 (제목, 내용)(타입을 선택하지 않은 경우)
@@ -530,6 +538,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	            WHERE REPLACE(user_nickname, ' ', '') like :#{#keyword} 
 			      and board_type = :#{#type}
 			""", nativeQuery = true)
-	Page<IBoardListResponse> findBoardAndCntByNicknameAndType(@Param("type") String type, @Param("keyword") String keyword, Pageable pageable);	
+	Page<IBoardListResponse> findBoardAndCntByNicknameAndType(@Param("type") String type, @Param("keyword") String keyword, Pageable pageable);
 		
 }

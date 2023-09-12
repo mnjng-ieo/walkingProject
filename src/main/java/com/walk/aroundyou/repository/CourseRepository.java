@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.CourseResponseDTO;
-import com.walk.aroundyou.dto.ICourseResponse;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
 
 public interface CourseRepository 
 			extends JpaRepository<Course, Long>, 
@@ -32,7 +33,101 @@ public interface CourseRepository
 	    
 	    - 페이징 처리는 다음과 같은 JpaRepository 기본 메소드가 지원한다.
 	      Page<T> findAll(Specification<T> spec, Pageable pageable);
+	    
+	    -> Course page를 여기서 매핑해서 DTO page로 반환하기 위해
+	       ICourseResponseDTO를 따로 만들었다!
 	 */
+	
+	/**
+	 * 조건 없이 정렬, 페이징 처리만 해서 전체 산책로 목록 반환
+	 */
+	@Query(value ="""
+			SELECT 
+				c.course_id as courseId
+				, c.adit_dc as aditDc
+				, c.cours_dc as coursDc
+				, c.cours_detail_lt_cn as coursDetailLtCn
+				, c.cours_level_nm as coursLevelNm
+				, c.cours_lt_cn as coursLtCn
+				, c.cours_spot_la as coursSpotLa
+				, c.cours_time_cn as coursTimeCn
+				, c.cvntl_nm as cvntlNm
+				, c.esntl_id as esntlId
+				, c.signgu_cn as signguCn
+				, c.toilet_dc as toiletDc
+				, c.wlk_cours_flag_nm as wlkCoursFlagNm
+				, c.wlk_cours_nm as wlkCoursNm
+				, c.cours_view_count as coursViewCount
+				, ifnull(like_cnt, 0) as likeCnt
+				, ifnull(mention_cnt, 0) as mentionCnt
+				, ifnull(comment_cnt, 0) as commentCnt
+			FROM Course as c
+				LEFT JOIN
+					(select course_id, count(course_id) as like_cnt
+						from course_like as cl
+						group by cl.course_id) as cll
+				on c.course_id = cll.course_id
+				LEFT JOIN
+					(select course_id, count(course_id) as mention_cnt
+						from board_course as bc
+						group by bc.course_id) as bcc
+				on c.course_id = bcc.course_id
+				LEFT JOIN
+					(select course_id, count(course_id) as comment_cnt
+						from comment as c
+						group by c.course_id) as cc
+				on c.course_id = cc.course_id
+			GROUP BY c.course_id
+					"""
+			, nativeQuery = true)
+	public Page<ICourseResponseDTO> findCoursesWithCounts(Pageable pageable);
+	
+	/**
+	 * 조건 + 정렬 + 페이징 처리한 전체 산책로 목록 반환 -> 조건검색 불가능... 못쓰는 메소드
+	 * specificaton은 엔티티에 대해서만 가능하다.
+	 */
+	@Query(value ="""
+			SELECT 
+				c.course_id as courseId
+				, c.adit_dc as aditDc
+				, c.cours_dc as coursDc
+				, c.cours_detail_lt_cn as coursDetailLtCn
+				, c.cours_level_nm as coursLevelNm
+				, c.cours_lt_cn as coursLtCn
+				, c.cours_spot_la as coursSpotLa
+				, c.cours_time_cn as coursTimeCn
+				, c.cvntl_nm as cvntlNm
+				, c.lnm_addr as lnmAddr
+				, c.esntl_id as esntlId
+				, c.signgu_cn as signguCn
+				, c.toilet_dc as toiletDc
+				, c.wlk_cours_flag_nm as wlkCoursFlagNm
+				, c.wlk_cours_nm as wlkCoursNm
+				, c.cours_view_count as coursViewCount
+				, ifnull(like_cnt, 0) as likeCnt
+				, ifnull(mention_cnt, 0) as mentionCnt
+				, ifnull(comment_cnt, 0) as commentCnt
+			FROM Course as c 
+				LEFT JOIN
+					(select course_id, count(course_id) as like_cnt
+						from course_like as cl
+						group by cl.course_id) as cll
+				on c.course_id = cll.course_id
+				LEFT JOIN
+					(select course_id, count(course_id) as mention_cnt
+						from board_course as bc
+						group by bc.course_id) as bcc
+				on c.course_id = bcc.course_id
+				LEFT JOIN
+					(select course_id, count(course_id) as comment_cnt
+						from comment as c
+						group by c.course_id) as cc
+				on c.course_id = cc.course_id
+			GROUP BY c.course_id
+					"""
+			, nativeQuery = true)
+	public Page<ICourseResponseDTO> findCoursesWithCountsAndConditions(
+			Specification<Course> spec, Pageable pageable);
 	
 	/**
 	 * 좋아요 수, 게시물언급 수, 댓글 수 계산하기
@@ -40,17 +135,17 @@ public interface CourseRepository
 	@Query(value = """ 
 			SELECT COUNT(*) FROM course_like WHERE course_id = :courseId
 			""", nativeQuery = true)
-	int countCourseLikesByCourseId(@Param("courseId") Long id);
+	public int countCourseLikesByCourseId(@Param("courseId") Long id);
 	
 	@Query(value = """ 
 			SELECT COUNT(*) FROM board_course WHERE course_id = :courseId
 			""", nativeQuery = true)
-	int countCourseMentionsByCourseId(@Param("courseId") Long courseId);
+	public int countCourseMentionsByCourseId(@Param("courseId") Long courseId);
 	
 	@Query(value = """ 
 			SELECT COUNT(*) FROM comment WHERE course_id = :courseId
 			""", nativeQuery = true)
-	int countCourseCommentsByCourseId(@Param("courseId") Long courseId);
+	public int countCourseCommentsByCourseId(@Param("courseId") Long courseId);
 	
 	/**
 	 * 조회 수 1씩 증가하기
@@ -60,7 +155,7 @@ public interface CourseRepository
 			SET cours_view_count = cours_view_count + 1
 			WHERE course_id = :courseId
 			""", nativeQuery = true)
-	void updateViewCount(@Param("courseId") Long courseid);
+	public void updateViewCount(@Param("courseId") Long courseid);
 	
 	/**
 	 * [메인페이지] 검색창에 산책로 정보 검색하기 - 서비스에서 매개변수 앞뒤로 '%' 붙이기!
@@ -106,9 +201,46 @@ public interface CourseRepository
 		         or REPLACE(wlk_cours_nm, ' ', '') like :#{#keyword}
 		         or REPLACE(cours_dc, ' ', '') like :#{#keyword}
 		         or REPLACE(adit_dc, ' ', '') like :#{#keyword}
-		         ORDER BY c.course_id DESC
-			  	 limit 5
-			""", nativeQuery = true)
-	List<ICourseResponse> findMainCourseByKeyword(
+		         ORDER BY c.course_id DESC 
+		         """, nativeQuery = true)
+	List<ICourseResponseDTO> findMainCourseByKeyword(
 			@Param("keyword") String keyword);
+	
+	// 검색어를 기반으로 코스 결과의 전체 개수를 반환하는 메서드
+    @Query(value ="""
+    		SELECT COUNT(*) 
+    		FROM course c
+            WHERE REPLACE(wlk_cours_flag_nm, ' ', '') like :#{#keyword}
+	         or REPLACE(wlk_cours_nm, ' ', '') like :#{#keyword}
+	         or REPLACE(cours_dc, ' ', '') like :#{#keyword}
+	         or REPLACE(adit_dc, ' ', '') like :#{#keyword}
+	         """, nativeQuery = true)
+    int countCourseResults(@Param("keyword") String keyword);
+	
+////9/7 변경(민정언니)
+	// 특정 게시물의 산책로 정보를 얻어오는 메소드
+	// 현재 게시물당 산책로는 하나만 선택되게 할 예정이지만, 더미데이터에는 여러개 있어서 임시로 List로 설정
+	// 이후엔 Optional로
+	@Query(value = """
+			SELECT c.*
+				FROM course c
+				WHERE c.course_id in (
+					SELECT bc.course_id
+						FROM board_course bc
+						WHERE bc.board_id = :#{#id}
+				)
+			""", nativeQuery = true)
+	List<Course> findByBoardId(@Param("id")Long id);
+	
+	// 특정 산책로의 코스리스트를 출력하는 메소드
+	@Query(value = """
+			SELECT *
+				FROM course
+				WHERE wlk_cours_flag_nm = :#{#courseFlag}
+				ORDER BY wlk_cours_nm
+			""", nativeQuery = true)
+	List<Course> findCourseNamesByCourseFlagName(@Param("courseFlag") String courseFlag);
+	
+
+	
 }

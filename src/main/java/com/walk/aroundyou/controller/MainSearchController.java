@@ -17,6 +17,7 @@ import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.dto.ITagResponse;
 import com.walk.aroundyou.repository.TagRepository;
 import com.walk.aroundyou.service.BoardService;
+import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.MainSearchService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +32,16 @@ public class MainSearchController {
 	@Autowired
 	private BoardService boardService;
 	
+	@Autowired
+	private CourseService courseService;
+	
 	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
-	private final static int PAGINATION_SIZE = 10;
+	private final static int PAGINATION_SIZE = 5;
 		
 	@GetMapping("/search")
 	public String mainSearch(
-			@RequestParam("keyword" ) String keyword, 
+			@RequestParam("keyword" ) String keyword,
+			
 			Model model) {
 		// 검색 서비스로부터 검색 결과를 가져온다 
 		// 1. 태그
@@ -46,14 +51,26 @@ public class MainSearchController {
 		// 2. 코스
 		List<ICourseResponseDTO> courseResults = 
 				mainSearchService.findCourseByKeyword(keyword);
+		if (courseResults.size() > 5) { // 다섯개 이상이면 
+		    courseResults = courseResults.subList(0, 5); // 다섯개 까지만 표시
+		}
 
 		// 3. 게시물
-		List<IBoardListResponse> boardResults =
+		List<IBoardListResponse> boardResults = 
 				mainSearchService.findBoardByKeyword(keyword);
+		if (boardResults.size() > 5) {
+		    boardResults = boardResults.subList(0, 5);
+		}
+		
+		// 전체 개수 구하기
+		int totalCourseResults = mainSearchService.countCourseResults(keyword);
+		int totalBoardResults = mainSearchService.countBoardResults(keyword);
 		
         model.addAttribute("tagResults", tagResults);
         model.addAttribute("courseResults", courseResults);
         model.addAttribute("boardResults", boardResults);
+        model.addAttribute("totalCourseResults", totalCourseResults);
+        model.addAttribute("totalBoardResults", totalBoardResults);
         model.addAttribute("keyword", keyword);
 		
 		return "mainSearch";
