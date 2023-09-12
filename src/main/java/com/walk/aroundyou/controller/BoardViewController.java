@@ -50,45 +50,92 @@ public class BoardViewController {
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
 	
-	// 게시물 리스트
+	// 게시물 리스트(게시판 타입 선택 가능)
 	@GetMapping("/board")
 	public String getBoard(
 			@RequestParam(name = "keyword", required = false) String keyword,
-			@RequestParam(name = "type", required = false) Optional<String> type, 
+			@RequestParam(name = "type", required = false) String type, 
 			@RequestParam(name = "sort", required = false) String sort,
-			@RequestParam(value = "page", required=false, defaultValue="0") int currentPage, 
+			@RequestParam(value = "page", required=false, defaultValue="0") int page, 
 			Model model) {
 		
 		// Page 객체 선언
-		Page<IBoardListResponse> boardList = 
-				boardService.findBoardAndCntByKeyword(keyword, currentPage, sort);
+		// 타입 선택 여부에 따라 실행되는 함수가 달라지기 때문에 객체만 선언
+		Page<IBoardListResponse> boardList;
+		
+		// type 설정
+		if(type == null) {
+			boardList = boardService.findBoardAndCntByKeyword(keyword, page, sort);
+			model.addAttribute("boardList", boardList);
+		} else {
+			boardList = boardService.findBoardAndCntByKeywordAndType(type, keyword, page, sort);
+			model.addAttribute("boardList", boardList);
+		}
+		
 		log.info("리스트가 비어있나요? : {}", boardList.isEmpty());
 		log.info("키워드는? : {}", keyword);
+		
 		// pagination 설정
 		int totalPages = boardList.getTotalPages();
-		int pageStart = getPageStart(currentPage, totalPages);
+		int pageStart = getPageStart(page, totalPages);
 		int pageEnd = 
 				(PAGINATION_SIZE < totalPages)? 
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
 		
-		// type 설정
-		if(type.isEmpty()) {
-			boardList = boardService.findboardAllList(currentPage);
-			model.addAttribute("boardList", boardList);
-		} else {
-			boardList = boardService.findboardAllListByType(type.get(), currentPage);
-			model.addAttribute("boardList", boardList);
-		}
-		
 		model.addAttribute("lastPage", totalPages);
-		model.addAttribute("currentPage", currentPage);
+		model.addAttribute("currentPage", page + 1);
 		model.addAttribute("pageStart", pageStart);
 		model.addAttribute("pageEnd", pageEnd);
 		model.addAttribute("sort", sort);
 		model.addAttribute("boardList", boardList);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("type", type);
+		
+		return "boardList";
+	}
+	
+	// 게시물 검색 결과 화면
+	@GetMapping("/board/search")
+	public String getSearchBoard(
+			@RequestParam(name = "keyword", required = false) String keyword,
+			@RequestParam(name = "boardType", defaultValue = "ALL") String type,
+	        @RequestParam(name = "searchType", defaultValue = "boardTitleAndContent") String searchType,
+			@RequestParam(name = "sort", required = false) String sort,
+			@RequestParam(value = "page", required = false, defaultValue="0") int page, 
+			Model model) {
+		
+		// Page 객체 선언
+		Page<IBoardListResponse> boardList;
+				
+		// type 설정
+		if(type != null && !type.equals("ALL")) {
+			boardList = boardService.findBoardAndCntByKeywordAndTypeAndSearchType(type, searchType, keyword, page, sort);
+		} else {
+			boardList = boardService.findBoardAndCntByKeywordAndSearchType(keyword, searchType, page, sort);
+		}
+		model.addAttribute("boardList", boardList);
+		
+		log.info("리스트가 비어있나요? : {}", boardList.isEmpty());
+		log.info("키워드는? : {}", keyword);
+		
+		// pagination 설정
+		int totalPages = boardList.getTotalPages();
+		int pageStart = getPageStart(page, totalPages);
+		int pageEnd = 
+				(PAGINATION_SIZE < totalPages)? 
+						pageStart + PAGINATION_SIZE - 1
+						:totalPages;
+		
+		model.addAttribute("lastPage", totalPages);
+		model.addAttribute("currentPage", page + 1);
+		model.addAttribute("pageStart", pageStart);
+		model.addAttribute("pageEnd", pageEnd);
+		model.addAttribute("sort", sort);
+		model.addAttribute("boardList", boardList);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("selectedBoardType", type);
+        model.addAttribute("selectedSearchType", searchType);
 		
 		return "boardConditionList";
 	}
@@ -233,12 +280,13 @@ public class BoardViewController {
 	
 	// pagination의 시작 숫자 얻는 메소드
 	private int getPageStart(int currentPage, int totalPages) {
+		
 		int result = 1;
-		if(totalPages < currentPage + (int)Math.floor(PAGINATION_SIZE/2)) {
+		if(totalPages < currentPage + (int)Math.ceil((double)PAGINATION_SIZE/2)) {
 			// 시작페이지의 최소값은 1!
 			result = Math.max(1, totalPages - PAGINATION_SIZE + 1);
-		} else if (currentPage > (int)Math.floor(PAGINATION_SIZE/2)) {
-			result = currentPage - (int)Math.floor(PAGINATION_SIZE/2) + 1;
+		} else if (currentPage > (int)Math.floor((double)PAGINATION_SIZE/2)) {
+			result = currentPage - (int)Math.floor((double)PAGINATION_SIZE/2) + 1;
 		}
 		return result;
 	}

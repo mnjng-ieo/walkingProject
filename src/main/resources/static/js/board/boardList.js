@@ -3,16 +3,10 @@ let currentPage = 0; // currentPage 변수 초기화
 
 // 검색 조건 수집
 function boardWithSearchResults() {
-    let searchType = document.getElementById('searchType').value;
-    let type = document.getElementById('boardType').value;
-    let keyword = document.getElementById('boardSearchKeyword').value;
     let sort = document.getElementById('boardSort').value;
     
     let xhr = new XMLHttpRequest();
-    xhr.open("GET", "/board/search?boardType=" + type + 
-        "&searchType=" + searchType + "&keyword=" + keyword +
-        "&sort=" + sort + "&page=" + currentPage, true);
-
+    xhr.open('GET', `/board?sort=${sort}&page=${currentPage}`, true);
             
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {

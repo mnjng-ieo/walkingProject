@@ -16,7 +16,9 @@ import com.walk.aroundyou.dto.IBoardDetailResponse;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.repository.BoardRepository;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class BoardService {
 	
@@ -27,24 +29,96 @@ public class BoardService {
 
 	// 연서 추가
 	// 메인 페이지 검색 결과에서 게시물 더보기 클릭하면 나오는 페이지(게시물 리스트)
-	public Page<IBoardListResponse> findBoardAndCntByKeyword(String keyword, int page, String sort) {
-		// 최신순, 조회수, 좋아요순으로 정렬
-		// 검색 키워드 공백 제거(검색어가 존재하지 않을 경우 대비)
+	// 게시물 리스트 페이지(타입이 선택되지 않을 경우)
+	public Page<IBoardListResponse> findBoardAndCntByKeyword(
+			String keyword, int page, String sort) {
+
+		Sort customSort = selectSort(sort); // 자주 쓰이는 함수이므로 하단에 메서드로 뺌
+
+		if (keyword != null) { // 검색어가 있으면 공백 제거
+			keyword = '%' + keyword.replace(" ", "") + '%';
+		} else { // 검색어가 없으면 전체 내용을 가져옴
+			keyword = "%";
+		}
+		return BoardRepo.findBoardAndCntByKeyword(keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+
+	}
+	
+	// 연서 추가
+	// 게시물 리스트 페이지(타입 선택하여 결과 출력)
+	public Page<IBoardListResponse> findBoardAndCntByKeywordAndType(
+			String type, String keyword, int page, String sort) {
+
+		Sort customSort = selectSort(sort); 
+
 		if (keyword != null) {
 			keyword = '%' + keyword.replace(" ", "") + '%';
-		}
-		// HTML의 select option 태그의 value를 같은 이름으로 설정하기
-		Sort customSort;
-		if ("boardViewCount".equals(sort)) {
-			customSort = Sort.by(Direction.DESC, "boardViewCount");
-		} else if("likeCnt".equals(sort)) {
-			customSort = Sort.by(Direction.DESC, "likeCnt");
 		} else {
-			customSort = Sort.by(Direction.DESC, "boardId");
+			keyword = "%";
 		}
-		// public static PageRequest of(int pageNumber, int pageSize, Sort sort) 사용
-		return BoardRepo.findBoardAndCntByKeyword(keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+		
+		return BoardRepo.findBoardAndCntByKeywordAndType(type, keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
 	}
+
+	// 연서 추가
+	// 게시물 리스트 페이지(검색어 타입만 선택하여 결과 출력)
+	public Page<IBoardListResponse> findBoardAndCntByKeywordAndSearchType(
+			String keyword, String searchType, int page, String sort) {
+
+		Sort customSort = selectSort(sort); // 자주 쓰이는 함수이므로 하단에 메서드로 뺌
+		
+		if (keyword != null) { // 검색어가 있으면 공백 제거
+			keyword = '%' + keyword.replace(" ", "") + '%';
+		} else { // 검색어가 없으면 전체 내용을 가져옴
+			keyword = "%";
+		}
+		// 검색어타입에 대한 출력 결과를 다르게 하기위해 switch 사용
+	    switch (searchType) {
+        case "boardTitle":
+        	return BoardRepo.findBoardAndCntByTitle(keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+            
+        case "boardContent":
+        	return BoardRepo.findBoardAndCntByContent(keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+           
+        case "userNickname":
+        	return BoardRepo.findBoardAndCntByNickname(keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+           
+        default:
+        	return BoardRepo.findBoardAndCntByKeyword(keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+	    }	
+	}
+	
+	// 연서 추가
+	// 게시물 리스트 페이지(게시물 타입, 검색어 타입 선택하여 결과 출력)
+	public Page<IBoardListResponse> findBoardAndCntByKeywordAndTypeAndSearchType(
+			String type, String searchType, String keyword, 
+			int page, String sort) {
+
+		Sort customSort = selectSort(sort); 
+		
+		if (keyword != null) {
+			keyword = '%' + keyword.replace(" ", "") + '%';
+		} else {
+			keyword = "%";
+		}
+		
+		// 게시물타입, 검색어타입에 대한 출력 결과를 다르게 하기위해 switch 사용
+	    switch (searchType) {
+        case "boardTitle":
+        	return BoardRepo.findBoardAndCntByTitleAndType(type, keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+            
+        case "boardContent":
+        	return BoardRepo.findBoardAndCntByContentAndType(type, keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+           
+        case "userNickname":
+        	return BoardRepo.findBoardAndCntByNicknameAndType(type, keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+           
+        default:
+        	return BoardRepo.findBoardAndCntByKeywordAndType(type, keyword, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+	    }		
+		
+	}
+	
 	
 	public Page<IBoardListResponse> findboardAllList(int page) {
 		// TODO Auto-generated method stub
@@ -95,6 +169,21 @@ public class BoardService {
 
 	public Optional<Board> findById(Long boardId) {
 		return BoardRepo.findById(boardId);
+	}
+
+	// 연서 추가
+	// 정렬 기준 설정
+	// HTML의 select option 태그의 value를 같은 이름으로 설정하기
+	private Sort selectSort(String sort) {
+		Sort customSort;
+		if ("boardViewCount".equals(sort)) {
+			customSort = Sort.by(Direction.DESC, "boardViewCount");
+		} else if("likeCnt".equals(sort)) {
+			customSort = Sort.by(Direction.DESC, "likeCnt");
+		} else {
+			customSort = Sort.by(Direction.DESC, "boardId");
+		}
+		return customSort;
 	}
 	
 	

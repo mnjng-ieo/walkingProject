@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -242,6 +243,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	 * [메인페이지] 검색창에 게시판 정보 검색하기 - 서비스에서 매개변수 앞뒤로 '%' 붙이기!
 	 */
 	// 게시물 출력 시 좋아요, 댓글도 같이 출력할 것이므로 join하기
+	// 메인 페이지 검색 결과에서 5개만 출력 후 더보기 버튼 존재
 	@Query(value = """
 			SELECT 
 				b.board_id as boardId
@@ -276,7 +278,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			@Param("keyword") String keyword);
 	
 	// 메인 검색 결과에서 게시물 더보기에 출력될 페이지
-	// 제목, 내용, 작성자 검색 가능
+	// 게시판 검색용 (제목, 내용)(타입을 선택하지 않은 경우)
 	@Query(value = """
 			SELECT 
 				b.board_id as boardId
@@ -304,9 +306,230 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	            and b.board_secret = false
 	            WHERE REPLACE(board_title, ' ', '') like :#{#keyword}
 			      or REPLACE(board_content, ' ', '') like :#{#keyword}
-			      or REPLACE(user_nickname, ' ', '') like :#{#keyword}
 			""", nativeQuery = true)
 	Page<IBoardListResponse> findBoardAndCntByKeyword(
-			@Param("keyword") String keyword, Pageable pageable);	
+			@Param("keyword") String keyword, Pageable pageable);
+
+	/**
+	 * [게시판 검색페이지] 게시판 타입이 없을 경우
+	 */
+	// 제목 + 내용은 Page<IBoardListResponse> findBoardAndCntByKeyword 사용
+	// 게시판 검색용 (제목)
+	@Query(value = """
+			SELECT 
+				b.board_id as boardId
+	            , b.board_type as boardType
+	            , b.board_title as boardTitle
+	            , b.board_content as boardContent
+	            , user_nickname as userNickname
+	            , user_id as userId
+	            , board_view_count as boardViewCount
+	            , board_created_date as boardCreatedDate
+	            , board_updated_date as boardUpdatedDate
+	            , ifnull(comment_cnt, 0) as commentCnt
+	            , ifnull(like_cnt, 0) as likeCnt
+			  FROM board as b
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as comment_cnt
+	                  from comment as c
+	                  group by c.board_id) as cc
+	            on b.board_id = cc.board_id   
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as like_cnt
+	                  from board_like as bl
+	                  group by bl.board_id) as bll
+			    on b.board_id = bll.board_id
+	            and b.board_secret = false
+	            WHERE REPLACE(board_title, ' ', '') like :#{#keyword} 
+			""", nativeQuery = true)
+	Page<IBoardListResponse> findBoardAndCntByTitle(@Param("keyword") String keyword, Pageable pageable);	
+
+	// 게시판 검색용 (내용)
+	@Query(value = """
+			SELECT 
+				b.board_id as boardId
+	            , b.board_type as boardType
+	            , b.board_title as boardTitle
+	            , b.board_content as boardContent
+	            , user_nickname as userNickname
+	            , user_id as userId
+	            , board_view_count as boardViewCount
+	            , board_created_date as boardCreatedDate
+	            , board_updated_date as boardUpdatedDate
+	            , ifnull(comment_cnt, 0) as commentCnt
+	            , ifnull(like_cnt, 0) as likeCnt
+			  FROM board as b
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as comment_cnt
+	                  from comment as c
+	                  group by c.board_id) as cc
+	            on b.board_id = cc.board_id   
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as like_cnt
+	                  from board_like as bl
+	                  group by bl.board_id) as bll
+			    on b.board_id = bll.board_id
+	            and b.board_secret = false
+	            WHERE REPLACE(board_content, ' ', '') like :#{#keyword}
+			""", nativeQuery = true)
+	Page<IBoardListResponse> findBoardAndCntByContent(@Param("keyword") String keyword, Pageable pageable);	
+		
+	// 게시판 검색용 (작성자)
+	@Query(value = """
+			SELECT 
+				b.board_id as boardId
+	            , b.board_type as boardType
+	            , b.board_title as boardTitle
+	            , b.board_content as boardContent
+	            , user_nickname as userNickname
+	            , user_id as userId
+	            , board_view_count as boardViewCount
+	            , board_created_date as boardCreatedDate
+	            , board_updated_date as boardUpdatedDate
+	            , ifnull(comment_cnt, 0) as commentCnt
+	            , ifnull(like_cnt, 0) as likeCnt
+			  FROM board as b
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as comment_cnt
+	                  from comment as c
+	                  group by c.board_id) as cc
+	            on b.board_id = cc.board_id   
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as like_cnt
+	                  from board_like as bl
+	                  group by bl.board_id) as bll
+			    on b.board_id = bll.board_id
+	            and b.board_secret = false
+	            WHERE REPLACE(user_nickname, ' ', '') like :#{#keyword} 
+			""", nativeQuery = true)
+	Page<IBoardListResponse> findBoardAndCntByNickname(@Param("keyword") String keyword, Pageable pageable);	
+			
+	/**
+	 * [게시판 검색페이지] 게시판 타입이 존재할 경우
+	 */
+	// 게시판 검색용 (제목 + 내용), 타입을 선택한 경우
+	@Query(value = """
+			SELECT 
+				b.board_id as boardId
+	            , b.board_type as boardType
+	            , b.board_title as boardTitle
+	            , b.board_content as boardContent
+	            , user_nickname as userNickname
+	            , user_id as userId
+	            , board_view_count as boardViewCount
+	            , board_created_date as boardCreatedDate
+	            , board_updated_date as boardUpdatedDate
+	            , ifnull(comment_cnt, 0) as commentCnt
+	            , ifnull(like_cnt, 0) as likeCnt
+			  FROM board as b
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as comment_cnt
+	                  from comment as c
+	                  group by c.board_id) as cc
+	            on b.board_id = cc.board_id   
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as like_cnt
+	                  from board_like as bl
+	                  group by bl.board_id) as bll
+			    on b.board_id = bll.board_id
+	            and b.board_secret = false
+	            WHERE (REPLACE(board_title, ' ', '') like :#{#keyword}
+			      or REPLACE(board_content, ' ', '') like :#{#keyword}) 
+			      and board_type = :#{#type}
+			""", nativeQuery = true)
+	Page<IBoardListResponse> findBoardAndCntByKeywordAndType(@Param("type") String type, @Param("keyword") String keyword, Pageable pageable);	
 	
+	// 게시판 검색용 (제목)
+	@Query(value = """
+			SELECT 
+				b.board_id as boardId
+	            , b.board_type as boardType
+	            , b.board_title as boardTitle
+	            , b.board_content as boardContent
+	            , user_nickname as userNickname
+	            , user_id as userId
+	            , board_view_count as boardViewCount
+	            , board_created_date as boardCreatedDate
+	            , board_updated_date as boardUpdatedDate
+	            , ifnull(comment_cnt, 0) as commentCnt
+	            , ifnull(like_cnt, 0) as likeCnt
+			  FROM board as b
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as comment_cnt
+	                  from comment as c
+	                  group by c.board_id) as cc
+	            on b.board_id = cc.board_id   
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as like_cnt
+	                  from board_like as bl
+	                  group by bl.board_id) as bll
+			    on b.board_id = bll.board_id
+	            and b.board_secret = false
+	            WHERE REPLACE(board_title, ' ', '') like :#{#keyword} 
+			      and board_type = :#{#type}
+			""", nativeQuery = true)
+	Page<IBoardListResponse> findBoardAndCntByTitleAndType(@Param("type") String type, @Param("keyword") String keyword, Pageable pageable);	
+
+	// 게시판 검색용 (내용)
+	@Query(value = """
+			SELECT 
+				b.board_id as boardId
+	            , b.board_type as boardType
+	            , b.board_title as boardTitle
+	            , b.board_content as boardContent
+	            , user_nickname as userNickname
+	            , user_id as userId
+	            , board_view_count as boardViewCount
+	            , board_created_date as boardCreatedDate
+	            , board_updated_date as boardUpdatedDate
+	            , ifnull(comment_cnt, 0) as commentCnt
+	            , ifnull(like_cnt, 0) as likeCnt
+			  FROM board as b
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as comment_cnt
+	                  from comment as c
+	                  group by c.board_id) as cc
+	            on b.board_id = cc.board_id   
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as like_cnt
+	                  from board_like as bl
+	                  group by bl.board_id) as bll
+			    on b.board_id = bll.board_id
+	            and b.board_secret = false
+	            WHERE REPLACE(board_content, ' ', '') like :#{#keyword}
+			      and board_type = :#{#type}
+			""", nativeQuery = true)
+	Page<IBoardListResponse> findBoardAndCntByContentAndType(@Param("type") String type, @Param("keyword") String keyword, Pageable pageable);	
+		
+	// 게시판 검색용 (작성자)
+	@Query(value = """
+			SELECT 
+				b.board_id as boardId
+	            , b.board_type as boardType
+	            , b.board_title as boardTitle
+	            , b.board_content as boardContent
+	            , user_nickname as userNickname
+	            , user_id as userId
+	            , board_view_count as boardViewCount
+	            , board_created_date as boardCreatedDate
+	            , board_updated_date as boardUpdatedDate
+	            , ifnull(comment_cnt, 0) as commentCnt
+	            , ifnull(like_cnt, 0) as likeCnt
+			  FROM board as b
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as comment_cnt
+	                  from comment as c
+	                  group by c.board_id) as cc
+	            on b.board_id = cc.board_id   
+	            LEFT JOIN 
+	               (select board_id, count(board_id) as like_cnt
+	                  from board_like as bl
+	                  group by bl.board_id) as bll
+			    on b.board_id = bll.board_id
+	            and b.board_secret = false
+	            WHERE REPLACE(user_nickname, ' ', '') like :#{#keyword} 
+			      and board_type = :#{#type}
+			""", nativeQuery = true)
+	Page<IBoardListResponse> findBoardAndCntByNicknameAndType(@Param("type") String type, @Param("keyword") String keyword, Pageable pageable);	
+		
 }
