@@ -127,6 +127,45 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			, nativeQuery = true)
 	Page<IBoardListResponse> findBoardAndCnt(Pageable pageable);
 	
+	// 다희 언니
+	// [메인페이지] - 핫한 해시태그가 포함된 게시물 목록에 출력되는 디폴트 게시물 리스트 
+	@Query(value = """
+			SELECT 
+	             b.board_id as boardId
+	             , b.board_type as boardType
+	             , b.board_title as boardTitle
+	             , user_nickname as userNickname
+	             , user_id as userId
+	             , board_view_count as boardViewCount
+	             , board_created_date as boardCreatedDate
+	             , board_updated_date as boardUpdatedDate
+	             , ifnull(comment_cnt, 0) as commentCnt
+	             , ifnull(like_cnt, 0) as likeCnt
+	          FROM board as b
+	             LEFT JOIN 
+	                (select board_id, count(board_id) as comment_cnt
+	                   from comment as c
+	                   group by c.board_id) as cc
+	             on b.board_id = cc.board_id   
+	             LEFT JOIN 
+	                (select board_id, count(board_id) as like_cnt
+	                   from board_like as bl
+	                   group by bl.board_id) as bll
+				 on b.board_id = bll.board_id
+			WHERE b.board_secret = false
+				and b.board_id in (
+					SELECT bt.board_id
+						FROM board_tag bt
+						JOIN tag t
+							ON bt.tag_id = t.tag_id
+						WHERE t.tag_content = :#{#tagContent})
+	        GROUP BY b.board_id
+	        ORDER BY likeCnt desc
+	        LIMIT 5
+			""", nativeQuery = true)
+	List<IBoardListResponse> findBoardAndCntByMainTagDefault(@Param("tagContent") String tagContent);
+	
+	
 //////좋아요 수와 댓글 수를 같이 출력
 	/// 타입별 출력
 	@Query(value ="""
