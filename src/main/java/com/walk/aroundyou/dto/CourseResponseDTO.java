@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.walk.aroundyou.domain.Course;
-import com.walk.aroundyou.domain.UploadImage;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,13 +35,13 @@ public class CourseResponseDTO {
 	private String lnmAddr;
 	private Double coursSpotLa;
 	private Double coursSpotLo;	
-	private UploadImage courseImageId;
+	private Integer CoursViewCount; 
+	//private UploadImage courseImageId;
 	
 	// [뷰 추가 정보]
 	private Integer likeCnt;     // 좋아요 수
 	private Integer mentionCnt;  // 게시물 언급 수
 	private Integer commentCnt;  // 댓글 수
-	//private Integer viewCnt;	 // 조회 수 - dto에 넣을까 하다가 테이블에 포함시키는 게 일반적인 것 같아 옮겼다.
 	
 	// 산책로데이터 생성 시 사용
 	public CourseResponseDTO(Course entity) {
@@ -62,7 +61,8 @@ public class CourseResponseDTO {
 		this.lnmAddr = entity.getLnmAddr();
 		this.coursSpotLa = entity.getCoursSpotLa();
 		this.coursSpotLo = entity.getCoursSpotLo();
-		this.courseImageId = entity.getCourseImageId();
+		this.CoursViewCount = entity.getCoursViewCount();
+		//this.courseImageId = entity.getCourseImageId();
 	}
 	
 	public CourseResponseDTO(Course entity, int likeCnt, int mentionCnt, int commentCnt) {
@@ -82,7 +82,8 @@ public class CourseResponseDTO {
 		this.lnmAddr = entity.getLnmAddr();
 		this.coursSpotLa = entity.getCoursSpotLa();
 		this.coursSpotLo = entity.getCoursSpotLo();
-		this.courseImageId = entity.getCourseImageId();
+		this.CoursViewCount = entity.getCoursViewCount();
+		//this.courseImageId = entity.getCourseImageId();
 		this.likeCnt = likeCnt;
 		this.mentionCnt = mentionCnt;
 		this.commentCnt = commentCnt;

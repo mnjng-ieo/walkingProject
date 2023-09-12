@@ -56,11 +56,11 @@ public class Member {
 	// cascade - All : 상위 엔티티의 모든 상태 변경이 하위 엔티티에 적용
 	// fetch - LAZY : 지연 로딩. 참조 중이 아닐 때는 user를 읽지 않아서 성능에 좋음.
 	// orphanRemoval = true : 하위 엔티티의 참조가 더 이상 없는 상태가 되었을 때 실제 삭제가 이뤄지도록 함.
-	@OneToOne(mappedBy = "user", 
-			cascade = {CascadeType.ALL},
-			fetch = FetchType.LAZY,
-			orphanRemoval = true)
-	private UploadImage userImageId;
+//	@OneToOne(mappedBy = "user", 
+//			cascade = {CascadeType.ALL},
+//			fetch = FetchType.LAZY,
+//			orphanRemoval = true)
+//	private UploadImage userImageId;
 	
 	@Column(name="user_join_date", nullable=false)
 	@ColumnDefault("now()")

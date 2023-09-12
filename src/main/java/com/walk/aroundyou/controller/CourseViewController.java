@@ -71,7 +71,9 @@ public class CourseViewController {
 		// -> page 객체라 한 번 로드되는 courseResponseDTO는 12개 뿐이다.
 		List<String> imagePaths = new ArrayList<>();
 		for (CourseResponseDTO courseResponseDTO : coursePage.getContent()) {
-			UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			//UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			Course course = courseService.findById(courseResponseDTO.getCourseId());
+			UploadImage uploadImage = uploadImageService.findByCourse(course);
 			if (uploadImage != null) {
 				String imagePath = 
 						uploadImageService.findCourseFullPathById(
@@ -155,7 +157,9 @@ public class CourseViewController {
 		// -> page 객체라 한 번 로드되는 courseResponseDTO는 12개 뿐이다.
 		List<String> imagePaths = new ArrayList<>();
 		for (CourseResponseDTO courseResponseDTO : coursePage.getContent()) {
-			UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			//UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			Course course = courseService.findById(courseResponseDTO.getCourseId());
+			UploadImage uploadImage = uploadImageService.findByCourse(course);
 			if (uploadImage != null) {
 				String imagePath = 
 						uploadImageService.findCourseFullPathById(
@@ -202,11 +206,17 @@ public class CourseViewController {
 		model.addAttribute("courseId", courseId);
 		
 		// 이미지 경로 넘기기
-		UploadImage uploadImage = courseResponseDTO.getCourseImageId();
-		String imagePath = 
-			uploadImageService.findCourseFullPathById(
-					uploadImage.getFileId());
-		model.addAttribute("imagePath", imagePath);
+		//UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+		Course course = courseService.findById(courseId);
+		UploadImage uploadImage = uploadImageService.findByCourse(course);
+		String imagePath;
+		if (uploadImage != null) {
+			imagePath = 
+					uploadImageService.findCourseFullPathById(
+							uploadImage.getFileId());
+			log.info("imagePath : " + imagePath);
+			model.addAttribute("imagePath", imagePath);
+		} 
 		
 		//String userId = principal.getName(); // 실제 로그인한 유저 정보
 		String userId = "wayid1";              // 테스트용. 직접 부여
@@ -320,7 +330,9 @@ public class CourseViewController {
 		// -> page 객체라 한 번 로드되는 courseResponseDTO는 12개 뿐이다.
 		List<String> imagePaths = new ArrayList<>();
 		for (CourseResponseDTO courseResponseDTO : coursePage.getContent()) {
-			UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			//UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			Course course = courseService.findById(courseResponseDTO.getCourseId());
+			UploadImage uploadImage = uploadImageService.findByCourse(course);
 			if (uploadImage != null) {
 				String imagePath = 
 						uploadImageService.findCourseFullPathById(
@@ -358,10 +370,15 @@ public class CourseViewController {
 		CourseResponseDTO courseResponseDTO = courseService.findByIdWithCounts(id);
 		
 		// 이미지 경로 넘기기
-		UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+		//UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+		Course course = courseService.findById(id);
+		UploadImage uploadImage = uploadImageService.findByCourse(course);
 		
 		String imagePath;
 		if (uploadImage != null) {
+			String savedImageName = uploadImage.getSavedFileName();
+			model.addAttribute("savedImageName", savedImageName);
+			
 			imagePath = 
 					uploadImageService.findCourseFullPathById(
 							uploadImage.getFileId());
@@ -386,7 +403,7 @@ public class CourseViewController {
 	}
 	
 	/**
-	 * [관리자 페이지] 산책로 데이터 관리 - 산책로 수정
+	 * [관리자 페이지] 산책로 데이터 관리 - 산책로 수정 폼!
 	 */
 	@GetMapping("/admin/courses/update/{id}")
 	public String adminNewCourse(
@@ -395,7 +412,8 @@ public class CourseViewController {
 		Course course = courseService.findById(id);
 		
 		// 이미지 경로 넘기기
-		UploadImage uploadImage = course.getCourseImageId();
+		//UploadImage uploadImage = course.getCourseImageId();
+		UploadImage uploadImage = uploadImageService.findByCourse(course);
 		
 		String imagePath;
 		if (uploadImage != null) {

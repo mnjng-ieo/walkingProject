@@ -18,4 +18,5 @@ public interface UploadImageRepository
 	List<UploadImage> findByBoard(Board board);
 	UploadImage findByCourse(Course course);
 	UploadImage findByUser(Member user);
+	
 }

@@ -116,11 +116,15 @@
             </div>
         </div>
     	<div class="row course-imgBox">
-    		<!-- 메인 사진 (업로드, 다운로드 가능하면 좋겠다.) 
-    			가능하면 글자 옆에 사진만 수정(업로드), 다운로드, 삭제 버튼 만들자 -->
+    		<!-- 메인 사진; 기본 ) src="/images/defaultCourseMainImg.jpg"
+    		      th:src="${imagePath}? 
+                  ${imagePath}: '/images/defaultCourseMainImg.jpg'" 
+    		 -->
     		<p><i class="fa-solid fa-square-check" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
     		<img class="course-main-img" 
-                 src="/images/defaultCourseMainImg.jpg" alt="산책로 사진" />
+                 th:src="${savedImageName}? 
+                 '/upload-images/course/' + ${savedImageName} : '/images/defaultCourseMainImg.jpg'" 
+                 alt="산책로 사진" />
     	</div>
     </div>
 </th:block>

@@ -40,7 +40,11 @@ function deleteCourse(courseId) {
 function updateCourse(courseId) {
     console.log('courseId : ' + courseId);
     
-    // 이미지 업로드를 위한 FormData 객체 생성 (수정되거나 유지된 기존 파일 그대로 읽어온다.)
+    // 이미지 업로드를 위한 FormData 객체 생성 
+    // -> 수정되거나 유지된 기존 파일 그대로 읽어오면 좋겠는데
+    //    imageUploadInput 은 새로 업로드된 경우만 저장한다.
+    // -> 사용자가 파일을 선택하지 않았거나 이미지 업로드 시도하지 않으면 undefined,
+    //    FormData에 실리지 않게 된다.
     const formData = new FormData();
     const imageUploadInput = document.getElementById('imageUploadInput');
     formData.append('file', imageUploadInput.files[0]);
@@ -187,25 +191,30 @@ function insertCourse() {
 function uploadImage() {
 	const imageUploadInput = document.getElementById('imageUploadInput');
 	// input 내용에 변화가 생기면, courseMainImage 요소의 src 속성 변경시키기
+	// 사용자가 input 요소에서 파일을 선택하거나 변경할 때 발생
 	imageUploadInput.addEventListener('change', function() {
+		// 선택된 파일을 가져와 file 변수에 저장 (this = imageUploadInput)
 		const file = this.files[0];
+		// file이 선택되었을 때
 		if (file) {
 			// 서버로 파일 업로드 요청을 보내는 코드 작성
 			// 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경
-			const reader = new FileReader();
-			reader.onload = function(e) {
+			const reader = new FileReader();   // 파일을 읽기 위한 객체 생성
+			reader.onload = function(e) {      // 파일 읽기 완료되면 호출
 				const courseMainImage = document.getElementById('courseMainImage');
-				courseMainImage.src = e.target.result;
+				courseMainImage.src = e.target.result;  // 읽은 파일의 데이터
 			};
 			reader.readAsDataURL(file);
-		}
+		} else {
+            // 파일이 선택되지 않고 기존 사진을 유지하는 방법을 적자!!!
+        }
 	// 등록화면에서는, 이미지를 등록해주세요라는 기본이미지가 보이고,
 	// 등록하지 않으면 이게 기본이미지라고 보여주면 되겠다.
 	// 등록 누르면 업로드한 사진만 보이도록!
 	});
 	
-	// input 요소 클릭하여 파일 선택 다이얼로그 열기
-	imageUploadInput.click();
+	// input 요소 클릭하여 파일 선택 다이얼로그 열기 
+	imageUploadInput.click(); // ---> 클릭한 것과 같은 효과!
 }
 
 // 이미지 업로드 취소 기능 ; 이미지를 기본 이미지로 변경
@@ -215,6 +224,13 @@ function deleteImage() {
 	courseMainImage.src = '/images/defaultCourseMainImg.jpg';
 }
 
+// 이미지 업로드 input에 기존 이미지 경로를 채우는 함수
+// ↳ 수정 폼에서 이미지의 변화가 없었을 때도 처리하기 위해 필요!
+function fillImageInputWithExistingImage(imagePath) {
+    const imageUploadInput = document.getElementById('imageUploadInput');
+    // 이미지 업로드 input의 value를 기존 이미지 경로로 설정
+    imageUploadInput.value = imagePath;
+}
 
 // 필수 입력 필드의 유효성 검사 -> 왜인지 수정페이지에서는 값이 다 지워져도 적용되지 않는다. 
 window.onload = function() {

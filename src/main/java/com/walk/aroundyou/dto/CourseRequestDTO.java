@@ -36,7 +36,7 @@ public class CourseRequestDTO {
 	private String lnmAddr;
 	private double coursSpotLa;
 	private double coursSpotLo;
-	private UploadImage courseImageId;
+	//private UploadImage courseImageId;
 	
 	public Course toEntity() {
 		return Course.builder()
@@ -54,7 +54,7 @@ public class CourseRequestDTO {
 				.lnmAddr(lnmAddr)
 				.coursSpotLa(coursSpotLa)
 				.coursSpotLo(coursSpotLo)
-				.courseImageId(courseImageId)
+				//.courseImageId(courseImageId)
 				.coursViewCount(0)
 				.build();
 	}

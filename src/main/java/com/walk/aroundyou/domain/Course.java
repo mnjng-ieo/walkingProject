@@ -88,14 +88,14 @@ public class Course {
 	
 	// 0910 추가 - 파일 업로드 기능
 	// mappedBy : course와 upload_image 사이 연관관계의 주인은 image! 그것의 course 필드에 의해 연관관계가 맺어짐. 
-	// cascade - All : 상위 엔티티의 모든 상태 변경이 하위 엔티티에 적용
+	// cascade - All : 상위 엔티티(image)의 모든 상태 변경이 하위 엔티티(course)에 적용
 	// fetch - LAZY : 지연 로딩. 참조 중이 아닐 때는 course를 읽지 않아서 성능에 좋음.
 	// orphanRemoval = true : 하위 엔티티의 참조가 더 이상 없는 상태가 되었을 때 실제 삭제가 이뤄지도록 함.
-	@OneToOne(mappedBy = "course", 
-			cascade = {CascadeType.ALL},
-			fetch = FetchType.LAZY,
-			orphanRemoval = true)
-	private UploadImage courseImageId;
+//	@OneToOne(mappedBy = "course", 
+//			cascade = {CascadeType.ALL},
+//			fetch = FetchType.LAZY,
+//			orphanRemoval = true)
+//	private UploadImage courseImageId;
 	
 	// 값 수정 메서드
 	public void update(
@@ -112,8 +112,9 @@ public class Course {
 			String cvntlNm,
 			String lnmAddr,
 			Double coursSpotLa,
-			Double coursSpotLo,
-			UploadImage courseImageId) {
+			Double coursSpotLo
+			//UploadImage courseImageId
+			) {
 		this.wlkCoursFlagNm = wlkCoursFlagNm;
 		this.wlkCoursNm = wlkCoursNm;
 		this.coursDc = coursDc;
@@ -128,6 +129,6 @@ public class Course {
 		this.lnmAddr = lnmAddr;
 		this.coursSpotLa = coursSpotLa;
 		this.coursSpotLo = coursSpotLo;
-		this.courseImageId = courseImageId;
+		//this.courseImageId = courseImageId;
 	}
 }

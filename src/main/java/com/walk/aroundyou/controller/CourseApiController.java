@@ -105,7 +105,7 @@ public class CourseApiController {
 		if (file != null) {
 			UploadImage uploadImage = 
 				uploadImageService.saveCourseImage(file, savedCourse);
-			savedCourse.setCourseImageId(uploadImage);
+			//savedCourse.setCourseImageId(uploadImage);
 		}
 		return ResponseEntity.status(HttpStatus.CREATED)
 				// id를 응답헤더에 추가해서 최종 생성페이지 확인하도록 하기
@@ -125,34 +125,66 @@ public class CourseApiController {
 		
 		Course existedCourse = courseService.findById(id);
 		UploadImage existedImage = uploadImageService.findByCourse(existedCourse);
+		
 		// 이미지를 수정할 때는 우선 기존 이미지를 삭제하고 다시 저장하는 순서를 겪는다.
-		if(existedImage != null) {
-			log.info("existedImage != null");
-			log.info("existedImage의 원래 이름 : " + existedImage.getOriginalFileName());
-			uploadImageService.deleteImage(existedImage);
-			// 이미지를 삭제한 후 변수를 null로 설정 -> 이미지 삭제 후 해당 객체에 완전히 접근 불가
-			existedImage = null;
-			log.info("existedImage의 존재 여부 : " + (existedImage != null));
-		}
+		// 먼저 이미지 파일이 새로 업로드 되었는지 확인
+		// ↳ 만약 이미지 파일이 새로 업로드 되지 않았다면 이미지 관련 로직을 건너뛰고 나머지 산책로 데이터만 업데이트
 		
-		Course updatedCourse = courseService.updateCourse(id, request);
-
-		if (file != null) {
+		// (1) 이미지 수정됨
+		if (file != null && !file.isEmpty()) {
+			log.info("(1) 이미지가 수정되었어요.");
+			// (1 - 1) 기존 이미지가 있었을 경우 : 삭제 후 업로드
+			if(existedImage != null) {
+				log.info("(1-1) 원래 기존 이미지가 있었어요.");
+				log.info("existedImage의 원래 이름 : " + existedImage.getOriginalFileName());
+				uploadImageService.deleteImage(existedImage);
+			} else {
+				// (1 - 2) 기존 이미지가 없었을 경우 : 새 파일 업로드
+				log.info("(1-2) 원래 이미지가 없었어요.");
+			}
+			Course updatedCourse = courseService.updateCourse(id, request);
+			// 이미지 업로드 로직
 			UploadImage uploadImage = 
-				uploadImageService.saveCourseImage(file, updatedCourse);
-			log.info("uploadImage의 원래 이름 : " + uploadImage.getOriginalFileName());
-			updatedCourse.setCourseImageId(uploadImage);
+					uploadImageService.saveCourseImage(file, updatedCourse);
+			log.info("uploadImage의 original 이름 : " + uploadImage.getOriginalFileName());
+			//updatedCourse.setCourseImageId(uploadImage);
+			
+			return ResponseEntity.ok()
+					.body(updatedCourse);
+		} 
+		// (2) 이미지 수정 안 됨
+		else {
+			log.info("(2) 이미지 수정 없어요!");
+			Course updatedCourse = courseService.updateCourse(id, request);
+			// (2 - 1) 기존 이미지가 있었을 경우 : 기존 유지!
+			if(existedImage != null) {
+				log.info("(2-1) 기존 이미지가 있어요.");
+				//updatedCourse.setCourseImageId(existedImage);
+			} else {
+				// (2 - 2) 기존 이미지가 없을 경우 : 그냥 dto만 업데이트!
+			}
+			return ResponseEntity.ok()
+					.body(updatedCourse);
 		}
-		
-		return ResponseEntity.ok()
-				.body(updatedCourse);
 	}
 	
 	/**
 	 * [관리자페이지] 산책로 삭제 요청
 	 */
 	@DeleteMapping("/api/admin/courses/{id}")
-	public ResponseEntity<Course> deleteCourse(@PathVariable long id){
+	public ResponseEntity<Course> deleteCourse(@PathVariable long id) throws IOException{
+		
+		// -> 산책로를 삭제하면 자연히 upload_image 테이블에서도 관련 파일 정보가 사라진다.
+		//    근데 서버 폴더에서의 실제 파일 삭제가 필요해서 추가적으로 코드를 작성해줬다.
+		//    -> 근데?! uploadImageService.delete() 해도 파일 삭제가 안 이뤄져서 사실상 의미가 없는 코드다.
+		//    -> uploadImageService.delete()하면 실제 파일이 삭제되도록 꼭 수정해보자... 
+		// 이미지 정보 삭제
+		Course course = courseService.findById(id);
+		UploadImage existedImage = uploadImageService.findByCourse(course);
+		if (existedImage != null) {
+			uploadImageService.deleteImage(existedImage);
+		}
+		
 		courseService.deleteCourse(id);
 		
 		return ResponseEntity.ok()
