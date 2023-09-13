@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>회원 가입</title>
+<link href="/css/user/signup.css" rel="stylesheet"></link>
+<!-- 부트스트랩 CSS 링크 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- 부트스트랩 JavaScript 및 jQuery 링크 -->
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+</head>
+
+<!-- 아이디 중복 체크 ajax -->
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+    var checkUserIdBtn = document.getElementById("checkUserIdBtn");
+    var userIdInput = document.getElementById("duplicateId");
+    var resultElement = document.getElementById("result");
+
+    checkUserIdBtn.addEventListener("click", function () {
+        // 사용자가 입력한 아이디 값을 가져와 변수에 저장
+        var userId = userIdInput.value;
+
+        // XMLHttpRequest ajax 객체 생성
+        var xhr = new XMLHttpRequest();
+
+        // 요청을 설정
+        xhr.open("GET", '/signup/checkId?userId=' + userId, true);
+
+        // 요청이 완료되면 실행할 함수 설정
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) { // 요청이 완료됨
+                if (xhr.status === 200) { // 요청이 성공함
+                    // 서버에서 받은 데이터를 결과를 표시할 HTML 요소(#result)의 내용으로 설정
+                    
+                    // 결과를 화면에 표시
+                    resultElement.innerHTML = xhr.responseText;
+                } else {
+                    console.error(xhr.responseText);
+                    resultElement.innerHTML = '오류 발생';
+                }
+            }
+        };
+
+        // 요청 보내기
+        xhr.send();
+    });
+});
+
+</script>
+
+
+<!-- 회원가입 양식 폼 제출 -->
+
+<body>
+<th:block layout:fragment="Content">
+	<div class="signupform">
+		<h1 class="text-center mt-5">회원 가입</h1>
+		<div class="container border rounded-4 shadow-lg p-5 signup" style="width: 800px;">
+			<form th:action="@{/signup}" method="post">
+				<p class="text-center"><span class="text-danger">* </span>는 필수 입력 항목입니다</P>
+				<!-- 아이디 입력 필드 -->
+				<div class="mb-5 w-75 m-auto" id="checkId">
+					<div class="row align-items-center">
+						<label for="duplicateId" class="form-label fs-5 mt-5">아이디<span class="text-danger"> *</span></label>
+						<div class="col-md-9">
+							<input type="text" class="form-control form-control-lg" id="duplicateId"
+								name="userId">
+						</div>
+						<input type="button" id="checkUserIdBtn" value="중복체크"
+							class="btn btn-lg btn-danger col-md-3 checkUserIdBtn">
+					</div>
+					<div id="result" class="col=nd-12"></div>
+				</div>
+	
+				<!-- 비밀번호 입력 필드 -->
+				<div class="mb-5 w-75 m-auto">
+					<label for="userPwd" class="form-label fs-5">비밀번호<span class="text-danger"> *</span></label> 
+					<input type="password" class="form-control form-control-lg" id="userPwd" name="userPwd" required>
+				</div>
+	
+				<!-- 이름 입력 필드 -->
+				<div class="mb-5 w-75 m-auto">
+					<label for="userName" class="form-label fs-5">이름<span class="text-danger"> *</span></label> 
+					<input type="text" class="form-control form-control-lg" id="userName" name="userName" required>
+				</div>
+	
+				<!-- 이메일 입력 필드 -->
+				<div class="mb-5 w-75 m-auto">
+					<label for="userEmail" class="form-label fs-5">이메일<span class="text-danger"> *</span></label> 
+					<input type="email" class="form-control form-control-lg" id="userEmail" name="userEmail"
+						   placeholder="walkaroundyou@way.com" required>
+				</div>
+	
+				<!-- 닉네임 입력 필드 -->
+				<div class="mb-5 w-75 m-auto">
+					<label for="userNickname" class="form-label fs-5">닉네임<span class="text-danger"> *</span></label> 
+					<input type="text" class="form-control form-control-lg" id="userNickname" name="userNickname" required>
+				</div>
+	
+				<!-- 전화번호 입력 필드 -->
+				<div class="mb-5 w-75 m-auto">
+					<label for="userTelNumber" class="form-label fs-5">전화번호</label> 
+					<input type="tel" class="form-control form-control-lg" id="userTelNumber" name="userTelNumber" 
+					       placeholder="010-1234-5678">
+				</div>
+	
+				<br>
+				<!-- 회원 가입 버튼 -->
+				<button type="submit" class="btn rounded-3 d-block fs-5 w-75 signupbtn mb-5" id="signupFormBtn">회원 가입</button>
+			</form>
+		</div>
+	</div>
+</th:block>
+</body>
+</html>
