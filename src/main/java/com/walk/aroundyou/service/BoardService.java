@@ -145,7 +145,7 @@ public class BoardService {
 
 
 	public Optional<Long> save(BoardRequest board) {
-		Optional<Member> member = userRepository.findById(board.getUserId());
+		Optional<Member> member = userRepository.findByUserId(board.getUserId());
 		if(member.isPresent()) {
 			log.info("사용자를 찾았어요");			
 			board.setUserNickname(member.get().getUserNickname());
@@ -170,7 +170,7 @@ public class BoardService {
 		Board getBoard = BoardRepo.findById(board.getBoardId()).get();
 		board.setBoardCreatedDate(getBoard.getBoardCreatedDate());
 		board.setBoardViewCount(getBoard.getBoardViewCount());
-		Optional<Member> member = userRepository.findById(board.getUserId());
+		Optional<Member> member = userRepository.findByUserId(board.getUserId());
 		if(member.isPresent()) {			
 			board.setUserNickname(member.get().getUserNickname());
 		}

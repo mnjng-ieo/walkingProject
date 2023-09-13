@@ -61,6 +61,9 @@ public class Member {
 //			orphanRemoval = true)
 //	private UploadImage userImageId;
 	
+	@Column(name="user_description", nullable=true)
+	private String userDescription;
+	
 	@Column(name="user_join_date", nullable=false)
 	@ColumnDefault("now()")
 	private Timestamp userJoinDate;
@@ -69,19 +72,28 @@ public class Member {
 	@ColumnDefault("now()")
 	private Timestamp userUpdateDate;
 	
-	@Column(name="user_role", nullable=false)
+	@Column(name = "user_role", nullable=false)
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'USER'")
-	private UserRole userRole;
+    private UserRole role;
 	
 	@Column(name = "state_id", nullable = false)
 	@Enumerated(EnumType.STRING)
 	@ColumnDefault("'NORMAL'")
 	private StateId stateId;
 
-	// social 소셜로그인 가입 여부
+	// socal 소셜로그인 가입 여부
     @Column(name = "social_yn", nullable=false)
     @ColumnDefault("false")
-    private boolean SocialYn;
+    private boolean socialYn;
+    
+    public void update(String userId, String userName, String userNickname, String userTelNumber, String userEmail, Timestamp userJoinDate) {
+    	this.userId = userId;
+    	this.userName = userName;
+    	this.userNickname = userNickname;
+    	this.userTelNumber = userTelNumber;
+    	this.userEmail = userEmail;
+    	this.userJoinDate = userJoinDate;
+    }
 }
 
