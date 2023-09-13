@@ -4,8 +4,7 @@
 // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
 
 window.onload = function(){
-	
-	console.log("자바스크립트 작동중")
+
 	function getValue(valueName){
 		return document.getElementById(valueName).value
 	}
