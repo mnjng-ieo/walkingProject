@@ -38,16 +38,17 @@ public class TagViewController {
 	private TagRepository tagRepository;
 	
 	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
-	private final static int PAGINATION_SIZE = 10;
+	private final static int PAGINATION_SIZE = 5;
 	
+	// MainViewController에서 사용하므로 주석처리
 	// 가장 많이 사용된 태그 메인화면에 출력하기
-	@GetMapping("/hotTag")
-	public String getMainHotTag(Model model) {
-		List<String> hotTagList = 
-			tagService.findTagsByBoardTagId();
-		model.addAttribute("hotTagList", hotTagList);
-		return "hotTag";
-	}
+//	@GetMapping("/hotTag")
+//	public String getMainHotTag(Model model) {
+//		List<String> hotTagList = 
+//			tagService.findTagsByBoardTagId();
+//		model.addAttribute("hotTagList", hotTagList);
+//		return "hotTag";
+//	}
 	
 	// boardViewController 에서 사용하므로 주석처리
 //	// 하나의 게시물에 포함된 해시태그 리스트 출력하기
@@ -64,12 +65,6 @@ public class TagViewController {
 //		return "boardTag";
 //	}
 	
-	// 게시판 페이지 검색 뷰 구현
-	@GetMapping("/search-board")
-	public String boardCondition() {
-		return "boardSearchCondition";
-	}
-
 	// 검색하여 출력되는 목록 페이지 구현(좋아요 수, 댓글 수 포함)
 	@GetMapping("/tag/search/{tagContent}")
 	public String searchBoardAndCnt(

@@ -39,7 +39,7 @@ public class TagService {
 	/// TagRepository 사용하여 출력 확인하기
 	// 1. 기존 태그 tag 테이블에서 삭제하기
 	public void deleteByTagId(Long tagId) {
-		tagRepository.deleteByTagId(tagId);
+		tagRepository.deleteUnusedTags(tagId);
 	}
 	
 	// 2. 새로운 태그 tag 테이블에 추가하기
@@ -94,10 +94,6 @@ public class TagService {
 		return tagRepository.findTagsByBoardTagId();
 	}
 	
-	// 6. (추가)해시태그 클릭 시 게시물 목록 페이지 출력 - 미사용
-//	public List<Board> findBoardByTag(String tagContent) {
-//		return boardRepository.findBoardByTag(tagContent);
-//	}
 	// 6. (수정)해시태그 클릭 시 게시물 목록 페이지 출력하는데 좋아요 수, 댓글 수를 포함한 게시물
 	public Page<IBoardListResponse> findBoardAndCntByTagId(Tag tagId, int page, String sort) {
 		// 최신순, 조회수, 좋아요순으로 정렬
@@ -112,6 +108,29 @@ public class TagService {
 		}
 		// public static PageRequest of(int pageNumber, int pageSize, Sort sort) 사용
 		return boardRepository.findBoardAndCntByTagId(tagId, PageRequest.of(page, SIZE_OF_PAGE, customSort));
+	}
+	
+
+	// 다희언니
+	// [메인페이지] - tag_content으로 tag_id 추출하기 (메인페이지에서 핫한 태그 클릭 시, ajax 구현 과정에서 쓰임)
+	public Tag findIdByTagContent(String tagContent) {
+		return tagRepository.findIdByTagContent(tagContent);
+	}
+	
+	// [메인페이지] - 핫한 해시태그 클릭 시, 관련된 게시물 출력 
+	public Page<IBoardListResponse> findBoardAndCntByMainTagId(Tag tagId) {
+		// 최신순, 조회수, 좋아요순으로 정렬
+		// HTML의 select option 태그의 value를 같은 이름으로 설정하기
+		Sort customSort = Sort.by(Direction.DESC, "likeCnt");
+		final int BOARD_OF_MAIN_TAG = 5;
+		// public static PageRequest of(int pageNumber, int pageSize, Sort sort) 사용
+		return boardRepository.findBoardAndCntByTagId(tagId, PageRequest.of(0, BOARD_OF_MAIN_TAG, customSort));
+	}
+	
+	
+	// [메인페이지] - 핫한 해시태그가 포함된 게시물 목록에 출력되는 디폴트 게시물 리스트 
+	public List<IBoardListResponse> findBoardAndCntByMainTagDefault(String tagContent) {
+		return boardRepository.findBoardAndCntByMainTagDefault(tagContent);
 	}
 	
 	/*---------------------------------------------------*/
@@ -138,6 +157,7 @@ public class TagService {
 		// == Board board = new Board();
 		//    board.setBoardId(boardId);
 		// boardTag 멤버에 값 부여
+		
 		boardTag.setBoardId( // boardId는 Board객체이기 때문에 빌더패턴으로 객체 생성
 					Board.builder()
 						.boardId(boardId) // 빌더패턴으로 값 부여
