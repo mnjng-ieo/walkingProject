@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Id 찾기</title>
+</head>
+<body>
+<h1>아이디 찾기</h1>
+    <p>아이디를 찾기 위해 이메일 주소를 입력하세요:</p>
+    <!-- 아이디 찾기 폼 -->
+    <form action="login/idlookup" method="post">
+        <label for="text">이름 : </label>
+        <input type="text" id="userName" name="userName" required><br>
+        <label for="email">이메일 주소 : </label>
+        <input type="email" id="userEmail" name="userEmail" required><br>
+        <button type="submit">아이디 찾기</button>
+    </form>
+    <p><a href="/login">로그인 화면으로 돌아가기</a></p>
+</body>
+</html>
