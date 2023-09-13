@@ -39,12 +39,6 @@ public class TagViewController {
 	
 	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
 	private final static int PAGINATION_SIZE = 10;
-		
-	
-	@GetMapping("/")
-	public String getMain() {
-		return "main";
-	}
 	
 	// 가장 많이 사용된 태그 메인화면에 출력하기
 	@GetMapping("/hotTag")
