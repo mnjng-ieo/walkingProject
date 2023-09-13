@@ -6,7 +6,8 @@
 <meta charset="UTF-8">
 	<title>홈페이지</title>	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-	<link href="/lib/main.css" rel="stylesheet"></link>
+	<link href="/css/common/main.css" rel="stylesheet"></link>
+	<script src="/js/common/main.js"></script>
 </head>
 <body>
 <th:block layout:fragment="Content">
@@ -20,7 +21,7 @@
 					<div class="d-flex mt-75" style="width: 100%;" >
 					
 				    	<!-- 검색창 --> 
-				    	<form th:action="@{/searchList}" method="get" id="searchForm" 
+				    	<form th:action="@{/search}" method="get" id="searchForm" 
 				    			class="search input-group flex-nowrap justify-content-center mx-2">
 				    		<div class="input-group mb-3">
   								<input type="text" name="keyword" id="searchKeyword" 
@@ -247,7 +248,7 @@
 					                #strings.substring(tagBoard.boardTitle, 0, 50) + '...' : tagBoard.boardTitle}">글 제목</div>
 						        <div class = "second d-flex">
 					                <p style="width: 30px; height: 30px;">
-					                    <img src = "/images/common/userImg.jpg" class="img-fluid mt-2"/>
+					                    <img src = "/images/common/userImg.png" class="img-fluid mt-2"/>
 					                </p>
 					                <div class="mt-3 mx-2" th:text = "${tagBoard.userNickname}">작성자 닉네임</div>
 						        </div>
