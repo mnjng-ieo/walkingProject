@@ -12,6 +12,8 @@
 	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 <!-- 자바스크립트 -->
 <script type="text/javascript" src="/js/common/mypage.js"></script> 
+<!-- css -->
+<link rel="stylesheet" href="/css/common/mypage.css">
 
 
 <!-- 변경 실패 시 알림 -->
@@ -131,7 +133,7 @@
 			</button>
 
 			<!-- 게시글 버튼 클릭하면 나오는 게시글 -->
-			<div class="mt-3" id="postContainer" style="width: 80%;">
+			<div class="collapse mt-3" id="postContainer" style="width: 80%;">
 	            <div id="needToChange">
 	                <table class="table table-hover">
 			          <thead>
@@ -192,7 +194,8 @@
 				                    자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
 				               <a class="page-link arrow" 
 				                  href="javascript:void(0);"
-				                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">Previous</a>
+				                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">
+				                    <i class="fa-solid fa-chevron-left"></i></a>
 				           </li>
 				           <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
 				               <li th:if="${page == (currentPage+1)}" 
@@ -212,7 +215,8 @@
 				               th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
 				               <a class="page-link arrow" 
 				               href="javascript:void(0);"
-				               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">Next</a>
+				               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
+	                               <i class="fa-solid fa-chevron-right"></i></a>
 				           </li>
 				        </ul>
 				    </div><!-- 페이징 처리 끝 -->     
@@ -221,7 +225,7 @@
             </div>
 
 			<!-- 이미지버튼 클릭하면 나오는 이미지 -->
-			<div class="mt-3" id="imgContainer">
+			<div class="collapse mt-3" id="imgContainer">
 				<div class="row">
 					<!-- 첫 번째 이미지 -->
 					<!-- <div class="card col-md-3" style="margin-right: 3%; margin-top: 3%;"> 

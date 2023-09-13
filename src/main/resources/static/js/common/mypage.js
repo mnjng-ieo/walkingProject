@@ -1,7 +1,7 @@
 $(document).ready(function () {
     // 첫 페이지에서 게시물만 보이게
+    $('#imgContainer').collapse('hide');
     $('#postContainer').collapse('show');
-    $('#imgContainer').collapse('hide')
     
     // imgBtn 버튼을 클릭할 때
     $('#imgBtn').on('click', function () {
