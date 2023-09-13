@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/defaultLayout}"
+	  layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+	<title>홈페이지</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="/lib/mainSearch.js"></script>
+</head>
+<body>
+	<!-- 임시 검색창 -->
+		
+	<div class="container SearchList">
+		<!-- 검색한 단어가 포함된 해시태그 -->
+		<h5>검색하신 단어가 포함된 해시태그</h5>
+        <div id="tagResults">
+		    <ul th:each="tagResult : ${tagResults}" >
+		        <li th:text="${tagResult.tagContent}"></li>
+		    </ul>
+        </div>
+
+		
+		<!-- 검색한 단어가 포함된 산책로 -->
+		<hr>
+		<h5>검색하신 단어가 포함된 산책로</h5>
+		<div id="courseResults">
+		    <ul th:each="courseResult : ${courseResults}" >
+		        <li th:text="${courseResult.wlkCoursFlagNm}"></li>
+		    </ul>
+		</div>
+		
+		
+		
+		<!-- 검색한 단어가 포함된 게시물 -->
+		<hr>
+		<h5>검색하신 단어가 포함된 게시물</h5>
+		<div id="boardResults">
+		    <ul th:each="boardResult : ${boardResults}" >
+		        <li th:text="${boardResult.boardTitle}"></li>
+		    </ul>		
+		</div>
+		
+	</div>
+
+<script>
+
+</script>
+</body>
+</html>
