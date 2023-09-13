@@ -209,10 +209,10 @@ public class BoardViewController {
 		// for 문을 돌려서 리스트 항목 각각의 이미지 경로를 얻어보자.
 		Board existedBoard = boardService.findById(id).get();
 		List<UploadImage> uploadImages = uploadImageService.findByBoard(existedBoard);
-		List<String> ImagePaths = new ArrayList<>();
+		List<String> imagePaths = new ArrayList<>();
 		if(uploadImages != null && !uploadImages.isEmpty()) {
-			ImagePaths = uploadImageService.findBoardFullPathsById(uploadImages);
-			model.addAttribute("imagePaths", ImagePaths);
+			imagePaths = uploadImageService.findBoardFullPathsById(uploadImages);
+			model.addAttribute("imagePaths", imagePaths);
 		}
 		
 		log.info("컨트롤러 끝");

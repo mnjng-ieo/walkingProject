@@ -11,7 +11,6 @@ public interface ICommentResponseDto {
 	String getCourseId();
 	String getBoardId();
 	String getCommentId();
-	String getUserImg();
 	String getUserId();
 	String getUserNickname();
 	String getCommentContent();

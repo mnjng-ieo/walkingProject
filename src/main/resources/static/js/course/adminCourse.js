@@ -161,6 +161,7 @@ function insertCourse() {
         method: 'POST',
         body: formData,   // 이미지를 담고 있는 FormData 객체
     })
+    // 서버로부터의 HTTP 응답 객체, 응답 정보 포함하고 있음
     .then((response) => {
         if(!response.ok) {
             throw new Error('등록 오류 발생');
@@ -170,6 +171,7 @@ function insertCourse() {
         console.log('courseId : ' + courseId);
         return response.json();
     })
+    // 서버에서 반환된 JSON 데이터. 
     .then((data) => {
         alert('등록이 완료되었습니다.');
         // `/admin/courses/${courseId}`로 이동 가능

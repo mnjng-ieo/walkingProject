@@ -27,7 +27,6 @@ public class UserRequest {
 	private String userNickname;
 	private String userTelNumber;
 	private String userEmail;
-	private String userImg;
 	private String userDescription;
 	private Timestamp userJoinDate;
 	private Timestamp userUpdateDate;

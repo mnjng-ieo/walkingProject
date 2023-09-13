@@ -4,6 +4,8 @@ package com.walk.aroundyou.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -24,6 +26,7 @@ import lombok.ToString;
 public class BoardCourse {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="board_course_id", columnDefinition="bigint", nullable=false)
 	private Long boardCourseId;
 	

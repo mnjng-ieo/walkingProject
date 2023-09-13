@@ -40,6 +40,13 @@
 				</ul>
 			</div>
 			<div>
+			    <!-- 이미지 -->
+			    <div class="board-imgBox">
+			        <img class="board-imgBox_img" 
+			            th:src="${imagePaths[0]}? ${imagePaths[0]} : 
+			            '/images/defaultBoardImage.png'" 
+			            alt="게시판 등록사진" />        
+			    </div>
 				<!-- 내용 -->
 				<div class="m-2 p-lg-5 pb-5 bg-white rounded-3">[[${
 					board.boardContent }]]</div>
@@ -109,7 +116,8 @@
 					<div class="d-flex align-items-center justify-content-between m-4 pt-3" style="height: 65px;">
 						<!-- user 이미지, 닉네임 --> 
 						<div class="d-flex align-items-center ">
-							<img class="border rounded-circle m-1 " th:text"${comment.userImg}" 
+						      <!-- th:text"${comment.userImg}"  -->
+							<img class="border rounded-circle m-1 " 
 								src="/images/userImg.jpg" style="width: 80px; height: 80px;" ></img>
 							<p class="m-3" th:text="${comment.userNickname}"></p>
 						</div>

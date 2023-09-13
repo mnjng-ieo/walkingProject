@@ -219,7 +219,6 @@ window.onload = function(){
             formData.append('files', imageUploadInput.files[0]);
             // ↳ files는 List<MultipartFile>을 받는데 이래도 괜찮을까?
             
-            
             // board 데이터
             const dto = {
                 boardType : document.getElementById("boardType").value,
@@ -241,13 +240,26 @@ window.onload = function(){
                 if(!response.ok) {
                     throw new Error('등록 오류 발생');
                 }
+                // 응답 헤더에서 boardId 값 가져오기
+                boardId = response.headers.get('boardId');
+                console.log('boardId : ' + boardId);
                 return response.json();
             })
 			.then((data) =>	{
 				alert('등록/수정이 완료되었습니다.');
-				location.replace('/board');
+				if(boardId) {
+                    location.replace(`/board/${boardId}`);
+                } else {
+                    location.replace('/board');
+                }
 			})
+			.catch(error => {
+                console.error('등록 중 오류 발생 : ', error);
+            })
 	})
+	
+	
+	
 }
 
 // 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
@@ -264,8 +276,8 @@ function uploadImage() {
             // 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경
             const reader = new FileReader();   // 파일을 읽기 위한 객체 생성
             reader.onload = function(e) {      // 파일 읽기 완료되면 호출
-                const courseMainImage = document.getElementById('courseMainImage');
-                courseMainImage.src = e.target.result;  // 읽은 파일의 데이터
+                const boardImage = document.getElementById('boardImage');
+                boardImage.src = e.target.result;  // 읽은 파일의 데이터
             };
             reader.readAsDataURL(file);
         } else {
@@ -280,6 +292,7 @@ function uploadImage() {
 // 이미지 업로드 취소 기능 ; 이미지를 기본 이미지로 변경
 // 취소하면 다시 이미지를 등록해주세요와 기본이미지 두 개 보이기
 function deleteImage() {
-    const courseMainImage = document.getElementById('courseMainImage');
-    courseMainImage.src = '/images/defaultBoardImage.jpg';
+    const boardImage = document.getElementById('boardImage');
+    boardImage.src = '/images/defaultBoardImage.jpg';
 }
+

@@ -206,6 +206,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			b.board_id as boardId
 			, b.board_type as boardType
 			, b.board_title as boardTitle
+			, b.board_content as boardContent
 			, user_nickname as userNickname
 			, user_id as userId
 			, board_view_count as boardViewCount

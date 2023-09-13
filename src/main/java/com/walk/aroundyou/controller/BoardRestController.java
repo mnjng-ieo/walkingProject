@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -74,7 +75,7 @@ public class BoardRestController {
 	
 
 	@PutMapping("/api/board-editor")
-	public Object creatBoard(
+	public ResponseEntity<Board> creatBoard(
 			@RequestPart(value = "dto") BoardRequest board,
 			@RequestPart(value = "files", required=false)
 			List<MultipartFile> files,
@@ -116,17 +117,22 @@ public class BoardRestController {
 	        			uploadImageService.saveBoardImages(files, savingBoard);
 	        	log.info("게시물의 이미지 업로드 처리 완료");
 	        }
-
-			return "저장이 성공하였습니다";
+	        
+	        log.info("저장이 성공하였습니다.");
+			//return "저장이 성공하였습니다";
+	        return ResponseEntity.status(HttpStatus.CREATED)
+	        		.header("boardId", boardId.toString())
+	        		.body(savingBoard);
 		} else {
 			log.info("저장 결과가 없어요");	
-			return "저장이 실패하였습니다";
+			//return "저장이 실패하였습니다";
+			throw new RuntimeException("저장이 실패하였습니다.");
 		}
 	}
 	
 	//// 게시판 수정
 	@PutMapping("/api/board-editor/{id}")
-	public Object updateBoard(
+	public ResponseEntity<Board> updateBoard(
 			@PathVariable Long id, 
 			@RequestPart(value = "dto") BoardRequest board,
 			@RequestPart(value = "files", required=false)
@@ -190,10 +196,13 @@ public class BoardRestController {
 	        		log.info("기존 이미지를 유지합니다.");
 	        	}
 	        }
-	        
-			return "수정이 성공하였습니다";
+			//return "수정이 성공하였습니다";
+	        return ResponseEntity.ok()
+	        		.header("boardId", id.toString())
+	        		.body(updatedBoard);
 		} else {
-			return "수정이 실패하였습니다";
+			//return "수정이 실패하였습니다";
+			throw new RuntimeException("수정에 실패하였습니다.");
 		}
 	}
 	// 게시물 수정

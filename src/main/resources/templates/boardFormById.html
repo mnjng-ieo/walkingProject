@@ -12,7 +12,7 @@
 </head>
 <body>
 <th:block layout:fragment="Content">
-	<h1 class="my-5 text-center formTitle">글 작성하기</h1>
+	<h1 class="my-5 text-center formTitle">게시글 수정하기</h1>
 	<div class="container rounded-5 p-4 p-lg-5 my-4 wrapForm">
 	<div class="formBox">
 		<form class="needs-validation" id="formData" method="post">
@@ -36,7 +36,9 @@
             </div>
         	<div class="m-3">
         		<lable for="boardContent" class="form-label">본문</lable>
-        		<textarea class="form-control" placeholder="내용을 입력해주세요" id="boardContent"  name="boardContent" rows="10" required>[[${board.boardContent}]]</textarea>
+        		<textarea class="form-control" placeholder="내용을 입력해주세요" 
+        		          id="boardContent"  name="boardContent" rows="10" 
+        		           required>[[${board.boardContent}]]</textarea>
         		<div class="invalid-feedback">
 	              	본문을 입력해주세요!
 	            </div>
@@ -45,16 +47,49 @@
         	<!-- 해시태그-->
         	<div class="m-3">
 			  <label class="form-label">#</label>
-			  <div id="tagList" class="form-control border p-2 text-break tagList"></div>
+			  <div id="tagList" 
+			       class="form-control border p-2 text-break tagList"></div>
 			</div>
+			
+			<!-- 이미지 추가하기 : 최대 6장 카드 형식 -->
+            <div class="m-3">
+                 <label class="form-label">이미지를 등록해주세요</label>
+                 <div class="board-imgAndBtn"
+                      style="display: flex; gap: 10px;">
+                     <div class="board-imgBox"
+                          style="width: 250px; height: 250px; 
+                          background-color: #fff;" overflow= hidden;>
+                         <!-- 파일 업로드를 위한 숨겨진 input 요소. 
+                         업로드 버튼을 클릭하면 input을 클릭한 것처럼 작동하여 파일 선택 다이얼로그를 열게 됨 -->
+                         <input type="file" id="imageUploadInput" style="display:none;" accept="image/*">
+                         <img id="boardImage" 
+                              style="width: 100%; height: 100%; object-fit: cover;"
+                              th:src="${imagePaths[0]}? ${imagePaths[0]} :
+                               '/images/defaultBoardImage.jpg'"
+                              alt="Image ">
+                    </div>
+                    <button type="button" class="imageUploadButton"
+                            onclick="uploadImage()"
+                            style="width: 150px; height:50px;"
+                            >업로드</button>
+                    <button type="button" class="imageDeleteButton"
+                           onclick="deleteImage()"
+                           style="width: 150px; height:50px;"
+                           >업로드 취소</button>
+                 </div>
+            </div>
 			
 			<!-- 산책로 -->
         	<div class="m-3">
 				<label class="form-label">산책로 정보</label>
 				<div class="input-group d-flex justify-content-between">
 					<span class="input-group-text">관련 산책로</span>
-					<input id="courseId" name="courseId" class="form-control" type="hidden" th:value="${courseId!=null}?${courseId}:''">
-					<input id="selectedCourse" class="form-control text-center" type="text" th:value="${wlkCoursFlagNm!=null}?|${wlkCoursFlagNm} : ${wlkCoursNm}|:|산책로를 선택해주세요|" readonly>
+					<input id="courseId" name="courseId" 
+					       class="form-control" type="hidden" 
+					       th:value="${courseId!=null}?${courseId}:''">
+					<input id="selectedCourse" 
+					       class="form-control text-center" type="text" 
+					       th:value="${wlkCoursFlagNm!=null}?|${wlkCoursFlagNm} : ${wlkCoursNm}|:|산책로를 선택해주세요|" readonly>
 				</div>				
 				<div class="mb-3 d-flex justify-content-between">
 					<select class="form-select" id="signguCn" name="signguCn">

@@ -1,6 +1,7 @@
 package com.walk.aroundyou.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -214,5 +215,18 @@ public class CourseApiController {
 		}
 	}
 */	
+	// 지역에 따른 산책로이름(산책로 큰분류) 가져오기
+	@GetMapping("/api/courses/flagname")
+	public ResponseEntity<List<String>> getWlkCoursFlagNm(String signguCn){
+		log.info("getWlkCoursFlagNm() 컨트롤러 접근");
+		return ResponseEntity.ok().body(courseService.findFlagNameBySignguCn(signguCn));
+	}
+	
+	// 산책로이름에 따른 코스이름(산책로 작은분류) 정보 가져오기
+	@GetMapping("/api/courses/coursename")
+	public ResponseEntity<List<Course>> getWlkCoursNm(String wlkCoursFlagNm){
+		log.info("getWlkCoursNm() 컨트롤러 접근");
+		return ResponseEntity.ok().body(courseService.findCourseNameByWlkCoursFlagNm(wlkCoursFlagNm));
+	}
 	
 }
