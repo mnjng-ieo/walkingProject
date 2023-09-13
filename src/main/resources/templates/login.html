@@ -8,12 +8,12 @@
 </head>
 <body>
 <th:block layout:fragment="Content">
-	<h1 class="text-center mt-5">로그인</h1>
+	<h1 class="text-center mt-5 loginform">로그인</h1>
 	<div
 		class="modal modal-signin position-static d-block"
 		tabindex="-1" role="dialog" id="modalSignin">
 		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content rounded-3 shadow">
+			<div class="modal-content rounded-4 shadow-lg">
 				<!-- 로고 제목 -->
 				<div class="modal-header p-5 pb-4 border-bottom-0 m-auto d-flex justify-content-center">
 					<!-- <h5 class="modal-title">Modal title</h5> -->
@@ -34,8 +34,8 @@
 						</div>
 						<div class="form-floating mb-3 inputPw w-75 m-auto">
 							<input type="password" class="form-control rounded-3"
-								id="password" name="userPwd" placeholder="Password"> <label
-								for="password">PASSWORD</label>
+								id="password" name="userPwd" placeholder="Password"> 
+								<label for="password">PASSWORD</label>
 						</div>
 						<button class="btn btn-lg rounded-3 btn-login w-75 d-block m-auto mt-5"
 							type="submit">로그인</button>

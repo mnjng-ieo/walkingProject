@@ -124,7 +124,7 @@ body{
 
 /* 2)핫한 해시태그 출력 영역 */
 .hotTagBorder{
-	height: 260px;
+	height: auto;
 }
 
 .hotTags{
@@ -148,7 +148,7 @@ body{
 
 .tags2{
 	margin-top: 15px;
-	margin-bottom: 25px;
+	margin-bottom: 35px;
 }
 
 .tags:hover{
