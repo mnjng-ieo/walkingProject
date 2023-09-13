@@ -39,7 +39,9 @@ public class ViewController {
 	
 	/////// 메인페이지 - 로그인, 회원가입 버튼 | 로그인 확인, 로그아웃 버튼			
     @GetMapping("/main")
-public String processmain(@AuthenticationPrincipal User user, Model model) {
+public String processmain(
+		@AuthenticationPrincipal User user, 
+		Model model) {
 		
 		// 로그인 된 상태일 경우로 조건을 줘야지 /main페이지를 public으로 불러올 수 있음
 		if(user != null) {

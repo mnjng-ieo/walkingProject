@@ -105,7 +105,6 @@ function updateCourse(courseId) {
         console.error('수정 중 오류 발생 : ', error);
     });
 }
-
 // [등록페이지] 등록 기능
 //  : 이미지를 먼저 업로드하고 이미지 URL을 받아온 후
 //    이를 courseRequestDTO에 추가하여 전체 데이터를 서버로 보내는 방식
@@ -186,6 +185,8 @@ function insertCourse() {
     });
 }
 
+let reader;
+
 // 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
 function uploadImage() {
 	const imageUploadInput = document.getElementById('imageUploadInput');
@@ -198,7 +199,7 @@ function uploadImage() {
 		if (file) {
 			// 서버로 파일 업로드 요청을 보내는 코드 작성
 			// 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경
-			const reader = new FileReader();   // 파일을 읽기 위한 객체 생성
+			reader = new FileReader();   // 파일을 읽기 위한 객체 생성
 			reader.onload = function(e) {      // 파일 읽기 완료되면 호출
 				const courseMainImage = document.getElementById('courseMainImage');
 				courseMainImage.src = e.target.result;  // 읽은 파일의 데이터
@@ -221,6 +222,11 @@ function uploadImage() {
 function deleteImage() {
 	const courseMainImage = document.getElementById('courseMainImage');
 	courseMainImage.src = '/images/defaultCourseMainImg.jpg';
+	
+	// 이미지 업로드 취소 시 reader.abort() 호출
+    if(reader){
+        reader.abort();
+    }
 }
 
 // 이미지 업로드 input에 기존 이미지 경로를 채우는 함수

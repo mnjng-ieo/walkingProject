@@ -20,7 +20,7 @@ window.onload = function(){
 		$(this).parent().parent().parent().next().css('display', 'block');
 	})
 
-	// 삭제버튼을 눌렀을때
+	// 삭제 버튼을 눌렀을 때
 	$(".deletebtn").on("click",
 	function(){
 		let commentId = $(this).parent().parent().prev().children().children("#commentId").val()

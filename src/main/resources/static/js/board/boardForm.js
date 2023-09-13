@@ -262,6 +262,8 @@ window.onload = function(){
 	
 }
 
+let reader;
+
 // 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
 function uploadImage() {
     const imageUploadInput = document.getElementById('imageUploadInput');
@@ -273,8 +275,8 @@ function uploadImage() {
         // file이 선택되었을 때
         if (file) {
             // 서버로 파일 업로드 요청을 보내는 코드 작성
-            // 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경
-            const reader = new FileReader();   // 파일을 읽기 위한 객체 생성
+            // 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경 (const였다가 수정)
+            reader = new FileReader();   // 파일을 읽기 위한 객체 생성
             reader.onload = function(e) {      // 파일 읽기 완료되면 호출
                 const boardImage = document.getElementById('boardImage');
                 boardImage.src = e.target.result;  // 읽은 파일의 데이터
@@ -294,5 +296,10 @@ function uploadImage() {
 function deleteImage() {
     const boardImage = document.getElementById('boardImage');
     boardImage.src = '/images/defaultBoardImage.jpg';
+    
+    // 이미지 업로드 취소 시 reader.abort() 호출
+    if(reader){
+        reader.abort();
+    }
 }
 
