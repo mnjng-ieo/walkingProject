@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 	<title>홈페이지</title>	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>-->
 	<link href="/css/common/main.css" rel="stylesheet"></link>
 	<script src="/js/common/main.js"></script>
 </head>
@@ -257,7 +257,7 @@
 					                <div class="m-1" th:text = "|date ${#dates.format(tagBoard.boardCreatedDate, 'yyyy-MM-dd')}|">작성일자</div>
 					            	<div class="m-1" th:text = "|in ${tagBoard.boardType}|">카테고리</div>
 					            	<p class="m-1" style="width: 20px; height: 20px;">
-					                    <img src = "/images/common/view.png" class="img-fluid"/>
+					                    <i class="fa-regular fa-eye"></i>
 					                </p>
 					            	<div class="m-1" th:text = "${tagBoard.boardViewCount}">조회수</div>
 					            	<p class="m-1" style="width: 20px; height: 20px;">
