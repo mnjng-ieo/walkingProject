@@ -4,11 +4,10 @@
    xmlns:th="http://www.thymeleaf.org"
    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
    
-<head th:replace="~{common/fragments/config :: ConfigFragment}">
-   
-   <meta charset="UTF-8">
+<head>
+<th:block th:replace="~{common/fragments/config :: ConfigFragment}">
    <title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">WalkAroundYou</title>
-   
+</th:block>
 </head>
 
 <body>

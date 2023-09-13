@@ -5,7 +5,6 @@
 <head>
 <meta charset="UTF-8">
     <title>산책로 전체 목록 조회</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/course/courseList.css">
     <script src="/js/course/courseList.js"></script>
 </head>
@@ -160,7 +159,8 @@
 		                            th:text="${item.wlkCoursFlagNm}">
 		                            산책로 큰이름</h5>
 		                        <!-- 산책로 난이도 -->
-                                <p class="col-3 rounded-pill badge text-center course-list_level"
+                                <p class="col-3 rounded-pill badge text-center 
+                                          d-inline-block course-list_level"
                                    th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : 
                                                      item.coursLevelNm == '쉬움' ? ' bg-info' : 
                                                      item.coursLevelNm == '보통' ? ' bg-success' : 
@@ -209,26 +209,27 @@
     <!-- 페이지네이션 기능 -->
     <div class="pageInfo_wrap" id="pagination">
         <!--pagination-sm 추가하면 작아지고, pagination-lg 추가하면 커진다 -->
-        <ul class="pagination pagination-lg 
-                   justify-content-center">
+        <ul class="pagination pagination 
+                   justify-content-center page-border">
            <li class="page-item" id="pagePrev"
                th:classappend="${currentPage == 0} ? 'disabled' : ''">
                <!-- 링크 클릭할 때 해당 링크의 url로 이동하는 기본 동작 막기 위해 사용
                     자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
                <!-- th:onclick="'loadPage(\''+${currentPage - 1}+'\')'" -->
-               <a class="page-link arrow" 
+               <a class="page-link arrow rounded-3" 
                   href="javascript:void(0);"
-                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">Previous</a>
+                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">
+                  <i class="fa-solid fa-chevron-left"></i></a>
            </li>
            <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
 	           <li th:if="${page == (currentPage+1)}" 
 	               class="page-item active">
-	               <a class="page-link" 
+	               <a class="page-link page-number" 
 	               href="javascript:void(0);"
 	               th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
 	           </li>
 	           <li th:unless="${page == (currentPage+1)}" 
-	               class="page-item">
+	               class="page-item page-number ">
 	               <a class="page-link" 
 	               href="javascript:void(0);"
                    th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
@@ -236,9 +237,10 @@
            </th:block>
            <li class="page-item" id="pageNext"
                th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
-               <a class="page-link arrow" 
+               <a class="page-link arrow rounded-3" 
                href="javascript:void(0);"
-               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">Next</a>
+               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
+               <i class="fa-solid fa-chevron-right"></i></a>
            </li>
         </ul>
     </div>

@@ -202,36 +202,84 @@ window.onload = function(){
 		});
 		
 	}
-	
-	
+
 
 	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
 	function closeOverlay() {
 	    overlay.setMap(null);     
 	}
 	
-	
-	
-	
 	// 생성처리
 	document.getElementById("submitBtn").addEventListener("click",
 		function(){
+            
+            // 이미지 업로드를 위한 FormData 객체 생성
+            const formData = new FormData();
+            const imageUploadInput = document.getElementById('imageUploadInput');
+            formData.append('files', imageUploadInput.files[0]);
+            // ↳ files는 List<MultipartFile>을 받는데 이래도 괜찮을까?
+            
+            
+            // board 데이터
+            const dto = {
+                boardType : document.getElementById("boardType").value,
+                boardTitle : document.getElementById("boardTitle").value,
+                boardContent : document.getElementById("boardContent").value,
+                courseId : document.getElementById("courseId").value
+            };
+            // 문자열 데이터를 JSON으로 변환하여 FormData에 추가
+            // - Blob : 데이터를 처리하는 객체
+            formData.append('dto',
+                            new Blob([JSON.stringify(dto)], 
+                                     {type: "application/json"}));
+            
 			fetch('/api'+window.location.pathname,{
 				method: 'PUT',
-				headers:{
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					boardType : document.getElementById("boardType").value,
-					boardTitle : document.getElementById("boardTitle").value,
-					boardContent : document.getElementById("boardContent").value,
-					courseId : document.getElementById("courseId").value
-				})
+				body: formData,
 			})
-			.then(()=>	{
+			.then((response) => {
+                if(!response.ok) {
+                    throw new Error('등록 오류 발생');
+                }
+                return response.json();
+            })
+			.then((data) =>	{
 				alert('등록/수정이 완료되었습니다.');
 				location.replace('/board');
 			})
 	})
+}
 
+// 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
+function uploadImage() {
+    const imageUploadInput = document.getElementById('imageUploadInput');
+    // input 내용에 변화가 생기면, courseMainImage 요소의 src 속성 변경시키기
+    // 사용자가 input 요소에서 파일을 선택하거나 변경할 때 발생
+    imageUploadInput.addEventListener('change', function() {
+        // 선택된 파일을 가져와 file 변수에 저장 (this = imageUploadInput)
+        const file = this.files[0];
+        // file이 선택되었을 때
+        if (file) {
+            // 서버로 파일 업로드 요청을 보내는 코드 작성
+            // 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경
+            const reader = new FileReader();   // 파일을 읽기 위한 객체 생성
+            reader.onload = function(e) {      // 파일 읽기 완료되면 호출
+                const courseMainImage = document.getElementById('courseMainImage');
+                courseMainImage.src = e.target.result;  // 읽은 파일의 데이터
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // 파일이 선택되지 않고 기존 사진을 유지하는 방법을 적자!!!
+        }
+    });
+    
+    // input 요소 클릭하여 파일 선택 다이얼로그 열기 
+    imageUploadInput.click(); // ---> 클릭한 것과 같은 효과!
+}
+
+// 이미지 업로드 취소 기능 ; 이미지를 기본 이미지로 변경
+// 취소하면 다시 이미지를 등록해주세요와 기본이미지 두 개 보이기
+function deleteImage() {
+    const courseMainImage = document.getElementById('courseMainImage');
+    courseMainImage.src = '/images/defaultBoardImage.jpg';
 }

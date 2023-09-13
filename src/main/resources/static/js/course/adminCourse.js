@@ -41,8 +41,6 @@ function updateCourse(courseId) {
     console.log('courseId : ' + courseId);
     
     // 이미지 업로드를 위한 FormData 객체 생성 
-    // -> 수정되거나 유지된 기존 파일 그대로 읽어오면 좋겠는데
-    //    imageUploadInput 은 새로 업로드된 경우만 저장한다.
     // -> 사용자가 파일을 선택하지 않았거나 이미지 업로드 시도하지 않으면 undefined,
     //    FormData에 실리지 않게 된다.
     const formData = new FormData();
@@ -159,7 +157,6 @@ function insertCourse() {
     let courseId;
     
     // 이미지 업로드 및 산책로 데이터 생성 요청
-    // -> Content-Type이 달라서 두 번에 나눠 따로 요청한다.
     fetch("/api/admin/courses", {
         method: 'POST',
         body: formData,   // 이미지를 담고 있는 FormData 객체

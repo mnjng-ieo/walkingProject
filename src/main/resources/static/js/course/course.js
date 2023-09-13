@@ -35,11 +35,11 @@ function toggleLikeImage(element) {
     })
     .then(() => {
         if (isLiked) {
-        img.src = "/images/heart-nonclick.png";
+        img.src = "/images/common/heart-nonclick.png";
         isLiked = false;
         console.log(`이 코스는 ${courseId}의 좋아요가 취소되었습니다.`);
         } else {
-            img.src = "/images/heart-click.png";
+            img.src = "/images/common/heart-click.png";
             isLiked = true;
             console.log(`이 코스는 ${courseId}의 좋아요가 추가되었습니다.`);
         }
@@ -51,7 +51,7 @@ function toggleLikeImage(element) {
 function changeLikeImage(element) {
     let img = element.querySelector('img');
     //if (!isLiked) {
-        img.src = "/images/heart-hover.png";
+        img.src = "/images/common/heart-hover.png";
     //}
 }
 
@@ -59,9 +59,9 @@ function changeLikeImage(element) {
 function restoreLikeImage(element) {
     let img = element.querySelector('img');
     if (!isLiked) {
-        img.src = "/images/heart-nonclick.png";
+        img.src = "/images/common/heart-nonclick.png";
     } else if(isLiked) {
-        img.src = "/images/heart-click.png";
+        img.src = "/images/common/heart-click.png";
     }
 }
 

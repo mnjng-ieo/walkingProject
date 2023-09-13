@@ -1,3 +1,35 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'KimjungchulGothic-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Yeongdo-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/Yeongdo-Rg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+     font-family: 'S-CoreDream-3Light';
+     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
+}
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .course-list-top {
 	width: 100%;
 	height: 600px;
@@ -19,9 +51,9 @@
 }
 
 .course-list-top_searchBox {
+	font-family: 'NanumSquareRound';
 	height: 350px;
 	margin: 0 auto;
-	border: 1px solid blue;
 }
 
 .course-list-top_map {
@@ -37,6 +69,7 @@ select {
 	-moz-appearance:none;
 	appearance:none;
 	background:url('data:image/svg+xml; base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktY2FyZXQtZG93bi1maWxsIiB2aWV3Qm94PSIwIDAgMTYgMTYiPgogIDxwYXRoIGQ9Ik03LjI0NyAxMS4xNCAyLjQ1MSA1LjY1OEMxLjg4NSA1LjAxMyAyLjM0NSA0IDMuMjA0IDRoOS41OTJhMSAxIDAgMCAxIC43NTMgMS42NTlsLTQuNzk2IDUuNDhhMSAxIDAgMCAxLTEuNTA2IDB6Ii8+Cjwvc3ZnPg==') no-repeat 95% 50%/15px auto;
+	border-radius: 10px;
 }
 
 select::-ms-expand{
@@ -64,14 +97,26 @@ select option:checked {
 .keyword-search {
 	height: 50px;
 	margin-bottom: 30px;
+	border-radius: 10px;
+	border: 1px solid #ccc;
 }
 
 .course-list-top_searchTarget {
 	cursor: pointer;
+	border : none;
 }
 
-.keyword {
-	border: 1px solid #ccc;
+#searchTargetAttr {
+	border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+#searchKeyword {
+	border-bottom-right-radius: 10px;
+	border-top-right-radius: 10px;
+	border: none;
 }
 
 .searchbtn {
@@ -81,15 +126,18 @@ select option:checked {
 }
 
 #courseSearchBtn {
-	background-color: rgb(136,180,78);
+	background-color: #3D8361;
+	border-radius: 10px;
 	color: white;
 }
 
 #courseResetBtn {
-	background-color: #fddc3f;
+	background-color: #FBC252;
+	border-radius: 10px;
 }
 
 .sortBox {
+	font-family: 'NanumSquareRound';
 	display: flex; 
 	justify-content: flex-end;
 }
@@ -112,6 +160,7 @@ select option:checked {
 }
 
 .course-list {
+	font-family: 'NanumSquareRound';
 	cursor: pointer;
 	margin-bottom: 50px;
 	transform: scale(1);
@@ -124,11 +173,20 @@ select option:checked {
 
 .course-list_titlebox {
 	position: relative;
+	margin-right: -20px;
+}
+
+.course-list_big-title {
+	width: 100%;
+}
+
+.course-list_small-title {
+	font-family: 'KimjungchulGothic-Bold';
 }
 
 .course-list_level {
 	font-size: 20px;
-	top: -85%; right: 2%;
+	top: -85%; right: 5%;
 	position: absolute;
 	display: inline-block;
 	padding: 0.25rem 0.5rem;
@@ -176,26 +234,61 @@ select option:checked {
 }
 
 .page-link {
-  color: rgb(136,180,78); 
+  color: #1C6758; 
   background-color: #fff;
-  border: 2px solid #dddddd; 
+  border: none;
+  height: 35px;
 }
+
+.page-border {
+	border-color: #ccc;
+}
+
+.pagination li.page-item {
+	/* padding: 8px 12px; */
+}
+
+.page-link {
+	font-size: 1.2rem;
+	margin: 10px;
+	line-height: 23px;
+	border-radius: 10px;
+}
+
+/* .page-number {
+	border-radius: 10px;
+}
+
+.page-number:hover {
+    border-radius: 10px;
+} */
 
 .page-item.active .page-link {
  z-index: 1;
  color: white;
  font-weight:bold;
- background-color: rgb(136,180,78);
- border-color: #ccc;
- 
+ background-color: #1C6758;
+ border-radius: 10px;
 }
 
 .page-link:focus, .page-link:hover {
-  color: rgb(136,180,78);
-  background-color: #ecf2e1; 
-  border-color: rgb(136,180,78);
+  color: #3D8361;
+  /* background-color: #EEF2E6; */
+  background-color: #FBC252;
+  border-color: #3D8361;
+  border-radius: 10px;
 }
 
-.arrow {
-	background-color: #fafafa; 
+#pagePrev:a.page-link, #pageNext:a.page-link {
+    background-color: #f7f7f7;
+    border-radius: 10px;
 }
+
+/* 페이지네이션 이전/다음 버튼 호버 효과 */
+#pagePrev:not(.disabled):hover a.page-link,
+#pageNext:not(.disabled):hover a.page-link {
+    background-color: #e0e0e0; /* 호버 시 변경할 배경 색상 설정 */
+    cursor: pointer; /* 호버 시 커서 설정 */
+}
+
+
