@@ -19,46 +19,43 @@
 
 <!-- 아이디 중복 체크 ajax -->
 <script>
+	document.addEventListener("DOMContentLoaded", function() {
+		var checkUserIdBtn = document.getElementById("checkUserIdBtn");
+		var userIdInput = document.getElementById("duplicateId");
+		var resultElement = document.getElementById("result");
 
-document.addEventListener("DOMContentLoaded", function () {
-    var checkUserIdBtn = document.getElementById("checkUserIdBtn");
-    var userIdInput = document.getElementById("duplicateId");
-    var resultElement = document.getElementById("result");
+		checkUserIdBtn.addEventListener("click", function() {
+			// 사용자가 입력한 아이디 값을 가져와 변수에 저장
+			var userId = userIdInput.value;
 
-    checkUserIdBtn.addEventListener("click", function () {
-        // 사용자가 입력한 아이디 값을 가져와 변수에 저장
-        var userId = userIdInput.value;
+			// XMLHttpRequest ajax 객체 생성
 
-        // XMLHttpRequest ajax 객체 생성
-        var xhr = new XMLHttpRequest();
+			var xhr = new XMLHttpRequest();
 
-        // 요청을 설정
-        xhr.open("GET", '/signup/checkId?userId=' + userId, true);
+			// 요청을 설정
+			xhr.open("GET", '/signup/checkId?userId=' + userId, true);
 
-        // 요청이 완료되면 실행할 함수 설정
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) { // 요청이 완료됨
-                if (xhr.status === 200) { // 요청이 성공함
-                    // 서버에서 받은 데이터를 결과를 표시할 HTML 요소(#result)의 내용으로 설정
-                    
-                    // 결과를 화면에 표시
-                    resultElement.innerHTML = xhr.responseText;
-                } else {
-                    console.error(xhr.responseText);
-                    resultElement.innerHTML = '오류 발생';
-                }
-            }
-        };
+			// 요청이 완료되면 실행할 함수 설정
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === XMLHttpRequest.DONE) { // 요청이 완료됨
+					if (xhr.status === 200) { // 요청이 성공함
+						// 서버에서 받은 데이터를 결과를 표시할 HTML 요소(#result)의 내용으로 설정
 
-        // 요청 보내기
-        xhr.send();
-    });
-});
+						// 결과를 화면에 표시
+						resultElement.innerHTML = xhr.responseText;
+					} else {
+						console.error(xhr.responseText);
+						resultElement.innerHTML = '오류 발생';
+					}
+				}
+			};
 
+			// 요청 보내기
+			xhr.send();
+		});
+	});
 </script>
 
-
-<!-- 회원가입 양식 폼 제출 -->
 
 <body>
 
@@ -73,12 +70,18 @@ document.addEventListener("DOMContentLoaded", function () {
 			<div class="mb-3" id="checkId">
 				<div class="row align-items-center">
 					<label for="duplicateId" class="form-label ">아이디 *</label>
+
 					<div class="col-md-10">
-						<input type="text" class="form-control" id="duplicateId"
-							name="userId">
+
+						<!-- 처음 회원가입 폼을 보여주려면 빈 폼을 보여줘야 되는데 그때 값이 null이기 때문에 이렇게 삼항연산자로 처리해주기! -->
+						<input type="text" id="duplicateId" name="userId"
+							th:value="${signupDto != null}? ${signupDto.userId} : ''"
+							class="form-control" placeholder="아이디를 입력해주세요" />
+
 					</div>
 					<input type="button" id="checkUserIdBtn" value="중복체크"
-						class="btn btn-primary col-md-2">
+						class="btn btn-primary col-md-2"> <span
+						th:if="${valid_userId}" id="valid" th:text="${valid_userId}"></span>
 				</div>
 				<div id="result" class="col=nd-12"></div>
 			</div>
@@ -86,42 +89,55 @@ document.addEventListener("DOMContentLoaded", function () {
 			<!-- 비밀번호 입력 필드 -->
 			<div class="mb-3">
 				<label for="userPwd" class="form-label">비밀번호 *</label> <input
-					type="password" class="form-control" id="userPwd" name="userPwd"
-					required>
+					type="password" id="userPwd" name="userPwd"
+					th:value="${signupDto != null}? ${signupDto.userPwd} : ''"
+					class="form-control" placeholder="비밀번호를 입력해주세요" required /> <span
+					th:if="${valid_userPwd}" id="valid" th:text="${valid_userPwd}"></span>
 			</div>
 
 			<!-- 이름 입력 필드 -->
 			<div class="mb-3">
-				<label for="userName" class="form-label">이름 *</label> <input
-					type="text" class="form-control" id="userName" name="userName"
-					required>
-			</div>
-
-			<!-- 이메일 입력 필드 -->
-			<div class="mb-3">
-				<label for="userEmail" class="form-label">이메일 *</label> <input
-					type="email" class="form-control" id="userEmail" name="userEmail"
-					placeholder="walkaroundyou@way.com" required>
+				<label for="userName" class="form-label"></label> <label
+					for="userName" class="form-label">이름 *</label> <input type="text"
+					class="form-control" id="userName" name="userName"
+					th:value="${signupDto != null}? ${signupDto.userName} : ''"
+					placeholder="이름을 입력해주세요" required> <span
+					th:if="${valid_userName}" id="valid" th:text="${valid_userName}"></span>
 			</div>
 
 			<!-- 닉네임 입력 필드 -->
 			<div class="mb-3">
 				<label for="userNickname" class="form-label">닉네임 *</label> <input
-					type="text" class="form-control" id="userNickname"
-					name="userNickname" required>
+					type="text" id="userNickname" name="userNickname"
+					th:value="${signupDto != null}? ${signupDto.userNickname} : ''"
+					class="form-control" placeholder="닉네임을 입력해주세요" required /> <span
+					th:if="${valid_userNickname}" id="valid"
+					th:text="${valid_userNickname}"></span>
+			</div>
+
+			<!-- 이메일 입력 필드 -->
+			<div class="mb-3">
+				<label for="userEmail" class="form-label">이메일 *</label> <input
+					type="email" name="userEmail"
+					th:value="${signupDto != null}? ${signupDto.userEmail} : ''"
+					class="form-control" placeholder="이메일을 입력해주세요" required /> <span
+					th:if="${valid_userEmail}" id="valid" th:text="${valid_userEmail}"></span>
 			</div>
 
 			<!-- 전화번호 입력 필드 -->
 			<div class="mb-3">
 				<label for="userTelNumber" class="form-label">전화번호</label> <input
 					type="tel" class="form-control" id="userTelNumber"
-					name="userTelNumber" placeholder="010-1234-5678">
+					name="userTelNumber"
+					th:value="${signupDto != null}? ${signupDto.userTelNumber} : ''"
+					placeholder="010-1234-5678">
 			</div>
 
 			<br>
 			<!-- 회원 가입 버튼 -->
 			<button type="submit" class="btn btn-primary" id="signupFormBtn"
 				style="background-color: green;">회원 가입</button>
+
 		</form>
 	</div>
 
