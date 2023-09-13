@@ -43,7 +43,7 @@
 			                #strings.substring(tagBoard.boardTitle, 0, 50) + '...' : tagBoard.boardTitle}">글 제목</div>
 				        <div class = "second d-flex">
 			                <p style="width: 30px; height: 30px;">
-			                    <img src = "/images/userImg.jpg" class="img-thumbnail mt-3"/>
+			                    <img src = "/images/common/userImg.jpg" class="img-fluid mt-2"/>
 			                </p>
 			                <div class="mt-3 mx-2" th:text = "${tagBoard.userNickname}">작성자 닉네임</div>
 				        </div>
@@ -52,11 +52,11 @@
 			                <div class="m-1" th:text = "|date ${#dates.format(tagBoard.boardCreatedDate, 'yyyy-MM-dd')}|">작성일자</div>
 			            	<div class="m-1" th:text = "|in ${tagBoard.boardType}|">카테고리</div>
 			            	<p class="m-1" style="width: 20px; height: 20px;">
-			                    <img src = "/images/view.png" class="img-fluid"/>
+			                    <img src = "/images/common/view.png" class="img-fluid"/>
 			                </p>
 			            	<div class="m-1" th:text = "${tagBoard.boardViewCount}">조회수</div>
 			            	<p class="m-1" style="width: 20px; height: 20px;">
-			                    <img src = "/images/heart-click.png" class="img-fluid"/>
+			                    <img src = "/images/common/heart-click.png" class="img-fluid"/>
 			                </p>
 			            	<div class="m-1" th:text = "${tagBoard.likeCnt}">좋아요 수</div>
 				        </div>

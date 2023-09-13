@@ -1,11 +1,3 @@
-// 출력된 결과에서 상세화면 보기
-// 클릭된 컬럼에서 data-url 속성 값을 가져옴
-function redirectToDetail(row) {
-    let url = row.getAttribute("data-url");
-        
-    // 페이지 이동
-    window.location.href = url;
-}
 
 // 캐러셀 적용
 $(document).ready(function(){
@@ -58,10 +50,12 @@ function loadPostsByTag(clickedElement) {
     xhr.send();
 }
 
-// 페이지 번호를 클릭할 때 해당 페이지로 Ajax 요청 보내기(HTML파일에서 사용할 함수)
-function loadPage(newPage) {
-    // 페이지 번호 업데이트
-    currentPage = newPage;    
-    boardWithSearchResults()
-}
 
+// 출력된 결과에서 상세화면 보기
+// 클릭된 컬럼에서 data-url 속성 값을 가져옴
+function redirectToDetail(row) {
+    let url = row.getAttribute("data-url");
+        
+    // 페이지 이동
+    window.location.href = url;
+}

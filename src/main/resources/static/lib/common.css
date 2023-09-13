@@ -1,15 +1,5 @@
-/* 목차 */
-/*
-	1. 폰트 
-	2. Header 영역
-	3. 중간 메인 영역
-		1) 좋아요 순 BEST 9 
-		2) 핫한 해시태그 출력 영역
-	4. Footer 영역 	
-*/
 
-
-/* 1. 폰트 */
+/* 폰트 */
 @font-face {
     font-family: 'KimjungchulGothic-Bold';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
@@ -31,7 +21,7 @@ body{
 }	
 
 
-/* 2. Header 영역 */
+/* Header 영역 */
 /* 상단 메뉴 배경색 변경 */
 .topnav {
 	background-color: #3D8361;
@@ -49,7 +39,7 @@ body{
   height: 49px;
 }
 
-/* 4. Footer 영역 */
+/* Footer 영역 */
 .footer{
 	width: 100%;
 	background-color: #EEF2E6;
