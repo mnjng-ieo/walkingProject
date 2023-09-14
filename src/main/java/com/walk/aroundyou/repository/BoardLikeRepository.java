@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.BoardLike;
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
 
 @Repository
 public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
@@ -31,11 +31,11 @@ public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
 	// 마이페이지
 	// 마이페이지에서 좋아요한 게시물 목록 확인(로그인한 회원 본인과 관리자만 목록을 확인할 수 있음)
 	@Query(value = "SELECT bl.boardId FROM BoardLike bl WHERE bl.userId = :userId")
-	List<Long> findLikedBoardIdByUserId(@Param(value = "userId")User userId);
+	List<Long> findLikedBoardIdByUserId(@Param(value = "userId")Member userId);
 	
 	// 마이페이지에서 좋아요한 게시물의 갯수 확인(로그인한 회원 본인과 관리자만 목록을 확인할 수 있음)
 	@Query(value = "SELECT count_big(boardId) FROM BoardLike bl WHERE bl.userId = :userId")
-	Long countLikedBoardIdByUserId(@Param(value = "userId")User userId);
+	Long countLikedBoardIdByUserId(@Param(value = "userId")Member userId);
 	
 	
 	
@@ -43,7 +43,7 @@ public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
 	// 값의 유무 모르니까 에러 발생하지 않기 위해 Optional<>
 	//Optional<BoardLike> findByUserIdAndBoardId(String userId, long boardId);
 
-	Optional<BoardLike> findByUserIdAndBoardId(User userId, Board boardId);
+	Optional<BoardLike> findByUserIdAndBoardId(Member userId, Board boardId);
 
 	
 	void deleteByBoardId(Board boardId);
