@@ -7,11 +7,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+
+import com.walk.aroundyou.domain.role.UserRole;
 
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletException;
@@ -37,21 +43,15 @@ public class SecurityConfig {
 				.authorizeHttpRequests(request -> request.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
 						.requestMatchers("/status", "/images/**", "/css/**", "/js/**", "/login", "/main", "/signup/**", "/login/idlookup", "/login/pwdlookup/**")
 						.permitAll()
-						 .requestMatchers("/**").permitAll()
-						//.requestMatchers("/**").hasAnyRole("USER")
+						//.requestMatchers("/**").permitAll()
+						.requestMatchers("/**").hasAuthority(UserRole.USER.getRoleName())
+						.requestMatchers("/admin/**").hasAuthority(UserRole.ADMIN.getRoleName())
 						//.anyRequest().authenticated())
-				.anyRequest().permitAll())
+				.anyRequest().authenticated())
+				
 				.formLogin(login -> login.loginPage("/login").loginProcessingUrl("/check").usernameParameter("userId")
 						.passwordParameter("userPwd").defaultSuccessUrl("/main", true) // ("/main")은 임시, 나중에는 ("/")로 변경
-//						.successHandler(new AuthenticationSuccessHandler() { // 로그인 성공 후 핸들러
-//							@Override
-//							public void onAuthenticationSuccess(HttpServletRequest request,
-//									HttpServletResponse response, Authentication authentication)
-//									throws IOException, ServletException {
-//								System.out.println("authentication : " + authentication.getName());
-//								response.sendRedirect("/main");
-//							}
-//						})
+
 						.permitAll());
 
 		http.logout((logout) -> logout.logoutUrl("/logout") // default
@@ -69,5 +69,6 @@ public class SecurityConfig {
 
 		return http.build();
 	}
+	
 
 }
