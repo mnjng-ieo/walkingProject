@@ -19,7 +19,6 @@
 		        <h1 class="course-list-top_title2">전체 목록 조회</h1>
 	        </div>
         
-<!-- *********** -->
      
         <!-- 지역 선택 지도 그림 : 다음 버전에 구현하기로. -->
         <!--
@@ -152,8 +151,9 @@
                     <!-- src="/images/defaultCourseImg.png" 
                          stat.index는 순환 중인 아이템의 인덱스를 나타냄. 
                          image가 없는 course의 경우도 컨트롤러에서 기본값을 부여해줬다.
-                         th:src="${imagePaths[stat.index]}" !!!! 태그 안에서 주석처리 안되서 여기로 옮겨놨어요 !!!!-->
+                          -->
                     <img class="card-img-top course-list_imgBox" 
+                   		 th:src="${imagePaths[stat.index]}"
                          alt="산책로 사진" />
                     <div class="card-body course-list_textbox">
                         <div class="course-list_titlebox">
@@ -200,11 +200,18 @@
                         </p>
                         <!-- 예정 : 좋아요 수 / 언급 수 / 댓글 수 -->
                         <p class="card-text">
-                            <img class="heart-icon"
+                           <img class="heart-icon"
                                  src="/images/common/heart-click.png" alt="좋아요" />
-                            <span th:text="${item.likeCnt}">좋아요 수</span>개 댓글
-                            <span th:text="${item.commentCnt}">댓글 수</span>개 언급
-                            <span th:text="${item.mentionCnt}">언급 수</span>개 
+                           <span th:text="${item.likeCnt}">좋아요 수</span>개 
+                           <span style="margin-right:15px;"></span>
+                           <i class="fa-regular fa-comment-dots"></i>
+                           <span th:text="${item.commentCnt}">댓글 수</span>개
+                           <span style="margin-right:15px;"></span>
+                           <i class="fa-regular fa-pen-to-square"></i>
+                           <span th:text="${item.mentionCnt}">언급 수</span>개
+                           <span style="margin-right:135px;"></span>
+                           <i class="fa-regular fa-eye "></i>
+                           <span th:text="${item.coursViewCount}">조회수</span>
                         </p>
                     </div>
                 </div>

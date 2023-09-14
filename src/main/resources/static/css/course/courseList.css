@@ -292,6 +292,7 @@ select option:checked {
 .heart-icon {
 	width: 25px;
 	padding-bottom: 3px;
+	margin-left: 10px;
 }
 
 .pageInfo_wrap {
