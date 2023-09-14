@@ -217,7 +217,10 @@ public class UserController {
 			@RequestParam("userId") String userId,
 			@ModelAttribute UpdateMypageDTO dto,
 			@RequestParam("file") MultipartFile file,
+			@RequestParam("ifNewImageExists") int ifNewImageExists,
 			Model model) throws IOException {
+		
+		model.addAttribute("user", dto);
 		
 		// 파일 업로드 처리
 		// 이미지를 수정할 때는 우선 기존 이미지를 삭제하고 다시 저장하는 순서를 겪는다.
@@ -227,31 +230,35 @@ public class UserController {
 		Optional<Member> existedUser = userService.findByUserId(userId);
 		UploadImage existedImage = uploadImageService.findByUser(existedUser.get());
 		
-		log.info("이미지가 새로 업로드되었어요.");
+		// 수정페이지에서 최종 업로드 취소 상태로 수정 요청했을 시
+		if(ifNewImageExists == 0) {
+			uploadImageService.deleteImage(existedImage);
+		}
+		
+		Member updatedUser = userService.updateMypage(userId, dto);
 		if(file != null && !file.isEmpty()) {
-			log.info("이미지가 수정되었을 경우 삭제부터 합니다."); 
+			log.info("이미지가 새로 업로드되었어요.");
 			if(existedImage != null) {
+				log.info("이미지가 수정되었을 경우 삭제부터 합니다."); 
 				uploadImageService.deleteImage(existedImage);
 			} else {
-				log.info("원래 이미지가 없을 경우");
+				log.info("원래 이미지가 없을 경우 삭제 없이 업로드됩니다.");
 			}
-			Member updatedUser = userService.updateMypage(userId, dto);
 			// 이미지 업로드 로직
 			UploadImage uploadImage =
 					uploadImageService.saveUserImage(file, updatedUser);
 			log.info("uploadImage의 original 이름 : " + uploadImage.getOriginalFileName());
-		} //// 여기까지 작성했다!!!
-		
-
-		model.addAttribute("user", dto);
-		Member updatedMember = 
-				userService.updateMypage(userId, dto);
-
+		} else {
+			log.info("이미지의 수정이 없는 경우입니다.");
+			if(existedImage != null) {
+        		log.info("기존 이미지를 유지합니다.");
+        	}
+		}
 		// log.info("마이페이지 업데이트 성공: userId={}, userNickname={}, userImg={},
 		// userDescription={}", userId.toString(),
 		// userNickname.toString(), userImg.toString(), userDescription.toString());
 
-		if (updatedMember != null) {
+		if (updatedUser != null) {
 			return "redirect:/main/mypage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
 		} else {
 			model.addAttribute("showAlert", false);

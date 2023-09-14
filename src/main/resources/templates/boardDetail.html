@@ -43,8 +43,8 @@
 			    <!-- 이미지 -->
 			    <div class="board-imgBox">
 			        <img class="board-imgBox_img" 
-			            th:src="${imagePaths[0]}? ${imagePaths[0]} : 
-			            '/images/defaultBoardImage.png'" 
+			            th:src="${imagePaths!=null}? ${imagePaths[0]} : 
+			            '/images/board/defaultBoardImage.png'" 
 			            alt="게시판 등록사진" />        
 			    </div>
 				<!-- 내용 -->

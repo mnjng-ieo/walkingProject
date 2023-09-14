@@ -45,7 +45,17 @@ function updateCourse(courseId) {
     //    FormData에 실리지 않게 된다.
     const formData = new FormData();
     const imageUploadInput = document.getElementById('imageUploadInput');
-    formData.append('file', imageUploadInput.files[0]);
+    
+
+    // (최종 업로드 취소되지 않은) 새로 업로드된 파일이 있는지 확인
+    if (imageUploadInput.files.length === 0) {
+		// 이미지를 최종 선책하지 않은 경우
+		formData.append('ifNewImageExists', 0);
+	} else {
+		// 이미지를 최종 선택한 경우
+		formData.append('ifNewImageExists', 1);
+		formData.append('file', imageUploadInput.files[0]);
+	}
     
     // HH:mm:ss 형식으로 들어가기 위한 설정
     // 세 개의 input 태그가 모두 '' 이 아닐 경우 사이에 :가 들어간 문자열 데이터가 들어감.
@@ -185,7 +195,8 @@ function insertCourse() {
     });
 }
 
-let reader;
+// 전역 범수 선언할 때 주의! 여러 JS파일 간에도 공유 가능하기 때문에 이름을 명확히 한다.
+let courseFile; 
 
 // 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
 function uploadImage() {
@@ -194,23 +205,20 @@ function uploadImage() {
 	// 사용자가 input 요소에서 파일을 선택하거나 변경할 때 발생
 	imageUploadInput.addEventListener('change', function() {
 		// 선택된 파일을 가져와 file 변수에 저장 (this = imageUploadInput)
-		const file = this.files[0];
+		courseFile = this.files[0];
 		// file이 선택되었을 때
-		if (file) {
+		if (courseFile) {
 			// 서버로 파일 업로드 요청을 보내는 코드 작성
 			// 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경
-			reader = new FileReader();   // 파일을 읽기 위한 객체 생성
+			const reader = new FileReader();   // 파일을 읽기 위한 객체 생성
 			reader.onload = function(e) {      // 파일 읽기 완료되면 호출
 				const courseMainImage = document.getElementById('courseMainImage');
-				courseMainImage.src = e.target.result;  // 읽은 파일의 데이터
+				courseMainImage.src = e.target.result;  // 읽은 파일의 데이터로 src 속성 설정
 			};
-			reader.readAsDataURL(file);
+			reader.readAsDataURL(courseFile);
 		} else {
-            // 파일이 선택되지 않고 기존 사진을 유지하는 방법을 적자!!!
+            // 파일 선택이 취소되었을 경우 file을 어떻게 제거할까? - deleteImage()
         }
-	// 등록화면에서는, 이미지를 등록해주세요라는 기본이미지가 보이고,
-	// 등록하지 않으면 이게 기본이미지라고 보여주면 되겠다.
-	// 등록 누르면 업로드한 사진만 보이도록!
 	});
 	
 	// input 요소 클릭하여 파일 선택 다이얼로그 열기 
@@ -222,11 +230,9 @@ function uploadImage() {
 function deleteImage() {
 	const courseMainImage = document.getElementById('courseMainImage');
 	courseMainImage.src = '/images/defaultCourseMainImg.jpg';
-	
-	// 이미지 업로드 취소 시 reader.abort() 호출
-    if(reader){
-        reader.abort();
-    }
+    
+    // file 변수를 초기화(삭제)
+    courseFile = null;
 }
 
 // 이미지 업로드 input에 기존 이미지 경로를 채우는 함수

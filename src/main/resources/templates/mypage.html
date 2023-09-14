@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="/css/myPage.css"></link>
 <script src="/js/myPage.js"></script>
 <title>마이페이지</title>
@@ -32,9 +33,7 @@
     <div class="container">
         <h1 class="my-5 text-center formTitle">My Page</h1>
         
-        <!-- 유저 소개 조회 
-            원래 form 태그를 div로 바꿨는데 method="get" action="/main/mypage"
-            으로 해서 조회 가능한가..? -->
+        <!-- 유저 소개 조회 -->
         <div class="formBox">
             <div class="needs-validation" th:object="${user}">
                 <input type="hidden" name="userId" th:value="${user.userId}">
@@ -85,6 +84,7 @@
 	                             업로드 버튼을 클릭하면 input을 클릭한 것처럼 작동하여 파일 선택 다이얼로그를 열게 됨 -->
 	                         <input type="file" id="imageUploadInput" 
 	                                style="display:none;" accept="image/*">
+	                         <input type="hidden" id="ifNewImageExists" value="1">
 	                        <img class="user-imgBox_image" 
 	                               id="user-imgBox_image"
 	                               alt="유저 프로필 사진"

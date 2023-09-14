@@ -216,8 +216,16 @@ window.onload = function(){
             // 이미지 업로드를 위한 FormData 객체 생성
             const formData = new FormData();
             const imageUploadInput = document.getElementById('imageUploadInput');
-            formData.append('files', imageUploadInput.files[0]);
-            // ↳ files는 List<MultipartFile>을 받는데 이래도 괜찮을까?
+            
+            // (최종 업로드 취소되지 않은) 새로 업로드된 파일이 있는지 확인
+		    if (imageUploadInput.files.length === 0) {
+				// 이미지를 최종 선책하지 않은 경우
+				formData.append('ifNewImageExists', 0);
+			} else {
+				// 이미지를 최종 선택한 경우
+				formData.append('ifNewImageExists', 1);
+				formData.append('file', imageUploadInput.files[0]);
+			}
             
             // board 데이터
             const dto = {
@@ -262,7 +270,8 @@ window.onload = function(){
 	
 }
 
-let reader;
+// 전역 범수 선언할 때 주의! 여러 JS파일 간에도 공유 가능하기 때문에 이름을 명확히 한다.
+let boardFile; 
 
 // 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
 function uploadImage() {
@@ -271,19 +280,19 @@ function uploadImage() {
     // 사용자가 input 요소에서 파일을 선택하거나 변경할 때 발생
     imageUploadInput.addEventListener('change', function() {
         // 선택된 파일을 가져와 file 변수에 저장 (this = imageUploadInput)
-        const file = this.files[0];
+        boardFile = this.files[0];
         // file이 선택되었을 때
-        if (file) {
+        if (boardFile) {
             // 서버로 파일 업로드 요청을 보내는 코드 작성
             // 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경 (const였다가 수정)
-            reader = new FileReader();   // 파일을 읽기 위한 객체 생성
+            const reader = new FileReader();   // 파일을 읽기 위한 객체 생성
             reader.onload = function(e) {      // 파일 읽기 완료되면 호출
                 const boardImage = document.getElementById('boardImage');
                 boardImage.src = e.target.result;  // 읽은 파일의 데이터
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(boardFile);
         } else {
-            // 파일이 선택되지 않고 기존 사진을 유지하는 방법을 적자!!!
+            // 파일 선택이 취소되었을 경우 file을 어떻게 제거할까? - deleteImage()
         }
     });
     
@@ -295,11 +304,9 @@ function uploadImage() {
 // 취소하면 다시 이미지를 등록해주세요와 기본이미지 두 개 보이기
 function deleteImage() {
     const boardImage = document.getElementById('boardImage');
-    boardImage.src = '/images/defaultBoardImage.jpg';
+    boardImage.src = '/images/board/defaultBoardImage.jpg';
     
-    // 이미지 업로드 취소 시 reader.abort() 호출
-    if(reader){
-        reader.abort();
-    }
+    // file 변수를 초기화(삭제)
+    boardFile = null;
 }
 

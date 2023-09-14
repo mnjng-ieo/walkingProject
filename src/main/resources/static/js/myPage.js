@@ -18,24 +18,10 @@ window.onload = function() {
         //$(this).parent().parent().parent().parent().parent().parent().prev().css('display', 'block');
     })
     
-    
-    // 삭제 버튼을 눌렀을 때 
-    //--- 이건 내가 작성한게 아니라! 수정 버튼 클릭할 때 이렇게 바꾸고 싶어서 잠깐 가져옴!
-    $(".deletebtn").on("click",
-    function(){
-        let commentId = $(this).parent().parent().prev().children().children("#commentId").val()
-        //alert(`삭제 버튼 클릭, commentId = ${commentId}`)
-        fetch('/api/comment/'+commentId,{
-            method: 'DELETE'
-        })
-        .then(()=>  {
-            alert('삭제가 완료되었습니다.');
-            location.replace(window.location.href);
-        })
-    })
 }
 
-let reader;
+// 전역 범수 선언할 때 주의! 여러 JS파일 간에도 공유 가능하기 때문에 이름을 명확히 한다.
+let userFile; 
 
 // 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
 function uploadImage() {
@@ -44,19 +30,19 @@ function uploadImage() {
     // 사용자가 input 요소에서 파일을 선택하거나 변경할 때 발생
     imageUploadInput.addEventListener('change', function() {
         // 선택된 파일을 가져와 file 변수에 저장 (this = imageUploadInput)
-        const file = this.files[0];
+        userFile = this.files[0];
         // file이 선택되었을 때
-        if (file) {
+        if (userFile) {
             // 서버로 파일 업로드 요청을 보내는 코드 작성
             // 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경
-            reader = new FileReader();   // 파일을 읽기 위한 객체 생성
+            const reader = new FileReader();   // 파일을 읽기 위한 객체 생성
             reader.onload = function(e) {      // 파일 읽기 완료되면 호출
                 const userProfileImage = document.getElementById('user-imgBox_image');
                 userProfileImage.src = e.target.result;  // 읽은 파일의 데이터
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(userFile);
         } else {
-            // 파일이 선택되지 않고 기존 사진을 유지하는 방법을 적자!!!
+            // 파일 선택이 취소되었을 경우 file을 어떻게 제거할까? - deleteImage()
         }
     });
     // input 요소 클릭하여 파일 선택 다이얼로그 열기 
@@ -69,8 +55,10 @@ function deleteImage() {
     const userProfileImage = document.getElementById('user-imgBox_image');
     userProfileImage.src = '/images/defaultUserImage.png';
     
-    // 이미지 업로드 취소 시 reader.abort() 호출
-    if(reader){
-        reader.abort();
-    }
+    const ifNewImageExists = document.getElementById('ifNewImageExists');
+    ifNewImageExists.value = '0';
+    
+    // file 변수를 초기화(삭제)
+    userFile = null;
+
 }

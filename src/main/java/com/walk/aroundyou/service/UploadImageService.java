@@ -68,8 +68,7 @@ public class UploadImageService {
 			return null; // null 외에 더 좋은 처리 방법이 있을까?
 		}
 	}
-	///// Board의 경우 경로를 어떻게 가져올까?
-	///// 그냥 직접 src에 /upload-images/board/savedImageName을 붙이는 방법도 있다.
+	
 	public List<String> findBoardFullPathsById(List<UploadImage> uploadImages) {
 		if (uploadImages != null && !uploadImages.isEmpty()) {
 			List<String> imagesPaths = new ArrayList<>();
@@ -94,8 +93,6 @@ public class UploadImageService {
 	}
 
 	///// 이미지 저장할 때 UUID 앞에 Board, Course, User라 붙여서 서로 식별되도록 했다.
-	// -> 원래 Board, Course, User 객체를 매개변수로 넣어줬는데,
-	// 각 객체를 새로 생성하면서 이미지를 업로드하는 경우 id를 넣을 수 없어서 일단 제거했다.
 	/**
 	 * 게시물 이미지 저장 -> 여러 개의 사진 동시 저장 가능! DTO롤 LIST로 묶어서 동시 처리 및 순번 부여해줬다.
 	 * : HTTP 요청으로 전송된 파일(multipartFile)을 서버에 저장하고 디비에 파일 정보를 저장하는 역할
@@ -273,19 +270,24 @@ public class UploadImageService {
 	 
 		 // 파일이 존재하는 경우에만 삭제 시도 
 		 if(fileExists) { 
-			 log.info("파일이 존재한다!");
-			 Files.deleteIfExists(Paths.get(getCourseFullPath(uploadImage.getSavedFileName()))); 
-			 log.info("삭제 시도 후 파일 존재 여부 확인 : " + 
-					 Files.exists(Paths.get(
-							 getCourseFullPath(uploadImage.getSavedFileName())))); 
+			 log.info("파일이 존재한다!"); 
 		 } 
-		 // 게시판, 산책로, 유저 파일 경로 중에 하나에서 찾아서 파일을 삭제하라!
-		 Files.deleteIfExists(
-				 Paths.get(getBoardFullPath(uploadImage.getSavedFileName())));
-		 Files.deleteIfExists(
-				 Paths.get(getCourseFullPath(uploadImage.getSavedFileName())));
-		 Files.deleteIfExists(
-				 Paths.get(getUserFullPath(uploadImage.getSavedFileName()))); 
+		 log.info("파일 삭제 직전: " + getCourseFullPath(uploadImage.getSavedFileName()));
+		 try {
+			// 게시판, 산책로, 유저 파일 경로 중에 하나에서 찾아서 파일을 삭제하라!
+			 Files.deleteIfExists(
+					 Paths.get(getBoardFullPath(uploadImage.getSavedFileName())));
+			 Files.deleteIfExists(
+					 Paths.get(getCourseFullPath(uploadImage.getSavedFileName())));
+			 Files.deleteIfExists(
+					 Paths.get(getUserFullPath(uploadImage.getSavedFileName()))); 
+			 log.info("파일 삭제 성공");
+		 } catch (IOException e) {
+			 log.error("파일 삭제 오류 : " + e.getMessage());
+		 }
+		 log.info("삭제 시도 후 파일 존재 여부 확인 : " + 
+				 Files.exists(Paths.get(
+						 getCourseFullPath(uploadImage.getSavedFileName())))); 
 		 
 		 uploadImageRepository.delete(uploadImage);
 		 log.info("UploadImage 테이블에서 이미지 정보가 삭제되었다.");

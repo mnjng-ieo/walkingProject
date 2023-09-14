@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,6 +113,7 @@ public class BoardRestController {
 	        
 	        // 이미지 추가 처리 (0912 - 지수 작성)
 	        Board savingBoard = boardService.findById(boardId).get();
+	        
 	        if(files != null && !files.isEmpty()) {
 	        	List<UploadImage> uploadImages = 
 	        			uploadImageService.saveBoardImages(files, savingBoard);
@@ -137,6 +139,7 @@ public class BoardRestController {
 			@RequestPart(value = "dto") BoardRequest board,
 			@RequestPart(value = "files", required=false)
 			List<MultipartFile> files,
+			@RequestParam("ifNewImageExists") int ifNewImageExists,
 			@AuthenticationPrincipal User user) throws IOException {
 		
 		board.setBoardId(id);
@@ -148,6 +151,13 @@ public class BoardRestController {
 		Board existedBoard = boardService.findById(id).get();
 		List<UploadImage> existedImages = 
 				uploadImageService.findByBoard(existedBoard);
+		
+		// 수정페이지에서 최종 업로드 취소 상태로 수정 요청했을 시
+		if(ifNewImageExists == 0) {
+			for (UploadImage existedImage : existedImages) {
+				uploadImageService.deleteImage(existedImage);
+			}
+		}
 		
 		/// 수정된 게시물!!!!
 		if(boardService.update(board)) {
@@ -177,6 +187,7 @@ public class BoardRestController {
 	        
 	        // 이미지 추가 처리
 	        Board updatedBoard = boardService.findById(id).get();
+	        
 	        if(files != null && !files.isEmpty()) {
 	        	log.info("이미지의 수정이 있는 경우입니다.");
 	        	if(existedImages != null && !existedImages.isEmpty()) {

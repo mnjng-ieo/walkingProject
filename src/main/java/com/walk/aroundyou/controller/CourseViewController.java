@@ -340,7 +340,7 @@ public class CourseViewController {
 				imagePaths.add(imagePath);
 			} else {
 				// 여기 기본 이미지를 어떤 걸로 해야할지 약간 고민스럽다. 
-				imagePaths.add("/images/defaultMainImg.jpg");
+				imagePaths.add("/images/defaultCourseMainImg.jpg");
 			}
 		}
 		
