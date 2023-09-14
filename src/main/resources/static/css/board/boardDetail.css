@@ -25,9 +25,10 @@
 *{
 	z-index: 100;
 }
-.boardType{
-	font-size: 18px;
-	color: #3D8361;
+.boardType, .hashTitle, .courseTitle, .commentTitle{
+	font-size: 22px;
+	color:  #3D8361;
+	font-weight: bold;
 }
 .boardTitle{
 	font-weight: bold;
@@ -44,6 +45,7 @@
 .boardTagList{
 	text-align: justify;
 }
+
 .tagItem{
     border : 1px solid #3D8361;
     color : #3D8361;

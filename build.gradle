@@ -62,7 +62,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// 스프링 시큐리티를 테스트하기 위한 의존성 추가
 	testImplementation 'org.springframework.security:spring-security-test'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 }
 
 tasks.named('test') {

@@ -118,6 +118,7 @@ public class BoardViewController {
 		} else {
 			log.info("course 값이 없음");	
 		}
+		
 		log.info("컨트롤러 끝");
 		return "boardDetail";
 	}

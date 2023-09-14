@@ -30,10 +30,10 @@
 			<!-- 프로필사진/닉네임/작성일자/조회수 --><!-- 좋아요/공유 -->
 			<div class="d-flex justify-content-between boardInfo">
 				<ul class="ms-lg-2 ms-1 d-flex">
-					<p>
+					<p class="rounded-circle mx-lg-2 mx-1 overflow-hidden" style="width:60px; height:60px;">
 						<img
-							src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1931&q=80"
-							class="rounded-circle mx-lg-2 mx-1" style="width: 60px; height:60px">
+							th:src="${userImg!=null}? @{/images/{userImg}(userImg=${userImg})}: 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1931&q=80'"
+							style="width:60px; height:60px;">
 					</p>
 					<p class="ms-2 userNickname">[[${ board.userNickname }]]</p>
 				</ul>
@@ -51,28 +51,32 @@
 				</ul>
 			</div>
 			<div>
-				<!-- 내용 -->
-				<div class="mx-lg-3 mx-2 p-lg-5 p-4 bg-white rounded-4 boardContent"
-					style="white-space:pre-wrap;">[[${
+				<div class="mx-lg-3 mx-2 p-lg-5 p-4 mb-3 bg-white rounded-4 boardContent">
+					<!-- 이미지 -->
+				    <div class="board-imgBox mb-3">
+				        <img class="board-imgBox_img"	
+				            th:src="${imagePaths!=null}? ${imagePaths[0]} : 
+				            '/images/board/defaultBoardImage.png'"
+				            alt="게시판 등록사진" />        
+				    </div>
+				    <!-- 내용 -->
+					<div style="white-space:pre-wrap;">[[${
 					board.boardContent }]]</div>
+				</div>
 				<!-- 해시태그 리스트 -->
-				<div class="mx-lg-4 mx-3 boardTagList"
-					th:classappend="${boardTagList!=null}?'px-3 py-4':''">
-					<span>#</span>
+				<div class="mx-lg-4 mx-3 px-3 my-4 boardTagList"
+					th:if="${boardTagList != null}">
+					<span class="mx-2 hashTitle">#</span>
 					<th:block th:each="boardTag : ${boardTagList}">
 						<a 
 							th:href="@{/tagBoardList/{tagContent}(tagContent = ${boardTag})}"
 							role="button" class="btn rounded-5 my-1 tagItem">[[${boardTag}]]</a>
-<!-- 						<a ">
-						
-							<span th:text="${boardTag}"
-								class="badge bg-success-subtle text-dark px-2 py-1 me-1 fs-6 rounded-5"></span>
-						</a> -->
 					</th:block>
 				</div>
 			</div>
 			<!-- 산책로 정보 -->
-			<div class="mx-3 px-4 mx-lg-4 " th:unless="${course == null}">
+			<div class="my-1 mx-3 px-4 mb-3 mx-lg-4 " th:unless="${course == null}">
+				<div class="mb-2 courseTitle">산책로</div>
 				<div id="map" style="width:100%;height:300px;" class="rounded-4"></div>
 				<input type="hidden" id="courseId" th:value="${course.courseId}">
 				<input type="hidden" id="flagName" th:value="${course.wlkCoursFlagNm}">
@@ -86,14 +90,15 @@
 			
 			
 			
-			<div class="mt-5 mx-lg-4 mx-3">댓글</div>
+			<div class="px-5 commentTitle">댓글</div>
 			<!-- 댓글 리스트 -->
-			<div class="commentList mx-5 pb-2">
-				<div class="d-flex justify-content-center flex-wrap my-4 px-lg-5" th:each="comment : ${comments}" 
+			<div class="commentList mx-5 mb-2">
+				<div class="d-flex justify-content-center flex-wrap mb-4 px-lg-5" th:each="comment : ${comments}" 
 						style="text-align: auto">
-					<div class="mt-1">
-						<img class="rounded-circle m-1" 
-							src="/images/common/userImg.png" style="width: 80px; height: 80px;" ></img>
+					<div class="mt-1 rounded-circle mx-1 overflow-hidden " style="width: 80px; height: 80px;" >
+						<img class="" 
+							th:src="${comment.userImg!=null}? @{/images/{userImg}(userImg=${comment.userImg})}: '/images/common/userImg.png'"
+							style="width: 80px; height: 80px;" ></img>
 					</div>
 					<div class="col-10 bubble">
 				<!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
@@ -109,12 +114,11 @@
 						<!-- 코멘트 내용 --> 
 						
 						<div class="rounded-4 bg-white commentBox">
+							<!-- 시큐리티가 정리되면 th:if="${comment.userId == userId}" 추가 -->
 							<div class="m-1 pt-4 p-2 px-4 commentForm" style="display: none;" >
 								<!-- </div> -->
-								
 								<!-- 수정 버튼 클릭 시, 출력될 코멘트 작성란 -->
 								<!-- <div class="m-3 commentForm" style="width: 93%; display: none;"> -->
-									<input type="hidden" name="boardId" id="boardId" th:value="${comment.boardId}"></input>
 									<input type="hidden" name="commentId" id="commentId" th:value="${comment.commentId}"></input>
 									<input type="hidden" name="userId" id="userId" th:value="${comment.userId}"></input>
 									<textarea name="commentContent" id="commentContent"
@@ -136,12 +140,12 @@
 										<img src="/images/common/heart-click.png" style="width: 20px; height: 20px;"/>
 										<span class="fs-6">[[${comment.commentLikeCnt}]]</span>
 									</div>
+									<!-- 시큐리티가 정리되면 th:if="${comment.userId == userId}" 추가 -->
 									<button type="button" id="modifybtn"
-											class="btn btn-sm px-4 mx-1 modifybtn text-center"
-											>수정</button>
+											class="btn btn-sm px-4 mx-1 modifybtn text-center">수정</button>
+									<!-- 시큐리티가 정리되면 th:if="${comment.userId == userId}" 추가 -->
 									<button type="button" id="deletebtn"
-											class="btn btn-secondary btn-sm px-4 mx-3 deletebtn text-center"
-											>삭제</button>
+											class="btn btn-secondary btn-sm px-4 mx-3 deletebtn text-center">삭제</button>
 								</div>
 							</div>
 							
@@ -155,9 +159,11 @@
 				<div class="d-flex align-items-center justify-content-between m-4">
 					<!-- user 이미지, 닉네임 --> 
 					<div class="d-flex align-items-center ms-2">
-						<img class="rounded-circle m-1 "
-							src="/images/common/userImg.png" style="width: 60px; height: 60px;" ></img>
-						<p class="m-3" >로그인된 사용자 닉네임</p>
+						<p class="rounded-circle m-1 overflow-hidden" style="width: 60px; height: 60px;">
+							<img
+								th:src="${userImg!=null}? @{/images/{userImg}(userImg=${userImg})}: '/images/common/userImg.png'" style="width: 60px; height: 60px;" ></img>
+						</p>
+						<p class="m-3" >[[${userNickname!=null}?${userNickname}:'로그인된 사용자 닉네임']]</p>
 						<input type="hidden">
 					</div>
 				</div>

@@ -127,7 +127,7 @@ public class CommentService {
 	
 	
 	// 댓글 수정
-	public int updateBoardCommentByCommentId(Comment comment){
+	public int updateCommentByCommentId(Comment comment){
 		try {
 			Optional<Comment> checkComment = commentRepo.findById(comment.getCommentId());
 			if(checkComment.isEmpty() || checkComment.get().getUserId().getUserId().equals(comment.getUserId().getUserId())) {
@@ -136,7 +136,7 @@ public class CommentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return commentRepo.updateBoardCommentByCommentId(comment);
+		return commentRepo.updateCommentByCommentId(comment);
 	}
 	
 

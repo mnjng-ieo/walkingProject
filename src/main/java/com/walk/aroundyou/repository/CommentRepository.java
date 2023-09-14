@@ -150,16 +150,17 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 			+ "	SET c.comment_content =:#{#update.commentContent}"
 			+ " 	, c.comment_updated_date = :#{#update.commentUpdatedDate}"
 			+ "	WHERE c.comment_id = :#{#update.commentId}", nativeQuery = true)
-	int updateBoardCommentByCommentId(@Param("update") Comment update);
+	int updateCommentByCommentId(@Param("update") Comment update);
 	// 산책로 댓글 수정 메서드
-	@Transactional
-	@Modifying
-	@Query(value="UPDATE "
-			+ "comment c "
-			+ "	SET c.comment_content =:#{#update.commentContent}"
-			+ " 	, c.comment_updated_date = :#{#update.commentUpdatedDate}"
-			+ "	WHERE c.comment_id = :#{#update.commentId}", nativeQuery = true)
-	void updateCourseCommentByCommentId(@Param("update") Comment update);
+	// 내용이 같아서 병합
+//	@Transactional
+//	@Modifying
+//	@Query(value="UPDATE "
+//			+ "comment c "
+//			+ "	SET c.comment_content =:#{#update.commentContent}"
+//			+ " 	, c.comment_updated_date = :#{#update.commentUpdatedDate}"
+//			+ "	WHERE c.comment_id = :#{#update.commentId}", nativeQuery = true)
+//	void updateCourseCommentByCommentId(@Param("update") Comment update);
 		
 	
 	

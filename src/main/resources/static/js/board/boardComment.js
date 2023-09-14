@@ -43,13 +43,12 @@
 		let commentId = $(this).parent().parent().children("#commentId").val()
 		let modifyContent = $(this).parent().parent().children("#commentContent").val()
 		//alert(`수정등록 버튼 클릭, commentId = ${commentId}`)
-		fetch('/api/comment/'+window.location.pathname,{
+		fetch('/api/comment/'+commentId,{
 			method: 'PUT',
 			headers:{
 					"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				commentId: commentId,
 				commentContent : modifyContent,
 			})
 		})

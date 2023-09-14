@@ -130,21 +130,21 @@ public class CommentApiController {
 		}
 		return ResponseEntity.ok().body(result);
 	}
-	// 게시판 댓글 수정
-	@PutMapping("/api/comment/board/{boardId}")
+	// 댓글 수정
+	@PutMapping("/api/comment/{commentId}")
 	public ResponseEntity<?> postCommentOnBoard(
-			@PathVariable(name = "boardId") Long boardId
+			@PathVariable(name = "commentId") Long commentId
 			, @RequestBody AddCommentRequest commentDto
 			, @AuthenticationPrincipal User user) {
 		log.info("수정메소드");
 		/// 실행오류나는중
 		Comment comment = Comment.builder()
-				.commentId(commentDto.getCommentId())
+				.commentId(commentId)
 				.commentContent(commentDto.getCommentContent())
 				.userId(Member.builder().userId(user.getUsername()).build())
 				.commentUpdatedDate(new Timestamp(System.currentTimeMillis()))
 				.build();
-		int result = commentService.updateBoardCommentByCommentId(comment);		
+		int result = commentService.updateCommentByCommentId(comment);		
 		if(result != 1) {
 			throw new RuntimeException("댓글 수정을 실패하였습니다.");
 		}
