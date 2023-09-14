@@ -82,9 +82,10 @@
                         <div class="user-imgBox">
 	                        <!-- 파일 업로드를 위한 숨겨진 input 요소. 
 	                             업로드 버튼을 클릭하면 input을 클릭한 것처럼 작동하여 파일 선택 다이얼로그를 열게 됨 -->
-	                         <input type="file" id="imageUploadInput" 
+	                         <input type="file" name="file" id="imageUploadInput" 
 	                                style="display:none;" accept="image/*">
-	                         <input type="hidden" id="ifNewImageExists" value="1">
+	                         <input type="hidden" name="ifNewImageExists"
+	                               id="ifNewImageExists" value="0">
 	                        <img class="user-imgBox_image" 
 	                               id="user-imgBox_image"
 	                               alt="유저 프로필 사진"

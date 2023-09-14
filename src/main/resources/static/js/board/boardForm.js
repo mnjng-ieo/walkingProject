@@ -219,12 +219,12 @@ window.onload = function(){
             
             // (최종 업로드 취소되지 않은) 새로 업로드된 파일이 있는지 확인
 		    if (imageUploadInput.files.length === 0) {
-				// 이미지를 최종 선책하지 않은 경우
+				// 이미지를 최종 선택하지 않은 경우
 				formData.append('ifNewImageExists', 0);
 			} else {
 				// 이미지를 최종 선택한 경우
 				formData.append('ifNewImageExists', 1);
-				formData.append('file', imageUploadInput.files[0]);
+				formData.append('files', imageUploadInput.files[0]);
 			}
             
             // board 데이터
@@ -275,14 +275,17 @@ let boardFile;
 
 // 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
 function uploadImage() {
+    console.log('이미지 업로드 버튼이 눌러졌습니다.');
     const imageUploadInput = document.getElementById('imageUploadInput');
     // input 내용에 변화가 생기면, courseMainImage 요소의 src 속성 변경시키기
     // 사용자가 input 요소에서 파일을 선택하거나 변경할 때 발생
     imageUploadInput.addEventListener('change', function() {
         // 선택된 파일을 가져와 file 변수에 저장 (this = imageUploadInput)
         boardFile = this.files[0];
+        
         // file이 선택되었을 때
         if (boardFile) {
+            console.log('File 객체 안에 파일이 들어갔습니다.');
             // 서버로 파일 업로드 요청을 보내는 코드 작성
             // 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경 (const였다가 수정)
             const reader = new FileReader();   // 파일을 읽기 위한 객체 생성
@@ -303,10 +306,12 @@ function uploadImage() {
 // 이미지 업로드 취소 기능 ; 이미지를 기본 이미지로 변경
 // 취소하면 다시 이미지를 등록해주세요와 기본이미지 두 개 보이기
 function deleteImage() {
+    console.log('이미지 업로드 취소 버튼이 눌러졌습니다.');
     const boardImage = document.getElementById('boardImage');
     boardImage.src = '/images/board/defaultBoardImage.jpg';
     
     // file 변수를 초기화(삭제)
     boardFile = null;
+    console.log('File 객체를 초기화했습니다. null');
 }
 

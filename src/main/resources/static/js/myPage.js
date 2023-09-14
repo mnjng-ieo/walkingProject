@@ -31,6 +31,10 @@ function uploadImage() {
     imageUploadInput.addEventListener('change', function() {
         // 선택된 파일을 가져와 file 변수에 저장 (this = imageUploadInput)
         userFile = this.files[0];
+        
+        const ifNewUserImageExists = document.getElementById('ifNewImageExists');
+        ifNewUserImageExists.value = '1';
+        
         // file이 선택되었을 때
         if (userFile) {
             // 서버로 파일 업로드 요청을 보내는 코드 작성
@@ -45,6 +49,7 @@ function uploadImage() {
             // 파일 선택이 취소되었을 경우 file을 어떻게 제거할까? - deleteImage()
         }
     });
+    
     // input 요소 클릭하여 파일 선택 다이얼로그 열기 
     imageUploadInput.click(); // ---> 클릭한 것과 같은 효과!
 }
@@ -55,10 +60,9 @@ function deleteImage() {
     const userProfileImage = document.getElementById('user-imgBox_image');
     userProfileImage.src = '/images/defaultUserImage.png';
     
-    const ifNewImageExists = document.getElementById('ifNewImageExists');
-    ifNewImageExists.value = '0';
+    const ifNewUserImageExists = document.getElementById('ifNewImageExists');
+    ifNewUserImageExists.value = '0';
     
     // file 변수를 초기화(삭제)
     userFile = null;
-
 }

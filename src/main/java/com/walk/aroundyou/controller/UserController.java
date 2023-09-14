@@ -216,8 +216,8 @@ public class UserController {
 	public String processMypage(
 			@RequestParam("userId") String userId,
 			@ModelAttribute UpdateMypageDTO dto,
-			@RequestParam("file") MultipartFile file,
-			@RequestParam("ifNewImageExists") int ifNewImageExists,
+			@RequestParam(value="file", required=false) MultipartFile file,
+			@RequestParam(value="ifNewImageExists", defaultValue="0") int ifNewImageExists,
 			Model model) throws IOException {
 		
 		model.addAttribute("user", dto);
@@ -232,7 +232,9 @@ public class UserController {
 		
 		// 수정페이지에서 최종 업로드 취소 상태로 수정 요청했을 시
 		if(ifNewImageExists == 0) {
-			uploadImageService.deleteImage(existedImage);
+			if(existedImage != null) {
+				uploadImageService.deleteImage(existedImage);
+			}
 		}
 		
 		Member updatedUser = userService.updateMypage(userId, dto);
