@@ -15,6 +15,8 @@ import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICommentResponseDto;
+import com.walk.aroundyou.service.CommentService;
 import com.walk.aroundyou.service.CourseLikeService;
 import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.UploadImageService;
@@ -30,6 +32,7 @@ public class CourseViewController {
 	private final CourseService courseService;
 	private final CourseLikeService courseLikeService;
 	private final UploadImageService uploadImageService;
+	private final CommentService commentService;
 	
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
@@ -57,6 +60,9 @@ public class CourseViewController {
 				(PAGINATION_SIZE < totalPages)? 
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
+		if(pageEnd == 0) {
+	    	pageEnd = 1;
+	    }
 		model.addAttribute("lastPage", totalPages);
 		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("pageStart", pageStart);
@@ -142,6 +148,9 @@ public class CourseViewController {
 				(PAGINATION_SIZE < totalPages)? 
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
+		if(pageEnd == 0) {
+	    	pageEnd = 1;
+	    }
 		model.addAttribute("lastPage", totalPages);
 		// 이전, 이후 버튼에 문제있어서 currentPage + 1 값을 수정했다.
 		model.addAttribute("currentPage", currentPage);
@@ -226,6 +235,14 @@ public class CourseViewController {
 		boolean isLiked = courseLikeService.isCourseLiked(userId, courseId);
 		model.addAttribute("isLiked", isLiked);
 		
+	////// 9/14 댓글 리스트 불러오기(값 없을 때 체크)
+		List<ICommentResponseDto> comments = commentService.findByCourseId(courseId);
+		
+		if(!comments.isEmpty()) {			
+			log.info("comment 값이 있음");	
+			model.addAttribute("comments", comments);
+		}
+		
 		// 게시글 출력 용도
 		Page<IBoardListResponse> courseBoardList = 
 		         courseService.findBoardAndCntByCourseId(courseId, currentPage, sort);
@@ -238,6 +255,9 @@ public class CourseViewController {
 	            (PAGINATION_SIZE < totalPages)? 
 	                  pageStart + PAGINATION_SIZE - 1
 	                  :totalPages;
+	    if(pageEnd == 0) {
+	    	pageEnd = 1;
+	    }
 	    model.addAttribute("lastPage", totalPages);
 	    model.addAttribute("currentPage", currentPage);
 	    model.addAttribute("pageStart", pageStart);
@@ -315,6 +335,9 @@ public class CourseViewController {
 				(PAGINATION_SIZE < totalPages)? 
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
+		if(pageEnd == 0) {
+	    	pageEnd = 1;
+	    }
 		model.addAttribute("lastPage", totalPages);
 		// 이전, 이후 버튼에 문제있어서 currentPage + 1 값을 수정했다.
 		model.addAttribute("currentPage", currentPage);

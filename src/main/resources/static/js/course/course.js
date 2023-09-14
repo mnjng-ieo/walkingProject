@@ -65,7 +65,23 @@ function restoreLikeImage(element) {
     }
 }
 
+// 게시물 작성하기 클릭 이벤트
+function goToBoardEditor(courseId) {
+    window.location.href = '/board-editor?course=' + courseId;
+}
 
+// 링크 복사하기 클릭 이벤트
+function copyToClipboard() {
+    // 현재 페이지의 URL 가져오기
+    let currentPageURL = window.location.href;
+    
+    // URL을 클립보드에 복사
+    navigator.clipboard.writeText(currentPageURL).then(function() {
+        alert('링크가 클립보드에 복사되었습니다.');
+    }).catch(function(err) {
+        console.error('링크 복사 중 오류 발생: ', err);
+    });
+}
 
 
 

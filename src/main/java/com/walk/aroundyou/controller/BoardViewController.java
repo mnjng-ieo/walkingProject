@@ -380,19 +380,6 @@ public class BoardViewController {
 		}	
 	
 	
-	// 댓글 삭제
-	@DeleteMapping("/api/comment/{commentId}")
-	@ResponseBody
-	public void deleteComment(@PathVariable(name = "commentId") Long commentId){
-		log.info("/delete/board/comment 컨트롤러 접근");
-		// comment_id로 조회된 comment_like_id 삭제 
-		//commentService.deleteCommentLikeByCommentId(commentId); 주석 처리
-		// comment_id로 조회된 comment_id 삭제 
-		commentService.deleteCommentByCommentId(commentId);
-	}
-	
-	
-	
 	// 페이지네이션 시작 페이지를 계산해주는 컨트롤러
 	private int getPageStart(int currentPage, int totalPages) {
 		log.info("currentPage = {}, totalPages = {}", currentPage, totalPages);

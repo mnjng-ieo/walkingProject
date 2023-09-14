@@ -54,16 +54,17 @@
 
 /* 크기를 키우고, 제목 바로 위에 있는 것처럼 위치를 조절하자 */
 .course-list_level {
+	font-family: 'NanumSquareRound';
     position: absolute;
-    top: -120px; left: 0;
+    top: -135px; left: 0;
     text-align: center;
-    font-size: 20px;
+    font-size: 24px;
     display: inline-block;
     padding: 0.25rem 0.5rem;
-    min-width: 5rem;
+    min-width: 5.5rem;
     white-space: nowrap;
-    height: 2rem;
-    line-height: 1.5rem;
+    height: 2.5rem;
+    line-height: 2rem;
 }
 
 .course-infoBox {
@@ -119,6 +120,32 @@
 	background-color: lightyellow;
 }
 
+/* 게시글 관련 */
+.board-title {
+    font-family: 'KimjungchulGothic-Bold';
+}
+
+.boardList {
+    font-family: 'NanumSquareRound';
+}
+.boardCount{
+    color:#3D8361;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-indent: 7px;
+}
+.form-select {
+    text-indent: 15px;
+    width: 200px;
+}
+
+.boardList-sort {
+    text-indent: 8px;
+    width: 10%;
+    height: 30px;
+}
+
+/* 페이징 css */
 .pageInfo_wrap {
     margin-bottom: 100px;
 }
@@ -134,24 +161,12 @@
     border-color: #ccc;
 }
 
-.pagination li.page-item {
-    /* padding: 8px 12px; */
-}
-
 .page-link {
     font-size: 1.2rem;
     margin: 10px;
     line-height: 23px;
     border-radius: 10px;
 }
-
-/* .page-number {
-    border-radius: 10px;
-}
-
-.page-number:hover {
-    border-radius: 10px;
-} */
 
 .page-item.active .page-link {
  z-index: 1;
@@ -179,4 +194,34 @@
 #pageNext:not(.disabled):hover a.page-link {
     background-color: #e0e0e0; /* 호버 시 변경할 배경 색상 설정 */
     cursor: pointer; /* 호버 시 커서 설정 */
+}
+
+/* 댓글 관련 */
+.wrapForm {
+	background:#EEF2E6;
+    font-family: 'NanumSquareRound';
+    font-size: 20px
+}
+
+.commentList{
+    background: #EEE;
+}
+.bubble:before{
+    content: '';
+    position:relative;
+    z-index: -1;
+    left: -25px; top: 110px;
+    border-top: 30px solid #EEE;
+    border-bottom: 30px solid transparent;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+}
+.bubble{
+    margin-top:-20px;
+    margin-left: 30px;
+}
+
+.modifybtn, .registerbtn{
+    background: #3D8361;
+    color: white;
 }

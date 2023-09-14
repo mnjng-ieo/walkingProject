@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.walk.aroundyou.domain.Member;
 
 @Repository
-public interface UserRepository extends JpaRepository<Member, Long> {
+public interface UserRepository extends JpaRepository<Member, String> {
 	
 	// 1. 회원가입 시 User엔티티 전부 가져오기
 	Member save(Member member);
