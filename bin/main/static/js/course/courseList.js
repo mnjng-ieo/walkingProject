@@ -4,6 +4,7 @@ let courseResetBtn = document.getElementById('courseResetBtn');
 // 현재 페이지 초기화
 let currentPage = 0;
 
+
 // AJAX 요청 : 검색 조건 수집
 function updateViewWithSearchResults(){
     let region = document.getElementById('region').value;

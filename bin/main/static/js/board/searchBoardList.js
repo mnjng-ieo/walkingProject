@@ -1,6 +1,7 @@
 // 현재 페이지 초기화
 let currentPage = 0; 
 
+
 // 메인 페이지 검색 결과에서 게시물 더보기 클릭하면 나오는 페이지(게시물 리스트)
 // 검색 조건 수집
 function boardWithSearchResults() {

@@ -1,6 +1,7 @@
 let currentPage = 0; // currentPage 변수 초기화
 
 
+
 // 검색 조건 수집
 function boardWithSearchResults() {
     let searchType = document.getElementById('searchType').value;

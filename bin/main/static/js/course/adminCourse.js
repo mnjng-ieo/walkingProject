@@ -1,5 +1,6 @@
 //*** 관리자 산책로 상세 페이지에서 사용 */
 
+
 // 목록으로 돌아가기 버튼
 function redirectToCourses() {
 	window.location.href = '/admin/courses';

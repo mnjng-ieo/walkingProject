@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 window.onload = function(){
 	
 	// 해시태그 처리 
