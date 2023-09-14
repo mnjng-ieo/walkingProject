@@ -116,6 +116,8 @@
         </div>
       
         <div id="needToChange">
+        <p th:if="${courseBoardList.totalElements == 0}" 
+                      class= "noResult mx-5 m-5 text-center fs-5">해당 산책로가 언급된 게시물이 없습니다.</p>
         <!-- 테이블로 게시물 목록 출력 -->
         <table class="table table-hover">
           <thead>
