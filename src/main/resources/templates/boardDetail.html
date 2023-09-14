@@ -23,8 +23,10 @@
 			<div class="d-flex justify-content-between">
 				<ul class="d-flex">
 					<p>
+					<!-- ★★★★★★★★★★★★작성자의 프로필 사진 경로  --> 
 						<img
-							src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1931&q=80"
+							th:src="${boardWriterImagePath!=null}? 
+							     ${boardWriterImagePath} : '/images/defaultUserImage.png'"
 							class="rounded-circle mx-2" style="width: 30px; height: 30px">
 					</p>
 					<p>[[${ board.userNickname }]]</p>
@@ -91,8 +93,11 @@
 					<div class="d-flex align-items-center justify-content-between m-4" style="height: 65px;">
 						<!-- user 이미지, 닉네임 --> 
 						<div class="d-flex align-items-center ">
+						<!-- ★★★★★★★★★★★접속자(댓글작성자)의 이미지  -->
 							<img class="border rounded-circle m-1 " 
-								src="/images/userImg.jpg" style="width: 80px; height: 80px;" ></img>
+								th:src="${currentUserImagePath!=null} ? 
+								       ${currentUserImagePath} : '/images/defaultUserImage.png'" 
+								style="width: 80px; height: 80px;" ></img>
 							<p class="border m-2" >principal로 로그인된 사용자 닉네임 가져옴</p>
 						</div>
 					</div>
@@ -109,16 +114,20 @@
 				</form>
 			<!-- 댓글 리스트 -->
 			<div class="commentList pb-2">
-				<div class="border mx-5 my-4 rounded text-bg-light shadow" th:each="comment : ${comments}" 
+				<div class="border mx-5 my-4 rounded text-bg-light shadow" 
+				     th:each="comment, stat : ${comments}" 
 						style="text-align: auto">
 					
 				<!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
 					<div class="d-flex align-items-center justify-content-between m-4 pt-3" style="height: 65px;">
-						<!-- user 이미지, 닉네임 --> 
+						<!-- user 이미지, 닉네임 -->
+						<!-- ★★★★★★★★★★★★해당 게시물의 댓글 작성자들 프로필 사진  --> 
 						<div class="d-flex align-items-center ">
 						      <!-- th:text"${comment.userImg}"  -->
 							<img class="border rounded-circle m-1 " 
-								src="/images/userImg.jpg" style="width: 80px; height: 80px;" ></img>
+								th:src="${commentMemberImagePaths!=null}? 
+								${commentMemberImagePaths[stat.index]}: '/images/defaultUserImage.png'"
+								style="width: 80px; height: 80px;" ></img>
 							<p class="m-3" th:text="${comment.userNickname}"></p>
 						</div>
 						

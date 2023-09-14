@@ -82,6 +82,16 @@ public class UploadImageService {
 		}
 	}
 	
+	public String findBoardFullPathById(Long UploadImageId) {
+		Optional<UploadImage> uploadImage = uploadImageRepository.findById(UploadImageId);
+		if (uploadImage.isPresent()) {
+			String savedFileName = uploadImage.get().getSavedFileName();
+			return "/upload-images/board/" + savedFileName;
+		} else {
+			return null; // null 외에 더 좋은 처리 방법이 있을까?
+		}
+	}
+	
 	public String findUserFullPathById(Long UploadImageId) {
 		Optional<UploadImage> uploadImage = uploadImageRepository.findById(UploadImageId);
 		if (uploadImage.isPresent()) {

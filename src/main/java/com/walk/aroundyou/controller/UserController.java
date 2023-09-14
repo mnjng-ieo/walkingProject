@@ -250,6 +250,14 @@ public class UserController {
 			UploadImage uploadImage =
 					uploadImageService.saveUserImage(file, updatedUser);
 			log.info("uploadImage의 original 이름 : " + uploadImage.getOriginalFileName());
+			
+			// 뷰에 이미지 경로 넘기기
+			String imagePath;
+			imagePath = uploadImageService.findUserFullPathById(
+					uploadImage.getFileId());
+			log.info("imagePath : " + imagePath);
+			model.addAttribute("imagePath", imagePath);
+			
 		} else {
 			log.info("이미지의 수정이 없는 경우입니다.");
 			if(existedImage != null) {
