@@ -95,11 +95,15 @@
 }
 
 .user-imgBox_imageborder {
-	height:90%; border-radius: 100px;
+	height:90%; 
+	width: 90%;
+	border-radius: 50%;
+	overflow: hidden;
 }
 
 .user-imgBox_image {
-	height:100%; object-fit: cover;
+	height:100%; 
+	width: auto;
 }
 
 .user-infoBox {
