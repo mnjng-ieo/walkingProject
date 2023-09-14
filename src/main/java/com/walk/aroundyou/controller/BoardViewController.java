@@ -1,6 +1,6 @@
 package com.walk.aroundyou.controller;
 
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,20 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.walk.aroundyou.domain.Board;
-import com.walk.aroundyou.domain.Comment;
 import com.walk.aroundyou.domain.Course;
-import com.walk.aroundyou.domain.Member;
-import com.walk.aroundyou.domain.Tag;
-import com.walk.aroundyou.domainenum.BoardType;
-import com.walk.aroundyou.dto.BoardRequest;
+import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.IBoardDetailResponse;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICommentResponseDto;
@@ -29,6 +23,7 @@ import com.walk.aroundyou.service.BoardService;
 import com.walk.aroundyou.service.CommentService;
 import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.TagService;
+import com.walk.aroundyou.service.UploadImageService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,7 +42,10 @@ public class BoardViewController {
 	private CommentService commentService;	
 	
 	@Autowired
-	private CourseService courseService;	
+	private CourseService courseService;
+	
+	@Autowired
+	private UploadImageService uploadImageService;
 	
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
@@ -70,12 +68,13 @@ public class BoardViewController {
 			boardList = boardService.findBoardAndCntByKeyword(keyword, page, sort);
 			model.addAttribute("boardList", boardList);
 		} else {
-			boardList = boardService.findBoardAndCntByKeywordAndType(type, keyword, page, sort);
+			boardList = boardService.findBoardAndCntByKeywordAndType(type.toUpperCase(), keyword, page, sort);
 			model.addAttribute("boardList", boardList);
 		}
 		
 		log.info("리스트가 비어있나요? : {}", boardList.isEmpty());
 		log.info("키워드는? : {}", keyword);
+		log.info("게시판 타입은 : {}", type);
 		
 		// pagination 설정
 		int totalPages = boardList.getTotalPages();
@@ -93,6 +92,23 @@ public class BoardViewController {
 		model.addAttribute("boardList", boardList);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("type", type);
+		
+		// 이미지 경로 넘기기 - 0913 지수 작성
+		// for 문을 돌려서 리스트 항목 각각의 이미지 경로를 얻어보자.
+		// 게시판 목록페이지에서 이미지를 넣게되면 사용
+		// !Error : /board?type=COMMUNITY 접근할때 에러 발생함
+//		List<List<String>> boardsImagesPaths = new ArrayList<>();
+//		for (IBoardListResponse boardResponseDTO : boardList.getContent()) {
+//			Board board = boardService.findById(boardResponseDTO.getBoardId()).get();
+//			List<UploadImage> uploadImages = uploadImageService.findByBoard(board);
+//			if (uploadImages != null && !uploadImages.isEmpty()) {
+//				List<String> boardImagePaths = 
+//						uploadImageService.findBoardFullPathsById(uploadImages);
+//				boardsImagesPaths.add(boardImagePaths);
+//			} // else ; 뷰에서 기본 이미지가 들어가면 된다.
+//		}
+//		// 모델에 이미지 경로 리스트의 리스트 추가
+//		model.addAttribute("boardsImagesPaths", boardsImagesPaths);
 		
 		return "boardList";
 	}
@@ -138,18 +154,37 @@ public class BoardViewController {
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("selectedBoardType", type);
         model.addAttribute("selectedSearchType", searchType);
-		
+        
+        // 이미지 경로 넘기기 - 0913 지수 작성
+    	// for 문을 돌려서 리스트 항목 각각의 이미지 경로를 얻어보자.
+		// 게시판 목록페이지에서 이미지를 넣게되면 사용
+		// !Error : /board?type=COMMUNITY 접근할때 에러 발생함
+//    	List<List<String>> boardsImagesPaths = new ArrayList<>();
+//    	for (IBoardListResponse boardResponseDTO : boardList.getContent()) {
+//    		Board board = boardService.findById(boardResponseDTO.getBoardId()).get();
+//    		List<UploadImage> uploadImages = uploadImageService.findByBoard(board);
+//    		if (uploadImages != null && !uploadImages.isEmpty()) {
+//    			List<String> boardImagePaths = 
+//    					uploadImageService.findBoardFullPathsById(uploadImages);
+//    			boardsImagesPaths.add(boardImagePaths);
+//    		} // else ; 뷰에서 기본 이미지가 들어가면 된다.
+//    	}
+//    	// 모델에 이미지 경로 리스트의 리스트 추가
+//    	model.addAttribute("boardsImagesPaths", boardsImagesPaths);
 		return "boardConditionList";
 	}
 	
-	// 게시물 조회(09/09 - 연서 수정)
+	// 게시물 조회
 	@GetMapping("/board/{id}")
 	public String getBoardDetail(@PathVariable Long id, Model model) {
 		// 게시글 내용 불러오기
 		Optional<IBoardDetailResponse> board = boardService.findBoardDetail(id);
 		log.info("board가 있나요? : {}", board.isPresent());
-		model.addAttribute("board", board.get());
-		
+		if(board.isPresent()) {			
+			model.addAttribute("board", board.get());
+		} else {
+			return "redirect:/board";
+		}
 		// 해시태그 리스트 불러오기(값 없을 때 체크)
 		List<String> boardTagList = 
 			tagService.findTagsByBoardId(id);
@@ -174,7 +209,17 @@ public class BoardViewController {
 		} else {
 			log.info("course 값이 없음");	
 		}
-		log.info("컨트롤러 끝");
+		
+		// 이미지 경로 넘기기 - 0913 지수 작성
+		// for 문을 돌려서 리스트 항목 각각의 이미지 경로를 얻어보자.
+		Board existedBoard = boardService.findById(id).get();
+		List<UploadImage> uploadImages = uploadImageService.findByBoard(existedBoard);
+		List<String> imagePaths = new ArrayList<>();
+		if(uploadImages != null && !uploadImages.isEmpty()) {
+			imagePaths = uploadImageService.findBoardFullPathsById(uploadImages);
+			model.addAttribute("imagePaths", imagePaths);
+		}
+
 		return "boardDetail";
 	}
 	
@@ -206,6 +251,17 @@ public class BoardViewController {
 	public String getBoardFormById(@PathVariable Long id, Model model) {
 		Optional<IBoardDetailResponse> board = boardService.findBoardDetail(id);
 		model.addAttribute("board", board.get());
+		
+		// 이미지 경로 넘기기 - 0913 지수 작성
+		// for 문을 돌려서 리스트 항목 각각의 이미지 경로를 얻어보자.
+		Board existedBoard = boardService.findById(id).get();
+		List<UploadImage> uploadImages = uploadImageService.findByBoard(existedBoard);
+		List<String> ImagePaths = new ArrayList<>();
+		if(uploadImages != null && !uploadImages.isEmpty()) {
+			ImagePaths = uploadImageService.findBoardFullPathsById(uploadImages);
+			model.addAttribute("imagePaths", ImagePaths);
+		}
+		
 		List<String> allSignguCn = courseService.findAllSignguCn();
 		model.addAttribute("allSignguCn", allSignguCn);
 		Optional<Course> course = courseService.findByBoardId(id);
@@ -225,59 +281,26 @@ public class BoardViewController {
 	
 	
 	// 하나의 게시물에 포함된 해시태그 리스트 출력하기
-		@GetMapping("/tagList/{boardId}")
-		// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
-		public String tagListInBoardContent(@PathVariable Long boardId, Model model) {
-			log.info("/tagList/{boardId} 접근 .... ");
-			// 존재하지 않는 boardId를 조회할때도 대비하기, 아직 구현하지 않음
-			Optional<Board> boardContent = boardService.findById(boardId);
-			List<String> boardTagList = 
-				tagService.findTagsByBoardId(boardId);
-			model.addAttribute("boardContent", boardContent.get().getBoardContent());
-			model.addAttribute("boardTagList", boardTagList);
-			return "boardTag";
-		}	
+	@GetMapping("/tagList/{boardId}")
+	// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
+	public String tagListInBoardContent(@PathVariable Long boardId, Model model) {
+		log.info("/tagList/{boardId} 접근 .... ");
+		// 존재하지 않는 boardId를 조회할때도 대비하기, 아직 구현하지 않음
+		Optional<Board> boardContent = boardService.findById(boardId);
+		List<String> boardTagList = 
+			tagService.findTagsByBoardId(boardId);
+		model.addAttribute("boardContent", boardContent.get().getBoardContent());
+		model.addAttribute("boardTagList", boardTagList);
+		return "boardTag";
+	}	
 	
 	
-	/////////////// 댓글
-	// 댓글 
-	
-	// 댓글 수정
-	@PostMapping("/board-comment/{id}")
-	public String postCommentOnBoard(
-			@PathVariable(name = "id") Long id
-			, String boardId
-			, String commentId
-			, String userId
-			, String commentContent) {
-		Comment comment = Comment.builder()
-				.commentId(Long.parseLong(commentId))
-				.commentContent(commentContent)
-				.userId(Member.builder().userId(userId).build())
-				.commentUpdatedDate(new Timestamp(System.currentTimeMillis()))
-				.build();
-		commentService.updateBoardCommentByCommentId(comment);
-		
-		return "redirect:/board/"+id;
-	}
-	// 댓글 삭제
-	@DeleteMapping("/api/comment/{commentId}")
-	@ResponseBody
-	public void deleteComment(@PathVariable(name = "commentId") Long commentId){
-		log.info("/delete/board/comment 컨트롤러 접근");
-		// comment_id로 조회된 comment_like_id 삭제 
-		//commentService.deleteCommentLikeByCommentId(commentId); 주석 처리
-		// comment_id로 조회된 comment_id 삭제 
-		commentService.deleteCommentByCommentId(commentId);
-	}
-	
-	
-	
+
 	// 페이지네이션 시작 페이지를 계산해주는 컨트롤러
 	private int getPageStart(int currentPage, int totalPages) {
 		log.info("currentPage = {}, totalPages = {}", currentPage, totalPages);
 		int result = 1;
-		if(totalPages < currentPage + (int)Math.ceil((double)PAGINATION_SIZE/2)) {
+		if(Math.max(totalPages, PAGINATION_SIZE) < currentPage + (int)Math.ceil((double)PAGINATION_SIZE/2)) {
 			log.info("if문 통과");
 			result = totalPages - PAGINATION_SIZE + 1;
 		}else if(currentPage > (int)Math.floor((double)PAGINATION_SIZE/2)) {

@@ -40,31 +40,6 @@ public class TagViewController {
 	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
 	private final static int PAGINATION_SIZE = 5;
 	
-	// MainViewController에서 사용하므로 주석처리
-	// 가장 많이 사용된 태그 메인화면에 출력하기
-//	@GetMapping("/hotTag")
-//	public String getMainHotTag(Model model) {
-//		List<String> hotTagList = 
-//			tagService.findTagsByBoardTagId();
-//		model.addAttribute("hotTagList", hotTagList);
-//		return "hotTag";
-//	}
-	
-	// boardViewController 에서 사용하므로 주석처리
-//	// 하나의 게시물에 포함된 해시태그 리스트 출력하기
-//	@GetMapping("/tagList/{boardId}")
-//	// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
-//	public String tagListInBoardContent(@PathVariable Long boardId, Model model) {
-//		log.info("/tagList/{boardId} 접근 .... ");
-//		// 존재하지 않는 boardId를 조회할때도 대비하기, 아직 구현하지 않음
-//		Optional<Board> boardContent = boardRepository.findById(boardId);
-//		List<String> boardTagList = 
-//			tagService.findTagsByBoardId(boardId);
-//		model.addAttribute("boardContent", boardContent.get().getBoardContent());
-//		model.addAttribute("boardTagList", boardTagList);
-//		return "boardTag";
-//	}
-	
 	// 검색하여 출력되는 목록 페이지 구현(좋아요 수, 댓글 수 포함)
 	@GetMapping("/tag/search/{tagContent}")
 	public String searchBoardAndCnt(
@@ -106,6 +81,33 @@ public class TagViewController {
 			result = currentPage - (int)Math.floor(PAGINATION_SIZE/2) + 1;
 		}
 		return result;
-	}
+	}	
+	
+	// MainViewController에서 사용하므로 주석처리
+	// 가장 많이 사용된 태그 메인화면에 출력하기
+//	@GetMapping("/hotTag")
+//	public String getMainHotTag(Model model) {
+//		List<String> hotTagList = 
+//			tagService.findTagsByBoardTagId();
+//		model.addAttribute("hotTagList", hotTagList);
+//		return "hotTag";
+//	}
+	
+	// boardViewController 에서 사용하므로 주석처리
+//	// 하나의 게시물에 포함된 해시태그 리스트 출력하기
+//	@GetMapping("/tagList/{boardId}")
+//	// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
+//	public String tagListInBoardContent(@PathVariable Long boardId, Model model) {
+//		log.info("/tagList/{boardId} 접근 .... ");
+//		// 존재하지 않는 boardId를 조회할때도 대비하기, 아직 구현하지 않음
+//		Optional<Board> boardContent = boardRepository.findById(boardId);
+//		List<String> boardTagList = 
+//			tagService.findTagsByBoardId(boardId);
+//		model.addAttribute("boardContent", boardContent.get().getBoardContent());
+//		model.addAttribute("boardTagList", boardTagList);
+//		return "boardTag";
+//	}
+	
+
 	
 }
