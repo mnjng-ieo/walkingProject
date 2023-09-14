@@ -29,7 +29,7 @@
 		})
 		.then((response)=>	{
 			if(response.ok){
-				alert('등록이 완료되었습니다.');
+				alert('삭제가 완료되었습니다.');
 				location.replace(window.location.href);
 			} else{
 				alert('잘못된 접근입니다.');
