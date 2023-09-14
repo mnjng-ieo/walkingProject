@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.CourseLike;
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.dto.CourseLikeRequestDTO;
 import com.walk.aroundyou.repository.CourseLikeRepository;
 import com.walk.aroundyou.repository.CourseRepository;
@@ -14,7 +14,6 @@ import com.walk.aroundyou.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class CourseLikeService {
 	 */
 	public boolean isCourseLiked(String userId, Long courseId) {
 		
-		User user = userRepository.findByUserId(userId)
+		Member user = userRepository.findByUserId(userId)
 				.orElseThrow(() -> new IllegalArgumentException(
 						"user id not found : " + userId));
 		Course course = courseRepository.findById(courseId)
@@ -49,7 +48,7 @@ public class CourseLikeService {
 	public void insertLike(CourseLikeRequestDTO courseLikeRequestDTO) throws Exception {
 		
 		// 좋아요를 한 user의 id와 course의 id를 전달받아 각각 데이터를 찾는다!
-		User user = userRepository.findByUserId(courseLikeRequestDTO.getUserId())
+		Member user = userRepository.findByUserId(courseLikeRequestDTO.getUserId())
 				.orElseThrow(() -> new IllegalArgumentException(
 						"user id not found : " + courseLikeRequestDTO.getUserId()));
 		Course course = courseRepository.findById(courseLikeRequestDTO.getCourseId())
@@ -71,6 +70,7 @@ public class CourseLikeService {
 		// 디비에 최종 저장한다.
 		courseLikeRepository.save(courseLike);
 	}
+
 	
 	/**
 	 * 한 명의 유저가 산책로에 좋아요 삭제
@@ -79,7 +79,7 @@ public class CourseLikeService {
 	public void deleteLike(CourseLikeRequestDTO courseLikeRequestDTO) {
 		
 		// 좋아요 취소를 한 user의 id와 course의 id를 전달받아 각각 데이터를 찾는다!
-		User user = userRepository.findByUserId(courseLikeRequestDTO.getUserId())
+		Member user = userRepository.findByUserId(courseLikeRequestDTO.getUserId())
 				.orElseThrow(() -> new IllegalArgumentException(
 						"user id not found : " + courseLikeRequestDTO.getUserId()));
 		Course course = courseRepository.findById(courseLikeRequestDTO.getCourseId())

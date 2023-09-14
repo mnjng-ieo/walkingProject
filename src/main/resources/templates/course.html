@@ -1,99 +1,229 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/defaultLayout}"
-      layout:fragment="Content">
+      layout:decorate="~{common/layouts/defaultLayout}">
 <head>
-	<meta charset="UTF-8">
-	<title>산책로 상세페이지</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-	<link href="/lib/course.css" rel="stylesheet" type="text/css" />
+<meta charset="UTF-8">
+    <title>산책로 상세 페이지</title>
+    <link rel="stylesheet" href="/css/course/course.css">
+    <script src="/js/course/course.js"></script>
+    <script src="/js/course/searchCourseBoardList.js"></script>
 </head>
 <body>
-	
-    <div class="top">
-        <img class="top_img" src="/images/defaultCourseMainImg.jpg" alt="메인사진" style="	width: 100%; border: 1px solid blue;" />
+<th:block layout:fragment="Content">
+	<!-- 산책로 메인 사진 : upload된 것 있으면 해당 사진이 보이고, 아니면 default로 보임 -->
+    <div class="top-imgBox" th:object="${course}">
+        <img class="top-imgBox_img" 
+            th:src="${imagePath}? 
+                    ${imagePath}: '/images/defaultCourseMainImg.jpg'" 
+            alt="산책로 메인사진" />        
     </div>
-    <div class="container" th:object="${course}">
-        <div class="infoBox">
-            <h3 class="flag-title"
-                th:text="*{wlkCoursFlagNm}">
-                산책로 큰이름</h3>
-            <h1 class="title"
-                th:text="*{wlkCoursNm}"></h1>
-            <div class="d-flex justify-content-between">
-				<div class="col-8">
-		            <table class="table">
-		                <tr>
-		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
-								위치</td>
-		                    <td th:text="*{signguNm} + ' | ' + *{lnmAddr}"></td>
-		                </tr>
-		                <tr>
-		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
-								주요코스</td>
-		                    <td th:text="*{coursDc}"></td>
-		                </tr>
-		                <tr>
-		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
-								거리</td>
-		                    <td th:text="*{coursDetailLtCn}"></td>
-		                </tr>
-		                <tr>
-		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
-								소요시간</td>
-		                    <td th:text="*{coursTimeCn}"></td>
-		                </tr>
-		                <tr>
-		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
-								화장실</td>
-		                    <td th:text="*{toiletDc}"></td>
-		                </tr>
-		                <tr>
-		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
-								편의시설</td>
-		                    <td th:text="*{cvntlNm}"></td>
-		                </tr>                	
-		                <tr>
-		                    <td class="name" style="width: 100px;text-align: left;border: 1px solid red;">
-								상세설명</td>
-		                    <td th:text="*{aditDc}"></td>
-		                </tr>
-		            </table>
-	            </div>
-	            
-	            
-	            
-	            <!-- 아이콘 크기 설정하지 못함 -->
-	            
-	            
-	            
-	            
-	            <ul class="d-flex justify-content-end col-4" style="list-style-type:none">
-					<li>					
-						<img src="images/heart.png" alt="좋아요" />
-					</li>
-					<li>
-						<img src="images/addIcon.png" alt="내 목록 추가" />
-					</li>
-					<li>
-						<img src="images/pecilBoardIcon.png" alt="코멘트 달기" />
-					</li>
-					<li>
-						<img src="images/shareIcon.png" alt="공유" />
-					</li>
-				</ul>
-				
-			</div>
-				
-				<div class="comment">코멘트 작성 영역</div>
-				
-		
-			
+    <div class="container course-infoBox" th:object="${course}">
+        <div class="d-flex course-header">
+            <div class="col-7 course-title">
+                <!-- 산책로 관련 유저 활동을 위한 산책로 id 값 넘기기 -->
+                <input type="hidden" id="courseId" th:value="*{courseId}" />
+                <input type="hidden" id="isLiked" th:value="${isLiked}" />
+                <input type="hidden" id="userId" th:value="${userId}" />
+                <p class="rounded-pill badge text-center course-list_level"
+		           th:classappend="*{coursLevelNm == '매우쉬움' ? ' bg-primary' : 
+		                             coursLevelNm == '쉬움' ? ' bg-info' : 
+		                             coursLevelNm == '보통' ? ' bg-success' : 
+		                             coursLevelNm == '어려움' ? ' bg-warning' : 
+		                             coursLevelNm == '매우어려움' ? ' bg-danger' : ''}"
+		           th:text="*{coursLevelNm}">난이도</p>
+                <h3 class="flag-title"
+	                th:text="*{wlkCoursFlagNm}">
+	                산책로 큰이름</h3>
+	            <h1 class="title"
+	                th:text="*{wlkCoursNm}"></h1>
+            </div>
+            <div class="col-5 d-flex 
+                        justify-content-end
+                        align-items-stretch iconBox">
+                <div class="icon-wrapper"
+                    onmouseover="changeLikeImage(this)"
+                    onmouseout="restoreLikeImage(this)"
+                    onclick="toggleLikeImage(this)">                    
+                    <img th:if="${isLiked}" 
+                         th:src="@{/images/common/heart-click.png}"
+                        alt="좋아요" />
+                    <img th:if="${not isLiked}" 
+                         th:src="@{/images/common/heart-nonclick.png}"
+                        alt="좋아요" />
+                    <p>좋아요</p>
+                </div>
+                <div class="icon-wrapper">
+                    <img src="/images/board-write.png" alt="게시물 작성하기" />
+                    <p>게시물<br>작성하기</p>
+                </div>
+                <div class="icon-wrapper">
+                    <img src="/images/comment.png" alt="코멘트 달기" />
+                    <p>코멘트<br>달기</p>
+                </div>
+                <div class="icon-wrapper">
+                    <img src="/images/share.png" alt="공유" />
+                    <p>공유</p>
+                </div>
+            </div>
 
         </div>
+        <div class="course-content">
+            <div class="table-wrapper">
+	            <table class="table">
+	                <tr>
+	                    <td class="name">위치</td>
+	                    <td th:text="*{signguCn} + ' | ' + *{lnmAddr}"></td>
+	                </tr>
+	                <tr>
+	                    <td class="name">주요코스</td>
+	                    <td th:text="*{coursDc}"></td>
+	                </tr>
+	                <tr>
+	                    <td class="name">거리</td>
+	                    <td th:text="*{coursDetailLtCn} + 'km'"></td>
+	                </tr>
+	                <tr>
+	                    <td class="name">소요시간</td>
+	                    <td th:text="${#dates.format(course.coursTimeCn, 'H시간 mm분 소요')}"></td>
+	                </tr>
+	                <tr>
+	                    <td class="name">화장실</td>
+	                    <td th:text="*{toiletDc}"></td>
+	                </tr>
+	                <tr>
+	                    <td class="name">편의시설</td>
+	                    <td th:text="*{cvntlNm}"></td>
+	                </tr>
+	                <tr>
+	                    <td class="name">상세설명</td>
+	                    <td th:text="*{aditDc}"></td>
+	                </tr>
+	            </table>
+            </div>
+            <div class="course-map">
+                    <!-- 지도가 들어올 자리 -->
+                    지도가 들어올 자리
+                </div>
+        </div>
     </div>
-    <script src="/lib/course.js"></script>
-</body>
+    <div class="container commentBox">코멘트작성란과 리스트는 여기 붙이세요.</div>
+    
+    
+    <!-- 산책로 연관 게시물 : 연서님 작성 -->
+    <hr>
+    <div class="container boardList">
+        <div class = "d-flex">
+            <!-- 자바스크립트에서 사용할 용도이므로 숨기기 -->
+            <h5 id="courseId" th:text="${id}"></h5>
+            <h5 id="courseId" th:text="${id}" style = "display:none;"></h5>
 
+            <h5>해당 산책로 관련 게시물입니다.</h5>
+        </div>
+
+        <!-- 정렬 방식 선택  (추후 처리) --> 
+        <div class = "d-flex justify-content-between">
+            <p class = "my-2">게시물 수 : <span th:text="${courseBoardList.totalElements}"></span></p>
+            <select class="boardList-sort sort h-25" 
+                id="boardCourseSort" name="sort" 
+                onchange="boardWithSearchResults()">
+            <option value="default">최신순</option>
+            <option value="boardViewCount">조회 순</option>
+            <option value="likeCnt">좋아요 순</option>
+        </select>
+        </div>
+      
+        <div id="needToChange">
+	        <!-- 테이블로 게시물 목록 출력 -->
+	        <table class="table table-hover">
+	          <thead>
+	            <tr>
+	              <th class ="col-lg-1">글 번호</th>
+	              <th class ="col-lg-9">게시물</th>
+	              <th class ="col-lg-1">댓글 수</th>
+	            </tr>
+	          </thead>
+	          <tbody>
+	            <!-- 자바스트립트 redirectToDetail 메서드 사용 : 컬럼을 누르면 게시글 상세페이지로 이동하는 url 작성-->
+	            <tr th:each="courseBoard : ${courseBoardList}" 
+	               th:data-url="@{/board/{id}(id=${courseBoard.boardId})}" 
+	               onclick="redirectToDetail(this)"
+	               style="cursor:pointer;">
+	              <td>
+	                <span th:text = "${courseBoard.boardId}">글 번호</span>
+	              </td>
+	              <td>
+	                <!-- 제목의 글자수 길면 ...으로 생략 -->
+	                <div class = "first fs-5"
+	                    th:text = "${#strings.length(courseBoard.boardTitle) &gt; 50 ? 
+	                    #strings.substring(courseBoard.boardTitle, 0, 50) + '...' : courseBoard.boardTitle}">글 제목</div>
+	                <div class = "second d-flex">
+	                    <p style="width: 30px; height: 30px;">
+	                        <img src = "/images/userimg.png" class="img-thumbnail mt-3"/>
+	                    </p>
+	                    <div class="mt-3 mx-2" th:text = "${courseBoard.userNickname}">작성자 닉네임</div>
+	                </div>
+	                
+	                <div class  ="third d-flex text-secondary">
+	                    <div class="m-1" th:text = "|date ${#dates.format(courseBoard.boardCreatedDate, 'yyyy-MM-dd')}|">작성일자</div>
+	                    <div class="m-1" th:text = "|in ${courseBoard.boardType}|">카테고리</div>
+	                    <p class="m-1" style="width: 20px; height: 20px;">
+	                        <img src = "/images/view.png" class="img-fluid"/>
+	                    </p>
+	                    <div class="m-1" th:text = "${courseBoard.boardViewCount}">조회수</div>
+	                    <p class="m-1" style="width: 20px; height: 20px;">
+	                        <img src = "/images/common/heart-click.png" class="img-fluid"/>
+	                    </p>
+	                    <div class="m-1" th:text = "${courseBoard.likeCnt}">좋아요 수</div>
+	                </div>
+	              </td>
+	              <td>
+	                <span th:text = "${courseBoard.commentCnt}" class = "mx-4">댓글 수</span>
+	              </td>  
+	            </tr>
+	          </tbody>
+	        </table>
+	    
+		    <!-- 페이지네이션 기능 -->
+		    <div class="pageInfo_wrap" id="pagination">
+		        <!--pagination-sm 추가하면 작아지고, pagination-lg 추가하면 커진다 -->
+		        <ul class="pagination pagination 
+		                   justify-content-center page-border">
+		           <li class="page-item" id="pagePrev"
+		               th:classappend="${currentPage == 0} ? 'disabled' : ''">
+		               <!-- 링크 클릭할 때 해당 링크의 url로 이동하는 기본 동작 막기 위해 사용
+		                    자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
+		               <!-- th:onclick="'loadPage(\''+${currentPage - 1}+'\')'" -->
+		               <a class="page-link arrow rounded-3" 
+		                  href="javascript:void(0);"
+		                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">
+		                  <i class="fa-solid fa-chevron-left"></i></a>
+		           </li>
+		           <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
+		               <li th:if="${page == (currentPage+1)}" 
+		                   class="page-item active">
+		                   <a class="page-link page-number" 
+		                   href="javascript:void(0);"
+		                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+		               </li>
+		               <li th:unless="${page == (currentPage+1)}" 
+		                   class="page-item page-number ">
+		                   <a class="page-link" 
+		                   href="javascript:void(0);"
+		                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+		               </li>
+		           </th:block>
+		           <li class="page-item" id="pageNext"
+		               th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
+		               <a class="page-link arrow rounded-3" 
+		               href="javascript:void(0);"
+		               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
+		               <i class="fa-solid fa-chevron-right"></i></a>
+		           </li>
+		        </ul>
+		    </div>
+        </div>
+    </div>
+</th:block>
+</body>
 </html>

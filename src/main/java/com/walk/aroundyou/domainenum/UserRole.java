@@ -1,14 +1,15 @@
 package com.walk.aroundyou.domainenum;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public enum UserRole {
+	USER("USER"), ADMIN("ADMIN"), GUEST("GUEST");
 	
-   USER("사용자"),
-   ADMIN("관리자");
-   
-   private final String kor;  
+	private final String roleName;
+
+    UserRole(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
 }

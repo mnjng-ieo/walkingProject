@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8">
+    <title>관리자 산책로 수정 페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/course/adminUpdateCourse.css">
+    <script src="/js/course/adminCourse.js"></script>
+</head>
+<body>
+<th:block layout:fragment="Content">
+    <div class="row p-5 mb-5 text-center</> bg-light course-top_topBox">
+        <div class="col-7 course-top_titleBox">
+            <h5 class="mb-3">산책로 데이터 관리페이지 - 산책로 수정</h5>
+            <!-- <h1 class="mb-3 fw-bolder course-top_title">
+                새 산책로 데이터를 생성하는 페이지를 보고 계십니다.</h1>  -->
+            <h1 class="mb-3 fw-bolder course-top_title"
+                th:text="${course.courseId} + '번 ' + 
+                        ${course.wlkCoursFlagNm}"></h1>
+            <h1 class="mb-3 fw-bolder"
+                th:text="' - ' + 
+                        ${course.wlkCoursNm} + '을 수정하는 페이지입니다.'"></h1>
+        </div>
+        <div class="col-5 text-center course-top_buttonBox">
+            <div class="row gx-5 course-top_topButton">
+                <button type="button" class="col goToUserPageButton"
+                        th:onclick="'openUserPageInNewTab(' + ${course.courseId} + ')'">
+                        사용자 페이지에서 보기</button>
+                <button type="button" class="col goBackToLiskButton"
+                        onclick="redirectToCourses()">목록으로 돌아가기</button>
+            </div>
+            <div class="row gx-5  course-top_bottomButton">
+                <!-- 예정 : 상단 바 바로 아래에 위치하도록 조절하기 -->
+                <button type="button" class="col updateFinishButton"
+                        id="updateFinishButton"
+                        th:onclick="'updateCourse(' + ${course.courseId} + ')'">수정 완료</button>
+                <button type="button" class="col deleteButton"
+                        id="deleteButton"
+                        th:onclick="'deleteCourse(' + ${course.courseId} + ')'">삭제</button>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5" th:object="${course}">
+        <div class="row">
+            <div class="col-lg-7">
+                <!-- 서버로 courseId 값 넘기기 -->
+                <input type="hidden" id="courseId" th:value="*{courseId}" />
+                <!-- class="table" 추가하면 아랫줄 생기는데 input 태그 조절 어려워서 일단 제거 -->
+                <table >
+                    <tr>
+                        <!-- 수정 불가 : 수정 불가능이라고 작게 메시지 떠도 좋겠다. -->
+                        <td class="name">산책로 고유 ID</td>
+                        <td class="content" th:text="*{courseId}"
+                            th:value="*{courseId}"></td>
+                    </tr>
+                    <tr>
+                        <td class="name"><i class="fa-solid fa-star-of-life fa-xs" style="color: #f24040;"></i> 산책 경로 구분명</td>
+                        <td class="content">    
+                            <input type="text" id="wlkCoursFlagNm"
+                                   placeholder="산책로의 큰 이름[범주에 해당]을 쓰세요."
+                                   th:value="*{wlkCoursFlagNm}" required /> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="name"><i class="fa-solid fa-star-of-life fa-xs" style="color: #f24040;"></i> 산책 경로명</td>
+                        <td class="content">
+                            <input type="text" id="wlkCoursNm"
+                                   placeholder="산책로의 작은 이름[코스번호 등]을 쓰세요."
+                                   th:value="*{wlkCoursNm}" required />
+                                                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="name"><i class="fa-solid fa-star-of-life fa-xs" style="color: #f24040;"></i> 주요 코스</td>
+                        <td class="content">
+                        <textarea type="text" id="coursDc"
+                               class="longText"
+                               placeholder="산책로의 주요 코스를 ' ~ ' 기호로 구분해서 이어 쓰세요."
+                               th:text="*{coursDc}"
+                               th:value="*{coursDc}" required ></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="name"><i class="fa-solid fa-star-of-life fa-xs" style="color: #f24040;"></i> 지역(행정자치구명)</td>
+                        <td class="content">
+                            <select class="" id="signguCn" 
+                                    name="signguCn" title="signguCn"
+                                    th:value="*{signguCn}" required >
+		                        <option class="" value="">지역 선택</option>
+		                        <option class="" value="서울 강남구" 
+		                                th:selected="*{signguCn == '서울 강남구'}">서울 강남구</option>
+		                        <option class="" value="서울 강동구"
+		                                th:selected="*{signguCn == '서울 강동구'}">서울 강동구</option>
+		                        <option class="" value="서울 강북구"
+		                                th:selected="*{signguCn == '서울 강북구'}">서울 강북구</option>
+		                        <option class="" value="서울 강서구"
+		                                th:selected="*{signguCn == '서울 강서구'}">서울 강서구</option>
+		                        <option class="" value="서울 관악구"
+		                                th:selected="*{signguCn == '서울 관악구'}">서울 관악구</option>
+		                        <option class="" value="서울 광진구"
+		                                th:selected="*{signguCn == '서울 광진구'}">서울 광진구</option>
+		                        <option class="" value="서울 구로구"
+		                                th:selected="*{signguCn == '서울 구로구'}">서울 구로구</option>
+		                        <option class="" value="서울 금천구"
+		                                th:selected="*{signguCn == '서울 금천구'}">서울 금천구</option>
+		                        <option class="" value="서울 노원구"
+		                                th:selected="*{signguCn == '서울 노원구'}">서울 노원구</option>
+		                        <option class="" value="서울 도봉구"
+		                                th:selected="*{signguCn == '서울 도봉구'}">서울 도봉구</option>
+		                        <option class="" value="서울 동대문구"
+		                                th:selected="*{signguCn == '서울 동대문구'}">서울 동대문구</option>
+		                        <option class="" value="서울 동작구"
+		                                th:selected="*{signguCn == '서울 동작구'}">서울 동작구</option>
+		                        <option class="" value="서울 마포구"
+		                                th:selected="*{signguCn == '서울 마포구'}">서울 마포구</option>
+		                        <option class="" value="서울 서대문구"
+		                                th:selected="*{signguCn == '서울 서대문구'}">서울 서대문구</option>
+		                        <option class="" value="서울 서초구"
+		                                th:selected="*{signguCn == '서울 서초구'}">서울 서초구</option>
+		                        <option class="" value="서울 성동구"
+		                                th:selected="*{signguCn == '서울 성동구'}">서울 성동구</option>
+		                        <option class="" value="서울 성북구"
+		                                th:selected="*{signguCn == '서울 성북구'}">서울 성북구</option>
+		                        <option class="" value="서울 송파구"
+		                                th:selected="*{signguCn == '서울 송파구'}">서울 송파구</option>
+		                        <option class="" value="서울 양천구"
+		                                th:selected="*{signguCn == '서울 양천구'}">서울 양천구</option>
+		                        <option class="" value="서울 영등포구"
+		                                th:selected="*{signguCn == '서울 영등포구'}">서울 영등포구</option>
+		                        <option class="" value="서울 용산구"
+		                                th:selected="*{signguCn == '서울 용산구'}">서울 용산구</option>
+		                        <option class="" value="서울 은평구"
+		                                th:selected="*{signguCn == '서울 은평구'}">서울 은평구</option>
+		                        <option class="" value="서울 종로구"
+		                                th:selected="*{signguCn == '서울 종로구'}">서울 종로구</option>
+		                        <option class="" value="서울 중구"
+		                                th:selected="*{signguCn == '서울 중구'}">서울 중구</option>
+		                        <option class="" value="서울 중랑구"
+		                                th:selected="*{signguCn == '서울 중랑구'}">서울 중랑구</option>
+		                    </select>
+	                    </td>
+                    </tr>
+                    <tr>
+                        <td class="name"><i class="fa-solid fa-star-of-life fa-xs" style="color: #f24040;"></i> 난이도</td>
+                        <td class="content">
+                            <select class="" id="coursLevelNm" 
+                                    name="coursLevelNm" title="coursLevelNm" 
+                                    th:value="*{coursLevelNm}" required >
+		                        <option class="" value="">난이도 선택</option>
+		                        <option class="" value="매우쉬움"
+		                                th:selected="*{coursLevelNm == '매우쉬움'}">매우쉬움</option>
+		                        <option class="" value="쉬움"
+		                                th:selected="*{coursLevelNm == '쉬움'}">쉬움</option>
+		                        <option class="" value="보통"
+		                                th:selected="*{coursLevelNm == '보통'}">보통</option>
+		                        <option class="" value="어려움"
+		                                th:selected="*{coursLevelNm == '어려움'}">어려움</option>
+		                        <option class="" value="매우어려움"
+		                                th:selected="*{coursLevelNm == '매우어려움'}">매우어려움</option>
+		                    </select>
+	                    </td>
+                    </tr>
+                    <tr>
+                        <td class="name"><i class="fa-solid fa-star-of-life fa-xs" style="color: #f24040;"></i> 단위 거리</td>
+                        <td class="content">
+                            <select class="" id="coursLtCn" 
+                                    name="coursLtCn" title="coursLtCn"
+                                    th:value="*{coursLtCn}" required >
+		                        <option class="" value="">코스 거리 선택</option>
+		                        <option class="" value="1Km미만"
+		                                th:selected="*{coursLtCn == '1Km미만'}">1Km 미만</option>
+		                        <option class="" value="1~5Km미만"
+		                                th:selected="*{coursLtCn == '1~5Km미만'}">1~5Km 미만</option>
+		                        <option class="" value="5~10Km미만"
+		                                th:selected="*{coursLtCn == '5~10Km미만'}">5~10Km 미만</option>
+		                        <option class="" value="10~15Km미만"
+		                                th:selected="*{coursLtCn == '10~15Km미만'}">10~15Km 미만</option>
+		                        <option class="" value="15~20Km미만"
+		                                th:selected="*{coursLtCn == '15~20Km미만'}">15~20Km 미만</option>
+		                        <option class="" value="20~100Km미만"
+		                                th:selected="*{coursLtCn == '20~100Km미만'}">20~100Km 미만</option>
+		                    </select>
+	                    </td>
+                    </tr>
+                    <tr>
+                        <td class="name"><i class="fa-solid fa-star-of-life fa-xs" style="color: #f24040;"></i> 상세 거리</td>
+                        <td class="content">
+                            <div class="distanceBox">
+	                            <input type="text" id="coursDetailLtCn"
+	                                   placeholder="km 단위"
+	                                   th:value="*{coursDetailLtCn}" required />
+	                            <span> km</span>
+                            </div>
+	                        
+	                    </td>
+                    </tr>
+                    <tr>
+                        <td class="name">상세 설명</td>
+                        <td class="content">
+	                        <textarea type="text" id="aditDc"
+	                               class="aditDc"
+                                   placeholder="설명을 적어주세요."
+                                   th:text="*{aditDc}"
+                                   th:value="*{aditDc}" ></textarea>
+	                    </td>
+                    </tr>
+                    <tr>
+                        <td class="name">소요 시간</td>
+                        <td class="content">
+	                        <!-- HH:mm:ss 형식으로 받도록 컨트롤러에서 처리 필요하다! -->
+                            <div id="coursTimeCn">
+                                <input type="text" id="hours"
+                                       class="timeInput" maxlength="2" 
+                                       placeholder="HH" 
+                                       th:value="${#dates.format(course.coursTimeCn, 'HH')}" />
+                                <span> : </span>
+                                <input type="text" id="minutes"
+                                       class="timeInput" maxlength="2" 
+                                       placeholder="mm" 
+                                       th:value="${#dates.format(course.coursTimeCn, 'mm')}" />
+                                <span> : </span>
+                                <input type="text" id="seconds"
+                                       class="timeInput" maxlength="2" 
+                                       placeholder="ss" 
+                                       th:value="${#dates.format(course.coursTimeCn, 'ss')}" />
+                            </div>   
+	                    </td>
+                    </tr>
+                    <tr>
+                        <td class="name">화장실 정보</td>
+                        <td class="content">
+	                        <textarea type="text" id="toiletDc"
+	                               class="longText"
+                                   placeholder="산책로 근처의 이용 가능한 화장실 정보를 적으세요."
+                                   th:text="*{toiletDc}"
+                                   th:value="*{toiletDc}" ></textarea>
+	                    </td>
+                    </tr>
+                    <tr>
+                        <td class="name">편의시설 정보</td>
+                        <td class="content">
+	                        <textarea type="text" id="cvntlNm"
+	                               class="longText"
+                                   placeholder="산책로 주변 편의시설 정보를 적으세요."
+                                   th:text="*{cvntlNm}"
+                                   th:value="*{cvntlNm}" ></textarea>
+	                    </td>
+                    </tr>
+                    <tr>
+                        <td class="name">지번 주소</td>
+                        <td class="content">
+	                        <input type="text" id="lnmAddr"
+                                   placeholder="산책로의 지번 주소를 동 단위까지만 적으세요."
+                                   th:value="*{lnmAddr}" />
+	                    </td>
+                    </tr>
+                    <tr>
+                        <td class="name"><i class="fa-solid fa-star-of-life fa-xs" style="color: #f24040;"></i> 경로지점 위도</td>
+                        <td class="content">
+	                        <input type="text" id="coursSpotLa"
+                                   placeholder="위도를 정확히 숫자만 적으세요."
+                                   th:value="*{coursSpotLa}" required />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="name"><i class="fa-solid fa-star-of-life fa-xs" style="color: #f24040;"></i> 경로지점 경도</td>
+                        <td class="content">
+	                        <input type="text" id="coursSpotLo"
+                                   placeholder="경도를 정확히 숫자만 적으세요."
+                                   th:value="*{coursSpotLo}" required />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-lg-5 course-mapBox">
+                <!-- 여기에 지도 정보 -> 이것도 수정가능하게 가능할까? -->
+                <div class="course-map">지도</div>
+            </div>
+        </div>
+        <div class="row course-imgBox">
+            <!-- 메인 사진
+                 src="/images/defaultCourseMainImg.jpg" -->
+            <div class="course-imgTop">
+                <p><i class="fa-solid fa-square-check" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
+	            <button type="button" class="imageUploadButton"
+	                    onclick="uploadImage()">업로드</button>
+	            <button type="button" class="imageDeleteButton"
+	                    onclick="deleteImage()">업로드 취소</button>
+            </div>
+            <!-- 파일 업로드를 위한 숨겨진 input 요소. 업로드 버튼을 클릭하면 input을 클릭한 것처럼 작동하여 파일 선택 다이얼로그를 열게 됨 -->
+            <input type="file" id="imageUploadInput" 
+                   style="display:none;" accept="image/*">
+            <img class="course-main-img" id="courseMainImage"
+                 th:src="${imagePath}?${imagePath} : '/images/defaultCourseMainImg.jpg'" 
+                 alt="산책로 사진" />
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

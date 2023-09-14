@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.domain.UploadImage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,7 @@ public class CourseRequestDTO {
 	private String wlkCoursFlagNm;
 	private String wlkCoursNm;
 	private String coursDc;
-	private String signguNm;
+	private String signguCn;
 	private String coursLevelNm;
 	private String coursLtCn;
 	private Float coursDetailLtCn;
@@ -35,13 +36,14 @@ public class CourseRequestDTO {
 	private String lnmAddr;
 	private double coursSpotLa;
 	private double coursSpotLo;
+	//private UploadImage courseImageId;
 	
 	public Course toEntity() {
 		return Course.builder()
 				.wlkCoursFlagNm(wlkCoursFlagNm)
 				.wlkCoursNm(wlkCoursNm)
 				.coursDc(coursDc)
-				.signguNm(signguNm)
+				.signguCn(signguCn)
 				.coursLevelNm(coursLevelNm)
 				.coursLtCn(coursLtCn)
 				.coursDetailLtCn(coursDetailLtCn)
@@ -52,6 +54,8 @@ public class CourseRequestDTO {
 				.lnmAddr(lnmAddr)
 				.coursSpotLa(coursSpotLa)
 				.coursSpotLo(coursSpotLo)
+				//.courseImageId(courseImageId)
+				.coursViewCount(0)
 				.build();
 	}
 }

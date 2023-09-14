@@ -11,6 +11,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -19,56 +21,57 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@NoArgsConstructor
+@ToString(exclude="userPwd")
+@NoArgsConstructor 
 @AllArgsConstructor
 @Table(name = "user")
 @Entity
-@ToString(exclude="userPwd")
 public class User {
 
-   // 멤버변수
-   @Id
-   @Column(name="user_id", nullable=false, columnDefinition= "varchar(100)")
-   private String userId;
-   
-   @Column(name="user_pwd", nullable=false, columnDefinition= "varchar(100)")
-   private String userPwd;
-   
-   @Column(name="user_name", nullable=false, columnDefinition= "varchar(100)")
-   private String userName;
-   
-   @Column(name="user_nickname", nullable=false, columnDefinition= "varchar(50)")
-   private String userNickname;
-   
-   @Column(name="user_tel_number", nullable=false, columnDefinition= "varchar(50)")
-   private String userTelNumber;
-   
-   @Column(name="user_email", nullable=false, unique = true, columnDefinition= "varchar(50)")
-   private String userEmail;
-   
-   
-   // 	버전2를 위한 컬럼
-//   @Column(name="user_img", columnDefinition= "varchar(255)")
-//   private String userImg;
-   
-   @Column(name="user_join_date", nullable=false, columnDefinition= "datetime")
-   private Timestamp userJoinDate;
-   
-   @Column(name="user_update_date", nullable=false, columnDefinition= "datetime")
-   private Timestamp userUpdateDate;
-   
-   @Column(name="state_id", nullable=false)
-   @Enumerated(EnumType.STRING)
-   @ColumnDefault("'NORMAL'")
-   private StateId stateId;
-   
-   @Column(name="user_role", nullable=false)
-   @Enumerated(EnumType.STRING)
-   @ColumnDefault("'USER'")
-   private UserRole userRole;
-   
-   @Column(name="social", nullable=false, columnDefinition= "tinyint")
-   private int social;
-      
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="user_id", nullable=false)
+	private String userId;
+	
+	@Column(name="user_pwd", nullable=false)
+	private String userPwd;
+	
+	@Column(name="user_name", nullable=false)
+	private String userName;
+	
+	@Column(name="user_nickname", nullable=false)
+	private String userNickname;
+	
+	@Column(name="user_tel_number", nullable=false)
+	private String userTelNumber;
+	
+	@Column(name="user_email", nullable=false, unique=true)
+	private String userEmail;
+	
+	@Column(name="user_img", nullable=true)
+	private String userImg;
+	
+	@Column(name="user_join_date", nullable=false)
+	@ColumnDefault("now()")
+	private Timestamp userJoinDate;
+	
+	@Column(name="user_update_date", nullable=false)
+	@ColumnDefault("now()")
+	private Timestamp userUpdateDate;
+	
+	@Column(name="user_role", nullable=false)
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'USER'")
+	private UserRole userRole;
+	
+	@Column(name = "state_id", nullable = false)
+	@Enumerated(EnumType.STRING)
+	@ColumnDefault("'NORMAL'")
+	private StateId stateId;
 
+	// social 소셜로그인 가입 여부
+    @Column(name = "social_yn", nullable=false)
+    @ColumnDefault("false")
+    private boolean SocialYn;
 }
+

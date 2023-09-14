@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html
+   xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+   
+<head>
+<th:block th:replace="~{common/fragments/config :: ConfigFragment}">
+   <title layout:title-pattern="$LAYOUT_TITLE : $CONTENT_TITLE">WalkAroundYou</title>
+</th:block>
+</head>
+
+<body>
+
+   <header th:replace="~{common/fragments/header :: HeaderFragment}"></header>
+   
+   <!-- Content 영역 참조 -->
+   <th:block layout:fragment="Content"></th:block>
+   
+   <footer th:replace="~{common/fragments/footer :: FooterFragment}"></footer>
+   
+</body>
+
+</html>
