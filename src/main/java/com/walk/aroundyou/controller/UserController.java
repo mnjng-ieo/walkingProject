@@ -176,7 +176,17 @@ public class UserController {
 		// 헤더에 정보 추가하기 위한 코드
 		if (user != null) {
 			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
 		}
+		
 
 		if (authentication != null && authentication.isAuthenticated()) {
 			// 현재 로그인한 사용자 아이디
@@ -218,8 +228,23 @@ public class UserController {
 			@ModelAttribute UpdateMypageDTO dto,
 			@RequestParam(value="file", required=false) MultipartFile file,
 			@RequestParam(value="ifNewImageExists", defaultValue="0") int ifNewImageExists,
-			Model model) throws IOException {
-		
+			Model model, @AuthenticationPrincipal User user
+			) throws IOException {
+
+	// 헤더에 정보 추가하기 위한 코드
+	if (user != null) {
+		model.addAttribute("loginId", user.getUsername());
+		Member currentUser = userService.findByUserId(user.getUsername()).get();
+		if (currentUser != null) {
+			UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+			if (currentUserImage != null) {
+				String currentUserImagePath = 
+						uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+				model.addAttribute("currentUserImagePath", currentUserImagePath);
+			}
+		}
+	}
+
 		model.addAttribute("user", dto);
 		
 		// 파일 업로드 처리
@@ -289,9 +314,19 @@ public class UserController {
 			Model model, 
 			Authentication authentication, 
 			@AuthenticationPrincipal User user) {
-
+		
+		// 헤더에 정보 추가하기 위한 코드
 		if (user != null) {
 			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
 		}
 
 		if (authentication != null && authentication.isAuthenticated()) {
@@ -317,7 +352,22 @@ public class UserController {
 	@PostMapping("/main/mypage/userpage")
 	public String processuserpage(
 			UpdateUserpageDTO dto, 
-			Model model) {
+			Model model, 
+			@AuthenticationPrincipal User user) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
 
 		model.addAttribute("user", dto);
 		Member updatedMember = userService.updateUserInfo(dto);
@@ -338,13 +388,44 @@ public class UserController {
 	
 	//////////////////// 비밀번호 변경
 	@GetMapping("/main/mypage/userpage/changepwd")
-	public String showChangePwd() {
+	public String showChangePwd(
+			@AuthenticationPrincipal User user, Model model) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
 		return "userpage";
 	}
 
 	@PostMapping("/main/mypage/userpage/changepwd")
-	public String processChangePwd(@Valid UserPasswordChangeDTO dto, Model model, Authentication authentication,
+	public String processChangePwd(
+			@Valid UserPasswordChangeDTO dto, Model model, 
+			Authentication authentication, 
 			@AuthenticationPrincipal User user) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
 
 		// new password 끼리 비교
 		// Objects.equals(a, b) : a와 b가 같으면 true 반환, 다르면 false 반환
@@ -375,15 +456,46 @@ public class UserController {
 	//////////////////// 탈퇴
 	// 탈퇴 버튼 누르면 나오는 화면
 	@GetMapping("/main/mypage/userpage/withdraw")
-	public String showWithdrawForm() {
+	public String showWithdrawForm(
+			@AuthenticationPrincipal User user, Model model) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
 		// 탈퇴 폼 템플릿을 보여줌
 		return "userpage";
 	}
 
 	// 탈퇴 처리하는 곳
 	@PostMapping("/main/mypage/userpage/withdraw")
-	public String processWithdrawForm(@RequestParam String currentPwd, @AuthenticationPrincipal User user,
+	public String processWithdrawForm(
+			@RequestParam String currentPwd, 
+			@AuthenticationPrincipal User user,
 			Model model) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
 
 		boolean result = userService.deleteByUserId(user.getUsername(), currentPwd);
 
