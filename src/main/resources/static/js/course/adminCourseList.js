@@ -1,6 +1,7 @@
 let courseSearchBtn = document.getElementById('courseSearchBtn');
 let courseResetBtn = document.getElementById('courseResetBtn');
 
+
 // 현재 페이지 초기화
 let currentPage = 0;
 

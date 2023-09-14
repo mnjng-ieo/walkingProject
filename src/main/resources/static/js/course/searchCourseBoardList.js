@@ -1,6 +1,7 @@
 // 현재 페이지 초기화
 let currentPage = 0; 
 
+
 // 변경할 것
 // 검색 조건 수집
 function boardWithSearchResults() {

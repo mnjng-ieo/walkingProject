@@ -1,6 +1,7 @@
 // 현재 페이지 초기화
 let currentPage = 0; 
 
+
 // 해시태그를 클릭하면 나오는 게시물 목록 페이지
 // 검색 조건 수집
 function boardWithSearchResults() {

@@ -2,6 +2,7 @@ let courseId;
 let userId;
 let isLiked;
 
+
 window.onload = function() {
     courseId = document.getElementById('courseId').value;
     userId = document.getElementById('userId').value;
