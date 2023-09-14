@@ -312,24 +312,24 @@ public class UserController {
 	}*/
 	
 	// 비밀번호 중복 체크
-	@PostMapping("/main/mypage/userpage/checkpwd")
-	@ResponseBody
-	// ResponseEntity를 사용해 상태 코드를 설정
-	// 제네릭을 이용해서 상태에 따른 결과 확인
-	public ResponseEntity<?> checkUserPwd(@RequestParam String currentPwd, @RequestParam String userPwd) {
-
-		log.info("비번 중복 체크 컨트롤러 진입성공");
-		boolean pwd = userService.isUserPwdDuplicate(userPwd, currentPwd);
-
-		// 중복 체크에 대한 조건문 -> ajax에서 요청 처리 결과
-		if (pwd) {
-			log.info("ajax실행하나");
-			return ResponseEntity.ok().body("다른 비밀번호를 입력하세요");
-		} else {
-			log.info("ajax실행하나");
-			return ResponseEntity.ok().body("확인되었습니다.");
-		}
-	}
+//	@PostMapping("/main/mypage/userpage/checkpwd")
+//	@ResponseBody
+//	// ResponseEntity를 사용해 상태 코드를 설정
+//	// 제네릭을 이용해서 상태에 따른 결과 확인
+//	public ResponseEntity<?> checkUserPwd(@RequestParam String currentPwd, @RequestParam String userPwd) {
+//
+//		log.info("비번 중복 체크 컨트롤러 진입성공");
+//		boolean pwd = userService.isUserPwdDuplicate(userPwd, currentPwd);
+//
+//		// 중복 체크에 대한 조건문 -> ajax에서 요청 처리 결과
+//		if (pwd) {
+//			log.info("ajax실행하나");
+//			return ResponseEntity.ok().body("다른 비밀번호를 입력하세요");
+//		} else {
+//			log.info("ajax실행하나");
+//			return ResponseEntity.ok().body("확인되었습니다.");
+//		}
+//	}
 	
 	@PostMapping("/main/mypage/userpage/changepwd")
 	public String processChangePwd(@Valid UserPasswordChangeDTO dto, Errors errors, Model model, Authentication authentication,
