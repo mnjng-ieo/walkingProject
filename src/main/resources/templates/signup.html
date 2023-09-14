@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -80,7 +81,8 @@
 
 					</div>
 					<input type="button" id="checkUserIdBtn" value="중복체크"
-						class="btn btn-primary col-md-2"> <span
+						class="btn btn-primary col-md-2"> 
+						<span
 						th:if="${valid_userId}" id="valid" th:text="${valid_userId}"></span>
 				</div>
 				<div id="result" class="col=nd-12"></div>

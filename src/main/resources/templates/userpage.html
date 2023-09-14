@@ -82,13 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
                    if (xhr.status === 200) {
                      idLookupResult.textContent = xhr.response;
                      
-                     if (xhr.response === true) {
-                    	 alert("탈퇴하셨습니다! 메인페이지로 이동합니다.");
-                    	 
-                     } else {
-                       alert("비밀번호를 다시 입력하세요!")
-                       window.location.href = "/main/mypage/userpage/withdraw";
-                     }
+                     show.modal();
                    }else {
                      alert("탈퇴하기 오류");
                      }
@@ -165,147 +159,109 @@ document.addEventListener("DOMContentLoaded", function() {
 			</form>
 
 
-			<!--<label>소셜 로그인 여부</label>
-				<div class="form-group mb-3 d-flex flex-wrap">
-					<div class="form-check" style="margin-right: 20px;">
-						<i class="fab fa-google"></i>
-						 disable -->
-			<!--<input type="checkbox" class="form-check-input"
-							id="googleLoginCheckbox" name="googleLogin" th:value="*{user.socialYn}"> <label
-							class="form-check-label" for="googleLoginCheckbox">Google
-							로그인</label>
-					</div>
-					<div class="form-check" style="margin-right: 20px;">
-						<i class="fab fa-instagram"></i> <input type="checkbox"
-							class="form-check-input" id="instagramLoginCheckbox"
-							name="instagramLogin" th:value="*{user.socialYn}"> <label class="form-check-label"
-							for="instagramLoginCheckbox">Instagram 로그인</label>
-					</div>
-					<div class="form-check" style="margin-right: 20px;">
-						<i class="fab fa-github"></i> <input type="checkbox"
-							class="form-check-input" id="githubLoginCheckbox"
-							name="githubLogin" th:value="*{user.socialYn}"> <label class="form-check-label"
-							for="githubLoginCheckbox">GitHub 로그인</label>
-					</div>
-				</div>
-
-					
-		</div>-->
 			<br>
 
+            <!-- 버튼 -->
             <form action="/main/mypage/userpage/changepwd" method="get">
-                  <button type="submit" class="btn btn-primary">비밀번호 찾기</button>
+                  <button type="submit" class="btn btn-primary">비밀번호 변경하기</button>
                </form>
             <form action="/main/mypage/userpage/withdraw" method="get">
                   <button type="submit" class="btn btn-primary">탈퇴하기</button>
                </form>
-
-
-			<!-- 비밀번호 변경하기 모달 버튼 -->
-			<button type="button" id="pwdModal" class="btn btn-secondary mt-2"
-				data-bs-toggle="modal" data-bs-target="#changePwdBtn">비밀번호
-				변경</button>
-
-			<!-- 비밀번호 변경하기 모달 버튼 -->
-			<button type="button" id="withdrawModal" class="btn btn-danger mt-2"
-				data-bs-toggle="modal" data-bs-target="#withdrawBtn">탈퇴하기</button>
+               
 		</div>
+
+<!-- 비밀번호 변경하기 모달 버튼 -->
+         <button type="button" id="pwdModal" class="btn btn-secondary mt-2"
+            data-bs-toggle="modal" data-bs-target="#changePwdBtn">비밀번호
+            변경</button>
 
 
 		<!-- 비밀번호 변경하기 Modal -->
-		<div class="modal fade" id="changePwdBtn" data-bs-backdrop="static"
-			data-bs-keyboard="false" tabindex="-1"
-			aria-labelledby="staticBackdropLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h1 class="modal-title fs-5" id="passwordModalLabel">비밀번호
-							변경하기</h1>
-					</div>
+      <div class="modal fade" id="changePwdBtn" data-bs-backdrop="static"
+         data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="passwordModalLabel">비밀번호
+                     변경하기</h1>
+               </div>
 
-					<!-- 정상 페이지 (초기 페이지)-->
-					<div class="modal-body">
-						<!-- 비밀번호 수정 폼 -->
-						<form action="/main/mypage/userpage/changepwd" method="post" id=pwdChangeForm>
-                     <!-- 비밀번호가 맞을 때 -->
-                     <div>
-                        <div class="form-floating mb-3">
-                           <label for="currentPwd">기존 비밀번호</label>
-                           <input type="password" name="currentPwd" class="form-control"
-                              id="currentPwd" th:value="${changePwdDto != null}? ${changePwdDto.currentPwd} : ''" required>
-                           <span th:if="${valid_currentPwd}" id="valid" th:text="${valid_currentPwd}"></span>
-                        </div>
-                     </div>
-
-                     <div class="form-floating mb-3">
+               <!-- 정상 페이지 (초기 페이지)-->
+               <div class="modal-body">
+                <!-- 비밀번호 수정 폼 -->
+                <form method="post" th:if="${dto == null}">
+                    <div class="form-floating mb-3">
+                        <input type="password" name="currentPwd" class="form-control" id="currentPwd" required>
+                        <label for="currentPwd">기존 비밀번호</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" name="newPwd" class="form-control" id="newPwd" required>
                         <label for="newPwd">새로운 비밀번호</label>
-                        <input type="password" name="newPwd" class="form-control"
-                           id="newPwd" th:value="${changePwdDto != null}? ${changePwdDto.newPwd} : ''" required> 
-                        <span th:if="${valid_newPwd}" id="valid" th:text="${valid_newPwd}"></span>
-                     </div>
-
-                     <!-- 비밀번호가 같을 때 -->
-                     <div>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" name="confirmPwd" class="form-control" id="confirmPwd" required>
+                        <label for="confirmPwd">비밀번호 확인</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">변경</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+            
+            <!-- 에러 페이지 (모델 데이터에 따라 폼 보이기) -->
+             <div class="modal-body">
+                <!-- 비밀번호 수정 폼 -->
+                <form method="post" th:unless="${dto == null}" th:object="${UserPasswordChagneDTO}">
+                     <!-- 비밀번호가 맞을 때 -->
+                    <div th:if="${wrongPassword == null}">
                         <div class="form-floating mb-3">
-                           <label for="confirmPwd">비밀번호 확인</label>
-                           <input type="password" name="confirmPwd" class="form-control"
-                              id="confirmPwd" th:value="${changePwdDto != null}? ${changePwdDto.confirmPwd} : ''" required>
-                           <span th:if="${valid_confirmPwd}" id="valid" th:text="${valid_confirmPwd}"></span>
+                            <input type="password" name="currentPwd" class="form-control" id="currentPwd" th:value="${dto.getcurrentPwd()}" required>
+                            <label for="currentPwd">기존 비밀번호</label>
                         </div>
-                     </div>
+                    </div>
+                    
+                     <!-- 비밀번호가 틀릴 때 -->
+                    <div th:unless="${wrongPassword == null}">
+                        <div class="form-floating mb-3 has-danger">
+                            <input type="password" name="currentPwd" class="form-control is-invalid" id="currentPwd" th:value="${dto.getCurrentPwd()}" required>
+                            <label for="currentPwd">기존 비밀번호</label>
+                            <div class="invalid-feedback" th:text="${wrongPassword}"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="password" name="newPwd" class="form-control" id="newPwd" th:value="${dto.getNewPwd()}" required>
+                        <label for="newPwd">새로운 비밀번호</label>
+                    </div>
+                    
+                    <!-- 비밀번호가 같을 때 -->
+                    <div th:if="${differentPassword == null}">
+                        <div class="form-floating mb-3">
+                            <input type="password" name="confirmPwd" class="form-control" id="confirmPwd" th:value="${dto.getConfirmPwd()}" required>
+                            <label for="confirmPwd">비밀번호 확인</label>
+                        </div>
+                    </div>
+                    
+                    <!-- 비밀번호가 다를 때 -->
+                    <div th:unless="${differentPassword == null}">
+                        <div class="form-floating mb-3 has-danger">
+                            <input type="password" name="confirmPwd" class="form-control is-invalid" id="confirmPwd" th:value="${dto.getConfirmPwd()}" required>
+                            <label for="confirmPwd">비밀번호 확인</label>
+                            <div class="invalid-feedback" th:text="${differentPassword}"></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">변경</button>
+                </form>
+            </div>   
+               
+            </div>
+         </div>
+      </div>
 
-                     <button type="submit" class="btn btn-primary">변경</button>
-                  </form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary"
-							data-bs-dismiss="modal">닫기</button>
-					</div>
 
-
-				</div>
-			</div>
-		</div>
-
-
-		<!-- 탈퇴하기 모달 창 -->
-		<!-- Modal -->
-		<div class="modal fade" id="withdrawBtn" data-bs-backdrop="static"
-			data-bs-keyboard="false" tabindex="-1"
-			aria-labelledby="withdrawBtn" aria-hidden="true">
-
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h1 class="modal-title fs-5" id="withdrawBtn">탈퇴하기</h1>
-					</div>
-
-					<!-- 탈퇴하기 모달 뷰 -->
-					<form action="/main/mypage/userpage/withdraw" method="post">
-						<div class="modal-body">
-							<div class="form-group">
-								<label for="checkPwd">현재 비밀번호</label> <input type="password"
-									class="form-control" id="checkPwd" name="checkPwd">
-								<span id="message" th:if="${wrongPassword}"
-									th:text="${wrongPassword}" style="display: none;"></span>
-							</div>
-						</div>
-
-
-
-
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal">Close</button>
-
-							<button type="submit" id="resultPwdBtn" name="resultPwdBtn"
-								class="btn btn-primary">탈퇴하기</button>
-						</div>
-					</form>
-
-				</div>
-			</div>
-		</div>
 
 	</th:block>
 </body>

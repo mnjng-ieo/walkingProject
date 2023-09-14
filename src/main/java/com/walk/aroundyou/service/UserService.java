@@ -40,23 +40,6 @@ public class UserService {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	/////////////////// 회원가입
-//	public String join(String userid, String pw) {
-//
-//		UserSignupDTO request = new UserSignupDTO();
-//		Member member = request.toEntity();
-//
-//		validateDuplicateMember(member);
-//		userRepository.save(member);
-//
-//		return member.getUserId();
-//	}
-//	///////////////// 중복 아이디 체크
-//	private void validateDuplicateMember(Member member) {
-//	userRepository.findByUserId(member.getUserId()).ifPresent(m -> {
-//	throw new IllegalStateException("이미 존재하는 회원입니다.");
-//	});
-//	}
 
 	
 	
@@ -108,6 +91,7 @@ public class UserService {
 		Optional<Member> member = userRepository.findByUserId(userId);
 		return member.isPresent();
 	}
+	
 
 	
 	
@@ -216,13 +200,10 @@ public class UserService {
 			if (passwordEncoder.matches(checkPwd, member.getUserPwd())) {
 				userRepository.deleteByUserId(member.getUserId());
 				return true;
-//				return "탈퇴 되었습니다. 로그아웃 후 메인페이지로 이동합니다.";
 			} else {
 				return false;
-//				return "비밀번호를 다시 입력해주세요.";
 			}
 		}return false;
-//	}return "아이디가 없습니다.";
 
 	}
 
@@ -239,7 +220,7 @@ public class UserService {
 	
 	/////////////////////// 비밀번호 변경
 	// 비밀번호 변경할 때 로그인 된 아이디를 기준으로 비밀번호 입력하고 맞으면
-	public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
+	/*public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
 
 		// 아이디 찾고 아이디 존재하지 않을 경우 throw
 		Member member = userRepository.findByUserId(userId)
@@ -263,26 +244,42 @@ public class UserService {
 				return "비밀번호 변경에 성공하셨습니다!" + "\n" + "재로그인 해주세요";
 			}
 		}
+	}*/
+	
+	/////////////////////// 비밀번호 중복 체크
+	public boolean isUserPwdDuplicate(String userId, UserPasswordChangeDTO dto) {
+	
+	// 아이디 찾고 아이디 존재하지 않을 경우 throw
+	Member member = userRepository.findByUserId(userId)
+			.orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
+	log.info("id찾았나");
+	
+	// 입력한 비밀번호가 디비에 저장된 비밀번호와 맞지 않을 경우
+	boolean passwordMatches = passwordEncoder.matches(dto.getCurrentPwd(), member.getUserPwd()); 
+	
+	log.info("matches?" + passwordMatches);
+	return passwordMatches;
+	
 	}
-	/*public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
-		
+	
+	public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
+	
 		// 아이디 찾고 아이디 존재하지 않을 경우 throw
 		Member member = userRepository.findByUserId(userId)
 				.orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
-		
-		// 입력한 비밀번호가 디비에 저장된 비밀번호와 맞지 않을 경우
-		if (!passwordEncoder.matches(dto.getCurrentPwd(), member.getUserPwd())) {
-			return null;
-		} else {
-			
+	
+		// 비밀번호가 맞을 때 새로운 비밀번호 확인
+		if (dto.getNewPwd() == dto.getComfirmPwd()) {
+	
 			// 변경하는 비밀번호 암호화
 			dto.setNewPwd(passwordEncoder.encode(dto.getNewPwd()));
 			member.setUserPwd(dto.getNewPwd());
 			userRepository.save(member);
+			return member.getUserId();
 		}
-		
-		return member.getUserId();
-	}*/
+		return null;
+	
+	}
 
 	
 	

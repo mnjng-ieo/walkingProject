@@ -1,6 +1,7 @@
 package com.walk.aroundyou.controller;
 
 import java.util.Map;
+import java.util.Objects;
 //import java.util.HashMap;
 //import java.util.Map;
 import java.util.Optional;
@@ -47,9 +48,14 @@ public class UserController {
 		this.userService = userService;
 	}
 
+	
+	
 	///////////////// 로그인 메인 페이지(처음 시작 할 때의 화면)
 	@GetMapping("/login")
-	public String login() {
+	public String login(@RequestParam(value = "error", required = false) String error, Model model) {
+		if (error != null) {
+            model.addAttribute("errorMessage", "아이디나 비밀번호가 맞지 않습니다!");
+        }
 		return "login";
 	}
 
@@ -83,7 +89,7 @@ public class UserController {
 		userService.registerUser(dto);
 
 		// 회원가입이 완료된 이후에 로그인 페이지로 이동
-		return "redirect:/login";
+		return "redirect:/login?success=true";
 	}
 
 	//////////////////// 아이디 중복 체크
@@ -282,7 +288,7 @@ public class UserController {
 		return "changepwd";
 	}
 
-	@PostMapping("/main/mypage/userpage/changepwd")
+	/*@PostMapping("/main/mypage/userpage/changepwd")
 	@ResponseBody
 	public String processChangePwd(@Valid UserPasswordChangeDTO dto, Errors errors, Model model, Authentication authentication,
 			@AuthenticationPrincipal User user) {
@@ -303,8 +309,30 @@ public class UserController {
 		
 		// 비밀번호 변경 시 자동 로그아웃으로 재 로그인 알림! (페이지는 로그인 페이지로)
 		return result;
+	}*/
+	
+	// 비밀번호 중복 체크
+	@PostMapping("/main/mypage/userpage/checkpwd")
+	@ResponseBody
+	// ResponseEntity를 사용해 상태 코드를 설정
+	// 제네릭을 이용해서 상태에 따른 결과 확인
+	public ResponseEntity<?> checkUserPwd(@RequestParam String currentPwd, @RequestParam String userPwd) {
+
+		log.info("비번 중복 체크 컨트롤러 진입성공");
+		boolean pwd = userService.isUserPwdDuplicate(userPwd, currentPwd);
+
+		// 중복 체크에 대한 조건문 -> ajax에서 요청 처리 결과
+		if (pwd) {
+			log.info("ajax실행하나");
+			return ResponseEntity.ok().body("다른 비밀번호를 입력하세요");
+		} else {
+			log.info("ajax실행하나");
+			return ResponseEntity.ok().body("확인되었습니다.");
+		}
 	}
-	/*public String processChangePwd(@Valid UserPasswordChangeDTO dto, Errors errors, Model model, Authentication authentication,
+	
+	@PostMapping("/main/mypage/userpage/changepwd")
+	public String processChangePwd(@Valid UserPasswordChangeDTO dto, Errors errors, Model model, Authentication authentication,
 			@AuthenticationPrincipal User user) {
 		
 		if (errors.hasErrors()) {
@@ -324,8 +352,8 @@ public class UserController {
 		if (!Objects.equals(dto.getNewPwd(), dto.getComfirmPwd())) {
 			
 			model.addAttribute("dto", dto);
-			model.addAttribute("differentPassword", "비밀번호가 같지 않습니다.");
-			return "redirect:/main/mypage/userpage";
+			model.addAttribute("differentPassword", "새로 입력하신 비밀번호가 같지 않습니다.");
+			return "redirect:/main/mypage/userpage/changepwd?fail=true";
 		}
 		
 		String result = userService.updateMemberPassword(dto, user.getUsername());
@@ -333,13 +361,14 @@ public class UserController {
 		// 현재 비밀번호가 틀렸을 경우(디비와)
 		if (result == null) {
 			model.addAttribute("dto", dto);
-			model.addAttribute("wrongPassword", "비밀번호가 맞지 않습니다.");
-			return "redirect:/main/mypage/userpage";
+			model.addAttribute("wrongPassword", "입력하신 비밀번호가 저장된 비밀번호와 맞지 않습니다.");
+			return "redirect:/main/mypage/userpage/changepwd?success=false";
+			// /changepwd?fail=true
 		}
 		
 		// 비밀번호 변경 시 자동 로그아웃으로 재 로그인 알림! (페이지는 로그인 페이지로)
 		return "redirect:/login";
-	}*/
+	}
 
 	
 	
@@ -352,31 +381,21 @@ public class UserController {
 		// 탈퇴 폼 템플릿을 보여줌
 		return "withdraw";
 	}
-
-	// 탈퇴 처리하는 곳
-//	@PostMapping("/main/mypage/userpage/withdraw")
-//	@ResponseBody
-//	public String processWithdrawForm(@RequestParam String currentPwd, @AuthenticationPrincipal User user, Model model) {
-//
-//		String result = userService.deleteByUserId(user.getUsername(), currentPwd);
-//		
-//		return result;
-//
-//	}
+	
 	@PostMapping("/main/mypage/userpage/withdraw")
 	//@ResponseBody
 	public String processWithdrawForm(@RequestParam String checkPwd, @AuthenticationPrincipal User user,
 			Model model) {
 		
 		boolean result = userService.deleteByUserId(user.getUsername(), checkPwd);
-		
 		if (result) {
 			// 탈퇴 후 로그아웃하도록 리다이렉트
-			model.addAttribute("withdrawM", result);
 			return "redirect:/logout";
 		} else {
-			model.addAttribute("wrongPassword", "비밀번호가 맞지 않습니다");
-			return "redirect:/main/mypage/userpage";
+			// success : 쿼리 문자열 파라미터
+			// 로직을 처리하거나 사용자에게 메시지를 전달하는 데 사용
+			model.addAttribute("inputPwd", "비밀번호를 다시 입력해주세요!");
+			return "redirect:/main/mypage/userpage/withdraw?fail=true";
 		}
 	}
 
