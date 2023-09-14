@@ -1,3 +1,17 @@
+/* 글 작성 버튼 */
+.b-editor {
+	height: 40px;
+	width: 130px;
+	color: #fff;
+    background-color: #1C6758; 
+    font-size: 1rem;
+}
+
+.b-editor:hover {
+	color: #fff;
+    background-color: #1C6758;
+}
+/* 페이지 css */
 .pageInfo_wrap {
     margin-bottom: 100px;
 }

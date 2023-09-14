@@ -135,7 +135,15 @@
 			<!-- 게시글 버튼 클릭하면 나오는 게시글 -->
 			<div class="collapse mt-3" id="postContainer" style="width: 80%;">
 	            <div id="needToChange">
-	                <table class="table table-hover">
+	               <div class = "d-flex justify-content-between mb-4">
+		               <p class = "my-2 boardCount">
+		               게시물 수 : <span th:text="${myBoards.totalElements}"></span></p>
+		               <a class="btn type-btn border rounded-3 type-button b-editor" 
+		               th:href="@{/board-editor}" role="button">게시글 작성</a>
+	               </div>
+	               <p th:if="${myBoards.totalElements == 0}" 
+	                  class= "noResult mx-5 mt-5 text-center fs-5">작성하신 게시물이 없습니다.</p>
+	               <table class="table table-hover">
 			          <thead>
 			            <tr>
 			                <th class ="col-lg-2">글 번호</th>
