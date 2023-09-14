@@ -1,0 +1,82 @@
+@charset "UTF-8";
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+     font-family: 'S-CoreDream-3Light';
+     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
+}
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+::selection{
+	color: white;
+    background : #3D8361;
+}
+*{
+	z-index: 100;
+}
+.boardType, .hashTitle, .courseTitle, .commentTitle{
+	font-size: 22px;
+	color:  #3D8361;
+	font-weight: bold;
+}
+.boardTitle{
+	font-weight: bold;
+}
+.boardInfo > *{
+	align-items: center;
+}
+.wrapDetail{
+	background:#EEF2E6;
+    font-family: 'NanumSquareRound';
+	font-size: 18px
+}
+
+.boardTagList{
+	text-align: justify;
+}
+
+.tagItem{
+    border : 1px solid #3D8361;
+    color : #3D8361;
+	background:  white;
+}
+.tagItem:hover{
+	color: white;
+	background:#FBC252;
+}
+.bubble:before{
+    content: '';
+	position:relative;
+	z-index: -1;
+   	left: -25px; top: 110px;
+   	border-top: 30px solid white;
+   	border-bottom: 30px solid transparent;
+   	border-left: 30px solid transparent;
+   	border-right: 30px solid transparent;
+}
+.bubble{
+	margin-top:-20px;
+	margin-left: 30px;
+}
+.modifybtn, .registerbtn{
+	background: #3D8361;
+	color: white;
+}
+
+.submitBtn{
+	padding-left: 10%;
+	padding-right: 10%;
+	background : #3D8361;
+	color: white;
+}

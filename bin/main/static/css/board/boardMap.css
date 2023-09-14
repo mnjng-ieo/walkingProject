@@ -1,0 +1,91 @@
+@charset "UTF-8";
+	.fa-bounce {
+		--fa-animation-iteration-count: 1;
+		--fa-bounce-height: -5px;
+		--fa-animation-timing: cubic-bezier(0.1, -0.6, 0.2, 0);
+	    --fa-bounce-jump-scale-x : 1;
+	    --fa-bounce-jump-scale-y : 1.05;
+	    --fa-bounce-land-scale-x : 1;
+	    --fa-bounce-land-scale-y : 1;
+	    --fa-bounce-start-scale-x : 1.05;
+	}
+    .wrap {
+	    position: absolute; 
+	    left: 16px; bottom: 40px;
+	    width: 250px; height: auto;
+	    margin-left: -144px;
+	    text-align: left; overflow: hidden;
+	    font-size: 12px; 
+	    line-height: 1.5;}
+    .wrap * {
+    	padding: 0;margin: 0;}
+    .wrap .info {
+	    height: auto;
+	    margin-bottom: 12px;
+	    border-radius: 15px; 
+ 	    border-bottom: 2px solid #ccc;
+	    border-right: 1px solid #ccc;
+	    overflow: hidden;
+	    background: #EEF2E6;}
+    .wrap .info:nth-child(1) {
+	    border: 0;
+/* 	    box-shadow: 0px 1px 2px #888; */}
+    .info .title {
+	    padding: 5px 0px 30px 15px;
+	    height: 30px; 
+	    line-height: 27px;
+	    background: #3D8361;
+	    color: white;
+	    font-size: 14px; 
+	    font-weight: bold;}
+	.info .title .icon{
+		--fa-animation-iteration-count: 1;
+		--fa-bounce-height: -4px;
+		--fa-animation-timing: cubic-bezier(0.1, -0.6, 0.2, 0);
+	    font-size: 18px; 
+		margin-right: 3px;
+	}
+    .info .close {
+	    position: absolute;
+	    top: 4px; right: 8px;
+	    width: 17px;height: 17px;}
+    .info .close:hover {cursor: pointer;}
+    .info .body {
+    	position: relative;
+    	overflow: hidden;}
+    .info .desc {
+    	position: relative;
+    	margin: 12px 15px 15px 100px;
+    	color : #1C6758;
+    	height: auto;}
+    .desc .ellipsis {
+    	overflow: hidden;
+    	text-overflow: ellipsis;
+    	white-space: nowrap;
+	    font-weight: bold;}
+    .desc .textsm {
+    	font-size: 11px;
+    	margin-top: 0px;
+    	font-weight: normal;}
+    .info .img {
+    	position: absolute;
+    	top: 10px; left: 15px;
+    	width: 73px; height: 71px;
+    	border: 1px solid #ddd;
+    	color: #888;
+    	overflow: hidden;}
+    .info:after {
+    	content: '';
+    	position: absolute;
+    	margin-left: -9px;
+    	margin-bottom: -12px;
+    	left: 50%; bottom: 0;
+    	width: 18px; height: 24px;
+    	border-top: 12px solid #EEF2E6;
+    	border-bottom: 12px solid transparent;
+    	border-left: 12px solid transparent;
+    	border-right: 12px solid transparent;
+    	/* background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')*/}
+    .info .link {
+    	color: inherit;
+    	text-decoration-line: none;}

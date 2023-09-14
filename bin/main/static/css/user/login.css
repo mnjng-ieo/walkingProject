@@ -1,0 +1,69 @@
+/* 폰트 */
+@font-face {
+    font-family: 'KimjungchulGothic-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Yeongdo-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/Yeongdo-Rg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.btn-close{
+	margin : 15px 15px;
+}
+
+.logoImg {
+	width: 11%; height: 11%;
+	margin-top: 15px;
+	margin-right: 38px;
+}
+
+.title{
+	font-family: 'Yeongdo-Rg';
+	margin-top: 70px;
+	margin-left: 34px;
+}
+
+
+.inputId{
+	text-indent: 15px;
+}
+
+.inputPw{
+	text-indent: 15px;
+}
+
+.btn-login{
+	background-color: #3D8361 ;
+	color: white;
+	margin-top: 20px;
+}
+
+.btn-login:hover,
+.btn-login:active,
+.btn-login:focus {
+    background-color: #1C6758 !important;	/* !important : 다른 모든 스타일 규칙보다 우선시하도록. */
+    color: white !important;
+}
+
+
+a {
+	text-decoration: none;
+	color : darkgrey;
+}
+
+a:hover{
+	color : black;
+}
