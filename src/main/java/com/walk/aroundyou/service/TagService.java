@@ -39,7 +39,7 @@ public class TagService {
 	/// TagRepository 사용하여 출력 확인하기
 	// 1. 기존 태그 tag 테이블에서 삭제하기
 	public void deleteByTagId(Long tagId) {
-		tagRepository.deleteByTagId(tagId);
+		tagRepository.deleteById(tagId);
 	}
 	
 	// 2. 새로운 태그 tag 테이블에 추가하기

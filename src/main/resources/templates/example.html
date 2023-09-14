@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>상세페이지</h1>
+	<p th:text="${temporals.format(today, 'yyyy-MM-dd')}"></p>
+	<div th:object="${person}">
+		<p th:text="|이름 : *{name}|"></p>
+		<p th:text="|나이 : *{age}|"></p>
+		<p>취미</p>
+		<ul th:each="hobby : *{hobbies}">
+			<li th:text="{hobby}"></li>
+			<span th:if="${hobby == '운동'}">(대표취미)</span>
+		</ul>
+	</div>
+	<!-- 1번 글을 보러 이동 -->
+	<a th:href="@{/api/articles/{id}(id=${person.id})}">글 보기</a>
+</body>
+</html>

@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.walk.aroundyou.domain.Board;
-import com.walk.aroundyou.domain.BoardLike;
 import com.walk.aroundyou.dto.BoardLikeDTO;
 import com.walk.aroundyou.service.BoardLikeService;
 

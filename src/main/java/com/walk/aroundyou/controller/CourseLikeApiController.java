@@ -1,9 +1,8 @@
 package com.walk.aroundyou.controller;
 
-import java.security.Principal;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,12 +39,14 @@ public class CourseLikeApiController {
 	@PostMapping
 	public ResponseEntity<CourseLikeRequestDTO> AddCourseLike(
 			@PathVariable long courseId,
-			Principal principal,
+			@AuthenticationPrincipal User user,
 			@RequestBody CourseLikeRequestDTO request) throws Exception {
 		request.setCourseId(courseId);
+		
 		//String userId = principal.getName();     // 실제 로그인한 유저 정보
-		String userId = "wayid1";                  // 테스트용. 직접 부여
-		request.setUserId(userId);   
+		//String userId = "wayid1";                  // 테스트용. 직접 부여
+		String userId = user.getUsername();
+		request.setUserId(userId);  
 		
 		// 조회한 좋아요 상태를 확인
 		boolean isLiked = courseLikeService.isCourseLiked(userId, courseId);

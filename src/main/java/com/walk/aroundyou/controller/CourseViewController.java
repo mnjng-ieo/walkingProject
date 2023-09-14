@@ -4,6 +4,7 @@ package com.walk.aroundyou.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,8 @@ import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICommentResponseDto;
+import com.walk.aroundyou.service.CommentService;
 import com.walk.aroundyou.service.CourseLikeService;
 import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.UploadImageService;
@@ -30,6 +33,7 @@ public class CourseViewController {
 	private final CourseService courseService;
 	private final CourseLikeService courseLikeService;
 	private final UploadImageService uploadImageService;
+	private final CommentService commentService;	
 	
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
@@ -226,6 +230,17 @@ public class CourseViewController {
 		boolean isLiked = courseLikeService.isCourseLiked(userId, courseId);
 		model.addAttribute("isLiked", isLiked);
 		
+		
+		////// 9/14 댓글 리스트 불러오기(값 없을 때 체크)
+		List<ICommentResponseDto> comments = commentService.findByCourseId(courseId);
+		
+		if(!comments.isEmpty()) {			
+			log.info("comment 값이 있음");	
+			model.addAttribute("comments", comments);
+		}
+				
+		
+	
 		// 게시글 출력 용도
 		Page<IBoardListResponse> courseBoardList = 
 		         courseService.findBoardAndCntByCourseId(courseId, currentPage, sort);
@@ -340,7 +355,7 @@ public class CourseViewController {
 				imagePaths.add(imagePath);
 			} else {
 				// 여기 기본 이미지를 어떤 걸로 해야할지 약간 고민스럽다. 
-				imagePaths.add("/images/defaultMainImg.jpg");
+				imagePaths.add("/images/defaultCourseMainImg.jpg");
 			}
 		}
 		

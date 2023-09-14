@@ -1,6 +1,7 @@
 package com.walk.aroundyou.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -93,8 +94,8 @@ public class CourseApiController {
 	@PostMapping("/api/admin/courses")
 	public ResponseEntity<Course> addCourse(
 			@RequestPart(value = "dto") CourseRequestDTO request,
-			@RequestPart(value = "file", required=false)
-			MultipartFile file) throws IllegalStateException, IOException{
+			@RequestPart(value = "file", required=false) MultipartFile file)
+					throws IllegalStateException, IOException{
 		
 		Course savedCourse = courseService.save(request);
 		
@@ -120,52 +121,48 @@ public class CourseApiController {
 	public ResponseEntity<Course> updateCourse(
 			@PathVariable long id, 
 			@RequestPart(value = "dto") CourseRequestDTO request,
-			@RequestPart(value = "file", required=false)
-			MultipartFile file) throws IllegalStateException, IOException{
+			@RequestPart(value = "file", required=false) MultipartFile file,
+			@RequestParam("ifNewImageExists") int ifNewImageExists) 
+					throws IllegalStateException, IOException{
 		
 		Course existedCourse = courseService.findById(id);
 		UploadImage existedImage = uploadImageService.findByCourse(existedCourse);
+		
+		// 수정페이지에서 최종 업로드 취소 상태로 수정 요청했을 시
+		if(ifNewImageExists == 0) {
+			uploadImageService.deleteImage(existedImage);
+		}
 		
 		// 이미지를 수정할 때는 우선 기존 이미지를 삭제하고 다시 저장하는 순서를 겪는다.
 		// 먼저 이미지 파일이 새로 업로드 되었는지 확인
 		// ↳ 만약 이미지 파일이 새로 업로드 되지 않았다면 이미지 관련 로직을 건너뛰고 나머지 산책로 데이터만 업데이트
 		
+		Course updatedCourse = courseService.updateCourse(id, request);
 		// (1) 이미지 수정됨
 		if (file != null && !file.isEmpty()) {
-			log.info("(1) 이미지가 수정되었어요.");
-			// (1 - 1) 기존 이미지가 있었을 경우 : 삭제 후 업로드
+			log.info("(1) 이미지가 새로 업로드되었어요.");
 			if(existedImage != null) {
-				log.info("(1-1) 원래 기존 이미지가 있었어요.");
+				log.info("(1-1) 기존 이미지가 수정되었을 경우 삭제부터 합니다.");
 				log.info("existedImage의 원래 이름 : " + existedImage.getOriginalFileName());
 				uploadImageService.deleteImage(existedImage);
 			} else {
-				// (1 - 2) 기존 이미지가 없었을 경우 : 새 파일 업로드
-				log.info("(1-2) 원래 이미지가 없었어요.");
+				log.info("(1-2) 원래 이미지가 없을 경우 삭제 없이 업로드됩니다.");
 			}
-			Course updatedCourse = courseService.updateCourse(id, request);
 			// 이미지 업로드 로직
 			UploadImage uploadImage = 
 					uploadImageService.saveCourseImage(file, updatedCourse);
 			log.info("uploadImage의 original 이름 : " + uploadImage.getOriginalFileName());
-			//updatedCourse.setCourseImageId(uploadImage);
 			
-			return ResponseEntity.ok()
-					.body(updatedCourse);
-		} 
-		// (2) 이미지 수정 안 됨
-		else {
-			log.info("(2) 이미지 수정 없어요!");
-			Course updatedCourse = courseService.updateCourse(id, request);
-			// (2 - 1) 기존 이미지가 있었을 경우 : 기존 유지!
+		} else {  // (2) 이미지 수정 안 됨
+			log.info("(2) 이미지의 수정이 없는 경우입니다.");
 			if(existedImage != null) {
-				log.info("(2-1) 기존 이미지가 있어요.");
-				//updatedCourse.setCourseImageId(existedImage);
+				log.info("(2-1) 기존 이미지를 유지합니다.");
 			} else {
 				// (2 - 2) 기존 이미지가 없을 경우 : 그냥 dto만 업데이트!
 			}
-			return ResponseEntity.ok()
-					.body(updatedCourse);
 		}
+		return ResponseEntity.ok()
+				.body(updatedCourse);
 	}
 	
 	/**
@@ -174,11 +171,7 @@ public class CourseApiController {
 	@DeleteMapping("/api/admin/courses/{id}")
 	public ResponseEntity<Course> deleteCourse(@PathVariable long id) throws IOException{
 		
-		// -> 산책로를 삭제하면 자연히 upload_image 테이블에서도 관련 파일 정보가 사라진다.
-		//    근데 서버 폴더에서의 실제 파일 삭제가 필요해서 추가적으로 코드를 작성해줬다.
-		//    -> 근데?! uploadImageService.delete() 해도 파일 삭제가 안 이뤄져서 사실상 의미가 없는 코드다.
-		//    -> uploadImageService.delete()하면 실제 파일이 삭제되도록 꼭 수정해보자... 
-		// 이미지 정보 삭제
+		// 이미지 삭제 (이미지 정보는 자연히 삭제되지만 서버 파일 삭제를 위해) 
 		Course course = courseService.findById(id);
 		UploadImage existedImage = uploadImageService.findByCourse(course);
 		if (existedImage != null) {
@@ -191,28 +184,23 @@ public class CourseApiController {
 				.build();
 	}
 	
-	/**
-	 * 이미지 업로드 요청 처리 : saveImage() 메소드에 외래키 매핑하지 않았을 경우 작동
-	 * -> 외래키가 붙지 않고, 지정되어 있는 서버 경로로 파일만 저장됨.
-	 * -> 산책로 생성, 수정, 삭제 요청에 이미지 업로드 처리를 같이 넣었으므로 사용할 필요 없음.
-	 */
-/*	@PostMapping("/api/uploadCourseImage")
-	public ResponseEntity<?> uploadImage(
-			// Multipart/form-data 에 특화된 어노테이션
-			@RequestPart(value = "file", required=false) 
-			MultipartFile file
-			) throws IllegalStateException, IOException  {
-		if (file != null) {
-			UploadImage uploadImage = 
-					uploadImageService.saveCourseImage(file);
-			
-			return ResponseEntity.status(HttpStatus.OK)
-					.body(uploadImage);
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body("No file provided");
+	
+	
+
+	
+	// 지역에 따른 산책로이름(산책로 큰분류) 가져오기
+		@GetMapping("/api/courses/flagname")
+		public ResponseEntity<List<String>> getWlkCoursFlagNm(String signguCn){
+			log.info("getWlkCoursFlagNm() 컨트롤러 접근");
+			return ResponseEntity.ok()
+					.body(courseService.findFlagNameBySignguCn(signguCn));
 		}
-	}
-*/	
+		// 산책로이름에 따른 코스이름(산책로 작은분류) 정보 가져오기
+		@GetMapping("/api/courses/coursename")
+		public ResponseEntity<List<Course>> getWlkCoursNm(String wlkCoursFlagNm){
+			log.info("getWlkCoursNm() 컨트롤러 접근");
+			return ResponseEntity.ok()
+					.body(courseService.findCourseNameByWlkCoursFlagNm(wlkCoursFlagNm));
+		}
 	
 }

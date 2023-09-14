@@ -209,10 +209,10 @@ public class BoardViewController {
 		// for 문을 돌려서 리스트 항목 각각의 이미지 경로를 얻어보자.
 		Board existedBoard = boardService.findById(id).get();
 		List<UploadImage> uploadImages = uploadImageService.findByBoard(existedBoard);
-		List<String> ImagePaths = new ArrayList<>();
+		List<String> imagePaths = new ArrayList<>();
 		if(uploadImages != null && !uploadImages.isEmpty()) {
-			ImagePaths = uploadImageService.findBoardFullPathsById(uploadImages);
-			model.addAttribute("imagePaths", ImagePaths);
+			imagePaths = uploadImageService.findBoardFullPathsById(uploadImages);
+			model.addAttribute("imagePaths", imagePaths);
 		}
 		
 		log.info("컨트롤러 끝");
@@ -289,18 +289,6 @@ public class BoardViewController {
 			model.addAttribute("boardTagList", boardTagList);
 			return "boardTag";
 		}	
-	
-	
-	// 댓글 삭제
-	@DeleteMapping("/api/comment/{commentId}")
-	@ResponseBody
-	public void deleteComment(@PathVariable(name = "commentId") Long commentId){
-		log.info("/delete/board/comment 컨트롤러 접근");
-		// comment_id로 조회된 comment_like_id 삭제 
-		//commentService.deleteCommentLikeByCommentId(commentId); 주석 처리
-		// comment_id로 조회된 comment_id 삭제 
-		commentService.deleteCommentByCommentId(commentId);
-	}
 	
 	
 	

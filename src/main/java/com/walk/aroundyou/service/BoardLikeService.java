@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.BoardLike;
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.dto.BoardLikeDTO;
 import com.walk.aroundyou.repository.BoardLikeRepository;
 import com.walk.aroundyou.repository.BoardRepository;
@@ -16,6 +16,7 @@ import com.walk.aroundyou.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 
 // service : repository 의 method 에 기반하여, 더 상세한 비즈니스로직 작성
@@ -23,6 +24,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class BoardLikeService {
 
 	@Autowired
@@ -57,14 +59,14 @@ public class BoardLikeService {
 	
 	// 마이페이지에서 좋아요 누른 누적 횟수 확인
 	@Transactional
-	public Long countLikedBoardIdByUserId(User userId) {
+	public Long countLikedBoardIdByUserId(Member userId) {
 		
 		return boardLikeRepository.countLikedBoardIdByUserId(userId);
 	}
 	
 	// 마이페이지에서 좋아요한 게시물 목록
 	@Transactional
-	public List<Long> findLikedBoardIdByUserId(User userId) {
+	public List<Long> findLikedBoardIdByUserId(Member userId) {
 		
         return boardLikeRepository.findLikedBoardIdByUserId(userId);
     }
@@ -75,7 +77,7 @@ public class BoardLikeService {
 	public boolean toggleLike(String userId, Long boardId) {
 		
 		// findByUserIdAndBoardId의 요구조건에 맞추기 위해 객체형으로 세팅
-		User user = User.builder()
+		Member user = Member.builder()
 				.userId(userId)
 				.build();
 		Board board = Board.builder()
@@ -92,7 +94,7 @@ public class BoardLikeService {
 	@Transactional
 	public void deleteBoardLike(BoardLikeDTO boardLikeDTO) {
 		
-		User user = userRepository.findByUserId(boardLikeDTO.getUserId())
+		Member user = userRepository.findByUserId(boardLikeDTO.getUserId())
 				
 				.orElseThrow(() -> new IllegalArgumentException("userId not found :" + boardLikeDTO.getUserId()));
 	
@@ -114,7 +116,7 @@ public class BoardLikeService {
 	@Transactional
 	public void insertBoardLike(BoardLikeDTO boardLikeDTO) throws Exception {
 		
-		User user = userRepository.findByUserId(boardLikeDTO.getUserId())
+		Member user = userRepository.findByUserId(boardLikeDTO.getUserId())
 				
 				.orElseThrow(() -> new IllegalArgumentException("userId not found :" + boardLikeDTO.getUserId()));
 	

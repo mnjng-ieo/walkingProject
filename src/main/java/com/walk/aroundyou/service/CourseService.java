@@ -2,7 +2,6 @@ package com.walk.aroundyou.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -295,7 +294,6 @@ public class CourseService {
 				request.getLnmAddr(),
 				request.getCoursSpotLa(),
 				request.getCoursSpotLo()
-				//request.getCourseImageId()
 		);
 		return course;
 	}
@@ -335,7 +333,7 @@ public class CourseService {
 		
 		return coursePage;
 	}
-		
+
 	// 검색에서 해당 값이 없는 것을 체크(09/09 - 연서 수정)
 	public Optional<Course> findByBoardId(Long id) {
 		List<Course> courses = courseRepository.findByBoardId(id);
@@ -361,5 +359,5 @@ public class CourseService {
 		log.info("findFlagNameBySignguCn() 서비스 접근");
 		return courseRepository.findCourseNameByWlkCoursFlagNm(wlkCoursFlagNm);
 	}
-
+	
 }
