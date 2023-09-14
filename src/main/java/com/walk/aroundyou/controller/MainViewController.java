@@ -1,47 +1,56 @@
 package com.walk.aroundyou.controller;
 
 import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.walk.aroundyou.domain.Tag;
+import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
+import com.walk.aroundyou.service.CourseService;
+import com.walk.aroundyou.service.TagService;
+import lombok.RequiredArgsConstructor;
 
-import com.walk.aroundyou.domain.Course;
-import com.walk.aroundyou.repository.CourseRepository;
-
-import lombok.extern.slf4j.Slf4j;
-
+@RequiredArgsConstructor
 @Controller
-@Slf4j
 public class MainViewController {
-
-	@Autowired
-	CourseRepository courseRepo;
+	
+	private final CourseService courseService;
+	private final TagService tagService;
+	
 	
 	@GetMapping("/")
-	public String getMain() {
+	public String getMain(Model model) {
+		
+		// BEST 9개 출력
+		Page<ICourseResponseDTO> coursePage = courseService.findCoursesOrderByLikes();
+		
+		// 가장 많이 사용된 태그 메인화면에 출력하기 
+		List<String> hotTagList = tagService.findTagsByBoardTagId();
+
+		// 좋아요 순이 가장 많은 태그(=hotTagList.get(0))의 게시물 출력됨 
+		List<IBoardListResponse> tagBoardList = tagService.findBoardAndCntByMainTagDefault(hotTagList.get(0));
+		
+		model.addAttribute("courses", coursePage);  
+		model.addAttribute("hotTagList", hotTagList);
+		model.addAttribute("tagBoardList", tagBoardList);
+
 		return "main";
 	}
 	
-	@PostMapping("/")
-	public String postMain() {
+	// Ajax로 처리됨 
+	@GetMapping("/api/tag/board")
+	public String getTagBoard(@RequestParam(name="tagContent") String tagContent, Model model) {
+		// tag_content으로 tag_id 추출하기
+		Tag tagId = tagService.findIdByTagContent(tagContent);
+		// 위에서 추출한 tag_id로 관련된 게시물 출력
+		Page<IBoardListResponse> tagBoardList = tagService.findBoardAndCntByMainTagId(tagId);
 		
-		return "main";
-	}
-	// 지도 테스트용 임시 API
-	@GetMapping("/map-test")
-	public String getMapTest(Model model, Long id) {
-		Optional<Course> course = courseRepo.findById(id);
-		model.addAttribute("course", course.get());
+		model.addAttribute("tagBoardList", tagBoardList);
+		model.addAttribute("tagContent", tagContent);
 		
-		String wlkCoursFlagNm = course.get().getWlkCoursFlagNm();
-		List<Course> courseNames = courseRepo.findCourseNameByWlkCoursFlagNm(wlkCoursFlagNm);
-		log.info(""+courseNames.size());
-		model.addAttribute("courseNames", courseNames);
-		return "mapTest";
+		return "tagBoardList";
 	}
-
 }

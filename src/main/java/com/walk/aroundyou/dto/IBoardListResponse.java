@@ -2,7 +2,7 @@ package com.walk.aroundyou.dto;
 
 import java.sql.Timestamp;
 
-import org.springframework.format.annotation.DateTimeFormat;
+
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

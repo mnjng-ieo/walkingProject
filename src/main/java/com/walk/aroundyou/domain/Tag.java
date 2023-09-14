@@ -13,19 +13,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-
 @Entity
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Table(name = "tag")
 public class Tag {
-   @Id
+
+@Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name="tag_id", nullable=false, columnDefinition = "bigint")
    private Long tagId;

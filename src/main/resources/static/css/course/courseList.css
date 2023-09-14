@@ -31,36 +31,38 @@
 }
 
 .course-list-top {
-	width: 100%;
-	height: 600px;
-	background-color: #f5f5f5;
-}
-
-.course-list-top_title {
-	font-size: 40px;
-	text-align: center;
-	padding-top: 70px;
-	font-weight: 800;
-}
-
-.course-list-top_subtitle {
-	margin: 30px 0 50px;
-    font-size: 25px;
-    text-align: center;
-    opacity: 0.7;
+    width: 100%;
+    height: 380px;
+    background-color: #f5f5f5;
+    margin-bottom: 100px;
 }
 
 .course-list-top_searchBox {
 	font-family: 'NanumSquareRound';
-	height: 350px;
-	margin: 0 auto;
+    height: 320px;
+    width: 70%;
+    margin: 0 auto;
 }
 
-.course-list-top_map {
-    border: 1px solid blue;
+.course-list-top_title_group{
+	 padding: 50px 0 0 70px;
+}
+.course-list-top_title {
+	margin-top: 30px;
+	font-family: 'KimjungchulGothic-Bold';
+}
+
+.course-list-top_title2{
+	font-family: 'KimjungchulGothic-Bold';
+}
+
+.course-list-top_subtitle {
+	margin-top: 20px;
+	font-family: 'NanumSquareRound';
 }
 
 .course-list-top_conditionBox {
+	margin-top: 30px;
 	font-size: 20px;
 }
 
@@ -82,22 +84,25 @@ select option:checked {
 }
 
 .course-list-top_conditions {
-	justify-content: space-between;
+	justify-content: space-evenly;
 	margin-top: 20px;
+	padding-left: 5%; padding-right: 5%;
 }
 
 .course-list-top_condition {
-	width: 47%;
-	height: 50px;
-	margin-top: 20px;
-	cursor: pointer;
-	border: 1px solid #ccc;
+    width: 45%;
+    height: 40px;
+    margin: 20px 0 0 0;
+    cursor: pointer;
+    border: 1px solid #ccc;
 }
 
 .keyword-search {
-	height: 50px;
-	margin-bottom: 30px;
-	border-radius: 10px;
+	width: 88%;
+    height: 50px;
+    margin: auto;
+    margin-bottom: 25px;
+    border-radius: 10px;
 	border: 1px solid #ccc;
 }
 
@@ -119,36 +124,96 @@ select option:checked {
 	border: none;
 }
 
+.btngroup{
+	margin: auto;
+}
+
 .searchbtn {
+	width: 40%;
 	height: 50px;
 	font-size: 20px;
 	font-weight:bold;
+	border: 0px;
+	background-color: #3D8361 !important ;
+	color: white !important;
+	border-radius: 10px;
+	justify-content: space-around;
+}
+
+.searchbtn:hover,
+.searchbtn:active,
+.searchbtn:focus {
+    background-color: #1C6758 !important;	/* !important : 다른 모든 스타일 규칙보다 우선시하도록. */
+    color: white !important;
+}
+
+.resetbtn {
+	height: 50px;
+	font-size: 20px;
+	font-weight:bold;
+	border: 0px;
+	background-color: #FBC252 !important ;
+	color: white !important;
+	border-radius: 10px;
+}
+
+.resetbtn:hover,
+.resetbtn:active,
+.resetbtn:focus {
+    background-color: #FFB100  !important;	/* !important : 다른 모든 스타일 규칙보다 우선시하도록. */
+    color: white !important;
 }
 
 #courseSearchBtn {
-	background-color: #3D8361;
 	border-radius: 10px;
-	color: white;
+
 }
 
 #courseResetBtn {
-	background-color: #FBC252;
 	border-radius: 10px;
 }
 
 .sortBox {
 	font-family: 'NanumSquareRound';
-	display: flex; 
-	justify-content: flex-end;
+	margin: 0 auto;
+	height: 100px;
+	display: flex;
+	margin-top: -100px;
+	align-items: center;
+	align-content: center; 
+	justify-content: space-between;
+}
+
+.sortBox > * {
+	/* margin-right: 50px; */
+	margin-top: 50px;
+	margin-bottom: 20px;
+	height: 50px;
+}
+
+.courseCount{
+    color:#3D8361;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin: 0;
+    padding-top: 40px;
+}
+
+.course-lists{
+	margin-top: 25px;
 }
 
 .course-list-sort {
-	border: 2px solid #ccc;
-	margin: 20px 0 50px 0;
-	width: 230px; height: 50px;
-	padding-left: 10px;
-	font-size: 20px;
-	cursor: pointer;
+    border: 2px solid #ccc;
+    width: 230px;
+    font-size: 20px;
+    cursor: pointer;
+    text-indent: 15px;
+}
+
+/* 질문 */
+.course-list-sort option{
+	text-indent: 15px;
 }
 
 /* /* map {
@@ -227,6 +292,7 @@ select option:checked {
 .heart-icon {
 	width: 25px;
 	padding-bottom: 3px;
+	margin-left: 10px;
 }
 
 .pageInfo_wrap {
@@ -290,5 +356,4 @@ select option:checked {
     background-color: #e0e0e0; /* 호버 시 변경할 배경 색상 설정 */
     cursor: pointer; /* 호버 시 커서 설정 */
 }
-
 

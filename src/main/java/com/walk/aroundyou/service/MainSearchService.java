@@ -2,11 +2,8 @@ package com.walk.aroundyou.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.dto.ITagResponse;
@@ -31,9 +28,11 @@ public class MainSearchService {
 	 */
 	public List<ICourseResponseDTO> findCourseByKeyword(String keyword){
 		
-		// 검색 키워드의 공백 제거 + SQL LIKE 연산에 쓰기 위해 앞뒤로 '%' 붙임
-		String formattedKeyword = '%' + keyword.replace(" ", "") + '%';
-		
+		if (keyword != null) { // 검색어가 있으면 공백 제거
+			keyword = '%' + keyword.replace(" ", "") + '%';
+		} else { // 검색어가 없으면 전체 내용을 가져옴
+			keyword = "%";
+		}
 		return (List<ICourseResponseDTO>) courseRepository.findMainCourseByKeyword(keyword);
 	}
 	
@@ -41,23 +40,46 @@ public class MainSearchService {
 	 * [메인페이지] 검색창으로 게시물 정보 조회
 	 */
 	public List<IBoardListResponse> findBoardByKeyword(String keyword){
-		//int sizeOfPage = 5;
-		
-		// 검색 키워드의 공백 제거 + SQL LIKE 연산에 쓰기 위해 앞뒤로 '%' 붙임
-		String formattedKeyword = '%' + keyword.replace(" ", "") + '%';
-		
+
+		if (keyword != null) { // 검색어가 있으면 공백 제거
+			keyword = '%' + keyword.replace(" ", "") + '%';
+		} else { // 검색어가 없으면 전체 내용을 가져옴
+			keyword = "%";
+		}
 		//PageRequest pageRequest = PageRequest.of(PAGE, sizeOfPage);
-		return (List<IBoardListResponse>) boardRepository.findMainBoardByKeyword(formattedKeyword);
+		return (List<IBoardListResponse>) boardRepository.findMainBoardByKeyword(keyword);
 	}
 	
 	/**
 	 * [메인페이지] 검색창으로 해시태그 정보 조회
 	 */
 	public List<ITagResponse> findTagByKeyword(String keyword){		
-		// 검색 키워드의 공백 제거 + SQL LIKE 연산에 쓰기 위해 앞뒤로 '%' 붙임
-		String formattedKeyword = '%' + keyword.replace(" ", "") + '%';
 		
-		return (List<ITagResponse>) tagRepository.findMainTagByKeyword(formattedKeyword);
+		if (keyword != null) { // 검색어가 있으면 공백 제거
+			keyword = '%' + keyword.replace(" ", "") + '%';
+		} else { // 검색어가 없으면 전체 내용을 가져옴
+			keyword = "%";
+		}
+		return (List<ITagResponse>) tagRepository.findMainTagByKeyword(keyword);
+	}
+
+	// 개수 출력을 위한 메서드
+	public int countCourseResults(String keyword) {
+		if (keyword != null) { // 검색어가 있으면 공백 제거
+			keyword = '%' + keyword.replace(" ", "") + '%';
+		} else { // 검색어가 없으면 전체 내용을 가져옴
+			keyword = "%";
+		}
+		return courseRepository.countCourseResults(keyword);
+	}
+	// 개수 출력을 위한 메서드
+	public int countBoardResults(String keyword) {
+		if (keyword != null) { // 검색어가 있으면 공백 제거
+			keyword = '%' + keyword.replace(" ", "") + '%';
+		} else { // 검색어가 없으면 전체 내용을 가져옴
+			keyword = "%";
+		}
+		return boardRepository.countBoardResults(keyword);
 	}
 	
 	

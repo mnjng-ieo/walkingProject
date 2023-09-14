@@ -22,4 +22,3 @@ public interface ICommentResponseDto {
 	Timestamp getCommentUpdatedDate();
 	CommentType getCommentType();
 }
-

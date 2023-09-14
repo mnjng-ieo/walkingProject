@@ -14,3 +14,4 @@ import org.springframework.security.access.prepost.PreAuthorize;
 // @interface : 사용자 정의 어노테이션 만들기
 public @interface UserAuthorize {
 }
+

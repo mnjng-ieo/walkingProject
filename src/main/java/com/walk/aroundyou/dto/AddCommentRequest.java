@@ -10,13 +10,14 @@ import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domainenum.CommentType;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 // * 컨트롤러에서 요청 본문을 받을 DTO
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Data
+///9/12 Getter->Data
 
 // * 포스트맨으로 확인 시, 'JSON parse error: Cannot construct instance of~' 오류 발생에 대한 해결법
 //   : 아래 어노테이션 추가
@@ -25,6 +26,7 @@ public class AddCommentRequest {
 	
 	private Member userId;
 	private String userNickname;
+	private Long commentId;
 	private String commentContent;
 	private CommentType commentType;
 	private Timestamp commentCreatedDate;
@@ -40,7 +42,7 @@ public class AddCommentRequest {
 				.userNickname(userNickname)
 				.commentContent(commentContent)
 				.commentType(CommentType.BOARD)
-				.commentCreatedDate(new Timestamp(System.currentTimeMillis()))
+				.commentCreatedDate(commentCreatedDate)
 				.commentUpdatedDate(new Timestamp(System.currentTimeMillis()))
 				.boardId(boardId)
 				.build();
@@ -54,7 +56,7 @@ public class AddCommentRequest {
 				.userNickname(userNickname)
 				.commentContent(commentContent)
 				.commentType(CommentType.COURSE)
-				.commentCreatedDate(new Timestamp(System.currentTimeMillis()))
+				.commentCreatedDate(commentCreatedDate)
 				.commentUpdatedDate(new Timestamp(System.currentTimeMillis()))
 				.courseId(courseId)
 				.build();

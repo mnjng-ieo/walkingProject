@@ -58,7 +58,6 @@ public interface CourseRepository
 				, c.wlk_cours_flag_nm as wlkCoursFlagNm
 				, c.wlk_cours_nm as wlkCoursNm
 				, c.cours_view_count as coursViewCount
-				, c.course_image as courseImageId
 				, ifnull(like_cnt, 0) as likeCnt
 				, ifnull(mention_cnt, 0) as mentionCnt
 				, ifnull(comment_cnt, 0) as commentCnt
@@ -105,7 +104,6 @@ public interface CourseRepository
 				, c.wlk_cours_flag_nm as wlkCoursFlagNm
 				, c.wlk_cours_nm as wlkCoursNm
 				, c.cours_view_count as coursViewCount
-				, c.course_image as courseImageId
 				, ifnull(like_cnt, 0) as likeCnt
 				, ifnull(mention_cnt, 0) as mentionCnt
 				, ifnull(comment_cnt, 0) as commentCnt
@@ -180,7 +178,6 @@ public interface CourseRepository
 					, c.lnm_addr as LnmAddr
 					, c.cours_spot_la as CoursSpotLa
 					, c.cours_spot_lo as CoursSpotLo
-					, c.course_image as courseImageId
 					, ifnull(comment_cnt, 0) as commentCnt
 		            , ifnull(like_cnt, 0) as likeCnt
 				FROM course as c
@@ -201,9 +198,19 @@ public interface CourseRepository
 			""", nativeQuery = true)
 	List<ICourseResponseDTO> findMainCourseByKeyword(
 			@Param("keyword") String keyword);
-
 	
-//// 9/7 변경
+	// 검색어를 기반으로 코스 결과의 전체 개수를 반환하는 메서드
+    @Query(value ="""
+    		SELECT COUNT(*) 
+    		FROM course c
+            WHERE REPLACE(wlk_cours_flag_nm, ' ', '') like :#{#keyword}
+	         or REPLACE(wlk_cours_nm, ' ', '') like :#{#keyword}
+	         or REPLACE(cours_dc, ' ', '') like :#{#keyword}
+	         or REPLACE(adit_dc, ' ', '') like :#{#keyword}
+	         """, nativeQuery = true)
+    int countCourseResults(@Param("keyword") String keyword);
+	
+////9/7 변경
 	// 특정 게시물의 산책로 정보를 얻어오는 메소드
 	// 현재 게시물당 산책로는 하나만 선택되게 할 예정이지만, 더미데이터에는 여러개 있어서 임시로 List로 설정
 	// 이후엔 Optional로
@@ -252,17 +259,6 @@ public interface CourseRepository
 				ORDER BY 1
 			""", nativeQuery = true)
 	public List<Course> findCourseNameByWlkCoursFlagNm(@Param("wlkCoursFlagNm")String wlkCoursFlagNm);
-	
-	/**
-	 * [메인페이지] 검색창에 산책로 정보 검색하기 - 서비스에서 매개변수 앞뒤로 '%' 붙이기!
-	 */
-//	@Query(value = """
-//			SELECT * FROM Course c
-//            WHERE REPLACE(wlk_cours_flag_nm, ' ', '') like :#{#keyword}
-//	         or REPLACE(wlk_cours_nm, ' ', '') like :#{#keyword}
-//	         or REPLACE(cours_dc, ' ', '') like :#{#keyword}
-//	         or REPLACE(adit_dc, ' ', '') like :#{#keyword}
-//			""", nativeQuery = true)
-//	Page<CourseResponseDTO> findMainCourseByKeyword(
-//			@Param("keyword") String keyword, Pageable pageable);
+
+
 }

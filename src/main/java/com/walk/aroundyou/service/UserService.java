@@ -19,6 +19,7 @@ import com.walk.aroundyou.domainenum.UserRole;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
+import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.dto.UserSignupDTO;
 import com.walk.aroundyou.repository.UserRepository;
 
@@ -69,19 +70,19 @@ public class UserService {
 	
 
 	/////////////////////// 회원가입
-	public String registerUser(UserSignupDTO dto) {
+	public String registerUser(UserRequest request) {
 
 // 사용자로부터 입력받은 평문 비밀번호
-		String rawPassword = dto.getUserPwd();
+		String rawPassword = request.getUserPwd();
 
 // 비밀번호를 암호화
 		String encodedPassword = passwordEncoder.encode(rawPassword);
 
-		Member member = Member.builder().userId(dto.getUserId()).userPwd(encodedPassword).userName(dto.getUserName())
-				.userNickname(dto.getUserNickname()).userTelNumber(dto.getUserTelNumber()).userEmail(dto.getUserEmail())
+		Member member = Member.builder().userId(request.getUserId()).userPwd(encodedPassword).userName(request.getUserName())
+				.userNickname(request.getUserNickname()).userTelNumber(request.getUserTelNumber()).userEmail(request.getUserEmail())
 				.userJoinDate(new Timestamp(System.currentTimeMillis()))
 				.userUpdateDate(new Timestamp(System.currentTimeMillis())).role(UserRole.USER).stateId(StateId.NORMAL)
-				.socialYn(dto.isSocialYn()).build();
+				.socialYn(request.isSocialYn()).build();
 
 		return userRepository.save(member).getUserId();
 	}

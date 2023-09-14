@@ -25,7 +25,7 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 	@Query(value= "DELETE FROM tag"
 			+ " WHERE tag_id NOT IN (SELECT DISTINCT tag_id FROM board_tag)"
 			, nativeQuery = true)
-	void deleteUnusedTags(Long TagId); // 기본 메소드
+	void deleteUnusedTags(Long TagId); 
 	
 	// 2. 새로운 태그 tag 테이블에 추가하기
 	@Modifying
@@ -48,13 +48,6 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 		+ "		ON bb.tag_id = t.tag_id"
 		, nativeQuery = true)
 	List<String> findTagsByBoardId(@Param("boardId") Long boardId);
-	
-	// 4. 해시태그가 있는지 확인하는 메서드
-//	@Query(value = "SELECT t.*"
-//			+ "    FROM tag t "
-//			+ "    WHERE t.tag_content = :#{#tagContent}", 
-//			nativeQuery = true)
-//	Optional<Tag> findByTagContent(@Param("tagContent") String tagContent);
 	
 	// 4. 해시태그가 있는지 확인하는 메서드(tagContent로 tagId 조회하는 쿼리)
 	boolean existsByTagContent(String tagContent);
