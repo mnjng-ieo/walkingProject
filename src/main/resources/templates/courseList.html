@@ -151,9 +151,12 @@
                     <!-- src="/images/defaultCourseImg.png" 
                          stat.index는 순환 중인 아이템의 인덱스를 나타냄. 
                          image가 없는 course의 경우도 컨트롤러에서 기본값을 부여해줬다.
+                         
+                         th:src="${imagePaths[stat.index]}"
+                         
                           -->
                     <img class="card-img-top course-list_imgBox" 
-                   		 th:src="${imagePaths[stat.index]}"
+                   		 
                          alt="산책로 사진" />
                     <div class="card-body course-list_textbox">
                         <div class="course-list_titlebox">
@@ -209,7 +212,7 @@
                            <span style="margin-right:15px;"></span>
                            <i class="fa-regular fa-pen-to-square"></i>
                            <span th:text="${item.mentionCnt}">언급 수</span>개
-                           <span style="margin-right:135px;"></span>
+                           <span style="margin-right:130px;"></span>
                            <i class="fa-regular fa-eye "></i>
                            <span th:text="${item.coursViewCount}">조회수</span>
                         </p>
