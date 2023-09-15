@@ -114,10 +114,9 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-lg-4 course-mapBox rounded-3" id="map">
+            <div class="col-lg-4 course-mapBox rounded-3 ms-auto" id="map">
                	<div class="course-map">
 	               	<input type="hidden" th:value="${course.courseId}" id="courseId">
-	               	
 	            </div>    	
             </div>
         </div>
@@ -126,7 +125,7 @@
     		      th:src="${imagePath}? 
                   ${imagePath}: '/images/defaultCourseMainImg.jpg'" 
     		 -->
-    		<p><i class="fa-solid fa-square-check" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
+    		<p><i class="fa-solid fa-square-check fs-4" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
     		<img class="course-main-img" 
                  th:src="${savedImageName}? 
                  '/upload-images/course/' + ${savedImageName} : '/images/defaultCourseMainImg.jpg'" 

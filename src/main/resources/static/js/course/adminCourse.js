@@ -292,8 +292,9 @@ window.onload = function() {
 }
 
 
-// 지도 기능 구현 
+// 관리자용 페이지에서 지도 출력시키는 함수 - localhost/admin/courses/{id}
 window.onload = function(){
+	
 	function getValue(valueName){
 		return document.getElementById(valueName)
 	}
@@ -308,8 +309,6 @@ window.onload = function(){
 	let courseLength = getValue("courseLength").innerHTML
 	let courseTime = getValue("courseTime").innerHTML
 	
-	// 경도, 위도 변수 
-
 	let mapContainer = document.getElementById('map'), // 지도를 표시할 div 
     mapOption = { 
         center: new kakao.maps.LatLng(courseLat, courseLng), // 지도의 중심좌표
@@ -367,4 +366,5 @@ window.onload = function(){
 	function closeOverlay() {
 	    overlay.setMap(null);     
 	}
+
 }

@@ -130,9 +130,11 @@
         <div class="card course-list" >
             <div class="row no-gutters">
                 <div class="col-3 course-list_imgBox">
-	                <!-- 기본 src="/images/defaultCourseImg.png"  -->
+	                <!-- 기본 src="/images/defaultCourseImg.png" 
+	                
+	                th:src="${imagePaths[stat.index]}" 
+	                 -->
 	                <img class="card-img-top course-list_img" 
-	                	 th:src="${imagePaths[stat.index]}" 
 	                     alt="산책로 사진" />
                 </div>
 	            <div class="col-9">
