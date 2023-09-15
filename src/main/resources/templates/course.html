@@ -7,6 +7,7 @@
     <title>산책로 상세 페이지</title>
     <link rel="stylesheet" href="/css/course/course.css">
     <script src="/js/course/course.js"></script>
+    <script type="text/javascript" src="/js/course/courseComment.js"></script>
     <script src="/js/course/searchCourseBoardList.js"></script>
 </head>
 <body>
@@ -110,102 +111,98 @@
                 </div>
         </div>
     </div>
+    <br>
     <!-- wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다! -->
-    <div class="container rounded-5 p-4 p-lg-5 my-4 wrapForm">
-        <p>wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다!</p>
-        <p>이 네모가 게시글, 이미지 버튼 아래 있으면 될 것 같습니당</p>
-       
-         <!-- 댓글 리스트 -->
-    <div class="container commentList mx-5 mb-2">
-        <div class="d-flex justify-content-center flex-wrap mb-4 px-lg-5" th:each="comment : ${comments}" 
-                style="text-align: auto">
-            <div class="mt-1 rounded-circle mx-1 overflow-hidden " style="width: 80px; height: 80px;" >
-                <img class="" 
-                    src="/images/defaultUserImage.png"
-                    alt="무슨사진이지?"
-                    style="width: 80px; height: 80px;" ></img>
-            </div>
-            <div class="col-10 bubble">
+    <div class="container rounded-5 p-4 p-lg-5 my-5 wrapForm">
+        <!-- 댓글 리스트 -->
+		<div class="commentList mx-5 mb-2">
+			<div class="d-flex justify-content-center flex-wrap mb-4 px-lg-5" th:each="comment : ${comments}" 
+					style="text-align: auto">
+				<div class="mt-1 rounded-circle mx-1 overflow-hidden " style="width: 80px; height: 80px;" >
+					<img class="" 
+						th:src="${comment.userImg!=null}? @{/images/{userImg}(userImg=${comment.userImg})}: '/images/common/userImg.png'" style="width: 80px; height: 80px;" ></img>
+				</div>
+				<div class="col-10 bubble">
+			<!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
+					<div class="d-flex justify-content-between mx-2">
+						<!-- user 이미지, 닉네임 --> 
+							<div class="mx-2" th:text="${comment.userNickname}"></div>
+							<div class="mx-2" th:text="${#dates.format(comment.commentUpdatedDate, 'yyyy-MM-dd HH:mm')}" ></div>
+							
+						
+					</div>
 				
-        <!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
-                <div class="d-flex justify-content-between mx-2">
-                    <!-- user 이미지, 닉네임 --> 
-                        <div class="mx-2" th:text="${comment.userNickname}"></div>
-                        <div class="mx-2" th:text="${#dates.format(comment.commentUpdatedDate, 'yyyy-MM-dd HH:mm')}" ></div>
-                </div>
-            
-            <!-- 코멘트 하단 : 코멘트 내용 및 버튼 -->   
-                <!-- 코멘트 내용 --> 
-                
-                <div class="rounded-4 commentBox">
-                    <!-- 시큐리티가 정리되면 th:if="${comment.userId == userId}" 추가 -->
-                    <div class="m-1 pt-4 p-2 px-4 commentForm" style="display: none;" >
-                        <!-- </div> -->
-                        <!-- 수정 버튼 클릭 시, 출력될 코멘트 작성란 -->
-                        <!-- <div class="m-3 commentForm" style="width: 93%; display: none;"> -->
-                            <input type="hidden" name="commentId" id="commentId" th:value="${comment.commentId}"></input>
-                            <input type="hidden" name="userId" id="userId" th:value="${comment.userId}"></input>
-                            <textarea name="commentContent" id="commentContent"
-                                class="form-control" >[[${comment.commentContent}]]</textarea>
-                            <div class="d-flex justify-content-end mt-3 pb-2">
-                                <button type="submit"
-                                        class="btn btn-sm px-4 registerbtn text-center">등록</button>
-                                <button type="button" id="cancelbtn"
-                                    class="btn btn-secondary btn-sm px-4 mx-3 cancelbtn text-center">취소</button>
-                            </div>
-                    </div>
-                    
-                    <!-- 수정 후 등록 버튼 클릭 시, 출력될 코멘트 내용-->
-                    <div class="m-1 pt-4 commentResult">
-                        <div class="mx-4" th:text="${comment.commentContent}" style="white-space:pre-wrap;"></div>
-                        <!-- 수정 및 삭제 버튼 -->
-                        <div class="d-flex justify-content-end p-3">
-                            <div class="mx-3 mt-1">
-                                <img src="/images/common/heart-click.png" style="width: 20px; height: 20px;"/>
-                                <span class="fs-6">[[${comment.commentLikeCnt}]]</span>
-                            </div>
-                            <!-- 시큐리티가 정리되면 th:if="${comment.userId == userId}" 추가 -->
-                            <button type="button" id="modifybtn"
-                                    class="btn btn-sm px-4 mx-1 modifybtn text-center">수정</button>
-                            <!-- 시큐리티가 정리되면 th:if="${comment.userId == userId}" 추가 -->
-                            <button type="button" id="deletebtn"
-                                    class="btn btn-secondary btn-sm px-4 mx-3 deletebtn text-center">삭제</button>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-            
-        </div>
-    </div>
-    
-    <!-- 댓글 입력창 -->
+				<!-- 코멘트 하단 : 코멘트 내용 및 버튼 --> 	
+					<!-- 코멘트 내용 --> 
+					
+					<div class="rounded-4 bg-white commentBox">
+						<!-- 시큐리티가 정리되면 th:if="${comment.userId == userId}" 추가 -->
+						<div class="m-1 pt-4 p-2 px-4 commentForm" style="display: none;" >
+							<!-- </div> -->
+							<!-- 수정 버튼 클릭 시, 출력될 코멘트 작성란 -->
+							<!-- <div class="m-3 commentForm" style="width: 93%; display: none;"> -->
+								<input type="hidden" name="commentId" id="commentId" th:value="${comment.commentId}"></input>
+								<input type="hidden" name="userId" id="userId" th:value="${comment.userId}"></input>
+								<textarea name="commentContent" id="commentContent"
+									class="form-control" >[[${comment.commentContent}]]</textarea>
+								<div class="d-flex justify-content-end mt-3 pb-2">
+									<button type="submit"
+											class="btn btn-sm px-4 registerbtn text-center">등록</button>
+									<button type="button" id="cancelbtn"
+										class="btn btn-secondary btn-sm px-4 mx-3 cancelbtn text-center">취소</button>
+								</div>
+						</div>
+						
+						<!-- 수정 후 등록 버튼 클릭 시, 출력될 코멘트 내용-->
+						<div class="m-1 pt-4 commentResult">
+							<div class="mx-4" th:text="${comment.commentContent}" style="white-space:pre-wrap;"></div>
+							<!-- 수정 및 삭제 버튼 -->
+							<div class="d-flex justify-content-end p-3">
+								<div class="mx-3 mt-1">
+									<img src="/images/common/heart-click.png" style="width: 20px; height: 20px;"/>
+									<span class="fs-6">[[${comment.commentLikeCnt}]]</span>
+								</div>
+								<!-- 시큐리티가 정리되면 th:if="${comment.userId == userId}" 추가 -->
+								<button type="button" id="modifybtn"
+										class="btn btn-sm px-4 mx-1 modifybtn text-center">수정</button>
+								<!-- 시큐리티가 정리되면 th:if="${comment.userId == userId}" 추가 -->
+								<button type="button" id="deletebtn"
+										class="btn btn-secondary btn-sm px-4 mx-3 deletebtn text-center">삭제</button>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 댓글 입력창 -->
+		 <!-- 댓글 입력창 -->
     <div class="border mt-3 mx-5 rounded-4 text-bg-light">
         <!-- 코멘트 상단 : user 이미지, 닉네임 -->
         <div class="d-flex align-items-center justify-content-between m-4">
             <!-- user 이미지, 닉네임 --> 
             <div class="d-flex align-items-center ms-2">
-                <p class="rounded-circle m-1 overflow-hidden" style="width: 60px; height: 60px;">
-                    <img
-                        th:src="${userImg!=null}? @{/images/{userImg}(userImg=${userImg})}: '/images/common/userImg.png'" style="width: 60px; height: 60px;" ></img>
-                </p>
-                <p class="m-3" >[[${userNickname!=null}?${userNickname}:'로그인된 사용자 닉네임']]</p>
-                <input type="hidden">
-            </div>
-        </div>
-        
-        <!-- 코멘트 작성란 -->
-        <div class="px-3 input-group">
-            <textarea type="text" id="createContent" name="createContent"
-                class="border mx-3 p-6 form-control" placeholder="댓글을 입력하세요"></textarea>
-        </div>
-        
-        <!-- 버튼 -->
-        <div class=" d-flex justify-content-end m-3 px-3">
-            <button type="button" class=" text-center btn btn-primary btn px-4 mx-3" id="createbtn">등록</button> 
-        </div>
-    </div>
-    
+					<p class="rounded-circle m-1 overflow-hidden" style="width: 60px; height: 60px;">
+						<img
+							th:src="${userImg!=null}? @{/images/{userImg}(userImg=${userImg})}: '/images/common/userImg.png'" style="width: 60px; height: 60px;" ></img>
+					</p>
+					<p class="m-3" >[[${userNickname!=null}?${userNickname}:'로그인된 사용자 닉네임']]</p>
+					<input type="hidden">
+				</div>
+			</div>
+			
+			<!-- 코멘트 작성란 -->
+			<div class="px-3 input-group">
+				<textarea type="text" id="createContent" name="createContent"
+					class="border mx-3 p-6 form-control" placeholder="댓글을 입력하세요"></textarea>
+			</div>
+			
+			<!-- 버튼 -->
+			<div class=" d-flex justify-content-end m-3 px-3">
+				<button type="button" class=" text-center btn btn-primary btn px-4 mx-3" id="createbtn">등록</button> 
+			</div>
+		</div>
+	</div>
         
         
     </div>
@@ -269,7 +266,7 @@
                     #strings.substring(courseBoard.boardTitle, 0, 50) + '...' : courseBoard.boardTitle}">글 제목</div>
                 <div class = "second d-flex">
                     <p style="width: 30px; height: 30px;">
-                        <img src = "/images/common/userimg.png" class="img-thumbnail mt-3"/>
+                        <img src = "/images/common/userImg.png" class="img-thumbnail mt-3"/>
                     </p>
                     <div class="mt-3 mx-2" th:text = "${courseBoard.userNickname}">작성자 닉네임</div>
                 </div>
@@ -335,7 +332,9 @@
     </div>
     </div>
     </div>
+    
+    
 </th:block>
-
+<script type="text/javascript" src="/js/course/courseComment.js"></script>
 </body>
 </html>
