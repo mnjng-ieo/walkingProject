@@ -38,8 +38,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         console.log("result: " + result);
                         if (result === "true") {
                             sendEmail();
-                            alert("임시비밀번호를 전송했습니다.");
-                            window.location.href = "/login";
+                            alert("이메일이 존재합니다.");
+                        	modal.show();
+      
+                            //window.location.href = "/login";
                         } else if (result === "false") {
                             alert("가입되지 않은 이메일입니다.");
                         }
@@ -57,17 +59,34 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function sendEmail() {
+        	
             const userEmail = document.getElementById("userEmail").value;
+            const pwdLookupResult = document.getElementById("pwdLookupResult").value;
+            const staticBackdrop = document.getElementById("staticBackdrop").value;
 
             const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/login/pwdlookup/send", true);
+            
+            xhr.open("POST", "/login/pwdlookup/send?userEmail=" + userEmail, true);
             //xhr.setRequestHeader(header, token);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.send("userEmail=" + encodeURIComponent(userEmail));
-
-            xhr.onerror = function () {
-                alert("요청 실패");
+            
+            
+            var data = "userEmail=" + encodeURIComponent(userEmail);
+            
+            xhr.onreadystatechange = function() {
+            	if(xhr.readyState === XMLHttpRequest.DONE) {
+            		if(xhr.status === 200) {
+            			staticBackdrop.show();
+            			pwdLookupResult.textContent = xhr.response;
+            		}else {
+            			alert("요청 실패");
+            		}
+            	}
             };
+            
+            // 요청 전송
+            xhr.send(data);
+            
         }
     });
    
@@ -77,8 +96,9 @@ document.addEventListener("DOMContentLoaded", function () {
 <body>
     
      <div class="container">
-        <h1 class="mt-5">비밀번호 찾기</h1>
-        <h6>가입 시 입력한 이메일로 임시비밀번호가 전송됩니다.</h6>
+        <h1 class="text-center mt-5 ">비밀번호 찾기</h1>
+         <div class="container border rounded-4 shadow-lg p-5 mt-4"
+            style="width: 800px;">
         <br>
         <hr>
         <br>
@@ -92,10 +112,13 @@ document.addEventListener("DOMContentLoaded", function () {
             
             <br>
             <!-- 비밀번호 찾기 버튼 -->
-            <button type="button" id="checkEmail" class="btn btn-primary" data-bs-toggle="modal"
-            >비밀번호 발송</button>
-            <!-- data-bs-target="#staticBackdrop" -->
+            <button type="button" class="btn rounded-3 d-block fs-5 w-75 mb-5 mt-5" style="background-color:  #7FB77E;
+   color: white;
+   border: 2px solid #7FB77E; margin: auto;"id="checkEmail" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+            >임시 비밀번호 생성</button>
+             
         </form>
+    </div>
     </div>
 
     <!-- 모달 창에 보이게 하기(button submit으로 하면 안 되겠지) -->

@@ -5,8 +5,10 @@ import java.sql.Timestamp;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.role.StateId;
 import com.walk.aroundyou.domain.role.UserRole;
 
@@ -38,7 +40,7 @@ public class WalkAroundYouApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		
 		// TODO Auto-generated method stub
-		User user = User.builder()
+		Member member = Member.builder()
 				.userId(userId)
 				.userPwd(userPwd)
 				.userName(userName)

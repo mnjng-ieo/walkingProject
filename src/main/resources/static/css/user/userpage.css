@@ -1,0 +1,85 @@
+/* 폰트 */
+@font-face {
+    font-family: 'KimjungchulGothic-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Yeongdo-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/Yeongdo-Rg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1{
+   font-family: 'KimjungchulGothic-Bold';
+}
+
+label, .form-control {
+   font-family: 'NanumSquareRound';
+}
+.userpage{
+   margin-top : 38px;
+}
+
+/* 회원정보 변경 버튼 */
+.userpagebtn {
+   font-family: 'KimjungchulGothic-Bold' !important;
+   background-color: #3D8361 !important ;
+   border: 2px solid #3D8361 !important;
+   color: white !important;
+   height: 60px;
+   margin: auto;
+}
+
+.userpagebtn:hover,
+.userpagebtn:active,
+.userpagebtn:focus {
+    background-color: #1C6758 !important; /* !important : 다른 모든 스타일 규칙보다 우선시하도록. */
+    color: white !important;
+}
+
+/* 비밀번호 변경 버튼 */
+.changePwdBtn{
+   font-family: 'KimjungchulGothic-Bold' !important;
+   background-color: white !important ;
+   color: #1C6758 !important;
+   border: 2px solid #1C6758 !important;
+   height: 60px;
+   margin: auto;
+}
+
+.changePwdBtn:hover,
+.changePwdBtn:active,
+.changePwdBtn:focus {
+    background-color:  #7FB77E !important;   /* !important : 다른 모든 스타일 규칙보다 우선시하도록. */
+    color: white !important;
+    border: 2px solid #7FB77E !important;
+}
+
+/* 탈퇴 버튼 */
+.withdrawBtn{
+   font-family: 'KimjungchulGothic-Bold' !important;
+   background-color:  white !important;
+   border: 2px solid #F96666 !important;
+   color: #F96666 !important;
+   height: 60px;
+   margin: 20px auto; 
+}
+
+.withdrawBtn:hover,
+.withdrawBtn:active,
+.withdrawBtn:focus {
+	background-color:  #F96666 !important;
+	color: white !important;
+	border: 2px solid #F96666 !important;
+}

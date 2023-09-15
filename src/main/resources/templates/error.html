@@ -1,12 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+
 <head>
 <meta charset="UTF-8">
-<title>Error</title>
+    <title>error</title>
 </head>
+
 <body>
-   <h1>Error</h1>
-   
-   <p>변경 실패!</p>
+<th:block layout:fragment="Content">
+    <section style="margin: 140px;">
+       <p class ="text-center mt-5 fs-1">
+          원하는 페이지를 찾을 수 없습니다.
+          <img class="mb-3 fa-bounce" src="/images/common/plant.png" style="width: 50px; height: 50px;" alt="새싹">
+          <!-- 
+          <i class="fa-regular fa-hand"></i> -->
+       </p>
+       <div class ="text-center mt-5 text-body-secondary"
+              style="font-family: 'NanumSquareRound';">
+          <h6>죄송합니다. 찾으시려는 페이지의 주소가 잘못 입력되었거나,</h6>
+          <h6>수정, 이동 또는 삭제되었을 수 있습니다.</h6>
+          <h6>입력하신 페이지의 주소가 정확한지 확인하세요.</h6> 
+          <h6>자세한 내용은 사이트 관리자에게 문의하시기 바랍니다.</h6>
+       </div>
+       <div class ="text-center mt-5 fs-5">
+           <a th:href="@{/}" style="text-decoration: none;">홈페이지로 이동</a>
+           <img class="mb-3 mx-2 fa-shake" src="/images/common/run.png" 
+           style="width: 40px; height: 40px;
+           --fa-animation-duration:10s;" alt="달리기">
+       </div>
+    </section>
+</th:block>    
 </body>
 </html>

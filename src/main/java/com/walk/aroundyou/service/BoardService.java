@@ -29,8 +29,10 @@ public class BoardService {
     }
     
     // 비공개 키
-    @Transactional
-    public Long PostAsPrivate(Long boardId) {
-        return boardRepository.PostAsPrivate(boardId);
-    }
+//    @Transactional
+//    public Long PostAsPrivate(Long boardId) {
+//        return boardRepository.PostAsPrivate(boardId);
+//    }
+    
+    
 }

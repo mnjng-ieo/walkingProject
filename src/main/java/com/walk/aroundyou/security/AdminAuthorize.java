@@ -13,3 +13,4 @@ import java.lang.annotation.Target;
 @PreAuthorize("hasAnyRole('ADMIN')")
 public @interface AdminAuthorize {
 }
+

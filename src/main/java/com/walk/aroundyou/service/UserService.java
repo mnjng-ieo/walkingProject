@@ -1,12 +1,14 @@
 package com.walk.aroundyou.service;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,16 @@ import org.springframework.validation.FieldError;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.role.StateId;
 import com.walk.aroundyou.domain.role.UserRole;
+import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
-import com.walk.aroundyou.dto.UserPasswordSendDTO;
 import com.walk.aroundyou.dto.UserSignupDTO;
+import com.walk.aroundyou.repository.BoardRepository;
+import com.walk.aroundyou.repository.CourseLikeRepository;
+import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -41,6 +48,17 @@ public class UserService {
 	}
 
 
+	@Autowired
+	private BoardRepository boardRepository;
+	
+	@Autowired
+	private CourseLikeRepository courseLikeRepository;
+	
+	@Autowired
+	private CourseRepository courseRepository;
+	
+	// 화면에 보이는 최대 게시글 수 5개	(연서 추가)
+	private final static int SIZE_OF_PAGE = 5;
 	
 	
 	///////////// 1. 회원가입 시 User엔티티 전부 가져오기
@@ -148,6 +166,30 @@ public class UserService {
 
 	
 	
+	////마이페이지 내가 쓴 게시글 확인(연서 추가)
+	public Page<IBoardListResponse> findMyBoardAndCnt(String userId, int page) {
+		
+		return boardRepository.findMyBoardAndCnt(userId, PageRequest.of(page, SIZE_OF_PAGE));
+	}
+	
+	//// 마이페이지 내가 좋아요 한 산책로 확인(연서 추가)
+	public Page<ICourseLikeResponseDTO> findMyCourseAndCnt(String userId, int page) {
+		
+		return courseLikeRepository.findMyCourseAndCnt(userId, PageRequest.of(page, 6));
+	}
+	
+	//// 마이페이지 내가 댓글 작성한 산책로 확인(연서 추가)
+	public Page<ICourseResponseDTO> findMyCourseCommentAndCnt(String userId, int page) {
+		
+		return courseRepository.findMyCourseCommentAndCnt(userId, PageRequest.of(page, 6));
+	}
+	
+	////마이페이지 내가 댓글 작성한 게시물 확인(연서 추가)
+	public Page<IBoardListResponse> findMyBoardCommentAndCnt(String userId, int page) {
+		
+		return boardRepository.findMyBoardCommentAndCnt(userId, PageRequest.of(page, SIZE_OF_PAGE));
+	}
+	
 	
 	
 	//////////// 2. 아이디 검색
@@ -218,74 +260,25 @@ public class UserService {
 	
 	
 	
-	/////////////////////// 비밀번호 변경
-	// 비밀번호 변경할 때 로그인 된 아이디를 기준으로 비밀번호 입력하고 맞으면
-	/*public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
+	 public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
+	        Member member = userRepository.findByUserId(userId).orElseThrow(() -> new UsernameNotFoundException("이메일이 존재하지 않습니다."));
 
-		// 아이디 찾고 아이디 존재하지 않을 경우 throw
-		Member member = userRepository.findByUserId(userId)
-				.orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
+	        if (!passwordEncoder.matches(dto.getCurrentPwd(), member.getUserPwd())) {
+	            return null;
+	        } else {
+	        	dto.setNewPwd(passwordEncoder.encode(dto.getNewPwd()));
+	            member.setUserPwd(dto.getNewPwd());
+	            userRepository.save(member);
+	        }
 
-		// 입력한 비밀번호가 디비에 저장된 비밀번호와 맞지 않을 경우
-		if (!passwordEncoder.matches(dto.getCurrentPwd(), member.getUserPwd())) {
-			return "현재 비밀번호가 맞지 않습니다.";
-		} else {
-			
-			// 비밀번호가 맞을 때 새로운 비밀번호 확인
-			if (dto.getNewPwd() != dto.getComfirmPwd()) {
-				
-				// 변경하는 비밀번호 암호화
-				dto.setNewPwd(passwordEncoder.encode(dto.getNewPwd()));
-				member.setUserPwd(dto.getNewPwd());
-				userRepository.save(member);
-				return "새로운 비밀번호 확인란을 다시 입력해주세요";
-			}else {
-				// 비밀번호가 모두 맞을 때 -> 성공
-				return "비밀번호 변경에 성공하셨습니다!" + "\n" + "재로그인 해주세요";
-			}
-		}
-	}*/
-	
-	/////////////////////// 비밀번호 중복 체크
-	public boolean isUserPwdDuplicate(String userId, UserPasswordChangeDTO dto) {
-	
-	// 아이디 찾고 아이디 존재하지 않을 경우 throw
-	Member member = userRepository.findByUserId(userId)
-			.orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
-	log.info("id찾았나");
-	
-	// 입력한 비밀번호가 디비에 저장된 비밀번호와 맞지 않을 경우
-	boolean passwordMatches = passwordEncoder.matches(dto.getCurrentPwd(), member.getUserPwd()); 
-	
-	log.info("matches?" + passwordMatches);
-	return passwordMatches;
-	
-	}
-	
-	public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
-	
-		// 아이디 찾고 아이디 존재하지 않을 경우 throw
-		Member member = userRepository.findByUserId(userId)
-				.orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
-	
-		// 비밀번호가 맞을 때 새로운 비밀번호 확인
-		if (dto.getNewPwd() == dto.getComfirmPwd()) {
-	
-			// 변경하는 비밀번호 암호화
-			dto.setNewPwd(passwordEncoder.encode(dto.getNewPwd()));
-			member.setUserPwd(dto.getNewPwd());
-			userRepository.save(member);
-			return member.getUserId();
-		}
-		return null;
-	
-	}
+	        return member.getUserId();
+	    }
 
 	
 	
 	
 	///////////////////////////////////// 비밀번호 찾기 -> 이메일 전송
-	// DB에서의 이메일 유무를 확인하는 서비스
+	// DB에서의 이메일 유무를 확인하는 서비스 -> 이메일의 유무를 통해 임시비밀번호 전송
 	public boolean checkEmail(String userEmail) {
 		// 이메일 o : true | x : false
 		log.info("이메일 들어왔니" + userEmail);
@@ -312,16 +305,19 @@ public class UserService {
 	}
 
 	// 임시 비밀번호로 업데이트
-	public void updatePwd(String tmpPwd, String userEmail) {
+	public String updatePwd(String tmpPwd, String userEmail) {
 
 		String encryptPassword = passwordEncoder.encode(tmpPwd);
-		Member member = userRepository.findByUserEmail(userEmail)
-				.orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+		Optional<Member> member = userRepository.findByUserEmail(userEmail);
+		if(member.isPresent()) {
+		//.orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
 
 		// DB의 데이터 값을 변경
 		// member.updatePassword(encryptPassword);
-		member.setUserPwd(encryptPassword);
+		member.get().setUserPwd(encryptPassword);
 		log.info("임시 비밀번호 업데이트");
+		}
+		return tmpPwd;
 	}
 
 	/////////////////////// 상태 정보

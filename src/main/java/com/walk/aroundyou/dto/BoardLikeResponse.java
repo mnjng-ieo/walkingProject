@@ -2,7 +2,7 @@ package com.walk.aroundyou.dto;
 
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.BoardLike;
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
 
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ public class BoardLikeResponse {
 
 	private long boardLikeId;
 	private Board boardId;
-	private User userId;
+	private Member userId;
 	
 	public BoardLikeResponse(BoardLike boardLike) {
 		

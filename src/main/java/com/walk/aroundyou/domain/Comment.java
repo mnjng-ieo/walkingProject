@@ -70,5 +70,5 @@ public class Comment {
 	@ManyToOne(fetch = FetchType.LAZY)
 	//@Column(nullable=false, columnDefinition="varchar(100)")
 	@JoinColumn(name="user_id", referencedColumnName="user_id", nullable=false )
-	private User userId;
+	private Member userId;
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.BoardLike;
-import com.walk.aroundyou.domain.User;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.repository.BoardLikeRepository;
 
 @Service
@@ -26,16 +26,16 @@ public class BoardLikeService {
 	
 	
 	// 마이페이지에서 좋아요한 게시물 조회
-	public List<Long> findLikedBoardByUser(User user) {
+	public List<Long> findLikedBoardByUser(Member member) {
 		
-        return boardLikeRepository.findLikedBoardByUserId(user);
+        return boardLikeRepository.findLikedBoardByUserId(member);
     }
 
 	
 	// 사용자가 게시물 좋아요 표시 클릭 시 선택 + 해제
-	public boolean toggleLike(User user, Board board) {
+	public boolean toggleLike(Member member, Board board) {
 		
-		Optional<BoardLike> existingLike = boardLikeRepository.findByUserIdAndBoardId(user, board);
+		Optional<BoardLike> existingLike = boardLikeRepository.findByUserIdAndBoardId(member, board);
 		
 		// 값으로 채워져 있는지 여부 판단
 		// 현재는 값이 없으면 true, 있으면 false
