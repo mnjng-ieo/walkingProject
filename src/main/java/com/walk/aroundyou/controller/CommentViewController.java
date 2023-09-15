@@ -65,13 +65,13 @@ public class CommentViewController {
 	
 	
 /* 상세페이지(commentType=COURSE)에 대한 코멘트 리스트 출력 */
-//	@GetMapping("/course/commentList/{courseId}")
-//	public String getCommentOnCourse(@PathVariable(name = "courseId") Long courseId, Model model) {
-//		List<ICommentResponseDto> comments = commentService.findAllByCourse(courseId);
-//		model.addAttribute("comments", comments);
-//		
-//		return "commentOnCourse";
-//	}
+	@GetMapping("/course/commentList/{courseId}")
+	public String getCommentOnCourse(@PathVariable(name = "courseId") Long courseId, Model model) {
+		List<ICommentResponseDto> comments = commentService.findAllByCourse(courseId);
+		model.addAttribute("comments", comments);
+		
+		return "commentOnCourse";
+	}
 	
 	
 	

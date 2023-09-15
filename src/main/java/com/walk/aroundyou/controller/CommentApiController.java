@@ -128,7 +128,7 @@ public class CommentApiController {
 		return ResponseEntity.ok().body(result);
 	}
 	// 댓글 수정
-	@PutMapping("/api/comment/{commentId}")
+	@PostMapping("/api/comment/{commentId}")
 	public ResponseEntity<?> postCommentOnBoard(
 			@PathVariable(name = "commentId") Long commentId
 			, @RequestBody AddCommentRequest commentDto

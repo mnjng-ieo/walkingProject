@@ -4,7 +4,6 @@ package com.walk.aroundyou.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +32,7 @@ public class CourseViewController {
 	private final CourseService courseService;
 	private final CourseLikeService courseLikeService;
 	private final UploadImageService uploadImageService;
-	private final CommentService commentService;	
+	private final CommentService commentService;
 	
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
@@ -48,7 +47,7 @@ public class CourseViewController {
 	public String getCourses(
 			@RequestParam(name="sort", required= false) String sort,
 			@RequestParam(name="page", required= false, 
-			defaultValue = "0") int currentPage, 
+			defaultValue = "0") int currentPage,
 			Model model) {
 		
 		Page<CourseResponseDTO> coursePage = 
@@ -61,6 +60,9 @@ public class CourseViewController {
 				(PAGINATION_SIZE < totalPages)? 
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
+		if(pageEnd == 0) {
+	    	pageEnd = 1;
+	    }
 		model.addAttribute("lastPage", totalPages);
 		model.addAttribute("currentPage", currentPage);
 		model.addAttribute("pageStart", pageStart);
@@ -80,8 +82,8 @@ public class CourseViewController {
 			UploadImage uploadImage = uploadImageService.findByCourse(course);
 			if (uploadImage != null) {
 				String imagePath = 
-								uploadImageService.findCourseFullPathById(
-												uploadImage.getFileId());
+						uploadImageService.findCourseFullPathById(
+								uploadImage.getFileId());
 				imagePaths.add(imagePath);
 			} else {
 				// 여기 기본 이미지를 어떤 걸로 해야할지 약간 고민스럽다. 
@@ -109,7 +111,7 @@ public class CourseViewController {
 			@RequestParam(name = "searchKeyword", required = false) String searchKeyword, 
 			@RequestParam(name= "sort", required= false) String sort,
 			@RequestParam(name= "page", required= false, 
-						  			defaultValue = "0") int currentPage,
+						  defaultValue = "0") int currentPage,
 			Model model) {
 			String startTime = null;
 			String endTime = null; 
@@ -147,9 +149,8 @@ public class CourseViewController {
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
 		if(pageEnd == 0) {
-			pageEnd = 1;
-		}
-		
+	    	pageEnd = 1;
+	    }
 		model.addAttribute("lastPage", totalPages);
 		// 이전, 이후 버튼에 문제있어서 currentPage + 1 값을 수정했다.
 		model.addAttribute("currentPage", currentPage);
@@ -207,7 +208,7 @@ public class CourseViewController {
 			//Principal principal,
 			@RequestParam(name = "page", required=false, defaultValue="0") int currentPage,
 	        @RequestParam(name = "sort", required= false, defaultValue = "boardId") String sort,
-			Model model) {
+		Model model) {
 		CourseResponseDTO courseResponseDTO = 
 				courseService.findByIdWithCounts(courseId);
 		model.addAttribute("course", courseResponseDTO);
@@ -234,15 +235,13 @@ public class CourseViewController {
 		boolean isLiked = courseLikeService.isCourseLiked(userId, courseId);
 		model.addAttribute("isLiked", isLiked);
 		
-		
-		////// 9/14 댓글 리스트 불러오기(값 없을 때 체크)
+	////// 9/14 댓글 리스트 불러오기(값 없을 때 체크)
 		List<ICommentResponseDto> comments = commentService.findByCourseId(courseId);
 		
 		if(!comments.isEmpty()) {			
 			log.info("comment 값이 있음");	
 			model.addAttribute("comments", comments);
 		}
-				
 		
 		// 게시글 출력 용도
 		Page<IBoardListResponse> courseBoardList = 
@@ -287,8 +286,6 @@ public class CourseViewController {
 	 * : 관리자만 볼 수 있는 탭의 산책로 데이터 관리 메뉴에서는
 	 *   사용자와 달리 더 심플하게 구성되어 있다.
 	 */
-	// GetMapping 인 경우, @RequestBody 로는 매개변수를 불러오지 못하는 이유가 궁금
-	// (내부적으로 body에 데이터를 담지 못하는 이유 알아보기)
 	@GetMapping("/admin/courses")
 	public String adminGetCourses(
 			@RequestParam(name = "region", required = false) String region, 
@@ -339,8 +336,8 @@ public class CourseViewController {
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
 		if(pageEnd == 0) {
-			pageEnd = 1;
-		}
+	    	pageEnd = 1;
+	    }
 		model.addAttribute("lastPage", totalPages);
 		// 이전, 이후 버튼에 문제있어서 currentPage + 1 값을 수정했다.
 		model.addAttribute("currentPage", currentPage);
@@ -452,5 +449,3 @@ public class CourseViewController {
 		return "adminUpdateCourse";
 	}
 }
-
-	

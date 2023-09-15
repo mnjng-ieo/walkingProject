@@ -38,9 +38,9 @@ public class CommentService {
 //	}	
 //	
 //	// course_id로 조회된 게시물에 대한 comment 목록 조회 
-//	public List<ICommentResponseDto> findAllByCourse(Long courseId){
-//		return commentRepo.findByCourseId(courseId);
-//	}
+	public List<ICommentResponseDto> findAllByCourse(Long courseId){
+		return commentRepo.findByCourseId(courseId);
+	}
 //	
 	///////////////////////////////////////////////////////////////
 	////// 당장 안쓰는것같아 모아놓은것

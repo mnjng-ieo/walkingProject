@@ -114,13 +114,8 @@
     <div class="container rounded-5 p-4 p-lg-5 my-4 wrapForm">
         <p>wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다!</p>
         <p>이 네모가 게시글, 이미지 버튼 아래 있으면 될 것 같습니당</p>
-    </div>
-    <!-- ★★★★★★★★★★★★★★주영언니!! css는 course.css에 추가해주시면 되고,
-        댓글 리스트와 댓글 작성폼을 전체 container 안에 넣어주시면 될 것 같아요!!! 
-        참고 하시라고 위에 wrapForm div 태그 붙였습니다!!!
-        boardDetail이랑 흡사하게 댓글 모양이 붙으면 될 것 같아요! 감사합니다1!!!!!!!!!
-        ★★★★★★★★★★★★★★★★★★★★ -->
-     <!-- 댓글 리스트 -->
+       
+         <!-- 댓글 리스트 -->
     <div class="container commentList mx-5 mb-2">
         <div class="d-flex justify-content-center flex-wrap mb-4 px-lg-5" th:each="comment : ${comments}" 
                 style="text-align: auto">
@@ -131,6 +126,7 @@
                     style="width: 80px; height: 80px;" ></img>
             </div>
             <div class="col-10 bubble">
+				
         <!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
                 <div class="d-flex justify-content-between mx-2">
                     <!-- user 이미지, 닉네임 --> 
@@ -179,8 +175,10 @@
                     
                 </div>
             </div>
+            
         </div>
     </div>
+    
     <!-- 댓글 입력창 -->
     <div class="border mt-3 mx-5 rounded-4 text-bg-light">
         <!-- 코멘트 상단 : user 이미지, 닉네임 -->
@@ -207,7 +205,17 @@
             <button type="button" class=" text-center btn btn-primary btn px-4 mx-3" id="createbtn">등록</button> 
         </div>
     </div>
+    
+        
+        
+    </div>
     <script type="text/javascript" src="/js/course/courseComment.js"></script>
+    <!-- ★★★★★★★★★★★★★★주영언니!! css는 course.css에 추가해주시면 되고,
+        댓글 리스트와 댓글 작성폼을 전체 container 안에 넣어주시면 될 것 같아요!!! 
+        참고 하시라고 위에 wrapForm div 태그 붙였습니다!!!
+        boardDetail이랑 흡사하게 댓글 모양이 붙으면 될 것 같아요! 감사합니다1!!!!!!!!!
+        ★★★★★★★★★★★★★★★★★★★★ -->
+    
         
     
     <!-- 산책로 연관 게시물 : 연서님 작성 -->
@@ -328,5 +336,6 @@
     </div>
     </div>
 </th:block>
+
 </body>
 </html>
