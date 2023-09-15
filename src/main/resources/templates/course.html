@@ -111,11 +111,10 @@
                 </div>
         </div>
     </div>
-    <br>
     <!-- wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다! -->
     <div class="container rounded-5 p-4 p-lg-5 my-5 wrapForm">
         <!-- 댓글 리스트 -->
-		<div class="commentList mx-5 mb-2">
+		<div class="commentList mx-5 my-5 mb-2">
 			<div class="d-flex justify-content-center flex-wrap mb-4 px-lg-5" th:each="comment : ${comments}" 
 					style="text-align: auto">
 				<div class="mt-1 rounded-circle mx-1 overflow-hidden " style="width: 80px; height: 80px;" >
@@ -176,7 +175,6 @@
 			</div>
 		</div>
 		<!-- 댓글 입력창 -->
-		 <!-- 댓글 입력창 -->
     <div class="border mt-3 mx-5 rounded-4 text-bg-light">
         <!-- 코멘트 상단 : user 이미지, 닉네임 -->
         <div class="d-flex align-items-center justify-content-between m-4">
