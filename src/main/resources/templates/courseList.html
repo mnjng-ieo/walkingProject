@@ -126,7 +126,7 @@
         </div>
     </div>
     <div class="container sortBox">
-	    <p class = "my-2 courseCount">게시물 수 : <span th:text="${courses.totalElements}"></span></p>
+	    
 	    <!-- 정렬 방식 선택 : onchange 속성으로 값이 변경될 때마다 Ajax 요청 실행 -->
 	    <select class="course-list-sort sort border" 
 	            id="sort" name="sort" 
@@ -138,6 +138,7 @@
 	    </select>
     </div>
     <div id="searchResults">
+	<p class = "my-2 courseCount">게시물 수 : <span th:text="${courses.totalElements}"></span></p>
     <!-- 산책로 목록 카드 ; 검색 결과를 표시할 영역-->
     <input type="hidden" id="imagePaths" th:value="${imagePaths}" />
     <div class="container course-lists" >
