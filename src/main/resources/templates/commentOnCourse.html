@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/defaultLayout}"
+	  layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+	<title>Course - Comment 출력</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+</head>
+<body>
+	<h5>상세페이지에 대한 코멘트 리스트 출력</h5>
+		<!-- 한 개의 코멘트 -->
+	<div class="border m-5 rounded text-bg-light shadow" th:each="comment : ${comments}" style="text-align: auto">
+		
+	<!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
+		<div class="d-flex align-items-center justify-content-between m-4 pt-3" style="height: 65px;">
+			<!-- user 이미지, 닉네임 --> 
+			<div class="d-flex align-items-center ">
+				<img class="border rounded-circle m-1 " th:text"${comment.userImg}" 
+					src="/images/userImg.jpg" style="width: 80px; height: 80px;" ></img>
+				<p class="m-3" th:text="${comment.userNickname}" ></p>
+			</div>
+			
+			<!-- 수정일자, 좋아요 버튼, 좋아요 수 --> 
+			<div class="d-flex align-items-center p-2">
+				<p class="m-2" th:text="${#dates.format(comment.commentUpdatedDate, 'yyyy-MM-dd HH:mm')}" ></p>
+				<button type="button m-2" class="btn btn-sm btn-outline-danger" >♥</button>
+				<p class="m-2" th:text="${comment.commentLikeCnt}" >좋아요 개수</p>
+			</div>
+		</div>
+	
+	<!-- 코멘트 하단 : 코멘트 내용 및 버튼 --> 	
+		<!-- 코멘트 내용 --> 
+		<div class="m-1">
+			<p class="p-4 mx-4" th:text="${comment.commentContent}"></p>
+		</div>
+		
+		<!-- 수정 및 삭제 버튼 -->
+		<div class="d-flex justify-content-end m-3">
+			<button type="button text-center" class="btn btn-primary btn-sm mx-1">수정</button>
+			<button type="button text-center" class="btn btn-secondary btn-sm mx-3">삭제</button>
+		</div>
+	</div>
+</body>
+</html>

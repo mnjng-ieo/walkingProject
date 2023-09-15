@@ -10,6 +10,7 @@
 	<link href="/css/board/boardDetail.css" rel="stylesheet"></link> 
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f5041361e9b1c4d5fd6a9c27cfadb45e"></script>
 	<script type="text/javascript" src="/js/board/boardMap.js"></script>  
+	<script type="text/javascript" src="/js/board/boardLike.js"></script>  
 	
 </head>	
 <body>
@@ -17,6 +18,11 @@
 	<div class="container">
 		<h1 class="my-4" style="white-space:pre;"> </h1>	
 		<div class="rounded-5 p-5 mb-5 wrapDetail">
+			<!-- 산책로 관련 유저 활동을 위한 산책로 id 값 넘기기 -->
+            <input type="hidden" id="boardId" th:value="${board.boardId}" />
+            <input type="hidden" id="isLiked" th:value="${isLiked}" />
+            <input type="hidden" id="userId" th:value="${userId}" />
+                
 			<!-- 게시판 -->
 			<th:block th:switch="${board.boardType}">
     		<div th:case="FREE" class="mt-3 ms-4 boardType">자유게시판</div>
@@ -45,9 +51,20 @@
 					<p class="px-2">
 						<i class="fa-regular fa-eye"></i> [[${ board.boardViewCount }]]
 					</p>
-					<p class="px-2">
-						<i class="fa-regular fa-heart"></i> [[${ board.likeCnt }]]
-					</p>
+					<p class="px-2"
+						onmouseover="changeLikeImage(this)"
+						onmouseout="restoreLikeImage(this)"
+						onclick="toggleLikeImage(this)">
+						<img th:if="${isLiked}" 
+	                         th:src="@{/images/common/heart-click.png}"
+	                        alt="좋아요"
+	                        style="width: 25px;transform: translate(0px,-2px);"/>
+ 	                    <img th:if="${not isLiked}" 
+	                         th:src="@{/images/common/heart-nonclick.png}"
+	                        alt="좋아요" 
+	                        style="width: 25px;transform: translate(0px,-2px);"/>
+	                    <span id="likeCnt">[[${ board.likeCnt }]]</span>
+					</p> 
 				</ul>
 			</div>
 			<div>
@@ -68,7 +85,7 @@
 					<span class="mx-2 hashTitle">#</span>
 					<th:block th:each="boardTag : ${boardTagList}">
 						<a 
-							th:href="@{/tagBoardList/{tagContent}(tagContent = ${boardTag})}"
+							th:href="@{/tag/search/{tagContent}(tagContent = ${boardTag})}"
 							role="button" class="btn rounded-5 my-1 tagItem">[[${boardTag}]]</a>
 					</th:block>
 				</div>
@@ -134,9 +151,25 @@
 								<div class="mx-4" th:text="${comment.commentContent}" style="white-space:pre-wrap;"></div>
 								<!-- 수정 및 삭제 버튼 -->
 								<div class="d-flex justify-content-end p-3">
-									<div class="mx-3 mt-1">
+									<div class="mx-3 mt-1 commentLike">
+									<!-- 
+									
+										onmouseover="changeCommentLikeImage(this)"
+										onmouseout="restoreCommentLikeImage(this)"
+										onclick="toggleCommentLikeImage(this)"
+						<img th:if="${#lists.contains(likedComments, comment.commentId)}" 
+	                         th:src="@{/images/common/heart-click.png}"
+	                        alt="좋아요"
+	                        style="width: 25px;transform: translate(0px,-2px);"/>
+ 	                    <img th:unless="${#lists.contains(likedComments, comment.commentId)}" 
+	                         th:src="@{/images/common/heart-nonclick.png}"
+	                        alt="좋아요" 
+	                        style="width: 25px;transform: translate(0px,-2px);"/>
+	                    <span id="commentLikeCnt">[[${ board.likeCnt }]]</span>
+									
+									 -->
 										<img src="/images/common/heart-click.png" style="width: 20px; height: 20px;"/>
-										<span class="fs-6">[[${comment.commentLikeCnt}]]</span>
+										<span class="fs-6" id="commentLikeCnt">[[${comment.commentLikeCnt}]]</span>
 									</div>
 									<button type="button" id="modifybtn"
 											th:if="${comment.userId == loginId}" 
@@ -176,7 +209,7 @@
 				
 				<!-- 버튼 -->
 				<div class=" d-flex justify-content-end m-3 px-3">
-					<button type="button" class=" text-center btn btn-primary btn px-4 mx-3" id="createbtn">등록</button> 
+					<button type="button" class="text-center btn px-4 mx-3 commentBtn" id="createbtn">등록</button> 
 				</div>
 			</div>
 			<!-- 9/14 추가수정 시작 -->

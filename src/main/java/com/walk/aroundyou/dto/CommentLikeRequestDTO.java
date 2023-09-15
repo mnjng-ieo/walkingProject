@@ -7,12 +7,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CommentLikeRequestDto {
+public class CommentLikeRequestDTO {
 	
 	private Long commentId;
 	private String userId;
 	
-	public CommentLikeRequestDto(Long commentId, String userId) {
+	public CommentLikeRequestDTO(Long commentId, String userId) {
 		this.commentId = commentId;
 		this.userId = userId;
 	}

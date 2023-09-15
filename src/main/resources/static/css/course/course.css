@@ -54,25 +54,32 @@
 
 /* 크기를 키우고, 제목 바로 위에 있는 것처럼 위치를 조절하자 */
 .course-list_level {
+	font-family: 'NanumSquareRound';
     position: absolute;
-    top: -120px; left: 0;
+    top: -135px; left: 0;
     text-align: center;
-    font-size: 20px;
+    font-size: 24px;
     display: inline-block;
     padding: 0.25rem 0.5rem;
-    min-width: 5rem;
+    min-width: 5.5rem;
     white-space: nowrap;
-    height: 2rem;
-    line-height: 1.5rem;
+    height: 2.5rem;
+    line-height: 2rem;
 }
 
 .course-infoBox {
 	padding-top : 70px;
 }
 
+.rightBox {
+    position: relative;
+}
+
 .iconBox {
 	padding-top: 0;
 	font-family: 'NanumSquareRound';
+	position: absolute;
+	right: 30px;
 }
 
 .icon-wrapper {
@@ -112,13 +119,53 @@
 
 .table-wrapper {
 	width: 55%;
+	position: relative;
 }
 
-.course-map {
+.no-underline td:last-child {
+	text-decoration: none !important; 
+	/* !important : 부트스트랩 스타일을 덮어쓸 수 있다!는 줄 알았는데 안 된다. */
+}
+
+.course-viewCount {
+    /* position: absolute;
+    bottom: 10px; right: 10px; */
+    color: #1C6758;
+}
+
+.course-mapBox {
 	width: 40%;
+	height: 550px;
 	background-color: lightyellow;
+	margin-right: 20px;
 }
 
+/* 게시글 관련 */
+.board-title {
+    font-family: 'KimjungchulGothic-Bold';
+}
+
+.boardList {
+    font-family: 'NanumSquareRound';
+}
+.boardCount{
+    color:#3D8361;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-indent: 7px;
+}
+.form-select {
+    text-indent: 15px;
+    width: 200px;
+}
+
+.boardList-sort {
+    text-indent: 8px;
+    width: 10%;
+    height: 30px;
+}
+
+/* 페이징 css */
 .pageInfo_wrap {
     margin-bottom: 100px;
 }
@@ -134,24 +181,12 @@
     border-color: #ccc;
 }
 
-.pagination li.page-item {
-    /* padding: 8px 12px; */
-}
-
 .page-link {
     font-size: 1.2rem;
     margin: 10px;
     line-height: 23px;
     border-radius: 10px;
 }
-
-/* .page-number {
-    border-radius: 10px;
-}
-
-.page-number:hover {
-    border-radius: 10px;
-} */
 
 .page-item.active .page-link {
  z-index: 1;
@@ -180,3 +215,143 @@
     background-color: #e0e0e0; /* 호버 시 변경할 배경 색상 설정 */
     cursor: pointer; /* 호버 시 커서 설정 */
 }
+
+/* 댓글 관련 */
+.wrapForm {
+    background:#EEF2E6;
+    font-family: 'NanumSquareRound';
+    font-size: 20px
+}
+.commentList{
+    background: #EEE;
+}
+.bubble:before{
+    content: '';
+    position:relative;
+    z-index: -1;
+    left: -25px; top: 110px;
+    border-top: 30px solid #EEE;
+    border-bottom: 30px solid transparent;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+}
+.bubble{
+    margin-top:-20px;
+    margin-left: 30px;
+}
+.modifybtn, .registerbtn{
+    background: #3D8361;
+    color: white;
+}
+
+
+/* 지도 정보 관련 css */
+.fa-bounce {
+    --fa-animation-iteration-count: 1;
+    --fa-bounce-height: -5px;
+    --fa-animation-timing: cubic-bezier(0.1, -0.6, 0.2, 0);
+    --fa-bounce-jump-scale-x : 1;
+    --fa-bounce-jump-scale-y : 1.05;
+    --fa-bounce-land-scale-x : 1;
+    --fa-bounce-land-scale-y : 1;
+    --fa-bounce-start-scale-x : 1.05;
+}
+.wrap {
+    position: absolute; 
+    left: 16px; bottom: 40px;
+    width: 250px; height: auto;
+    margin-left: -144px;
+    text-align: left; overflow: hidden;
+    font-size: 12px; 
+    line-height: 1.5;}
+.wrap * {
+    padding: 0;margin: 0;}
+.wrap .info {
+    height: auto;
+    margin-bottom: 12px;
+    border-radius: 15px; 
+    border-bottom: 2px solid #ccc;
+    border-right: 1px solid #ccc;
+    overflow: hidden;
+    background: #EEF2E6;}
+.wrap .info:nth-child(1) {
+    border: 0;
+/*      box-shadow: 0px 1px 2px #888; */}
+.info .title {
+    padding: 5px 0px 30px 15px;
+    height: 30px; 
+    line-height: 27px;
+    background: #3D8361;
+    color: white;
+    font-size: 14px; 
+    font-weight: bold;}
+.info .title .icon{
+    --fa-animation-iteration-count: 1;
+    --fa-bounce-height: -4px;
+    --fa-animation-timing: cubic-bezier(0.1, -0.6, 0.2, 0);
+    font-size: 18px; 
+    margin-right: 3px;
+}
+.info .close {
+    position: absolute;
+    top: 4px; right: 8px;
+    width: 17px;height: 17px;}
+.info .close:hover {cursor: pointer;}
+.info .body {
+    position: relative;
+    overflow: hidden;}
+.info .desc {
+    position: relative;
+    margin: 12px 15px 12px 15px;
+    color : #1C6758;
+    height: auto;}
+.desc .ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    }
+.desc .textsm {
+    overflow: hidden;
+    font-size: 12px;
+    color : #1C6758;
+    margin-top: -2px;}
+.desc .now{
+    color: #7FB77E;
+    font-weight: bolder;}
+.desc a{
+    color: inherit;
+    text-decoration-line: none;
+}
+.desc .icon{
+    font-size: 3px;
+    margin-right: 8px;
+    color : #1C6758;}
+.desc .moreOpenContent{
+    display: none;
+}
+.desc .moreClose{
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+    cursor: pointer;
+}
+.desc .moreOpen{    
+    font-weight: bold;
+    margin-top: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+.info:after {
+    content: '';
+    position: absolute;
+    margin-left: -9px;
+    margin-bottom: -12px;
+    left: 50%; bottom: 0;
+    width: 18px; height: 24px;
+    border-top: 12px solid #EEF2E6;
+    border-bottom: 12px solid transparent;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    /* background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')*/}
+.info .link {color: white;}

@@ -29,6 +29,7 @@ import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.TagService;
 import com.walk.aroundyou.service.UploadImageService;
 import com.walk.aroundyou.service.UserService;
+import com.walk.aroundyou.service.BoardLikeService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,6 +54,9 @@ public class BoardViewController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private BoardLikeService boardLikeService;
 
 
 	// 페이지네이션 사이즈
@@ -242,13 +246,20 @@ public class BoardViewController {
 	@GetMapping("/board/{id}")
 	public String getBoardDetail(@PathVariable Long id, Model model, @AuthenticationPrincipal User user) {
 
-		// 헤더에 정보 추가하기 위한 코드
+		// 조회한 좋아요 상태 확인
+		boolean isLiked;
+		List<String> likedComments;
+		
+		// 헤더에 정보 추가하기 위한 코드 + 좋아요 상태 
 		if (user != null) {
-			model.addAttribute("loginId", user.getUsername());
+			String userId = user.getUsername(); // 실제 로그인한 유저 정보
+			model.addAttribute("loginId", userId);
+			isLiked = boardLikeService.isBoardLiked(userId, id);
+			// 사용자의 댓글 좋아요 리스트 불러오기
+			//likedComments = commentService.findByUserId(userId); 
+			
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
-				// 댓글 작성창에 뜰 사용자 정보 보내기
-				model.addAttribute("user", currentUser);
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -256,7 +267,14 @@ public class BoardViewController {
 					model.addAttribute("currentUserImagePath", currentUserImagePath);
 				}
 			}
-		}
+		} else {
+			isLiked = false;
+		}		
+		model.addAttribute("isLiked", isLiked);
+
+		
+		
+		
 		// 게시글 내용 불러오기
 		Optional<IBoardDetailResponse> board = boardService.findBoardDetail(id);
 		log.info("board가 있나요? : {}", board.isPresent());

@@ -161,6 +161,12 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 //			+ " 	, c.comment_updated_date = :#{#update.commentUpdatedDate}"
 //			+ "	WHERE c.comment_id = :#{#update.commentId}", nativeQuery = true)
 //	void updateCourseCommentByCommentId(@Param("update") Comment update);
+	
+	
+	@Query(value = """ 
+			SELECT COUNT(*) FROM comment_like WHERE comment_id = :commentId
+			""", nativeQuery = true)
+	public int countCommentLikesByCommentId(@Param("commentId") Long commentId);
 		
 	
 	

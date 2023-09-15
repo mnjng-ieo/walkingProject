@@ -91,4 +91,14 @@
 	color : #3D8361;
 	background : #B1D7B4;
 }
+.commentBtn{
+	padding-left: 10%;
+	padding-right: 10%;
+	background : #3D8361;
+	color: white;
+}
+.commentBtn:hover{
+	color: white;
+	background: #1C6758;
+}
 /* 9/14 추가수정 끝 */

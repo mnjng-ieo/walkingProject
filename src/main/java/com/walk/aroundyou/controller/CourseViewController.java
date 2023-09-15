@@ -4,7 +4,6 @@ package com.walk.aroundyou.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -19,6 +18,8 @@ import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICommentResponseDto;
+import com.walk.aroundyou.service.CommentService;
 import com.walk.aroundyou.service.CourseLikeService;
 import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.UploadImageService;
@@ -36,6 +37,7 @@ public class CourseViewController {
 	private final CourseLikeService courseLikeService;
 	private final UploadImageService uploadImageService;
 	private final UserService userService;
+	private final CommentService commentService;
 
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
@@ -243,13 +245,18 @@ public class CourseViewController {
 	        @RequestParam(name = "sort", required= false, defaultValue = "boardId") String sort,
 			Model model, 
 			@AuthenticationPrincipal User user) {
-		// 헤더에 정보 추가하기 위한 코드
+		// 조회한 좋아요 상태 확인
+		boolean isLiked;
+		
+		// 헤더에 정보 추가하기 위한 코드 + 좋아요 상태 
 		if (user != null) {
-			model.addAttribute("loginId", user.getUsername());
+			String userId = user.getUsername(); // 실제 로그인한 유저 정보
+			//model.addAttribute("userId", userId);
+			model.addAttribute("loginId", userId);
+			isLiked = courseLikeService.isCourseLiked(userId, courseId);
+			
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
-				// 댓글 작성창에 뜰 사용자 정보 보내기
-				model.addAttribute("user", currentUser);
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -257,11 +264,23 @@ public class CourseViewController {
 					model.addAttribute("currentUserImagePath", currentUserImagePath);
 				}
 			}
-		}
+		} else {
+			isLiked = false;
+		}		
+		model.addAttribute("isLiked", isLiked);
+		
+		
 		CourseResponseDTO courseResponseDTO = 
 				courseService.findByIdWithCounts(courseId);
 		model.addAttribute("course", courseResponseDTO);
 		model.addAttribute("courseId", courseId);
+		
+		
+		// 지도 모아보기 관련 코드 추가
+		String courseFlag = courseResponseDTO.getWlkCoursFlagNm();
+        List<Course> courseNames = courseService.findCourseNameByWlkCoursFlagNm(courseFlag);
+        log.info(""+courseNames.size());
+        model.addAttribute("courseNames", courseNames);
 		
 		// 이미지 경로 넘기기
 		//UploadImage uploadImage = courseResponseDTO.getCourseImageId();
@@ -276,13 +295,13 @@ public class CourseViewController {
 			model.addAttribute("imagePath", imagePath);
 		} 
 		
-		//String userId = principal.getName(); // 실제 로그인한 유저 정보
-		String userId = "wayid1";              // 테스트용. 직접 부여
-		model.addAttribute("userId", userId);
+		////// 9/14 댓글 리스트 불러오기(값 없을 때 체크)
+		List<ICommentResponseDto> comments = commentService.findByCourseId(courseId);
 		
-		// 조회한 좋아요 상태 확인
-		boolean isLiked = courseLikeService.isCourseLiked(userId, courseId);
-		model.addAttribute("isLiked", isLiked);
+		if(!comments.isEmpty()) {			
+			log.info("comment 값이 있음");	
+			model.addAttribute("comments", comments);
+		}
 		
 		// 게시글 출력 용도
 		Page<IBoardListResponse> courseBoardList = 

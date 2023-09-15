@@ -359,5 +359,12 @@ public class CourseService {
 			log.info("findFlagNameBySignguCn() 서비스 접근");
 			return courseRepository.findCourseNameByWlkCoursFlagNm(wlkCoursFlagNm);
 		}
+		
+		// 산책로 좋아요 수 구하기 메소드 -- 0915 추가!
+		public int getCourseLikeCntByCourseId(long courseId) {
+			int courseLikeCnt = courseRepository.countCourseLikesByCourseId(courseId);
+			
+			return courseLikeCnt;
+		}
 	
 }

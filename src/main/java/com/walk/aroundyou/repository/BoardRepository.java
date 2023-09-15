@@ -690,15 +690,22 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			, nativeQuery = true)
 	List<IBoardListResponse> findBoardAndCntByTagId(@Param("tagId") Long tagId);
 		
-	   // 1. (추가)findByTag : 태그 하나 검색하여 관련 게시물 가져오기
-	   @Query(value = "SELECT b.* FROM board b " +
-	         " INNER JOIN board_tag bt " + 
-	         "    ON b.board_id = bt.board_id " + 
-	         " INNER JOIN tag t " +
-	         "    ON bt.tag_id = t.tag_id  " +
-	         " WHERE t.tag_content = :tagContent"
-	         , nativeQuery = true)
-	   List<Board> findBoardByTag(@Param("tagContent") String tagContent);
+	// 1. (추가)findByTag : 태그 하나 검색하여 관련 게시물 가져오기
+	@Query(value = "SELECT b.* FROM board b " +
+		 " INNER JOIN board_tag bt " + 
+		 "    ON b.board_id = bt.board_id " + 
+		 " INNER JOIN tag t " +
+		 "    ON bt.tag_id = t.tag_id  " +
+		 " WHERE t.tag_content = :tagContent"
+		     , nativeQuery = true)
+	List<Board> findBoardByTag(@Param("tagContent") String tagContent);
+
+
+	////// 좋아요 기능 추가
+    @Query(value = """ 
+		SELECT COUNT(*) FROM board_like WHERE board_id = :boardId
+		""", nativeQuery = true)
+	public int countBoardLikesByBoardId(@Param("boardId")Long boardId);
 
 
 	

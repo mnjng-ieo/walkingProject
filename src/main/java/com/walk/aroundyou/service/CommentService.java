@@ -139,6 +139,14 @@ public class CommentService {
 		return commentRepo.updateCommentByCommentId(comment);
 	}
 	
+	
+	////// 좋아요 기능 추가
+	public int getCommentLikeCntByCommentId(Long commentId) {
+		int commentLikeCnt = commentRepo.countCommentLikesByCommentId(commentId);
+		
+		return commentLikeCnt;
+	}
+	
 
 /* */
 }

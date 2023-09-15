@@ -11,7 +11,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.walk.aroundyou.domain.Board;
-import com.walk.aroundyou.domain.Comment;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.dto.BoardRequest;
 import com.walk.aroundyou.dto.IBoardDetailResponse;
@@ -218,6 +217,13 @@ public class BoardService {
 			customSort = Sort.by(Direction.DESC, "boardId");
 		}
 		return customSort;
+	}
+
+	////// 좋아요 기능 추가
+	public int getBoardLikeCntByBoardId(Long boardId) {
+		int boardLikeCnt = BoardRepo.countBoardLikesByBoardId(boardId);
+		
+		return boardLikeCnt;
 	}
 	
 	

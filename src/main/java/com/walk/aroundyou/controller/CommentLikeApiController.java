@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.walk.aroundyou.dto.CourseLikeRequestDTO;
-import com.walk.aroundyou.service.CourseLikeService;
-import com.walk.aroundyou.service.CourseService;
+import com.walk.aroundyou.dto.CommentLikeRequestDTO;
+import com.walk.aroundyou.service.CommentLikeService;
+import com.walk.aroundyou.service.CommentService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 //@RequestMapping이 클래스 위에 선언될 경우, 메소드에 사용한 설정으로 덮어쓰인다.
-@RequestMapping("/api/courses/{courseId}")
-public class CourseLikeApiController {
+@RequestMapping("/api/comment/like/{commentId}")
+public class CommentLikeApiController {
 	
-	private final CourseLikeService courseLikeService;
-	private final CourseService courseService;
+	private final CommentLikeService commentLikeService;
+	private final CommentService commentService;
 
 	// 원래 POST/DELETE 요청으로 분리해서 좋아요와 좋아요 취소 요청을 따로 처리했는데
 	// 같은 동작(경로) 안에서 둘 다 되도록 isLiked를 활용해서 코드를 수정했습니다. 
@@ -42,27 +42,25 @@ public class CourseLikeApiController {
 	 *                  응답에 해당하는 JSON 형식의 값을, 애너테이션이 붙은 대상 객체에 매핑
 	 */         
 	@PostMapping
-	public ResponseEntity<CourseLikeRequestDTO> AddCourseLike(
-			@PathVariable long courseId,
+	public ResponseEntity<CommentLikeRequestDTO> AddCourseLike(
+			@PathVariable long commentId,
 			@AuthenticationPrincipal User user,
-			@RequestBody CourseLikeRequestDTO request) throws Exception {
-		request.setCourseId(courseId);
+			@RequestBody CommentLikeRequestDTO request) throws Exception {
+		request.setCommentId(commentId);
 		
-		//String userId = principal.getName();     // 실제 로그인한 유저 정보
-		//String userId = "wayid1";                  // 테스트용. 직접 부여
 		String userId = user.getUsername();
 		request.setUserId(userId);  
 		
 		// 조회한 좋아요 상태를 확인
-		boolean isLiked = courseLikeService.isCourseLiked(userId, courseId);
+		boolean isLiked = commentLikeService.isCommentLiked(userId,commentId);
 		
 		if (isLiked) {
 			// 좋아요 상태라면 좋아요 취소하기
-			courseLikeService.deleteLike(request);
+			commentLikeService.deleteLike(request);
 			log.info("DELETE_LIKE");
 		} else {
 			// 좋아요 아닌 상태라면 좋아요 하기
-			courseLikeService.insertLike(request);
+			commentLikeService.insertLike(request);
 			log.info("INSERT_LIKE");
 		}
 		
@@ -75,9 +73,9 @@ public class CourseLikeApiController {
 	 */
 	@GetMapping("/like-count")
 	public ResponseEntity<?> getLikeCount(
-			@PathVariable Long courseId) {
+			@PathVariable Long commentId) {
 		int likeCount = 
-				courseService.getCourseLikeCntByCourseId(courseId);
+				commentService.getCommentLikeCntByCommentId(commentId);
 		
 		// likeCount 변수 값을 JSON 객체로 매핑시킴
 		return ResponseEntity.ok()
