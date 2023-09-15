@@ -196,8 +196,6 @@ select option:checked {
     font-weight: bold;
     font-size: 1.2rem;
     margin: 0;
-    padding-left: 310px;
-
 }
 
 .course-lists{
@@ -205,7 +203,6 @@ select option:checked {
 }
 
 .course-list-sort {
-    border: 2px solid #ccc;
     width: 230px;
     font-size: 20px;
     cursor: pointer;
