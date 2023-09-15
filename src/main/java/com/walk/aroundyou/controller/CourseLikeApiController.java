@@ -1,16 +1,23 @@
 package com.walk.aroundyou.controller;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.CourseLikeRequestDTO;
+import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.service.CourseLikeService;
+import com.walk.aroundyou.service.CourseService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CourseLikeApiController {
 	
 	private final CourseLikeService courseLikeService;
+	private final CourseService courseService;
 
 	// 원래 POST/DELETE 요청으로 분리해서 좋아요와 좋아요 취소 요청을 따로 처리했는데
 	// 같은 동작(경로) 안에서 둘 다 되도록 isLiked를 활용해서 코드를 수정했습니다. 
@@ -48,7 +56,7 @@ public class CourseLikeApiController {
 		String userId = user.getUsername();
 		request.setUserId(userId);  
 		
-		// 조회한 좋아요 상태를 확인
+		// 조회한 좋아요 상태 확인
 		boolean isLiked = courseLikeService.isCourseLiked(userId, courseId);
 		
 		if (isLiked) {
@@ -63,5 +71,19 @@ public class CourseLikeApiController {
 		
 		return ResponseEntity.ok()
 				.body(request);
+	}
+	
+	/**
+	 * 좋아요 수 업데이트
+	 */
+	@GetMapping("/like-count")
+	public ResponseEntity<?> getLikeCount(
+			@PathVariable Long courseId) {
+		int likeCount = 
+				courseService.getCourseLikeCntByCourseId(courseId);
+		
+		// likeCount 변수 값을 JSON 객체로 매핑시킴
+		return ResponseEntity.ok()
+				.body(Collections.singletonMap("likeCount", likeCount));
 	}
 }

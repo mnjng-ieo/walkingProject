@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
     <title>산책로 상세 페이지</title>
     <link rel="stylesheet" href="/css/course/course.css">
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f5041361e9b1c4d5fd6a9c27cfadb45e"></script>
     <script src="/js/course/course.js"></script>
     <script src="/js/course/searchCourseBoardList.js"></script>
 </head>
@@ -16,7 +17,7 @@
         <img class="top-imgBox_img" 
             th:src="${imagePath}? 
                     ${imagePath}: '/images/defaultCourseMainImg.jpg'" 
-            alt="산책로 메인사진" />        
+            alt="산책로 메인사진" />      
     </div>
     <div class="container course-infoBox" th:object="${course}">
         <div class="d-flex course-header">
@@ -33,41 +34,45 @@
 		                             coursLevelNm == '매우어려움' ? ' bg-danger' : ''}"
 		           th:text="*{coursLevelNm}">난이도</p>
                 <h3 class="flag-title"
-	                th:text="*{wlkCoursFlagNm}">
-	                산책로 큰이름</h3>
+	                th:text="*{wlkCoursFlagNm}">경로구분이름</h3>
 	            <h1 class="title"
-	                th:text="*{wlkCoursNm}"></h1>
+	                th:text="*{wlkCoursNm}">경로작은이름</h1>
             </div>
-            <div class="col-5 d-flex 
-                        justify-content-end
-                        align-items-stretch iconBox">
-                <div class="icon-wrapper"
-                    onmouseover="changeLikeImage(this)"
-                    onmouseout="restoreLikeImage(this)"
-                    onclick="toggleLikeImage(this)">                    
-                    <img th:if="${isLiked}" 
-                         th:src="@{/images/common/heart-click.png}"
-                        alt="좋아요" />
-                    <img th:if="${not isLiked}" 
-                         th:src="@{/images/common/heart-nonclick.png}"
-                        alt="좋아요" />
-                    <p>좋아요</p>
-                </div>
-                <div class="icon-wrapper"
-                    th:onclick="'goToBoardEditor(' + ${courseId} + ')'">
-                    <img src="/images/board-write.png" alt="게시물 작성하기" />
-                    <p>게시물<br>작성하기</p>
-                </div>
-                <div class="icon-wrapper">
-                    <img src="/images/comment.png" alt="코멘트 달기" />
-                    <p>코멘트<br>달기</p>
-                </div>
-                <div class="icon-wrapper"
-                    onclick="copyToClipboard()">
-                    <img src="/images/share.png" alt="공유" />
-                    <p>공유</p>
-                </div>
+            <div class="col-5 justify-content-end rightBox">
+                <!-- <div class="course-viewCount">
+                    <i class="fa-regular fa-eye fa-xl"></i>
+                    <span th:text="*{coursViewCount}">조회수</span> 
+                </div> -->
+                <div class="d-flex justify-content-end align-items-stretch iconBox">
+	                <div class="icon-wrapper"
+	                    onmouseover="changeLikeImage(this)"
+	                    onmouseout="restoreLikeImage(this)"
+	                    onclick="toggleLikeImage(this)">                    
+	                    <img th:if="${isLiked}" 
+	                         th:src="@{/images/common/heart-click.png}"
+	                        alt="좋아요" />
+	                    <img th:if="${not isLiked}" 
+	                         th:src="@{/images/common/heart-nonclick.png}"
+	                        alt="좋아요" />
+	                    <p id="likeCnt" th:text="'좋아요  ' + *{likeCnt}">좋아요</p>
+	                </div>
+	                <div class="icon-wrapper"
+	                    th:onclick="'goToBoardEditor(' + ${courseId} + ')'">
+	                    <img src="/images/board-write.png" alt="게시물 작성하기" />
+	                    <p>게시물<br>작성하기</p>
+	                </div>
+	                <div class="icon-wrapper">
+	                    <img src="/images/comment.png" alt="코멘트 달기" />
+	                    <p>코멘트<br>달기</p>
+	                </div>
+	                <div class="icon-wrapper"
+	                    onclick="copyToClipboard()">
+	                    <img src="/images/share.png" alt="공유" />
+	                    <p>공유</p>
+	                </div>
+	            </div>
             </div>
+            
 
         </div>
         <div class="course-content">
@@ -79,7 +84,8 @@
 	                </tr>
 	                <tr>
 	                    <td class="name">주요코스</td>
-	                    <td th:text="*{coursDc}"></td>
+	                    <td th:text="*{coursDc}"
+	                       style="white-space:pre-wrap;"></td>
 	                </tr>
 	                <tr>
 	                    <td class="name">거리</td>
@@ -91,26 +97,53 @@
 	                </tr>
 	                <tr>
 	                    <td class="name">화장실</td>
-	                    <td th:text="*{toiletDc}"></td>
+	                    <td th:text="*{toiletDc}"
+	                       style="white-space:pre-wrap;"></td>
 	                </tr>
 	                <tr>
 	                    <td class="name">편의시설</td>
-	                    <td th:text="*{cvntlNm}"></td>
+	                    <td th:text="*{cvntlNm}"
+	                       style="white-space:pre-wrap;"></td>
 	                </tr>
 	                <tr>
 	                    <td class="name">상세설명</td>
 	                    <td th:text="*{aditDc}"
 	                       style="white-space : pre-wrap;"></td>
 	                </tr>
+	                <tr>
+	                   <td class="name no-underline">
+		                   <i class="fa-regular fa-eye fa-xl"></i>
+	                       <span th:text="*{coursViewCount}">조회수</span> 
+	                   </td>
+	                </tr>
 	            </table>
+	            <!-- 조회수 다른 자리로 옮기고 싶을 때... 
+	            <div class="course-viewCount">
+                    <i class="fa-regular fa-eye fa-xl"></i>
+                    <span th:text="*{coursViewCount}">조회수</span> 
+                </div> -->
             </div>
-            <div class="course-map">
-                    <!-- 지도가 들어올 자리 -->
-                    지도가 들어올 자리
+            <div class="course-mapBox rounded-3" id="map">
+                 <div class="course-map">
+                    <input type="hidden" id="flagName" th:value="${course.wlkCoursFlagNm}">
+					<input type="hidden" id="courseName" th:value="${course.wlkCoursNm}">
+					<input type="hidden" id="courseLat" th:value="${course.coursSpotLa}">
+					<input type="hidden" id="courseLng" th:value="${course.coursSpotLo}">
+					<input type="hidden" id="courseAddr" th:value="${course.signguCn}">
+					<input type="hidden" id="courseLength" th:value="${course.coursDetailLtCn}">
+					<input type="hidden" id="courseTime" th:value="${#dates.format(course.coursTimeCn, 'H시간 mm분 소요')}">
+                 </div>
+                 <div>
+			    <th:block th:each="other : ${courseNames}">
+			        <input type="hidden" class="otherCourseName" th:value="${other.wlkCoursNm}">
+			        <input type="hidden" class="otherCourseId" th:value="${other.courseId}">
+			    </th:block>
                 </div>
+            </div>
+            
         </div>
     </div>
-    <!-- wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다! -->
+   <!-- wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다! -->
     <div class="container rounded-5 p-4 p-lg-5 my-4 wrapForm">
         <p>wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다!</p>
         <p>이 네모가 게시글, 이미지 버튼 아래 있으면 될 것 같습니당</p>
@@ -215,8 +248,8 @@
     <div class="container boardList">
         <div class = "d-flex">
             <!-- 자바스크립트에서 사용할 용도이므로 숨기기 -->
-            <h5 id="courseId" th:text="${id}"></h5>
-            <h5 id="courseId" th:text="${id}" style = "display:none;"></h5>
+            <h5 th:text="${id}"></h5>
+            <h5 th:text="${id}" style = "display:none;"></h5>
 
             <h5>해당 산책로 관련 게시물입니다.</h5>
         </div>
@@ -326,7 +359,14 @@
         </ul>
     </div>
     </div>
-    </div>
+    </div> <!-- boardList의 끝! -->
+    <!-- <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <p>로그인이 필요한 서비스입니다.</p>
+            <button id="goToLoginPage">로그인 페이지로 이동하기</button>
+            <button id="stayOnPage">현재 페이지 유지하기</button>
+        </div>
+    </div> -->
 </th:block>
 </body>
 </html>

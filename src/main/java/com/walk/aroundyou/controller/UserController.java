@@ -164,8 +164,8 @@ public class UserController {
 	// Principal 객체는 현재 로그인한 사용자에 대한 정보를 얻기 위해 컨트롤러 메서드에서 매개변수로 사용 가능
 	// 로그인된 상태에 탈퇴를 하는 거니까 인증된 사용자의 정보를 받아오는 principal 사용
 	// 처음 불러오는 정보
-	// @PreAuthorize("isAuthenticated()")
 	///////// 0913 지수 추가 - 이미지 업로드 처리
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/main/mypage")
 	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
 	public String showMypage(
@@ -186,7 +186,6 @@ public class UserController {
 				}
 			}
 		}
-		
 
 		if (authentication != null && authentication.isAuthenticated()) {
 			// 현재 로그인한 사용자 아이디

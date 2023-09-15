@@ -203,14 +203,16 @@
                            <img class="count-icon left-align"
                                  src="/images/common/heart-click.png" alt="좋아요" />
                            <span class="left-align" th:text="${item.likeCnt}+'개'"
-                                style="margin-right: 12px;">좋아요 수</span> 
-                           <i class="fa-regular fa-comment-dots count-icon left-align commentIcon"></i>
+                                style="margin-right: 14px;">좋아요 수</span> 
+                           <i class="fa-regular fa-comment-dots fa-lg count-icon left-align commentIcon"
+                                style="margin-right: 1px;"></i>
                            <span class="left-align" th:text="${item.commentCnt}+'개'"
-                                style="margin-right: 12px;">댓글 수</span>
-                           <i class="fa-regular fa-pen-to-square count-icon left-align"></i>
+                                style="margin-right: 14px;">댓글 수</span>
+                           <i class="fa-regular fa-pen-to-square fa-lg count-icon left-align"
+                                style="margin-right: 1px;"></i>
                            <span class="left-align" th:text="${item.mentionCnt}+'개'">언급 수</span>
-                           <span class="right-align" th:text="${item.coursViewCount}">조회수</span>
-                           <i class="fa-regular fa-eye count-icon right-align"
+                           <span class="right-align-number" th:text="${item.coursViewCount}">조회수</span>
+                           <i class="fa-regular fa-eye fa-lg count-icon right-align-eye"
                                 style="margin-top: 4px;"></i>
                         </p>
                     </div>

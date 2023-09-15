@@ -96,6 +96,5 @@ public class CourseLikeService {
 		
 		// 해당 courseLike를 최종 삭제한다.
 		courseLikeRepository.delete(courseLike);
-	}
-	
+	}	
 }

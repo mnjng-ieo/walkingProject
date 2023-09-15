@@ -35,8 +35,7 @@ public class CourseResponseDTO {
 	private String lnmAddr;
 	private Double coursSpotLa;
 	private Double coursSpotLo;	
-	private Integer CoursViewCount; 
-	//private UploadImage courseImageId;
+	private Integer coursViewCount; 
 	
 	// [뷰 추가 정보]
 	private Integer likeCnt;     // 좋아요 수
@@ -61,8 +60,7 @@ public class CourseResponseDTO {
 		this.lnmAddr = entity.getLnmAddr();
 		this.coursSpotLa = entity.getCoursSpotLa();
 		this.coursSpotLo = entity.getCoursSpotLo();
-		this.CoursViewCount = entity.getCoursViewCount();
-		//this.courseImageId = entity.getCourseImageId();
+		this.coursViewCount = entity.getCoursViewCount();
 	}
 	
 	public CourseResponseDTO(Course entity, int likeCnt, int mentionCnt, int commentCnt) {
@@ -82,8 +80,7 @@ public class CourseResponseDTO {
 		this.lnmAddr = entity.getLnmAddr();
 		this.coursSpotLa = entity.getCoursSpotLa();
 		this.coursSpotLo = entity.getCoursSpotLo();
-		this.CoursViewCount = entity.getCoursViewCount();
-		//this.courseImageId = entity.getCourseImageId();
+		this.coursViewCount = entity.getCoursViewCount();
 		this.likeCnt = likeCnt;
 		this.mentionCnt = mentionCnt;
 		this.commentCnt = commentCnt;

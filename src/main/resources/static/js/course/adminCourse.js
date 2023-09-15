@@ -46,10 +46,9 @@ function updateCourse(courseId) {
     const formData = new FormData();
     const imageUploadInput = document.getElementById('imageUploadInput');
     
-
     // (최종 업로드 취소되지 않은) 새로 업로드된 파일이 있는지 확인
     if (imageUploadInput.files.length === 0) {
-		// 이미지를 최종 선책하지 않은 경우
+		// 이미지를 최종 선택하지 않은 경우
 		formData.append('ifNewImageExists', 0);
 	} else {
 		// 이미지를 최종 선택한 경우

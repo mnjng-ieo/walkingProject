@@ -291,14 +291,22 @@ select option:checked {
 
 .countBox {
 	text-align: lest;
+	position: relative;
 }
 
 .left-align {
 	display: inline-block;
 }
 
-.right-align {
-	float: right;
+.right-align-number {
+	position: absolute;
+	right: 0px;
+}
+
+.right-align-eye {
+    position: absolute;
+    right: 30px;
+    top: 7px;
 }
 
 .pageInfo_wrap {

@@ -227,13 +227,7 @@ select option:checked {
 
 .course-list {
     font-family: 'NanumSquareRound';
-    cursor: pointer;
     height: 200px;
-    transform: scale(1);
-}
-
-.course-list:hover{
-    transform:scale(1.01);
 }
 
 .course-list_small-title {

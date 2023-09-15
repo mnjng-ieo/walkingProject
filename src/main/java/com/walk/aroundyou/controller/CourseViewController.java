@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
@@ -20,6 +24,7 @@ import com.walk.aroundyou.service.CommentService;
 import com.walk.aroundyou.service.CourseLikeService;
 import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.UploadImageService;
+import com.walk.aroundyou.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +38,7 @@ public class CourseViewController {
 	private final CourseLikeService courseLikeService;
 	private final UploadImageService uploadImageService;
 	private final CommentService commentService;
+	private final UserService userService;
 	
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
@@ -205,14 +211,46 @@ public class CourseViewController {
 	@GetMapping("/course/{courseId}")
 	public String getCourse(
 			@PathVariable Long courseId, 
-			//Principal principal,
+			@AuthenticationPrincipal User user,
 			@RequestParam(name = "page", required=false, defaultValue="0") int currentPage,
 	        @RequestParam(name = "sort", required= false, defaultValue = "boardId") String sort,
 			Model model) {
+		
+		// 조회한 좋아요 상태 확인
+		boolean isLiked;
+		
+		// 헤더에 정보 추가하기 위한 코드 + 좋아요 상태 
+		if (user != null) {
+			String userId = user.getUsername(); // 실제 로그인한 유저 정보
+			//model.addAttribute("userId", userId);
+			model.addAttribute("userId", "iampenny");
+			isLiked = courseLikeService.isCourseLiked(userId, courseId);
+			
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		} else {
+			isLiked = false;
+		}		
+		model.addAttribute("isLiked", isLiked);
+		
+		
 		CourseResponseDTO courseResponseDTO = 
 				courseService.findByIdWithCounts(courseId);
 		model.addAttribute("course", courseResponseDTO);
 		model.addAttribute("courseId", courseId);
+		
+		// 지도 모아보기 관련 코드 추가
+		String courseFlag = courseResponseDTO.getWlkCoursFlagNm();
+        List<Course> courseNames = courseService.findCourseNameByWlkCoursFlagNm(courseFlag);
+        log.info(""+courseNames.size());
+        model.addAttribute("courseNames", courseNames);
 		
 		// 이미지 경로 넘기기
 		//UploadImage uploadImage = courseResponseDTO.getCourseImageId();
@@ -226,14 +264,6 @@ public class CourseViewController {
 			log.info("imagePath : " + imagePath);
 			model.addAttribute("imagePath", imagePath);
 		} 
-		
-		//String userId = principal.getName(); // 실제 로그인한 유저 정보
-		String userId = "wayid1";              // 테스트용. 직접 부여
-		model.addAttribute("userId", userId);
-		
-		// 조회한 좋아요 상태 확인
-		boolean isLiked = courseLikeService.isCourseLiked(userId, courseId);
-		model.addAttribute("isLiked", isLiked);
 		
 	////// 9/14 댓글 리스트 불러오기(값 없을 때 체크)
 		List<ICommentResponseDto> comments = commentService.findByCourseId(courseId);
@@ -409,7 +439,7 @@ public class CourseViewController {
 			model.addAttribute("imagePath", imagePath);
 		} 
 		model.addAttribute("course", courseResponseDTO);
-		
+	
 		return "adminCourse";
 	}
 

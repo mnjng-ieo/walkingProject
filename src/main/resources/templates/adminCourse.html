@@ -5,11 +5,11 @@
 <head>
 <meta charset="UTF-8">
     <title>관리자 산책로 상세 조회</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/course/adminCourse.css">
     <link rel="stylesheet" href="/css/board/boardMap.css">
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f5041361e9b1c4d5fd6a9c27cfadb45e"></script>
     <script src="/js/course/adminCourse.js"></script>
+    <script src="/js/course/adminCourseMap.js"></script>
 </head>
 <body>
 <th:block layout:fragment="Content">
@@ -22,7 +22,8 @@
                             ${course.wlkCoursFlagNm}"></h1>
                 <h1 class="course-top_title2"
                     th:text="' - ' + 
-                            ${course.wlkCoursNm} + '을 보고계십니다.'"></h1>
+                            ${course.wlkCoursNm}"></h1>
+                <h3 class="course-top_title3">&nbsp;&nbsp;&nbsp;&nbsp;을 보고계십니다.</h3>
             </div>
             <div class="col-md-7 course-top_buttonBox">
                 <div class="row mb-3 course-top_topButton">
@@ -46,7 +47,7 @@
     </div>
     <div class="container courseInfo" th:object="${course}">
         <div class="row">
-            <div class="col-lg-7">
+            <div class="col-lg-6">
                 <table class="table">
                     <tr>
                     <!-- 
@@ -77,11 +78,11 @@
                     </tr>
                     <tr>
                         <td class="name">단위 거리</td>
-                        <td class="content" th:text="*{coursLtCn}" id="courseLength"></td>
+                        <td class="content" th:text="*{coursLtCn}"></td>
                     </tr>
                     <tr>
                         <td class="name">상세 거리</td>
-                        <td class="content" th:text="*{coursDetailLtCn} + ' km'"></td>
+                        <td class="content" th:text="*{coursDetailLtCn} + ' km'" id="courseLength"></td>
                     </tr>
                     <tr>
                         <td class="name">상세 설명</td>
@@ -114,10 +115,9 @@
                     </tr>
                 </table>
             </div>
-            <div class="col-lg-4 course-mapBox rounded-3" id="map">
+            <div class="col-lg-5 course-mapBox rounded-3" ms-auto id="map">
                 <div class="course-map">
                     <input type="hidden" th:value="${course.courseId}" id="courseId">
-                    
                 </div>      
             </div>
         </div>
@@ -126,7 +126,7 @@
                   th:src="${imagePath}? 
                   ${imagePath}: '/images/defaultCourseMainImg.jpg'" 
              -->
-            <p><i class="fa-solid fa-square-check" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
+            <p><i class="fa-solid fa-square-check fs-4" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
             <img class="course-main-img" 
                  th:src="${savedImageName}? 
                  '/upload-images/course/' + ${savedImageName} : '/images/defaultCourseMainImg.jpg'" 
