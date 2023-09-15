@@ -125,10 +125,9 @@
             </div>
         </div>
     </div>
-    <div class="container sortBox">
-	    
+    <div class="container sortBox position-relative">
 	    <!-- 정렬 방식 선택 : onchange 속성으로 값이 변경될 때마다 Ajax 요청 실행 -->
-	    <select class="course-list-sort sort border" 
+	    <select class="course-list-sort sort border position-absolute top-0 end-0" 
 	            id="sort" name="sort" 
 	            onchange="updateViewWithSearchResults();">
 	        <option value="default">산책로명 가나다순</option>
