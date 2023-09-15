@@ -78,9 +78,10 @@
                     th:text = "${#strings.length(board.boardTitle) &gt; 50 ? 
                     #strings.substring(board.boardTitle, 0, 50) + '...' : board.boardTitle}">글 제목</div>
                 <div class = "second d-flex">
-                    <p style="width: 30px; height: 30px;">
+                    <p style="width: 40px; height: 40px;">
                         <!-- ★★★★★★★★★★★★★★유저 프로필 이미지 추가!! -->
                         <img class="img-fluid mt-2"
+                        style="border-radius: 50%; width: 100%; height: 100%;"
                         th:src="${writerMemberImagePaths!=null}?
                             ${writerMemberImagePaths[stat.index]} : '/images/defaultUserImage.png'" />
                     </p>

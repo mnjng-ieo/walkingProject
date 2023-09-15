@@ -12,12 +12,12 @@
 <th:block layout:fragment="Content">
     <!-- 제목 및 조건 선택 박스 -->
     <div class="course-list-top">
-		<div class="container row course-list-top_searchBox">
-			<div class="col-md-5 course-list-top_title_group">
-				<h5 class="course-list-top_subtitle">원하는 조건의 산책로를 찾아보세요.</h5>
-		        <h1 class="course-list-top_title">산책로</h1>
-		        <h1 class="course-list-top_title2">전체 목록 조회</h1>
-	        </div>
+        <div class="container row course-list-top_searchBox">
+            <div class="col-md-5 course-list-top_title_group">
+                <h5 class="course-list-top_subtitle">원하는 조건의 산책로를 찾아보세요.</h5>
+                <h1 class="course-list-top_title">산책로</h1>
+                <h1 class="course-list-top_title2">전체 목록 조회</h1>
+            </div>
         
      
         <!-- 지역 선택 지도 그림 : 다음 버전에 구현하기로. -->
@@ -34,13 +34,13 @@
                           class="map1" onclick="eventRegion('노원구');"/>    
                 </map>
             </div>
-    	 -->
+         -->
             <!-- 토글 & 검색창 -->
             <div class="col-md-7 course-list-top_conditionBox">
                 <!-- 지역 선택 | 난이도 선택 | 소요시간 선택 | 코스거리 선택 -->
                 <div class="row mb-3 course-list-top_conditions">
                     <select class="course-list-top_condition region" 
-                            id="region" name="region">
+                            id="region" name="region" onchange="handleSelectChange(this)">
                         <option class="" value="">지역 선택</option>
                         <option class="" value="서울 강남구"
                             th:selected="${selectedRegion == '서울 강남구'}">서울 강남구</option>
@@ -70,7 +70,7 @@
                         <option class="" value="서울 중랑구">서울 중랑구</option>
                     </select>
                     <select class="course-list-top_condition level" 
-                            id="level" name="level">
+                            id="level" name="level" onchange="handleSelectChange(this)">
                         <option class="" value="">난이도 선택</option>
                         <option class="" value="매우쉬움">매우쉬움</option>
                         <option class="" value="쉬움">쉬움</option>
@@ -79,7 +79,7 @@
                         <option class="" value="매우어려움">매우어려움</option>
                     </select>
                     <select class="course-list-top_condition time" 
-                            id="time" name="time"> 
+                            id="time" name="time" onchange="handleSelectChange(this)"> 
                         <option class="" value="">소요시간 선택</option>
                         <option class="" value="1">1시간 이내</option>
                         <option class="" value="2">1~2시간 이내</option>
@@ -88,7 +88,7 @@
                         <option class="" value="5">4시간 이상</option>
                     </select>
                     <select class="course-list-top_condition distance" 
-                            id="distance" name="distance">
+                            id="distance" name="distance" onchange="handleSelectChange(this)">
                         <option class="" value="">코스 거리 선택</option>
                         <option class="" value="1Km미만">1Km 미만</option>
                         <option class="" value="1~5Km미만">1~5Km 미만</option>
@@ -108,7 +108,7 @@
                         <option value="aditDc">산책로 설명</option>
                     </select>
                     <input type="text" class="col-8 searchKeyword keyword" 
-                           id="searchKeyword" name="searchKeyword" 
+                           id="searchKeyword" name="searchKeyword" onchange="handleSelectChange(this)"
                            th:placeholder="${searchKeyword != null ? 
                                 searchKeyword : '원하는 키워드를 입력하세요.'}">
                 </div>
@@ -126,16 +126,16 @@
         </div>
     </div>
     <div class="container sortBox">
-	    <p class = "my-2 courseCount">게시물 수 : <span th:text="${courses.totalElements}"></span></p>
-	    <!-- 정렬 방식 선택 : onchange 속성으로 값이 변경될 때마다 Ajax 요청 실행 -->
-	    <select class="course-list-sort sort border" 
-	            id="sort" name="sort" 
-	            onchange="updateViewWithSearchResults();">
-	        <option value="default">산책로명 가나다순</option>
-	        <option value="coursViewCount">조회수 순</option>
-	        <option value="coursDetailLtCnASC">거리 짧은 순</option>
-	        <option value="coursDetailLtCnDESC">거리 먼 순</option>
-	    </select>
+        <p class = "my-2 courseCount">게시물 수 : <span th:text="${courses.totalElements}"></span></p>
+        <!-- 정렬 방식 선택 : onchange 속성으로 값이 변경될 때마다 Ajax 요청 실행 -->
+        <select class="course-list-sort sort border" 
+                id="sort" name="sort" 
+                onchange="updateViewWithSearchResults();">
+            <option value="default">산책로명 가나다순</option>
+            <option value="coursViewCount">조회수 순</option>
+            <option value="coursDetailLtCnASC">거리 짧은 순</option>
+            <option value="coursDetailLtCnDESC">거리 먼 순</option>
+        </select>
     </div>
     <div id="searchResults">
     <!-- 산책로 목록 카드 ; 검색 결과를 표시할 영역-->
@@ -153,17 +153,17 @@
                          image가 없는 course의 경우도 컨트롤러에서 기본값을 부여해줬다.
                           -->
                     <img class="card-img-top course-list_imgBox" 
-                   		 th:src="${imagePaths[stat.index]}"
+                         th:src="${imagePaths[stat.index]}"
                          alt="산책로 사진" />
                     <div class="card-body course-list_textbox">
                         <div class="course-list_titlebox">
                             <div class="row course-list_title">
                                 <!-- 산책로 이름 - 큰이름과 작은이름이 서로 같으면 큰 이름만 출력 되도록 
-		                             하려면 th:if="${item.wlkCoursNm} != ${item.wlkCoursFlagNm}" 붙이기 -->
-		                        <h5 class="col-10 card-title course-list_big-title" 
-		                            th:text="${item.wlkCoursFlagNm}">
-		                            산책로 큰이름</h5>
-		                        <!-- 산책로 난이도 -->
+                                     하려면 th:if="${item.wlkCoursNm} != ${item.wlkCoursFlagNm}" 붙이기 -->
+                                <h5 class="col-10 card-title course-list_big-title" 
+                                    th:text="${item.wlkCoursFlagNm}">
+                                    산책로 큰이름</h5>
+                                <!-- 산책로 난이도 -->
                                 <p class="col-3 rounded-pill badge text-center 
                                           d-inline-block course-list_level"
                                    th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : 
@@ -174,13 +174,13 @@
                                    th:text="${item.coursLevelNm}">난이도</p>
                             </div>
                             <div>
-		                        <!-- 산책로 큰이름과 작은 이름이 같은 경우 고려할 때
+                                <!-- 산책로 큰이름과 작은 이름이 같은 경우 고려할 때
                                 <h5 class="card-text"
                                     th:if="${item.wlkCoursNm} == ${item.wlkCoursFlagNm}"
                                     >&nbsp;</h5> -->
                                 <h3 class="card-text course-list_small-title" 
                                     th:text="${item.wlkCoursNm}">산책로 작은이름</h3>
-		                    </div>
+                            </div>
                         </div>
                         
                         <!-- 지역 -->
@@ -198,20 +198,20 @@
                                     #strings.substring(item.aditDc, 0, 70) + '...' 
                                     : item.aditDc}">산책로 설명
                         </p>
-                        <!-- 예정 : 좋아요 수 / 언급 수 / 댓글 수 -->
-                        <p class="card-text">
-                           <img class="heart-icon"
+                        <!-- 좋아요 수 / 언급 수 / 댓글 수 / 조회 수 -->
+                        <p class="card-text countBox">
+                           <img class="count-icon left-align"
                                  src="/images/common/heart-click.png" alt="좋아요" />
-                           <span th:text="${item.likeCnt}">좋아요 수</span>개 
-                           <span style="margin-right:15px;"></span>
-                           <i class="fa-regular fa-comment-dots"></i>
-                           <span th:text="${item.commentCnt}">댓글 수</span>개
-                           <span style="margin-right:15px;"></span>
-                           <i class="fa-regular fa-pen-to-square"></i>
-                           <span th:text="${item.mentionCnt}">언급 수</span>개
-                           <span style="margin-right:135px;"></span>
-                           <i class="fa-regular fa-eye "></i>
-                           <span th:text="${item.coursViewCount}">조회수</span>
+                           <span class="left-align" th:text="${item.likeCnt}+'개'"
+                                style="margin-right: 12px;">좋아요 수</span> 
+                           <i class="fa-regular fa-comment-dots count-icon left-align commentIcon"></i>
+                           <span class="left-align" th:text="${item.commentCnt}+'개'"
+                                style="margin-right: 12px;">댓글 수</span>
+                           <i class="fa-regular fa-pen-to-square count-icon left-align"></i>
+                           <span class="left-align" th:text="${item.mentionCnt}+'개'">언급 수</span>
+                           <span class="right-align" th:text="${item.coursViewCount}">조회수</span>
+                           <i class="fa-regular fa-eye count-icon right-align"
+                                style="margin-top: 4px;"></i>
                         </p>
                     </div>
                 </div>
@@ -234,18 +234,18 @@
                   <i class="fa-solid fa-chevron-left"></i></a>
            </li>
            <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
-	           <li th:if="${page == (currentPage+1)}" 
-	               class="page-item active">
-	               <a class="page-link page-number" 
-	               href="javascript:void(0);"
-	               th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
-	           </li>
-	           <li th:unless="${page == (currentPage+1)}" 
-	               class="page-item page-number">
-	               <a class="page-link" 
-	               href="javascript:void(0);"
+               <li th:if="${page == (currentPage+1)}" 
+                   class="page-item active">
+                   <a class="page-link page-number" 
+                   href="javascript:void(0);"
                    th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
-	           </li>
+               </li>
+               <li th:unless="${page == (currentPage+1)}" 
+                   class="page-item page-number">
+                   <a class="page-link" 
+                   href="javascript:void(0);"
+                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+               </li>
            </th:block>
            <li class="page-item" id="pageNext"
                th:classappend="${currentPage == lastPage} ? 'disabled' : ''">

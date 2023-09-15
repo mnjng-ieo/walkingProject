@@ -2,8 +2,6 @@ package com.walk.aroundyou.repository;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +12,6 @@ import com.walk.aroundyou.domain.Comment;
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.dto.AddCommentRequest;
 import com.walk.aroundyou.dto.ICommentResponseDto;
-import com.walk.aroundyou.dto.UpdateCommentRequest;
 
 import jakarta.transaction.Transactional;
 
@@ -33,13 +30,14 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	@Query(value="DELETE FROM comment_like WHERE comment_id = :#{#commentId}", nativeQuery=true)
 	void deleteCommentByCommentLikeId(@Param("commentId") Long commentId);
 	/* comment 내용 수정 메서드 */
-	@Transactional
-	@Modifying
-	@Query(value="UPDATE "
-			+ "comment c "
-			+ "	SET c.comment_content =:#{#update.commentContent}"
-			+ "	WHERE c.comment_id = :#{#commentId}", nativeQuery = true)
-	void updateCommentContent(@Param("commentId") Long commentId, @Param("update") UpdateCommentRequest update);
+//	@Transactional
+//	@Modifying
+//	@Query(value="UPDATE "
+//			+ "comment c "
+//			+ "	SET c.comment_content =:#{#update.commentContent}"
+//			+ "	WHERE c.comment_id = :#{#commentId}", nativeQuery = true)
+//	void updateCommentContent(@Param("commentId") Long commentId, @Param("update") UpdateCommentRequest update);
+//	
 	/* 해당 산책로(commentType = COURSE)에 관한 comment 개수 조회 메서드 */	
 	@Query(value="select "
 			+ "COUNT(c.comment_content) "
@@ -53,21 +51,13 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	//////////////////////////////////////////////////////////////////
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
+
 /* comment 조회 메서드  */
 	// 1. Board에서 board_id를 이용한 Comment 목록 조회 ( 닉네임 / 유저이미지 / 내용 / 수정날짜 / 좋아요 수 )
 	@Query(value= "SELECT"
 				+ " c.board_id AS boardId, "
 				+ " c.comment_id AS commentId, "
 				+ " c.user_nickname AS userNickname, "
-				+ " c.user_img AS userImg, "
 				+ " c.user_id AS userId, "
 				+ " c.comment_content AS commentContent, "
 				+ " c.comment_updated_date AS commentUpdatedDate, "
@@ -86,7 +76,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 			+ " c.course_Id AS courseId, "
 			+ " c.comment_id AS commentId, "
 			+ " c.user_nickname AS userNickname, "
-			+ " c.user_img AS userImg, "
 			+ " c.user_id AS userId, "
 			+ " c.comment_content AS commentContent, "
 			+ " c.comment_updated_date AS commentUpdatedDate, "
@@ -120,7 +109,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	@Modifying
 	@Transactional
 	@Query(value = "INSERT INTO comment "
-			+ "	(user_id, user_nickname, comment_content, course_id, comment_type)"
+			+ "	(user_id, user_nickname, comment_content, board_id, comment_type)"
 			+ "	VALUES "
 			+ "	(:#{#create.userId.userId}, :#{#create.userNickname}, :#{#create.commentContent}, "
 			+ " :#{#create.courseId.courseId}, 'COURSE')"

@@ -42,7 +42,6 @@ public class CourseService {
 	 * [산책로상세조회페이지] id로 산책로 하나 조회
 	 */
 	public Course findById(long id) {
-		
 		return courseRepository.findById(id)
 				.orElseThrow(() 
 						-> new IllegalArgumentException(

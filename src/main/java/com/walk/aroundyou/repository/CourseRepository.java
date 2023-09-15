@@ -199,17 +199,6 @@ public interface CourseRepository
 	List<ICourseResponseDTO> findMainCourseByKeyword(
 			@Param("keyword") String keyword);
 	
-	// 검색어를 기반으로 코스 결과의 전체 개수를 반환하는 메서드
-    @Query(value ="""
-    		SELECT COUNT(*) 
-    		FROM course c
-            WHERE REPLACE(wlk_cours_flag_nm, ' ', '') like :#{#keyword}
-	         or REPLACE(wlk_cours_nm, ' ', '') like :#{#keyword}
-	         or REPLACE(cours_dc, ' ', '') like :#{#keyword}
-	         or REPLACE(adit_dc, ' ', '') like :#{#keyword}
-	         """, nativeQuery = true)
-    int countCourseResults(@Param("keyword") String keyword);
-	
 ////9/7 변경
 	// 특정 게시물의 산책로 정보를 얻어오는 메소드
 	// 현재 게시물당 산책로는 하나만 선택되게 할 예정이지만, 더미데이터에는 여러개 있어서 임시로 List로 설정
@@ -259,6 +248,5 @@ public interface CourseRepository
 				ORDER BY 1
 			""", nativeQuery = true)
 	public List<Course> findCourseNameByWlkCoursFlagNm(@Param("wlkCoursFlagNm")String wlkCoursFlagNm);
-
 
 }

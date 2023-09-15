@@ -4,7 +4,6 @@ let courseResetBtn = document.getElementById('courseResetBtn');
 // 현재 페이지 초기화
 let currentPage = 0;
 
-
 // AJAX 요청 : 검색 조건 수집
 function updateViewWithSearchResults(){
     let region = document.getElementById('region').value;
@@ -14,6 +13,33 @@ function updateViewWithSearchResults(){
     let searchTargetAttr = document.getElementById('searchTargetAttr').value;
     let searchKeyword = document.getElementById('searchKeyword').value;
     let sort = document.getElementById('sort').value;
+    
+    // 여기서 선택된 필드에 대한 배경 색 변경
+    if (region != "") {
+        document.getElementById('region').style.backgroundColor = '#E1ECC8';
+    } else {
+        document.getElementById('region').style.backgroundColor = 'transparent';
+    }
+    if (level != "") {
+        document.getElementById('level').style.backgroundColor = '#E1ECC8';
+    } else {
+        document.getElementById('level').style.backgroundColor = 'transparent';
+    }
+    if (distance != "") {
+        document.getElementById('distance').style.backgroundColor = '#E1ECC8';
+    } else {
+        document.getElementById('distance').style.backgroundColor = 'transparent';
+    }
+    if (time != "") {
+        document.getElementById('time').style.backgroundColor = '#E1ECC8';
+    } else {
+        document.getElementById('time').style.backgroundColor = 'transparent';
+    }
+    if (searchKeyword != "") {
+        document.getElementById('searchKeyword').style.backgroundColor = '#E1ECC8';
+    } else {
+        document.getElementById('searchKeyword').style.backgroundColor = 'transparent';
+    }
     
     let xhr = new XMLHttpRequest();
     // 페이지 번호까지 쿼리 파라미터로 추가
@@ -58,4 +84,13 @@ function loadReset() {
 function redirectToCourseDetails(courseId){
     let url = "/course/" + courseId;
     window.location.href = url;
+}
+
+// 조건칸에 변화생기면 배경색 변화 이벤트
+function handleSelectChange(selectElement) {
+    if(selectElement.value === ""){
+        selectElement.style.backgroundColor = "transparent";
+    } else {
+        selectElement.style.backgroundColor = "#E1ECC8";
+    }
 }

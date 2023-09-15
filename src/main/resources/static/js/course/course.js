@@ -1,74 +1,119 @@
-let courseId;
-let userId;
-let isLiked;
+let courseSearchBtn = document.getElementById('courseSearchBtn');
+let courseResetBtn = document.getElementById('courseResetBtn');
 
+// 현재 페이지 초기화
+let currentPage = 0;
 
-window.onload = function() {
-    courseId = document.getElementById('courseId').value;
-    userId = document.getElementById('userId').value;
-    let isLikedString = document.getElementById('isLiked').value;
-    // isLikedString 이 "true"면 true를, 아니면 false 반환
-    isLiked = isLikedString === "true";
+// AJAX 요청 : 검색 조건 수집
+function updateViewWithSearchResults(){
+    let region = document.getElementById('region').value;
+    let level = document.getElementById('level').value;
+    let distance = document.getElementById('distance').value;
+    let time = document.getElementById('time').value;
+    let searchTargetAttr = document.getElementById('searchTargetAttr').value;
+    let searchKeyword = document.getElementById('searchKeyword').value;
+    let sort = document.getElementById('sort').value;
     
-    console.log("isLiked : " + isLiked);
-    console.log("userId : " + userId);
-    console.log("courseId: " + courseId);
+    // 여기서 선택된 필드에 대한 배경 색 변경
+    if (region != "") {
+        document.getElementById('region').style.backgroundColor = '#E1ECC8';
+    } else {
+        document.getElementById('region').style.backgroundColor = 'transparent';
+    }
+    if (level != "") {
+        document.getElementById('level').style.backgroundColor = '#E1ECC8';
+    } else {
+        document.getElementById('level').style.backgroundColor = 'transparent';
+    }
+    if (distance != "") {
+        document.getElementById('distance').style.backgroundColor = '#E1ECC8';
+    } else {
+        document.getElementById('distance').style.backgroundColor = 'transparent';
+    }
+    if (time != "") {
+        document.getElementById('time').style.backgroundColor = '#E1ECC8';
+    } else {
+        document.getElementById('time').style.backgroundColor = 'transparent';
+    }
+    if (searchKeyword != "") {
+        document.getElementById('searchKeyword').style.backgroundColor = '#E1ECC8';
+    } else {
+        document.getElementById('searchKeyword').style.backgroundColor = 'transparent';
+    }
     
-    // isLiked 의 상태 확인하기
-    if(isLiked) {
-            console.log(`이 코스는 ${courseId}의 좋아요 상태입니다.`);
-        } else {
-            console.log(`이 코스는 ${courseId}의 좋아요 상태가 아닙니다.`);
+    let xhr = new XMLHttpRequest();
+    // 페이지 번호까지 쿼리 파라미터로 추가
+    xhr.open("GET", "/admin/courses?region=" + region + 
+            "&level=" + level + "&time=" + time + "&distance=" + distance
+            + "&searchTargetAttr=" + searchTargetAttr
+            + "&searchKeyword=" + searchKeyword
+            + "&sort=" + sort + "&page=" + currentPage, true);
+    
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            // AJAX 요청이 성공적으로 완료되었을 때 뷰 업데이트
+            let response = xhr.responseText;
+            
+            // response를 파싱해서 searchResults div 내용만 추출
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(response, 'text/html');
+            let searchResultsContent = 
+                    doc.querySelector('#searchResults').innerHTML;
+                    
+            // searchResults div 내용 교체
+            document.getElementById("searchResults").innerHTML = searchResultsContent;  
         }
+    };
+    
+    xhr.send();
 }
 
-// 좋아요 아이콘 클릭할 때마다 바뀌는 이미지 설정
-function toggleLikeImage(element) {
-    let img = element.querySelector('img');
-    // 경로를 처리하는 컨트롤러 메소드에서 @RequestBody 어노테이션이 붙은 매개변수가 있어서
-    // 요청
-    fetch(`http://localhost/api/courses/${courseId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})
-    })
-    .then(() => {
-        if (isLiked) {
-        img.src = "/images/common/heart-nonclick.png";
-        isLiked = false;
-        console.log(`이 코스는 ${courseId}의 좋아요가 취소되었습니다.`);
-        } else {
-            img.src = "/images/common/heart-click.png";
-            isLiked = true;
-            console.log(`이 코스는 ${courseId}의 좋아요가 추가되었습니다.`);
-        }
+// 페이지 번호를 클릭할 때 해당 페이지로 Ajax 요청 보내기
+function loadPage(newPage) {
+    // 페이지 번호 업데이트
+    currentPage = newPage;    
+    updateViewWithSearchResults();
+}
+
+// 초기화 버튼 클릭 이벤트
+function loadReset() {
+    window.location.href = '/admin/courses';
+}
+
+// 사용자 페이지에서 목록 확인하기 버튼 클릭 이벤트
+function openUserPageInNewTab() {
+	window.open('/course', '_blank');
+}
+
+// [목록, 상세 페이지] 수정 페이지로 이동
+function loadUpdatePage(courseId) {
+    window.location.href = '/admin/courses/update/' + courseId;
+}
+
+// [목록, 상세, 수정 페이지] 삭제 기능
+function deleteCourse(courseId) {
         
-    })
-}
-
-// 좋아요 아이콘 마우스 오버 시 이미지 변경
-function changeLikeImage(element) {
-    let img = element.querySelector('img');
-    //if (!isLiked) {
-        img.src = "/images/common/heart-hover.png";
-    //}
-}
-
-// 좋아요 아이콘 마우스 아웃 시 이미지 원래대로 변경
-function restoreLikeImage(element) {
-    let img = element.querySelector('img');
-    if (!isLiked) {
-        img.src = "/images/common/heart-nonclick.png";
-    } else if(isLiked) {
-        img.src = "/images/common/heart-click.png";
+    // 삭제 요청 확인 대화 상자 표시
+    const confirmDelete = confirm('정말로 ' + courseId + '번 산책로를 삭제하시겠습니까?');
+    
+    if(confirmDelete) {
+        fetch(`/api/admin/courses/${courseId}`, {
+        method: 'DELETE'
+        })
+        .then(() => {
+            alert('삭제가 완료되었습니다.');
+            location.replace('/admin/courses');
+        });
+    } else {
+        // 아니오를 선택한 경우 아무 작업 수행하지 않고 현재 페이지에 머무르기
     }
 }
 
-
-
-
-
-
-
+// 조건칸에 변화생기면 배경색 변화 이벤트
+function handleSelectChange(selectElement) {
+    if(selectElement.value === ""){
+        selectElement.style.backgroundColor = "transparent";
+    } else {
+        selectElement.style.backgroundColor = "#E1ECC8";
+    }
+}

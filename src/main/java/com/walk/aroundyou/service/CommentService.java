@@ -11,7 +11,6 @@ import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.dto.AddCommentRequest;
 import com.walk.aroundyou.dto.ICommentResponseDto;
-import com.walk.aroundyou.dto.UpdateCommentRequest;
 import com.walk.aroundyou.repository.CommentRepository;
 import com.walk.aroundyou.repository.UserRepository;
 
@@ -55,11 +54,11 @@ public class CommentService {
 		log.info("/course/{courseId}/countcomment 서비스 접근");
 		return commentRepo.countCourseCommentByCourseId(courseId);
 	}
-	/* comment 수정 */
-	@Transactional
-	public void update(Long commentId, UpdateCommentRequest updateReq) {
-		commentRepo.updateCommentContent(commentId,updateReq);
-	}
+//	/* comment 수정 */
+//	@Transactional
+//	public void update(Long commentId, UpdateCommentRequest updateReq) {
+//		commentRepo.updateCommentContent(commentId,updateReq);
+//	}
 	//////////////////////////////////////////////////////////////////
 
 	
@@ -96,7 +95,7 @@ public class CommentService {
 	// COURSE 타입 코멘트 글 추가 메서드 
 	public int saveCommentAsCourse(AddCommentRequest comment) {
 		Optional<Member> member = userRepository.findById(comment.getUserId().getUserId());
-		log.info("/save/course/comment 서비스 접근");
+		log.info("/save/board/comment 서비스 접근");
 		if(member.isPresent()) {
 			log.info("사용자를 찾았어요");			
 			comment.setUserNickname(member.get().getUserNickname());
@@ -115,7 +114,7 @@ public class CommentService {
 		log.info("/delete/board/comment 서비스 접근");
 		try {
 			Optional<Comment> checkComment = commentRepo.findById(commentId);
-			if(checkComment.isEmpty() || !checkComment.get().getUserId().getUserId().equals(userId)) {
+			if(checkComment.isEmpty() || checkComment.get().getUserId().getUserId().equals(userId)) {
 				throw new Exception("잘못된 접근");
 			}
 		} catch (Exception e) {

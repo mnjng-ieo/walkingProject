@@ -7,7 +7,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,10 +18,8 @@ import com.walk.aroundyou.domain.Comment;
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.dto.AddCommentRequest;
-import com.walk.aroundyou.dto.UpdateCommentRequest;
 import com.walk.aroundyou.service.CommentService;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,13 +73,13 @@ public class CommentApiController {
 //		// comment_id로 조회된 comment_id 삭제 
 //		commentService.deleteCommentByCommentId(commentId);
 //	}
-	/* comment 수정 */
-	@PutMapping("/update/comment/{commentId}")
-	public void updateComment(
-				@PathVariable(name = "commentId") Long commentId, 
-				@RequestBody UpdateCommentRequest updateReq){
-		commentService.update(commentId, updateReq);	
-	}
+//	/* comment 수정 */
+//	@PutMapping("/update/comment/{commentId}")
+//	public void updateComment(
+//				@PathVariable(name = "commentId") Long commentId, 
+//				@RequestBody UpdateCommentRequest updateReq){
+//		commentService.update(commentId, updateReq);	
+//	}
 	/* 해당 산책로(commentType = COURSE)에 관한 comment 개수 조회 메서드 */	
 	@GetMapping("/course/{courseId}/countcomment")
 	public long countCourseCommentByCourseId(@PathVariable(name = "courseId") Long courseId) {
@@ -157,7 +154,7 @@ public class CommentApiController {
 	public ResponseEntity<?> createCourseComment(@PathVariable(name = "courseId") Long courseId
 			, @RequestBody AddCommentRequest comment
 			, @AuthenticationPrincipal User user){
-		log.info("/api/comment/course/{courseId} 컨트롤러 접근");
+		log.info("/api/comment/board/{boardId} 컨트롤러 접근");
 		comment.setUserId(Member.builder().userId(user.getUsername()).build());
 		comment.setCourseId(Course.builder().courseId(courseId).build());
 		comment.setCommentCreatedDate(new Timestamp(System.currentTimeMillis()));

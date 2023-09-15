@@ -15,8 +15,6 @@ import com.walk.aroundyou.service.BoardLikeService;
 import lombok.extern.slf4j.Slf4j;
 
 
-
-
 @RestController
 @Slf4j
 // @ResponseBody 와 @Controller 의 기능을 내장함
