@@ -52,8 +52,7 @@
             <div class="col-lg-6">
                 <!-- 서버로 courseId 값 넘기기 -->
                 <input type="hidden" id="courseId" th:value="*{courseId}" />
-                <!-- class="table" 추가하면 아랫줄 생기는데 input 태그 조절 어려워서 일단 제거 -->
-                <table >
+                <table class="table table-borderless">
                     <tr>
                         <!-- 수정 불가 : 수정 불가능이라고 작게 메시지 떠도 좋겠다. -->
                         <td class="name">산책로 고유 ID</td>
@@ -280,7 +279,7 @@
                 </table>
             </div>
             <!-- 지도 -->
-            <div class="col-lg-5 course-mapBox rounded-3 border ms-auto" id="map">
+            <div class="col-lg-5 course-mapBox rounded-3 border" id="map">
                 <div class="course-map">
                     <input type="hidden" th:value="${course.courseId}" id="courseId">
                     <p><em>지도를 클릭해주세요!</em></p> 
@@ -302,7 +301,7 @@
             <input type="file" id="imageUploadInput" 
                    style="display:none;" accept="image/*">
             <input type="hidden" name="ifNewImageExists"
-                   id="ifNewImageExists" value="1">       
+                   id="ifNewImageExists" value="0">       
             <img class="course-main-img" id="courseMainImage"
                  th:src="${imagePath}?${imagePath} : '/images/defaultCourseMainImg_modify.png'" 
                  alt="산책로 사진" />

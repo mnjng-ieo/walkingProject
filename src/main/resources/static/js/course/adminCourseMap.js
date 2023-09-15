@@ -14,6 +14,14 @@ window.onload = function(){
     let courseLength = getValue("courseLength").innerHTML
     let courseTime = getValue("courseTime").innerHTML
     
+    let savedImageName = getValue("savedImageName").value;
+    let imagePath;
+    if (savedImageName) {
+        imagePath = '/upload-images/course/' + savedImageName;
+    } else {
+        imagePath = '/images/defaultCourseMainImg.jpg';
+    }
+    
     // 경도, 위도 변수 
 
     let mapContainer = document.getElementById('map'), // 지도를 표시할 div 
@@ -42,8 +50,9 @@ window.onload = function(){
                         </div>
                         <div class="body">
                             <div class="img">
-                                <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">
-                           </div>
+                                <img src="${imagePath}"
+                                    style="width:100%; height:100%;">
+                            </div>
                             <div class="desc">
                                 <div class="ellipsis">${courseName}</div>
                                 <div class="textsm ellipsis">${courseAddr}</div> 

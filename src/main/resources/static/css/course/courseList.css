@@ -180,7 +180,8 @@ select option:checked {
     margin-top: -100px;
     align-items: center;
     align-content: center; 
-    justify-content: space-between;
+    justify-content:flex-end;
+    padding-right: 30px;
 }
 
 .sortBox > * {
@@ -193,13 +194,16 @@ select option:checked {
 .courseCount{
     color:#3D8361;
     font-weight: bold;
-    font-size: 1.2rem;
-    margin: 0;
+    font-size: 1.3rem;
+    margin-left: 10px;
     padding-top: 40px;
+    position: absolute;
+    top: -115px;
 }
 
 .course-lists{
     margin-top: 25px;
+    position:relative;
 }
 
 .course-list-sort {

@@ -31,22 +31,22 @@
                 <!-- Home --> 
                 <li class="nav-item">
                     <a th:href="@{/}" id="nav-link" class="nav-link px-3" 
-                        aria-current="page" style="color: white;">Home</a>
+                        aria-current="page">Home</a>
                 </li>
                 
                 <!-- 산책로목록 --> 
                 <li class="nav-item">
-                    <a th:href="@{/course}" id="nav-link" class="nav-link px-3" style="color: white;">산책로목록</a>
+                    <a th:href="@{/course}" id="nav-link" class="nav-link px-3" >산책로목록</a>
                 </li>
                 
                 <!-- 커뮤니티 --> 
                 <li class="nav-item">
-                    <a th:href="@{/board}" id="nav-link" class="nav-link px-3" style="color: white;">커뮤니티</a>
+                    <a th:href="@{/board}" id="nav-link" class="nav-link px-3" >커뮤니티</a>
                 </li>
                 
                 <!-- 마이페이지 --> 
                 <li class="nav-item">
-                    <a th:href="@{/main/mypage}" id="nav-link" class="nav-link px-3" style="color: white;">마이페이지</a>
+                    <a th:href="@{/main/mypage}" id="nav-link" class="nav-link px-3" >마이페이지</a>
                 </li>
             </ul>
             
@@ -54,8 +54,10 @@
             <div class="nav">
                 <div th:if="${loginId == null}" class="d-flex flex-wrap">
                     <!-- 로그인 안 된 상태에서 nav에 로그인, 회원가입 버튼 보이기 -->
-                    <a th:href="@{/login}" class="nav-link px-3" style="color: white;">로그인</a>
-                    <a th:href="@{/signup}" class="nav-link px-3" style="color: white;">회원가입</a>
+                    <button class="nav-link px-3 header-login-button"
+                            onclick="location.href='/login'">로그인</button>
+                    <button class="nav-link px-3 header-signup-button"
+                            onclick="location.href='/signup'">회원가입</button>
                 </div>
 
                 <!-- 로그인된 상태에서 보이기 -->
@@ -70,13 +72,11 @@
                     </div>
                     <div class="nav-item" >
                         <span class="nav-link px-3"
-                            th:text="${loginId} + ' 님'"
-                            style="color: white;"></span>
+                            th:text="${loginId} + ' 님'"></span>
                     </div>
                     <div class="nav-item">
                         <a th:href="@{/logout}" 
-	                        class="nav-link px-3"
-	                        style="color: white;">Logout</a>
+	                        class="nav-link px-3">Logout</a>
                     </div>
                 </div>
             </div>

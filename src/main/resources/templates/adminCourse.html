@@ -127,6 +127,8 @@
                   ${imagePath}: '/images/defaultCourseMainImg.jpg'" 
              -->
             <p><i class="fa-solid fa-square-check fs-4" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
+            <input type="hidden" th:value="${savedImageName}" id="savedImageName">
+            <input type="hidden" th:value="${imagePath}" id="imagePath">
             <img class="course-main-img" 
                  th:src="${savedImageName}? 
                  '/upload-images/course/' + ${savedImageName} : '/images/defaultCourseMainImg.jpg'" 

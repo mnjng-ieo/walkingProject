@@ -223,7 +223,7 @@ public class CourseViewController {
 		if (user != null) {
 			String userId = user.getUsername(); // 실제 로그인한 유저 정보
 			//model.addAttribute("userId", userId);
-			model.addAttribute("userId", "iampenny");
+			model.addAttribute("loginId", "iampenny");
 			isLiked = courseLikeService.isCourseLiked(userId, courseId);
 			
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
@@ -431,10 +431,10 @@ public class CourseViewController {
 		if (uploadImage != null) {
 			String savedImageName = uploadImage.getSavedFileName();
 			model.addAttribute("savedImageName", savedImageName);
-			
 			imagePath = 
 					uploadImageService.findCourseFullPathById(
 							uploadImage.getFileId());
+			log.info("savedImageName : " + savedImageName);
 			log.info("imagePath : " + imagePath);
 			model.addAttribute("imagePath", imagePath);
 		} 

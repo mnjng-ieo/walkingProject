@@ -68,6 +68,19 @@ function updateViewWithSearchResults(){
     xhr.send();
 }
 
+// 엔터 키를 눌렀을 때 검색 이벤트 처리
+document.addEventListener('keyup', function(event) {
+    if(event.key === 'Enter'){
+        updateViewWithSearchResults();
+        scrollToPosition();
+    }
+});
+
+// 검색 - 스크롤 이벤트 핸들러 추가
+function scrollToPosition(){
+    window.scrollBy(0,500);  // 세로 스크롤
+}
+
 // 페이지 번호를 클릭할 때 해당 페이지로 Ajax 요청 보내기
 function loadPage(newPage) {
     // 페이지 번호 업데이트

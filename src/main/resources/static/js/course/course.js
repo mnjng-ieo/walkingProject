@@ -129,7 +129,7 @@ function toggleLikeImage(element) {
     if(userId != null) {
         // 좋아요 처리 요청
         // 경로를 처리하는 컨트롤러 메소드에서 @RequestBody 어노테이션이 붙은 매개변수가 있어서
-        fetch(`http://localhost/api/courses/${courseId}`, {
+        fetch(`/api/courses/${courseId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -98,11 +98,12 @@
 }
 
 .name {
-    width: 23%;
+    width: 30%;
+    padding-right: 15px;
 }
 
 .content {
-    width: 77%;
+	width: 70%;
 }
 
 input {
@@ -132,7 +133,7 @@ input {
 
 .course-mapBox {
     background-color: lightyellow;
-    margin-right: 30px;
+    margin-left: 70px;
 }
 
 
