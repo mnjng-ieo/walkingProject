@@ -7,10 +7,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,14 +15,16 @@ import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.role.StateId;
 import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICommentResponseDto;
 import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
-import com.walk.aroundyou.dto.UserPasswordSendDTO;
 import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.repository.BoardRepository;
 import com.walk.aroundyou.repository.CourseLikeRepository;
+import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -51,6 +49,9 @@ public class UserService {
 	
 	@Autowired
 	private CourseLikeRepository courseLikeRepository;
+	
+	@Autowired
+	private CourseRepository courseRepository;
 	
 	// 화면에 보이는 최대 게시글 수 5개	(연서 추가)
 	private final static int SIZE_OF_PAGE = 5;
@@ -147,6 +148,16 @@ public class UserService {
 	//// 마이페이지 내가 좋아요 한 산책로 확인(연서 추가)
 	public Page<ICourseLikeResponseDTO> findMyCourseAndCnt(String userId, int page) {
 		return courseLikeRepository.findMyCourseAndCnt(userId, PageRequest.of(page, 6));
+	}
+	
+	//// 마이페이지 내가 댓글 작성한 산책로 확인(연서 추가)
+	public Page<ICourseResponseDTO> findMyCourseCommentAndCnt(String userId, int page) {
+		return courseRepository.findMyCourseCommentAndCnt(userId, PageRequest.of(page, 6));
+	}
+	
+	////마이페이지 내가 댓글 작성한 게시물 확인(연서 추가)
+	public Page<IBoardListResponse> findMyBoardCommentAndCnt(String userId, int page) {
+		return boardRepository.findMyBoardCommentAndCnt(userId, PageRequest.of(page, SIZE_OF_PAGE));
 	}
 	
 	//////////// 2. 아이디 검색
@@ -299,6 +310,11 @@ public class UserService {
 		member.setUserPwd(encryptPassword);
 		log.info("임시 비밀번호 업데이트");
 	}
+
+
+
+
+
 	
 	
 

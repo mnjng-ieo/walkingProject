@@ -31,6 +31,7 @@ import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
@@ -183,7 +184,7 @@ public class UserController {
 	// 로그인 된 상태에 탈퇴를 하는 거니까 인증된 사용자의 정보를 받아오는 principal 사용
 	// 처음 불러오는 정보
 	// @PreAuthorize("isAuthenticated()")
-	@GetMapping("/main/mypage")
+	@GetMapping("/mypage")
 	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
 	public String showMypage(
 			Model model, Authentication authentication, 
@@ -233,6 +234,9 @@ public class UserController {
 						(PAGINATION_SIZE < totalPages)? 
 								pageStart + PAGINATION_SIZE - 1
 								:totalPages;
+						if(pageEnd == 0) {
+					          pageEnd = 1;
+					    }
 				// model에 user 객체 추가해서 뷰로 넘겨줌				
 				model.addAttribute("user", member.get());
 				
@@ -251,8 +255,8 @@ public class UserController {
 			return "login"; // 로그인 페이지로 리다이렉트 또는 다른 처리를 수행
 		}
 	}
-
-	@GetMapping("main/mypage-course")
+	// 마이페이지에서 내 좋아요한 산책로 확인하기(연서 추가)
+	@GetMapping("/mypage-course")
 	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
 	public String showMyCourse(
 			Model model, Authentication authentication, 
@@ -302,6 +306,9 @@ public class UserController {
 						(PAGINATION_SIZE < totalPages)? 
 								pageStart + PAGINATION_SIZE - 1
 								:totalPages;
+						if(pageEnd == 0) {
+					          pageEnd = 1;
+					    }
 				// model에 user 객체 추가해서 뷰로 넘겨줌				
 				model.addAttribute("user", member.get());
 				
@@ -321,7 +328,153 @@ public class UserController {
 		}
 	}
 
+	// 마이페이지에서 내 산책로 댓글 확인하기(연서 추가)
+	@GetMapping("/mypage/course-commenet")
+	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
+	public String showMyCourseComment(
+			Model model, Authentication authentication, 
+			@AuthenticationPrincipal User user,
+			@RequestParam(value = "page", required=false, defaultValue="0") int currentPage) {
 
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
+
+		if (authentication != null && authentication.isAuthenticated()) {
+			// 현재 로그인한 사용자 아이디
+			String userId = authentication.getName();
+			// 위에 가져온 아이디를 기준으로 사용자 정보 불러옴
+			Optional<Member> member = userService.findByUserId(userId);
+
+			if (member.isPresent()) {
+				// 이미지 경로 넘기기
+				UploadImage uploadImage = 
+						uploadImageService.findByUser(member.get());
+				String imagePath;
+				if (uploadImage != null) {
+					imagePath = 
+							uploadImageService.findUserFullPathById(
+									uploadImage.getFileId());
+					log.info("imagePath : " + imagePath);
+					model.addAttribute("imagePath", imagePath);
+				}	
+
+				Page<ICourseResponseDTO> myCourseComments =
+					userService.findMyCourseCommentAndCnt(userId, currentPage);
+				
+				// pagination 설정
+				int totalPages = myCourseComments.getTotalPages();
+				int pageStart = getPageStart(currentPage, totalPages);
+				int pageEnd = 
+						(PAGINATION_SIZE < totalPages)? 
+								pageStart + PAGINATION_SIZE - 1
+								:totalPages;
+						if(pageEnd == 0) {
+					          pageEnd = 1;
+					    }								
+								
+				// model에 user 객체 추가해서 뷰로 넘겨줌				
+				model.addAttribute("user", member.get());
+				
+				model.addAttribute("lastPage", totalPages);
+				model.addAttribute("currentPage", currentPage);
+				model.addAttribute("pageStart", pageStart);
+				model.addAttribute("pageEnd", pageEnd);
+				model.addAttribute("myCourseComments", myCourseComments);
+				
+				return "mypageCourseComment";
+			} else {
+				return "error";
+			}
+		} else {
+			// 로그인되지 않은 경우 처리
+			return "login"; // 로그인 페이지로 리다이렉트 또는 다른 처리를 수행
+		}
+	}
+	
+	// 마이페이지에서 게시물 내 댓글 확인하기(연서 추가)
+	@GetMapping("/mypage/board-commenet")
+	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
+	public String showMyBoardComment(
+			Model model, Authentication authentication, 
+			@AuthenticationPrincipal User user,
+			@RequestParam(value = "page", required=false, defaultValue="0") int currentPage) {
+
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
+
+		if (authentication != null && authentication.isAuthenticated()) {
+			// 현재 로그인한 사용자 아이디
+			String userId = authentication.getName();
+			// 위에 가져온 아이디를 기준으로 사용자 정보 불러옴
+			Optional<Member> member = userService.findByUserId(userId);
+
+			if (member.isPresent()) {
+				// 이미지 경로 넘기기
+				UploadImage uploadImage = 
+						uploadImageService.findByUser(member.get());
+				String imagePath;
+				if (uploadImage != null) {
+					imagePath = 
+							uploadImageService.findUserFullPathById(
+									uploadImage.getFileId());
+					log.info("imagePath : " + imagePath);
+					model.addAttribute("imagePath", imagePath);
+				}	
+
+				Page<IBoardListResponse> myBoardComments =
+					userService.findMyBoardCommentAndCnt(userId, currentPage);
+				
+				// pagination 설정
+				int totalPages = myBoardComments.getTotalPages();
+				int pageStart = getPageStart(currentPage, totalPages);
+				int pageEnd = 
+						(PAGINATION_SIZE < totalPages)? 
+								pageStart + PAGINATION_SIZE - 1
+								:totalPages;
+						if(pageEnd == 0) {
+					          pageEnd = 1;
+					    }
+				// model에 user 객체 추가해서 뷰로 넘겨줌				
+				model.addAttribute("user", member.get());
+				
+				model.addAttribute("lastPage", totalPages);
+				model.addAttribute("currentPage", currentPage);
+				model.addAttribute("pageStart", pageStart);
+				model.addAttribute("pageEnd", pageEnd);
+				model.addAttribute("myBoardComments", myBoardComments);
+				
+				return "mypageBoardComment";
+			} else {
+				return "error";
+			}
+		} else {
+			// 로그인되지 않은 경우 처리
+			return "login"; // 로그인 페이지로 리다이렉트 또는 다른 처리를 수행
+		}
+	}
+	
 	// pagination의 시작 숫자 얻는 메소드(연서 추가)
 	private int getPageStart(int currentPage, int totalPages) {
 		int result = 1;
@@ -338,7 +491,7 @@ public class UserController {
 	// 변경 후 불러오는 정보
 	///////// 0913 지수 추가 - 이미지 업로드 처리
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
-	@PostMapping("/main/mypage")
+	@PostMapping("/mypage")
 	public String processMypage(
 			@RequestParam("userId") String userId,
 			@ModelAttribute UpdateMypageDTO dto,
@@ -410,7 +563,7 @@ public class UserController {
 		// userNickname.toString(), userImg.toString(), userDescription.toString());
 
 		if (updatedUser != null) {
-			return "redirect:/main/mypage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
+			return "redirect:/mypage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
 		} else {
 			model.addAttribute("showAlert", false);
 
@@ -422,7 +575,7 @@ public class UserController {
 	//////////////////// 유저페이지
 	// import org.springframework.security.core.userdetails.User;
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/main/mypage/userpage")
+	@GetMapping("/mypage/userpage")
 	public String showUserpage(
 			Model model, 
 			Authentication authentication, 
@@ -462,7 +615,7 @@ public class UserController {
 	}
 
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
-	@PostMapping("/main/mypage/userpage")
+	@PostMapping("/mypage/userpage")
 	public String processuserpage(
 			UpdateUserpageDTO dto, 
 			Model model, 
@@ -486,7 +639,7 @@ public class UserController {
 		Member updatedMember = userService.updateUserInfo(dto);
 
 		if (updatedMember != null) {
-			return "redirect:/main/mypage/userpage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
+			return "redirect:/mypage/userpage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
 		} else {
 			model.addAttribute("showAlert", false);
 

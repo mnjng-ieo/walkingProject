@@ -11,7 +11,6 @@
 <script
 	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 <!-- 자바스크립트 -->
-<script type="text/javascript" src="/js/common/mypage.js"></script>
 <script type="text/javascript" src="/js/common/mypageCourse.js"></script> 
 <!-- css -->
 <link rel="stylesheet" href="/css/common/mypageCourse.css">
@@ -76,20 +75,20 @@
           </div>        
       </div>
     </div>
-</section><!-- 사이드바 끝 -->   
+</section><!-- 사이드바 끝 -->     
     
     <!-- 내가 좋아요 한 산책로 -->
     <div id="searchResults">
     <!-- 산책로 목록 카드 ; 검색 결과를 표시할 영역-->
     <div class="container course-lists" >
-    <h1 class = "my-5 text-center course-title" >내가 <i class="fa-solid fa-heart" style="color: #ff0000;"></i> 한 산책로 모아보기</h1>     
+    <h1 class = "my-5 text-center course-title" >댓글 작성한 산책로 모아보기</h1>     
     <p class = "my-3 px-4 myCount">
-       산책로 수 : <span th:text="${myCourses.totalElements}"></span></p>
+       산책로 수 : <span th:text="${myCourseComments.totalElements}"></span></p>
 
         <div class="row px-4">
-            <p th:if="${myCourses.totalElements == 0}" 
-                  class= "noResult mx-5 mt-5 text-center fs-1">좋아요 한 산책로가 없습니다.</p>
-            <div class="col-4" th:each="item : ${myCourses}">
+            <p th:if="${myCourseComments.totalElements == 0}" 
+               class= "noResult my-5 text-center fs-5">작성하신 댓글이 없습니다.</p>
+            <div class="col-4" th:each="item : ${myCourseComments}">
                 <div class="card course-list"
                      th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
                     <!-- 예정 : Course에 추가할 coursImg. 현재 default만 설정 -->

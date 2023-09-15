@@ -15,12 +15,6 @@
 <!-- css -->
 <link rel="stylesheet" href="/css/common/mypage.css">
 
-
-<!-- 변경 실패 시 알림 -->
-   <script th:if="${showAlert}">
-      alert('소개글 변경이 실패됐습니다.');
-   </script>
-
 </head>
 <body>
 <th:block layout:fragment="Content">
@@ -80,141 +74,22 @@
           </div>        
       </div>
     </div>
-</section><!-- 사이드바 끝 -->             
+</section><!-- 사이드바 끝 -->          
 
     <div class="container">
         
-        <h1 class="my-5 text-center formTitle">My Page</h1>
+        <h1 class="my-5 text-center">댓글 작성한 게시물 모아보기</h1>
                 
-        <!-- 유저 소개 조회 -->
-        <div class="formBox" id="getUserBox">
-            <div class="needs-validation" th:object="${user}">
-                <input type="hidden" name="userId" th:value="${user.userId}">
-                <div class="m-3 d-flex justify-content-center userBox">
-                    <div class="user-imgWithBtnBox">
-                    <div class="user-imgBox">
-                        <!-- src="/images/defaultUserImage.png"-->
-                        <div class="user-imgBox_imageborder">
-                            <img class="user-imgBox_image" 
-                                alt="유저 프로필 사진"
-                             th:src="${imagePath}? 
-                             ${imagePath}: '/images/defaultUserImage.png'" />
-                         </div>
-                    </div>
-                    </div>
-                    <div class="m-3 user-infoBox">
-                        <div class="row user-nicknameBox" style="margin-top: 10px;">
-                            <div class="col-md-6">
-                                <span th:text="*{userNickname}"
-                                    class="userNickname fixedName">내 닉네임</span>
-                            </div>
-                            <div class="col-md-6">
-                                <!--  -->
-                                <button type="submit" id="modifyBtn" 
-                                        style="margin-top: -1px;"
-                                        class="userBox_btn">내소개 수정</button>
-                            </div>
-                        </div>
-                        <div class="row user-descBox">
-                            <span th:text="*{userDescription}"
-                                    class="userDesc fixedUserDesc"
-                                    id="userDescription" name="userDescription"
-                                    rows="4"
-                                    style="white-space : pre-wrap;">나의 소개글 한 마디를 입력해주세요!</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 유저 소개 수정폼 style="display: none;"-->
-        <div class="formBox" id="modifyUserBox" style="display: none;">
-            <form class="needs-validation" id="formData" 
-                method="post" action="/mypage" th:object="${user}"
-                enctype="multipart/form-data">
-                <input type="hidden" name="userId" th:value="${user.userId}">
-                <div class="m-3 d-flex justify-content-center userBox">
-                    <div class="user-imgWithBtnBox">
-                        <div class="user-imgBox">
-                            <!-- 파일 업로드를 위한 숨겨진 input 요소. 
-                                 업로드 버튼을 클릭하면 input을 클릭한 것처럼 작동하여 파일 선택 다이얼로그를 열게 됨 -->
-                             <input type="file" name="file" id="imageUploadInput" 
-                                    style="display:none;" accept="image/*">
-                             <input type="hidden" name="ifNewImageExists"
-                                   id="ifNewImageExists" value="0">
-                            <div class="user-imgBox_imageborder">
-                               <img class="user-imgBox_image" 
-                                   id="user-imgBox_image"
-                                   alt="유저 프로필 사진"
-                                th:src="${imagePath}? 
-                                ${imagePath}: '/images/defaultUserImage.png'" />
-                            </div>
-                            
-                        </div>
-                        <button type="button" class="imageUploadButton"
-                                onclick="uploadImage()"
-                                ><i class="fa-solid fa-plus"></i></button>
-                        <button type="button" class="imageDeleteButton"
-                               onclick="deleteImage()"
-                               ><i class="fa-solid fa-circle-xmark"></i></button>
-
-                    </div>
-                    <div class="m-3 user-infoBox">
-                        <div class="row user-nicknameBox">
-                            <div class="col-md-6">
-                                <input type="text" th:field="*{userNickname}"
-                                    class="userNickname" />
-                            </div>
-                            <div class="col-md-6">
-                                <button type="submit" id="modifySuccessBtn" 
-                                        class="userBox_btn"
-                                    >수정 완료</button>
-                            </div>
-                        </div>
-                        <div class="row user-descBox">
-                            <textarea th:field="*{userDescription}"
-                                    class="userDesc userDescEdit"
-                                    id="userDescription" name="userDescription"
-                                    rows="4" placeholder="소개글 한 마디를 입력해주세요!"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    
-    
-    <!-- wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다! -->
-    <div class="container rounded-5 p-4 p-lg-5 my-4 wrapForm">
-        <p>wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다!</p>
-        <p>이 네모가 게시글, 이미지 버튼 아래 있으면 될 것 같습니당</p>
-    </div>
-	
-    <!-- 게시글 & 이미지 -->
-	<div class="container my-5">
-		<!-- 게시글 버튼 -->
-		<div class = "text-center">
-		<button class="btn btn-primary mb-3" id="postBtn" 
-			style="width: 35%; background-color: #facfbd; color: black; border-color: #facfbd;">
-			게시글</button>
-
-		<!--이미지 버튼 -->
-		<button class="btn btn-primary mb-4" id="imgBtn"
-			style="width: 35%; background-color: #b5d284; color: white; border-color: #b5d284; margin-left: 10%;">이미지
-		</button>
-           </div>
+   
 		<!-- 게시글 버튼 클릭하면 나오는 게시글 -->
-		<div class="collapse mt-3 p-3" id="postContainer">
+		<div class="mt-3 p-3" id="postContainer">
             <div id="needToChange">
                <div class = "d-flex justify-content-between mb-4 px-2 me-auto">
 	               <p class = "my-2 myCount">
-	               게시물 수 : <span th:text="${myBoards.totalElements}"></span></p>
-	               <a class="btn type-btn mx-4 border rounded-3 type-button b-editor" 
-	               th:href="@{/board-editor}" role="button">게시글 작성</a>
+	               게시물 수 : <span th:text="${myBoardComments.totalElements}"></span></p>
                </div>
-               <p th:if="${myBoards.totalElements == 0}" 
-                  class= "noResult mx-5 mt-5 text-center fs-5">작성하신 게시물이 없습니다.</p>
+               <p th:if="${myBoardComments.totalElements == 0}" 
+                  class= "noResult my-5 text-center fs-5">작성하신 댓글이 없습니다.</p>
                <table class="table table-hover">
 		          <thead>
 		            <tr>
@@ -225,40 +100,40 @@
 		          </thead>
                   <tbody>
                   <!-- 자바스트립트 redirectToDetail 메서드 사용 : 컬럼을 누르면 게시글 상세페이지로 이동하는 url 작성-->
-                  <tr th:each="myBoard : ${myBoards}" 
-                      th:data-url="@{/board/{id}(id=${myBoard.boardId})}" 
+                  <tr th:each="myBoardComment : ${myBoardComments}" 
+                      th:data-url="@{/board/{id}(id=${myBoardComment.boardId})}" 
                       onclick="redirectToDetail(this)"
                       style="cursor:pointer;">
                     <td>
-                      <span th:text = "${myBoard.boardId}">글 번호</span>
+                      <span th:text = "${myBoardComment.boardId}">글 번호</span>
                     </td>
                     <td>
                         <!-- 제목의 글자수 길면 ...으로 생략 -->
                         <div class = "first fs-5"
-                            th:text = "${#strings.length(myBoard.boardTitle) &gt; 50 ? 
-                            #strings.substring(myBoard.boardTitle, 0, 50) + '...' : myBoard.boardTitle}">글 제목</div>
+                            th:text = "${#strings.length(myBoardComment.boardTitle) &gt; 50 ? 
+                            #strings.substring(myBoardComment.boardTitle, 0, 50) + '...' : myBoardComment.boardTitle}">글 제목</div>
                         <div class = "second d-flex">
                             <p style="width: 30px; height: 30px;">
                                 <img src = "/images/common/userImg.png" class="img-fluid mt-2"/>
                             </p>
-                            <div class="mt-3 mx-2" th:text = "${myBoard.userNickname}">작성자 닉네임</div>
+                            <div class="mt-3 mx-2" th:text = "${myBoardComment.userNickname}">작성자 닉네임</div>
                         </div>
                         
                         <div class  ="third d-flex text-secondary">
-                            <div class="m-1" th:text = "|date ${#dates.format(myBoard.boardCreatedDate, 'yyyy-MM-dd')}|">작성일자</div>
-                            <div class="m-1" th:text = "|in ${myBoard.boardType}|">카테고리</div>
+                            <div class="m-1" th:text = "|date ${#dates.format(myBoardComment.boardCreatedDate, 'yyyy-MM-dd')}|">작성일자</div>
+                            <div class="m-1" th:text = "|in ${myBoardComment.boardType}|">카테고리</div>
                             <p class="m-1" style="width: 20px; height: 20px;">
                                 <i class="fa-regular fa-eye"></i>
                             </p>
-                            <div class="m-1" th:text = "${myBoard.boardViewCount}">조회수</div>
+                            <div class="m-1" th:text = "${myBoardComment.boardViewCount}">조회수</div>
                             <p class="" style="width: 20px; height: 20px;">
                                 <img src = "/images/common/heart-click.png" class="img-fluid"/>
                             </p>
-                            <div class="m-1" th:text = "${myBoard.likeCnt}">좋아요 수</div>
+                            <div class="m-1" th:text = "${myBoardComment.likeCnt}">좋아요 수</div>
                         </div>
                     </td>
                     <td>
-                      <span th:text = "${myBoard.commentCnt}" class = "mx-4">댓글 수</span>
+                      <span th:text = "${myBoardComment.commentCnt}" class = "mx-4">댓글 수</span>
                     </td>  
                    </tr>
                   </tbody>

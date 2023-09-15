@@ -155,6 +155,6 @@ function loadPage(pageNumber) {
     };
 
     // GET 요청을 보냄
-    xhr.open('GET', '/main/mypage?page=' + pageNumber, true);
+    xhr.open('GET', '/mypage?page=' + pageNumber, true);
     xhr.send();
 }
