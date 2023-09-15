@@ -1,5 +1,6 @@
 package com.walk.aroundyou.controller;
 
+import java.io.IOException;
 import java.util.Objects;
 //import java.util.HashMap;
 //import java.util.Map;
@@ -17,21 +18,26 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.walk.aroundyou.domain.Member;
+import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
 import com.walk.aroundyou.dto.UserPasswordSendDTO;
 import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.service.MailService;
+import com.walk.aroundyou.service.UploadImageService;
 import com.walk.aroundyou.service.UserService;
 
 import jakarta.transaction.Transactional;
@@ -44,12 +50,11 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class UserController {
 
-	private final UserService userService;
-
 	@Autowired
-	public UserController(UserService userService) {
-		this.userService = userService;
-	}
+	private UserService userService;
+	
+	@Autowired
+	private UploadImageService uploadImageService;
 	
 	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
 	private final static int PAGINATION_SIZE = 5;
@@ -188,6 +193,15 @@ public class UserController {
 		// 헤더에 정보 추가하기 위한 코드
 		if (user != null) {
 			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
 		}
 
 		if (authentication != null && authentication.isAuthenticated()) {
@@ -197,9 +211,20 @@ public class UserController {
 			Optional<Member> member = userService.findByUserId(userId);
 
 			if (member.isPresent()) {
-				// 마이페이지에서 내 게시글 확인하기(연서 추가)
+				// 이미지 경로 넘기기
+				UploadImage uploadImage = 
+						uploadImageService.findByUser(member.get());
+				String imagePath;
+				if (uploadImage != null) {
+					imagePath = 
+							uploadImageService.findUserFullPathById(
+									uploadImage.getFileId());
+					log.info("imagePath : " + imagePath);
+					model.addAttribute("imagePath", imagePath);
+				}	
+				// 마이페이지에서 내 게시글, 좋아요 확인하기(연서 추가)
 				Page<IBoardListResponse> myBoards = 
-						userService.findMyBoardAndCnt(userId, currentPage);
+					userService.findMyBoardAndCnt(userId, currentPage);
 				
 				// pagination 설정
 				int totalPages = myBoards.getTotalPages();
@@ -227,6 +252,76 @@ public class UserController {
 		}
 	}
 
+	@GetMapping("main/mypage-course")
+	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
+	public String showMyCourse(
+			Model model, Authentication authentication, 
+			@AuthenticationPrincipal User user,
+			@RequestParam(value = "page", required=false, defaultValue="0") int currentPage) {
+
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
+
+		if (authentication != null && authentication.isAuthenticated()) {
+			// 현재 로그인한 사용자 아이디
+			String userId = authentication.getName();
+			// 위에 가져온 아이디를 기준으로 사용자 정보 불러옴
+			Optional<Member> member = userService.findByUserId(userId);
+
+			if (member.isPresent()) {
+				// 이미지 경로 넘기기
+				UploadImage uploadImage = 
+						uploadImageService.findByUser(member.get());
+				String imagePath;
+				if (uploadImage != null) {
+					imagePath = 
+							uploadImageService.findUserFullPathById(
+									uploadImage.getFileId());
+					log.info("imagePath : " + imagePath);
+					model.addAttribute("imagePath", imagePath);
+				}	
+				// 마이페이지에서 내 좋아요 확인하기(연서 추가)
+				Page<ICourseLikeResponseDTO> myCourses =
+					userService.findMyCourseAndCnt(userId, currentPage);
+				
+				// pagination 설정
+				int totalPages = myCourses.getTotalPages();
+				int pageStart = getPageStart(currentPage, totalPages);
+				int pageEnd = 
+						(PAGINATION_SIZE < totalPages)? 
+								pageStart + PAGINATION_SIZE - 1
+								:totalPages;
+				// model에 user 객체 추가해서 뷰로 넘겨줌				
+				model.addAttribute("user", member.get());
+				
+				model.addAttribute("lastPage", totalPages);
+				model.addAttribute("currentPage", currentPage);
+				model.addAttribute("pageStart", pageStart);
+				model.addAttribute("pageEnd", pageEnd);
+				model.addAttribute("myCourses", myCourses);
+				
+				return "mypageCourse";
+			} else {
+				return "error";
+			}
+		} else {
+			// 로그인되지 않은 경우 처리
+			return "login"; // 로그인 페이지로 리다이렉트 또는 다른 처리를 수행
+		}
+	}
+
+
 	// pagination의 시작 숫자 얻는 메소드(연서 추가)
 	private int getPageStart(int currentPage, int totalPages) {
 		int result = 1;
@@ -240,19 +335,81 @@ public class UserController {
 	}
 	
 
-	// 변경 후 블러오는 정보
+	// 변경 후 불러오는 정보
+	///////// 0913 지수 추가 - 이미지 업로드 처리
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
 	@PostMapping("/main/mypage")
-	public String processMypage(String userId, UpdateMypageDTO dto, Model model) {
+	public String processMypage(
+			@RequestParam("userId") String userId,
+			@ModelAttribute UpdateMypageDTO dto,
+			@RequestParam(value="file", required=false) MultipartFile file,
+			@RequestParam(value="ifNewImageExists", defaultValue="0") int ifNewImageExists,
+			Model model, @AuthenticationPrincipal User user
+			) throws IOException {
+
+	// 헤더에 정보 추가하기 위한 코드
+	if (user != null) {
+		model.addAttribute("loginId", user.getUsername());
+		Member currentUser = userService.findByUserId(user.getUsername()).get();
+		if (currentUser != null) {
+			UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+			if (currentUserImage != null) {
+				String currentUserImagePath = 
+						uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+				model.addAttribute("currentUserImagePath", currentUserImagePath);
+			}
+		}
+	}
 
 		model.addAttribute("user", dto);
-		Member updatedMember = userService.updateMypage(userId, dto);
-
+		
+		// 파일 업로드 처리
+		// 이미지를 수정할 때는 우선 기존 이미지를 삭제하고 다시 저장하는 순서를 겪는다.
+		// 먼저 이미지 파일이 새로 업로드 되었는지 확인
+		// ↳ 만약 이미지 파일이 새로 업로드 되지 않았다면 이미지 관련 로직을 건너뛰고 나머지 산책로 데이터만 업데이트
+		
+		Optional<Member> existedUser = userService.findByUserId(userId);
+		UploadImage existedImage = uploadImageService.findByUser(existedUser.get());
+		
+		// 수정페이지에서 최종 업로드 취소 상태로 수정 요청했을 시
+		if(ifNewImageExists == 0) {
+			if(existedImage != null) {
+				uploadImageService.deleteImage(existedImage);
+			}
+		}
+		
+		Member updatedUser = userService.updateMypage(userId, dto);
+		if(file != null && !file.isEmpty()) {
+			log.info("이미지가 새로 업로드되었어요.");
+			if(existedImage != null) {
+				log.info("이미지가 수정되었을 경우 삭제부터 합니다."); 
+				uploadImageService.deleteImage(existedImage);
+			} else {
+				log.info("원래 이미지가 없을 경우 삭제 없이 업로드됩니다.");
+			}
+			// 이미지 업로드 로직
+			UploadImage uploadImage =
+					uploadImageService.saveUserImage(file, updatedUser);
+			log.info("uploadImage의 original 이름 : " + uploadImage.getOriginalFileName());
+			
+			// 뷰에 이미지 경로 넘기기
+			String imagePath;
+			imagePath = uploadImageService.findUserFullPathById(
+					uploadImage.getFileId());
+			log.info("imagePath : " + imagePath);
+			model.addAttribute("imagePath", imagePath);
+			
+		} else {
+			log.info("이미지의 수정이 없는 경우입니다.");
+			if(existedImage != null) {
+        		log.info("기존 이미지를 유지합니다.");
+        	}
+		}
 		// log.info("마이페이지 업데이트 성공: userId={}, userNickname={}, userImg={},
 		// userDescription={}", userId.toString(),
 		// userNickname.toString(), userImg.toString(), userDescription.toString());
 
-		if (updatedMember != null) {
+		if (updatedUser != null) {
 			return "redirect:/main/mypage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
 		} else {
 			model.addAttribute("showAlert", false);
@@ -261,16 +418,28 @@ public class UserController {
 			return "mypage"; // 오류 처리
 		}
 	}
-	
 
 	//////////////////// 유저페이지
 	// import org.springframework.security.core.userdetails.User;
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/main/mypage/userpage")
-	public String showUserpage(Model model, Authentication authentication, @AuthenticationPrincipal User user) {
-
+	public String showUserpage(
+			Model model, 
+			Authentication authentication, 
+			@AuthenticationPrincipal User user) {
+		
+		// 헤더에 정보 추가하기 위한 코드
 		if (user != null) {
 			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
 		}
 
 		if (authentication != null && authentication.isAuthenticated()) {
@@ -294,7 +463,24 @@ public class UserController {
 
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
 	@PostMapping("/main/mypage/userpage")
-	public String processuserpage(UpdateUserpageDTO dto, Model model) {
+	public String processuserpage(
+			UpdateUserpageDTO dto, 
+			Model model, 
+			@AuthenticationPrincipal User user) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
 
 		model.addAttribute("user", dto);
 		Member updatedMember = userService.updateUserInfo(dto);
@@ -315,13 +501,44 @@ public class UserController {
 	
 	//////////////////// 비밀번호 변경
 	@GetMapping("/main/mypage/userpage/changepwd")
-	public String showChangePwd() {
+	public String showChangePwd(
+			@AuthenticationPrincipal User user, Model model) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
 		return "userpage";
 	}
 
 	@PostMapping("/main/mypage/userpage/changepwd")
-	public String processChangePwd(@Valid UserPasswordChangeDTO dto, Model model, Authentication authentication,
+	public String processChangePwd(
+			@Valid UserPasswordChangeDTO dto, Model model, 
+			Authentication authentication, 
 			@AuthenticationPrincipal User user) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
 
 		// new password 끼리 비교
 		// Objects.equals(a, b) : a와 b가 같으면 true 반환, 다르면 false 반환
@@ -352,15 +569,46 @@ public class UserController {
 	//////////////////// 탈퇴
 	// 탈퇴 버튼 누르면 나오는 화면
 	@GetMapping("/main/mypage/userpage/withdraw")
-	public String showWithdrawForm() {
+	public String showWithdrawForm(
+			@AuthenticationPrincipal User user, Model model) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
 		// 탈퇴 폼 템플릿을 보여줌
 		return "userpage";
 	}
 
 	// 탈퇴 처리하는 곳
 	@PostMapping("/main/mypage/userpage/withdraw")
-	public String processWithdrawForm(@RequestParam String currentPwd, @AuthenticationPrincipal User user,
+	public String processWithdrawForm(
+			@RequestParam String currentPwd, 
+			@AuthenticationPrincipal User user,
 			Model model) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
 
 		boolean result = userService.deleteByUserId(user.getUsername(), currentPwd);
 
@@ -373,6 +621,7 @@ public class UserController {
 		return "redirect:/userpage";
 	}
 
+	
 	
 	
 	

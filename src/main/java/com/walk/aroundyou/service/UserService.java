@@ -19,12 +19,14 @@ import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.role.StateId;
 import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
 import com.walk.aroundyou.dto.UserPasswordSendDTO;
 import com.walk.aroundyou.dto.UserRequest;
 import com.walk.aroundyou.repository.BoardRepository;
+import com.walk.aroundyou.repository.CourseLikeRepository;
 import com.walk.aroundyou.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -46,6 +48,9 @@ public class UserService {
 	
 	@Autowired
 	private BoardRepository boardRepository;
+	
+	@Autowired
+	private CourseLikeRepository courseLikeRepository;
 	
 	// 화면에 보이는 최대 게시글 수 5개	(연서 추가)
 	private final static int SIZE_OF_PAGE = 5;
@@ -139,7 +144,10 @@ public class UserService {
 		return boardRepository.findMyBoardAndCnt(userId, PageRequest.of(page, SIZE_OF_PAGE));
 	}
 	
-	
+	//// 마이페이지 내가 좋아요 한 산책로 확인(연서 추가)
+	public Page<ICourseLikeResponseDTO> findMyCourseAndCnt(String userId, int page) {
+		return courseLikeRepository.findMyCourseAndCnt(userId, PageRequest.of(page, 6));
+	}
 	
 	//////////// 2. 아이디 검색
 	// 아이디를 통해 회원 정보 찾기에 이용 등
