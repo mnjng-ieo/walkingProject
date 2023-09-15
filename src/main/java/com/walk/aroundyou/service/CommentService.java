@@ -115,7 +115,7 @@ public class CommentService {
 		log.info("/delete/board/comment 서비스 접근");
 		try {
 			Optional<Comment> checkComment = commentRepo.findById(commentId);
-			if(checkComment.isEmpty() || checkComment.get().getUserId().getUserId().equals(userId)) {
+			if(checkComment.isEmpty() || !checkComment.get().getUserId().getUserId().equals(userId)) {
 				throw new Exception("잘못된 접근");
 			}
 		} catch (Exception e) {
@@ -130,7 +130,7 @@ public class CommentService {
 	public int updateCommentByCommentId(Comment comment){
 		try {
 			Optional<Comment> checkComment = commentRepo.findById(comment.getCommentId());
-			if(checkComment.isEmpty() || checkComment.get().getUserId().getUserId().equals(comment.getUserId().getUserId())) {
+			if(checkComment.isEmpty() || !checkComment.get().getUserId().getUserId().equals(comment.getUserId().getUserId())) {
 				throw new Exception("잘못된 접근");
 			}
 		} catch (Exception e) {

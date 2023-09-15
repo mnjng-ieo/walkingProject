@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+	<title>Login</title>
+	<link href="/css/user/login.css" rel="stylesheet"></link>
+</head>
+<body>
+<th:block layout:fragment="Content">
+	<h1 class="text-center mt-5 loginform">로그인</h1>
+	<div
+		class="modal modal-signin position-static d-block mb-5"
+		tabindex="-1" role="dialog" id="modalSignin">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content rounded-4 shadow">
+				<!-- 로고 제목 -->
+				<div class="modal-header p-5 pb-4 border-bottom-0 m-auto d-flex justify-content-center">
+					<!-- <h5 class="modal-title">Modal title</h5> -->
+					<h2 class="fs-1 title">Walk Around You</h2>
+					<img src="/images/common/logo_img.png" class="logoImg mb-3"></img>
+				</div>
+
+				
+				<div class="modal-body p-5 pt-0">
+               		<!-- 로그인 form -->
+					<form class="mt-2" action="/check" method="post">
+						<p class="text-center fs-5">WAY에 오신 것을 환영합니다<br>
+						회원 로그인을 하시면 각종 정보를 제공받으실 수 있습니다</P>
+						<div class="form-floating mt-5 mb-3 inputId w-75 m-auto">
+							<input type="text" class="form-control rounded-3" id="username"
+								name="userId" placeholder="id"> <label
+								for="username">ID</label>
+						</div>
+						<div class="form-floating mb-3 inputPw w-75 m-auto">
+							<input type="password" class="form-control rounded-3"
+								id="password" name="userPwd" placeholder="Password"> 
+								<label for="password">PASSWORD</label>
+						</div>
+						<button class="btn btn-lg rounded-3 btn-login w-75 d-block m-auto mt-5"
+							type="submit">로그인</button>
+					</form>
+
+               		<!-- 아이디, 비밀번호 찾기 버튼(폼으로 이동) -->
+               		<div class="d-flex justify-content-around w-75 mt-4 mb-5 mx-auto fs-6 px-3">
+						<a href="/login/idlookup">아이디 찾기</a>
+						<span>|</span>	   
+						<a href="/login/pwdlookup">비밀번호 찾기</a>
+						<span>|</span>	   
+						<a href="/signup">회원가입</a>	   
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>회원 가입</title>
+<link href="/css/user/signup.css" rel="stylesheet"></link>
+
+</head>
+
+<!-- 회원가입 양식 폼 제출 -->
+
+<body>
+<th:block layout:fragment="Content">
+	<div class="signupform">
+		<h1 class="text-center mt-5">회원 가입</h1>
+		<div class="container border rounded-4 shadow-lg p-5 signup" style="width: 800px;">
+			<form th:action="@{/signup}" method="post">
+				<p class="text-center"><span class="text-danger">* </span>는 필수 입력 항목입니다</P>
+				
+				<!-- 아이디 입력 필드 -->
+				<div class="mb-5 w-75 m-auto" id="checkId">
+					<div class="row align-items-center">
+						<label for="duplicateId" class="form-label fs-5 mt-5">아이디<span class="text-danger"> *</span></label>
+						<div class="col-md-9">
+							<!-- 처음 회원가입 폼을 보여주려면 빈 폼을 보여줘야 되는데 그때 값이 null이기 때문에 이렇게 삼항연산자로 처리해주기! -->
+							<input type="text" id="duplicateId" name="userId"
+								   th:value="${signupDto != null}? ${signupDto.userId} : ''"
+								   class="form-control form-control-lg" placeholder="아이디를 입력해주세요" />
+						</div>
+						<input type="button" id="checkUserIdBtn" value="중복체크"
+							class="btn btn-lg btn-danger col-md-3 checkUserIdBtn">
+					</div>
+					<div id="result" class="col=nd-12"></div>
+				</div>
+	
+				<!-- 비밀번호 입력 필드 -->
+				<div class="mb-5 w-75 m-auto">
+					<label for="userPwd" class="form-label fs-5">비밀번호<span class="text-danger"> *</span></label> 
+					<input type="password" id="userPwd" name="userPwd"
+						   th:value="${signupDto != null}? ${signupDto.userPwd} : ''"
+					       class="form-control form-control-lg" placeholder="비밀번호를 입력해주세요" required /> <span
+					       th:if="${valid_userPwd}" id="valid" th:text="${valid_userPwd}"></span>
+				</div>
+	
+				<!-- 이름 입력 필드 -->
+				<div class="mb-5 w-75 m-auto">
+					<label for="userName" class="form-label fs-5"></label> 
+					<label for="userName" class="form-label">이름<span class="text-danger"> *</span></label> 
+					<input type="text" class="form-control form-control-lg" id="userName" name="userName"
+						   th:value="${signupDto != null}? ${signupDto.userName} : ''"
+					       placeholder="이름을 입력해주세요" required> <span
+					       th:if="${valid_userName}" id="valid" th:text="${valid_userName}"></span>
+				</div>
+				
+				<!-- 이메일 입력 필드 -->
+				<div class="mb-5 w-75 m-auto">
+					<label for="userEmail" class="form-label fs-5">이메일<span class="text-danger"> *</span></label> 
+					<input type="email" name="userEmail"
+					       th:value="${signupDto != null}? ${signupDto.userEmail} : ''"
+					   	   class="form-control form-control-lg" placeholder="이메일을 입력해주세요" required /> <span
+					       th:if="${valid_userEmail}" id="valid" th:text="${valid_userEmail}"></span>
+				</div>
+	
+				<!-- 닉네임 입력 필드 -->
+				<div class="mb-5 w-75 m-auto">
+					<label for="userNickname" class="form-label fs-5">닉네임<span class="text-danger"> *</span></label> 
+					<input type="text" id="userNickname" name="userNickname"
+					       th:value="${signupDto != null}? ${signupDto.userNickname} : ''"
+					   	   class="form-control form-control-lg" placeholder="닉네임을 입력해주세요" required /> <span
+					       th:if="${valid_userNickname}" id="valid"
+					       th:text="${valid_userNickname}"></span>
+				</div>
+	
+				<!-- 전화번호 입력 필드 -->
+				<div class="mb-5 w-75 m-auto">
+					<label for="userTelNumber" class="form-label fs-5">전화번호</label> 
+					<input type="tel" class="form-control form-control-lg" id="userTelNumber" name="userTelNumber"
+					  	   th:value="${signupDto != null}? ${signupDto.userTelNumber} : ''"
+					       placeholder="010-1234-5678">
+				</div>
+		
+			</div>
+	
+				<br>
+				<!-- 회원 가입 버튼 -->
+				<button type="submit" class="btn rounded-3 d-block fs-5 w-75 signupbtn mb-5" id="signupFormBtn">회원 가입</button>
+			</form>
+		</div>
+	</div>
+	
+		<!-- 아이디 중복 체크 ajax -->
+	<script>
+	document.addEventListener("DOMContentLoaded", function () {
+	    var checkUserIdBtn = document.getElementById("checkUserIdBtn");
+	    var userIdInput = document.getElementById("duplicateId");
+	    var resultElement = document.getElementById("result");
+	
+	    checkUserIdBtn.addEventListener("click", function () {
+	    	// 사용자가 입력한 아이디 값을 가져와 변수에 저장
+	        var userId = userIdInput.value;
+			
+	        // XMLHttpRequest ajax 객체 생성
+	        var xhr = new XMLHttpRequest();
+	
+	        // 요청을 설정
+	        xhr.open("GET", '/signup/checkId?userId=' + userId, true);
+	
+	        // 요청이 완료되면 실행할 함수 설정
+	        xhr.onreadystatechange = function () {
+	            if (xhr.readyState === XMLHttpRequest.DONE) { // 요청이 완료됨
+	                if (xhr.status === 200) { // 요청이 성공함
+	                    // 서버에서 받은 데이터를 결과를 표시할 HTML 요소(#result)의 내용으로 설정
+	                    
+	                    // 결과를 화면에 표시
+	                    resultElement.innerHTML = xhr.responseText;
+	                } else {
+	                    console.error(xhr.responseText);
+	                    resultElement.innerHTML = '오류 발생';
+	                }
+	            }
+	        };
+	
+	        // 요청 보내기
+	        xhr.send();
+	    });
+	});
+	
+	</script>
+	
+</th:block>
+</body>
+</html>

@@ -228,9 +228,13 @@ window.onload = function(){
 					courseId : document.getElementById("courseId").value
 				})
 			})
-			.then(()=>	{
-				alert('등록/수정이 완료되었습니다.');
+			.then((response)=>	{
+				if(response.ok){
+				alert('등록이 완료되었습니다.');
 				location.replace('/board');
+				} else{
+					alert('잘못된 접근입니다.');
+				}
 			})
 	})
 

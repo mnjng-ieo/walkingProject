@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.walk.aroundyou.domain.Tag;
+import com.walk.aroundyou.dto.ITagResponse;
 
 import jakarta.transaction.Transactional;
 
@@ -79,5 +80,24 @@ public interface TagRepository extends JpaRepository<Tag, Long>{
 			+ "    limit 12"
 			, nativeQuery = true)
 	List<String> findTagsByBoardTagId();
+	
+	/**
+	 * [메인페이지] 검색창에 태그 정보 검색하기 - 서비스에서 매개변수 앞뒤로 '%' 붙이기!
+	 */
+	@Query(value = """
+			SELECT 
+				t.tag_id as tagId
+				,t.tag_content as tagContent
+			 FROM tag as t
+	          WHERE REPLACE(tag_content, ' ', '') like :#{#keyword}
+			""", nativeQuery = true)
+	List<ITagResponse> findMainTagByKeyword(@Param("keyword") String keyword);
+	
+	// 검색 결과 태그이력테이블에 사용되는 tag_id만 출력
+	@Query(value = "SELECT tag_id"
+			+ " FROM tag t"
+			+ " WHERE t.tag_id IN (SELECT DISTINCT bt.tag_id FROM board_tag bt)"
+			, nativeQuery = true)
+	List<Long> existsByBoardTag();
 
 }

@@ -41,7 +41,6 @@ public class CourseService {
 	 * [산책로상세조회페이지] id로 산책로 하나 조회
 	 */
 	public Course findById(long id) {
-		courseRepository.updateViewCount(id);
 		return courseRepository.findById(id)
 				.orElseThrow(() 
 						-> new IllegalArgumentException(
@@ -131,6 +130,23 @@ public class CourseService {
 	}
 	
 	/**
+	 * [메인페이지] 산책로 좋아요순 정렬 메서드
+	 */
+		public Page<ICourseResponseDTO> findCoursesOrderByLikes() {
+		
+		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
+		Sort sort = Sort.by(Direction.DESC, "likeCnt");
+		
+		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(3), 정렬 설정) 
+		PageRequest pageRequest = PageRequest.of(0, 9, sort);
+		
+		Page<ICourseResponseDTO> coursePage = 
+				courseRepository.findCoursesWithCounts(pageRequest);
+		
+		return coursePage;
+	}
+		
+	/**
 	 * [산책로목록조회페이지] 조건에 따른 산책로 목록 조회 메서드
 	 */
 	public Page<CourseResponseDTO> findAllByCondition(
@@ -189,10 +205,10 @@ public class CourseService {
 		if (searchTargetAttr != null) {
 			switch(searchTargetAttr) {
 			// total의 경우 default로 넣었다.
-//			case "total" :
-//				spec = spec.and(
-//						CourseSpecifications.likeTotalKeyword(searchKeyword));
-//				break;
+//				case "total" :
+//					spec = spec.and(
+//							CourseSpecifications.likeTotalKeyword(searchKeyword));
+//					break;
 			case "title" :
 				spec = spec.and(
 						CourseSpecifications.likeTotalKeyword(searchKeyword));
@@ -294,6 +310,7 @@ public class CourseService {
 				request.getLnmAddr(),
 				request.getCoursSpotLa(),
 				request.getCoursSpotLo()
+				//request.getCourseImageId()
 		);
 		return course;
 	}
@@ -317,47 +334,30 @@ public class CourseService {
 				.collect(Collectors.toList());
 	}
 
-	/**
-	 * [메인페이지] 산책로 좋아요순 정렬 메서드
-	 */
-		public Page<ICourseResponseDTO> findCoursesOrderByLikes() {
-		
-		//** 정렬 설정 : 원하는 방식의 정렬 버튼을 누르면 요청파라미터로 넘어가서 정렬되도록 하는 코드.
-		Sort sort = Sort.by(Direction.DESC, "likeCnt");
-		
-		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(3), 정렬 설정) 
-		PageRequest pageRequest = PageRequest.of(0, 3, sort);
-		
-		Page<ICourseResponseDTO> coursePage = 
-				courseRepository.findCoursesWithCounts(pageRequest);
-		
-		return coursePage;
-	}
-
-	// 검색에서 해당 값이 없는 것을 체크(09/09 - 연서 수정)
-	public Optional<Course> findByBoardId(Long id) {
-		List<Course> courses = courseRepository.findByBoardId(id);
-		if(courses.isEmpty()) {
-			return Optional.ofNullable(null);
-		} else {
-			return Optional.ofNullable(courses.get(0));			
+		// 검색에서 해당 값이 없는 것을 체크(09/09 - 연서 수정)
+		public Optional<Course> findByBoardId(Long id) {
+			List<Course> courses = courseRepository.findByBoardId(id);
+			if(courses.isEmpty()) {
+				return Optional.ofNullable(null);
+			} else {
+				return Optional.ofNullable(courses.get(0));			
+			}
 		}
-	}
-	
-	//// 게시판 산책로 지도처리를 위한 메소드
-	// 산책로 지역 선택 항목 가져오기
-	public List<String> findAllSignguCn() {
-		return courseRepository.findAllSignguCn();
-	}
-	// 지역에 따른 산책로이름(산책로 큰분류) 가져오기
-	public List<String> findFlagNameBySignguCn(String signguCn) {
-		log.info("findFlagNameBySignguCn() 서비스 접근");
-		return courseRepository.findFlagNameBySignguCn(signguCn);
-	}
-	// 산책로이름에 따른 코스이름(산책로 작은분류) 정보 가져오기
-	public List<Course> findCourseNameByWlkCoursFlagNm(String wlkCoursFlagNm) {
-		log.info("findFlagNameBySignguCn() 서비스 접근");
-		return courseRepository.findCourseNameByWlkCoursFlagNm(wlkCoursFlagNm);
-	}
+		
+		//// 게시판 산책로 지도처리를 위한 메소드
+		// 산책로 지역 선택 항목 가져오기
+		public List<String> findAllSignguCn() {
+			return courseRepository.findAllSignguCn();
+		}
+		// 지역에 따른 산책로이름(산책로 큰분류) 가져오기
+		public List<String> findFlagNameBySignguCn(String signguCn) {
+			log.info("findFlagNameBySignguCn() 서비스 접근");
+			return courseRepository.findFlagNameBySignguCn(signguCn);
+		}
+		// 산책로이름에 따른 코스이름(산책로 작은분류) 정보 가져오기
+		public List<Course> findCourseNameByWlkCoursFlagNm(String wlkCoursFlagNm) {
+			log.info("findFlagNameBySignguCn() 서비스 접근");
+			return courseRepository.findCourseNameByWlkCoursFlagNm(wlkCoursFlagNm);
+		}
 	
 }

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8">
+    <title>홈페이지</title>
+    <script type="text/javascript" src="/js/board/boardList.js"></script>    
+    <link rel="stylesheet" href="/css/board/boardList.css">
+</head>
+
+<body>
+<th:block layout:fragment="Content">
+<!-- 커뮤니티 화면 -->
+    <div class="container container-boardList mb-5">
+        <h1 class ="title text-center">W.A.Y 커뮤니티 입니다.</h1>
+        <!-- 버튼형 -->    
+        <div class ="d-flex justify-content-center mx-3 mb-5">
+        
+	        
+			<div class="btn-group" role="group">		    
+		        <a class="btn type-btn border rounded-0 rounded-top-5 type-button fs-5" 
+		        th:href="@{/board}"
+		        th:classappend="${param.type == null} ? 'activeBtn' : ''">전체 게시판</a>
+		    
+		        <a class="btn type-btn border rounded-0 rounded-top-5 type-button fs-5" 
+	               th:href="@{/board?type=FREE}"
+	               th:classappend="${param.type != null && param.type.toString().equals('FREE')} ? 'activeBtn' : ''">자유 게시판</a>
+		    
+		        <a class="btn type-btn border rounded-0 rounded-top-5 type-button fs-5" 
+	               th:href="@{/board?type=COMMUNITY}"
+	               th:classappend="${param.type != null && param.type.toString().equals('COMMUNITY')} ? 'activeBtn' : ''">모임 게시판</a>
+		    
+		        <a class="btn type-btn border rounded-0 rounded-top-5 type-button fs-5" 
+		           th:href="@{/board?type=REVIEW}"
+		           th:classappend="${param.type != null && param.type.toString().equals('REVIEW')} ? 'activeBtn' : ''">후기 게시판</a>
+			</div>    
+			<div class="ms-auto"><a class="btn type-btn border rounded-0 rounded-top-5 type-button fs-5 b-editor" th:href="@{/board-editor}" role="button">게시글 작성</a></div>
+        </div>
+        <div class= "d-flex justify-content-between px-3 my-3 me-auto">
+                <div class="boardCount">게시물 수 : <span th:text="${boardList.totalElements}"></span></div>
+            </div>
+        <!-- 정렬 방식 선택  --> 
+        <div class = "d-flex justify-content-between">
+	        <select class="boardList-sort sort h-25" 
+	                id="boardSort" name="sort" 
+	                onchange="boardWithSearchResults()"
+	                style="display: none;">
+	            <option value="default">최신순</option>
+	            <option value="boardViewCount">조회 순</option>
+	            <option value="likeCnt">좋아요 순</option>
+	        </select>
+        </div>
+      
+        <div id="needToChange">
+        <!-- 테이블로 게시물 목록 출력 -->
+        <table class="table table-hover">
+          <thead>
+            <tr>
+                <th class ="col-lg-2">글 번호</th>
+                <th class ="col-lg-8">게시물</th>
+                <th class ="col-lg-2">댓글 수</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 자바스트립트 redirectToDetail 메서드 사용 : 컬럼을 누르면 게시글 상세페이지로 이동하는 url 작성-->
+            <tr th:each="board : ${boardList}"
+               th:data-url="@{/board/{id}(id=${board.boardId})}" 
+               onclick="redirectToDetail(this)"
+               style="cursor:pointer;">
+              <td>
+                <span th:text = "${board.boardId}">글 번호</span>
+              </td>
+              <td>
+                <!-- 제목의 글자수 길면 ...으로 생략 -->
+                <div class = "first fs-5"
+                    th:text = "${#strings.length(board.boardTitle) &gt; 50 ? 
+                    #strings.substring(board.boardTitle, 0, 50) + '...' : board.boardTitle}">글 제목</div>
+                <div class = "second d-flex">
+                    <p style="width: 30px; height: 30px;">
+                        <img src = "/images/common/userimg.png" class="img-fluid mt-2"/>
+                    </p>
+                    <div class="mt-3 mx-2" th:text = "${board.userNickname}">작성자 닉네임</div>
+                </div>
+                
+                <div class  ="third d-flex text-secondary">
+                    <div class="m-1" th:text = "|date ${#dates.format(board.boardCreatedDate, 'yyyy-MM-dd')}|">작성일자</div>
+                    <div class="m-1" th:text = "|in ${board.boardType}|">카테고리</div>
+                    <p class="m-1" style="width: 20px; height: 20px;">
+                        <img src = "/images/common/view.png" class="img-fluid"/>
+                    </p>
+                    <div class="m-1" th:text = "${board.boardViewCount}">조회수</div>
+                    <p class="m-1" style="width: 20px; height: 20px;">
+                        <img src = "/images/common/heart-click.png" class="img-fluid"/>
+                    </p>
+                    <div class="m-1" th:text = "${board.likeCnt}">좋아요 수</div>
+                </div>
+    
+              </td>
+              <td>
+                <span th:text = "${board.commentCnt}" class = "mx-4">댓글 수</span>
+              </td>  
+            </tr>
+          </tbody>
+        </table>
+    
+        <!-- 페이지 넘기기 뷰 & 기능 -->
+        <div class="pageInfo_wrap my-5" id="pagination">
+            <ul class="pagination pagination
+                       justify-content-center">
+               <li class="page-item" id="pagePrev"
+                   th:classappend="${currentPage == 1} ? 'disabled' : ''">
+                   <!-- 링크 클릭할 때 해당 링크의 url로 이동하는 기본 동작 막기 위해 사용
+                        자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
+                   <a class="page-link arrow" 
+                      href="javascript:void(0);"
+                      th:onclick="'loadPage(' + (${currentPage - 2}) + ')'">
+                    <i class="fa-solid fa-angle-left"></i>   
+                   </a>
+               </li>
+               <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
+                   <li th:if="${page == (currentPage)}" 
+                       class="page-item active">
+                       <a class="page-link" 
+                       href="javascript:void(0);"
+                       th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+                   </li>
+                   <li th:unless="${page == (currentPage)}" 
+                       class="page-item">
+                       <a class="page-link" 
+                       href="javascript:void(0);"
+                       th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+                   </li>
+               </th:block>
+               <li class="page-item" id="pageNext"
+                   th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
+                   <a class="page-link arrow" 
+                   href="javascript:void(0);"
+                   th:onclick="'loadPage(' + (${currentPage}) + ')'">
+                    <i class="fa-solid fa-angle-right"></i>
+                   </a>
+               </li>
+            </ul>
+        </div>
+        </div>
+        
+        <!-- 검색어 입력 폼 -->
+        <form th:action="@{/board/search}" method="get" id="boardSearchForm"> 
+        <div class ="search-group d-flex p-2 justify-content-center">
+            <div class ="">
+                <select name = "boardType"  class = "form-select">
+                    <option value = "ALL">전체</option>
+                    <option value = "FREE">자유 게시판</option>
+                    <option value = "COMMUNITY">모임 게시판</option>
+                    <option value = "REVIEW">후기 게시판</option>
+                </select>
+            </div>   
+            <div class ="mx-2">
+                <select name ="searchType" class = "form-select">
+                    <option value = "boardTitleAndContent">제목 + 내용</option>
+                    <option value = "boardTitle">제목만</option>
+                    <option value = "boardContent">내용만</option>
+                    <option value = "userNickname">작성자</option>
+                </select>        
+            </div>
+            <div class="searchForm input-group mb-3">
+                <input type="text" class="form-control searchInput"
+                name="keyword" id="boardSearchKeyword"
+                placeholder="검색어를 입력하세요" aria-label="검색어를 입력하세요" 
+                aria-describedby="button-addon2">  
+                <button class="searchBtn btn btn-success" type="submit" id="button-addon2">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+        </form> <!-- 검색어 입력 폼 끝 -->        
+
+</div>    
+
+</th:block>
+</body>
+</html>

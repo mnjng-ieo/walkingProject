@@ -2,11 +2,16 @@ package com.walk.aroundyou.domain;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -16,14 +21,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Builder
 @Entity
 @Data
-@Builder
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="course")
-public class Course {	
+public class Course {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,12 +36,12 @@ public class Course {
 	private Long courseId;
 	
 	@Column(name="esntl_id", columnDefinition="varchar(50)")
-	private String esntlId; 
+	private String esntlId;
 	
 	@Column(name="wlk_cours_flag_nm", nullable=false, columnDefinition="varchar(200)")
 	private String wlkCoursFlagNm;
 	
-	@Column(name="wlk_cours_nm", columnDefinition="varchar(200)")
+	@Column(name="wlk_cours_nm", nullable=false, columnDefinition="varchar(200)")
 	private String wlkCoursNm;
 	
 	@Column(name="cours_dc", nullable=false, columnDefinition="text")
@@ -51,12 +56,14 @@ public class Course {
 	@Column(name="cours_lt_cn", columnDefinition="varchar(50)")
 	private String coursLtCn;
 	
-	@Column(name="cours_detail_lt_cn", columnDefinition="float")
+	@Column(name="cours_detail_lt_cn", nullable=false, columnDefinition="float")
 	private Float coursDetailLtCn;
 	
 	@Column(name="adit_dc", columnDefinition="text")
 	private String aditDc;
 	
+	// JsonFormat 
+	@JsonFormat(pattern = "HH:mm:ss", timezone = "Asia/Seoul")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="cours_time_cn", columnDefinition="time")
 	private Timestamp coursTimeCn;
@@ -71,13 +78,25 @@ public class Course {
 	private String lnmAddr;
 
 	@Column(name="cours_spot_la", nullable=false, columnDefinition="double")
-	private double coursSpotLa;
+	private Double coursSpotLa;
 	
 	@Column(name="cours_spot_lo", nullable=false, columnDefinition="double")
-	private double coursSpotLo;	
+	private Double coursSpotLo;	
 	
 	@Column(name="cours_view_count", nullable=false, columnDefinition="int default 0")
 	private Integer coursViewCount;
+	
+	// 0910 추가 - 파일 업로드 기능
+	// mappedBy : course와 upload_image 사이 연관관계의 주인은 image! 그것의 course 필드에 의해 연관관계가 맺어짐. 
+	// cascade - All : 상위 엔티티(image)의 모든 상태 변경이 하위 엔티티(course)에 적용
+	// fetch - LAZY : 지연 로딩. 참조 중이 아닐 때는 course를 읽지 않아서 성능에 좋음.
+	// orphanRemoval = true : 하위 엔티티의 참조가 더 이상 없는 상태가 되었을 때 실제 삭제가 이뤄지도록 함.
+//	@OneToOne(mappedBy = "course", 
+//			cascade = {CascadeType.ALL},
+//			fetch = FetchType.LAZY,
+//			orphanRemoval = true)
+//	private UploadImage courseImageId;
+	
 	// 값 수정 메서드
 	public void update(
 			String wlkCoursFlagNm,
@@ -92,8 +111,10 @@ public class Course {
 			String toiletDc,
 			String cvntlNm,
 			String lnmAddr,
-			double coursSpotLa,
-			double coursSpotLo) {
+			Double coursSpotLa,
+			Double coursSpotLo
+			//UploadImage courseImageId
+			) {
 		this.wlkCoursFlagNm = wlkCoursFlagNm;
 		this.wlkCoursNm = wlkCoursNm;
 		this.coursDc = coursDc;
@@ -108,5 +129,6 @@ public class Course {
 		this.lnmAddr = lnmAddr;
 		this.coursSpotLa = coursSpotLa;
 		this.coursSpotLo = coursSpotLo;
+		//this.courseImageId = courseImageId;
 	}
 }

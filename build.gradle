@@ -62,6 +62,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// 스프링 시큐리티를 테스트하기 위한 의존성 추가
 	testImplementation 'org.springframework.security:spring-security-test'
+	    
+    // 이메일로 임시 비밀번호 전송해주는 Gmail SMTP
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    
+    // Spring Boot Starter Validation 유효성 검증
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 tasks.named('test') {

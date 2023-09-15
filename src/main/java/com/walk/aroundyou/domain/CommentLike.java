@@ -41,5 +41,5 @@ public class CommentLike {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="user_id", nullable=false)
 	@OnDelete(action=OnDeleteAction.CASCADE)
-	private User userId;
+	private Member userId;
 }

@@ -13,6 +13,7 @@ public interface IBoardListResponse {
 	String getBoardType();
 //	private String boardCategory;
 	String getBoardTitle();
+	String getBoardContent();
 	String getUserNickname();
 	String getUserId();
 	Integer getBoardViewCount();

@@ -44,9 +44,16 @@ label{
     color : #3D8361;
 	
 }
+/* 9/14 추가수정 시작 */
 .submitBtn{
+	font-weight: bold;
 	padding-left: 10%;
 	padding-right: 10%;
 	background : #3D8361;
 	color: white;
 }
+.submitBtn:hover{
+	color : #3D8361;
+	background : #B1D7B4;
+}
+/* 9/14 추가수정 끝 */
