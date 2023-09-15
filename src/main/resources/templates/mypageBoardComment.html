@@ -18,6 +18,16 @@
 </head>
 <body>
 <th:block layout:fragment="Content">
+<!-- 브레드크럼(왼쪽) -->
+<div class ="container">
+	<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+	  <ol class="breadcrumb px-5 pt-4">
+	    <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+	    <li class="breadcrumb-item"><a th:href="@{/mypage}">마이페이지</a></li>
+	    <li class="breadcrumb-item"><a th:href="@{mypage/board-commenet}">댓글 작성한 게시물</a></li>
+	  </ol>
+	</nav>
+</div>
 
 <!-- 사이드바(오른쪽) -->
 <section class ="sidebar">

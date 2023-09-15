@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/defaultLayout}">
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{common/layouts/defaultLayout}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,7 @@
 
 <!-- Popper.js -->
 <script
-	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 <!-- 자바스크립트 -->
 <script type="text/javascript" src="/js/common/mypage.js"></script> 
 <!-- css -->
@@ -24,6 +24,15 @@
 </head>
 <body>
 <th:block layout:fragment="Content">
+<!-- 브레드크럼(왼쪽) -->
+<div class ="container">
+	<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+	  <ol class="breadcrumb px-5 pt-4">
+	    <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+	    <li class="breadcrumb-item"><a th:href="@{/mypage}">마이페이지</a></li>
+	  </ol>
+	</nav>
+</div>
 
 <!-- 사이드바(오른쪽) -->
 <section class ="sidebar">
@@ -116,7 +125,8 @@
                             </div>
                         </div>
                         <div class="row user-descBox">
-                            <span th:text="*{userDescription}"
+                            <span th:text="${user.userDescription!='' && user.userDescription!=null}? 
+                                    ${user.userDescription} : '나의 소개글 한 마디를 입력해주세요!'"
                                     class="userDesc fixedUserDesc"
                                     id="userDescription" name="userDescription"
                                     rows="4"
@@ -141,7 +151,7 @@
                              <input type="file" name="file" id="imageUploadInput" 
                                     style="display:none;" accept="image/*">
                              <input type="hidden" name="ifNewImageExists"
-                                   id="ifNewImageExists" value="0">
+                                   id="ifNewImageExists" value="1">
                             <div class="user-imgBox_imageborder">
                                <img class="user-imgBox_image" 
                                    id="user-imgBox_image"
@@ -182,47 +192,40 @@
             </form>
         </div>
     </div>
-    
-    
-    
-    <!-- wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다! -->
-    <div class="container rounded-5 p-4 p-lg-5 my-4 wrapForm">
-        <p>wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다!</p>
-        <p>이 네모가 게시글, 이미지 버튼 아래 있으면 될 것 같습니당</p>
-    </div>
-	
-    <!-- 게시글 & 이미지 -->
-	<div class="container my-5">
-		<!-- 게시글 버튼 -->
-		<div class = "text-center">
-		<button class="btn btn-primary mb-3" id="postBtn" 
-			style="width: 35%; background-color: #facfbd; color: black; border-color: #facfbd;">
-			게시글</button>
 
-		<!--이미지 버튼 -->
-		<button class="btn btn-primary mb-4" id="imgBtn"
-			style="width: 35%; background-color: #b5d284; color: white; border-color: #b5d284; margin-left: 10%;">이미지
-		</button>
+    
+    <!-- 게시글 & 이미지 -->
+    <div class="container my-5">
+        <!-- 게시글 버튼 -->
+        <div class = "text-center">
+        <button class="btn btn-primary mb-3" id="postBtn" 
+            style="width: 35%; background-color: #facfbd; color: black; border-color: #facfbd;">
+            게시글</button>
+
+        <!--이미지 버튼 -->
+        <button class="btn btn-primary mb-4" id="imgBtn"
+            style="width: 35%; background-color: #b5d284; color: white; border-color: #b5d284; margin-left: 10%;">이미지
+        </button>
            </div>
-		<!-- 게시글 버튼 클릭하면 나오는 게시글 -->
-		<div class="collapse mt-3 p-3" id="postContainer">
+        <!-- 게시글 버튼 클릭하면 나오는 게시글 -->
+        <div class="collapse mt-3 p-3" id="postContainer">
             <div id="needToChange">
                <div class = "d-flex justify-content-between mb-4 px-2 me-auto">
-	               <p class = "my-2 myCount">
-	               게시물 수 : <span th:text="${myBoards.totalElements}"></span></p>
-	               <a class="btn type-btn mx-4 border rounded-3 type-button b-editor" 
-	               th:href="@{/board-editor}" role="button">게시글 작성</a>
+                   <p class = "my-2 myCount">
+                   게시물 수 : <span th:text="${myBoards.totalElements}"></span></p>
+                   <a class="btn type-btn mx-4 border rounded-3 type-button b-editor" 
+                   th:href="@{/board-editor}" role="button">게시글 작성</a>
                </div>
                <p th:if="${myBoards.totalElements == 0}" 
                   class= "noResult mx-5 mt-5 text-center fs-5">작성하신 게시물이 없습니다.</p>
                <table class="table table-hover">
-		          <thead>
-		            <tr>
-		                <th class ="col-lg-2">글 번호</th>
-		                <th class ="col-lg-8">게시물</th>
-		                <th class ="col-lg-2">댓글 수</th>
-		            </tr>
-		          </thead>
+                  <thead>
+                    <tr>
+                        <th class ="col-lg-2">글 번호</th>
+                        <th class ="col-lg-8">게시물</th>
+                        <th class ="col-lg-2">댓글 수</th>
+                    </tr>
+                  </thead>
                   <tbody>
                   <!-- 자바스트립트 redirectToDetail 메서드 사용 : 컬럼을 누르면 게시글 상세페이지로 이동하는 url 작성-->
                   <tr th:each="myBoard : ${myBoards}" 
@@ -263,58 +266,54 @@
                    </tr>
                   </tbody>
                 </table>
-			    <!-- 페이지 넘기기 뷰 & 기능 -->
-			    <div class="pageInfo_wrap" id="pagination">
-			        <!--pagination-sm 추가하면 작아지고, pagination-lg 추가하면 커진다 -->
-			        <ul class="pagination pagination 
-			                   justify-content-center">
-			           <li class="page-item" id="pagePrev"
-			               th:classappend="${currentPage == 0} ? 'disabled' : ''">
-			               <!-- 링크 클릭할 때 해당 링크의 url로 이동하는 기본 동작 막기 위해 사용
-			                    자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
-			               <a class="page-link arrow" 
-			                  href="javascript:void(0);"
-			                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">
-			                    <i class="fa-solid fa-chevron-left"></i></a>
-			           </li>
-			           <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
-			               <li th:if="${page == (currentPage+1)}" 
-			                   class="page-item active">
-			                   <a class="page-link" 
-			                   href="javascript:void(0);"
-			                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
-			               </li>
-			               <li th:unless="${page == (currentPage+1)}" 
-			                   class="page-item">
-			                   <a class="page-link" 
-			                   href="javascript:void(0);"
-			                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
-			               </li>
-			           </th:block>
-			           <li class="page-item" id="pageNext"
-			               th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
-			               <a class="page-link arrow" 
-			               href="javascript:void(0);"
-			               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
+                <!-- 페이지 넘기기 뷰 & 기능 -->
+                <div class="pageInfo_wrap" id="pagination">
+                    <!--pagination-sm 추가하면 작아지고, pagination-lg 추가하면 커진다 -->
+                    <ul class="pagination pagination 
+                               justify-content-center">
+                       <li class="page-item" id="pagePrev"
+                           th:classappend="${currentPage == 0} ? 'disabled' : ''">
+                           <!-- 링크 클릭할 때 해당 링크의 url로 이동하는 기본 동작 막기 위해 사용
+                                자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
+                           <a class="page-link arrow" 
+                              href="javascript:void(0);"
+                              th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">
+                                <i class="fa-solid fa-chevron-left"></i></a>
+                       </li>
+                       <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
+                           <li th:if="${page == (currentPage+1)}" 
+                               class="page-item active">
+                               <a class="page-link" 
+                               href="javascript:void(0);"
+                               th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+                           </li>
+                           <li th:unless="${page == (currentPage+1)}" 
+                               class="page-item">
+                               <a class="page-link" 
+                               href="javascript:void(0);"
+                               th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+                           </li>
+                       </th:block>
+                       <li class="page-item" id="pageNext"
+                           th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
+                           <a class="page-link arrow" 
+                           href="javascript:void(0);"
+                           th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
                                <i class="fa-solid fa-chevron-right"></i></a>
-			           </li>
-			        </ul>
-			    </div><!-- 페이징 처리 끝 -->     
-		    </div><!-- (게시글 + 페이지)ajax 사용하기 위함 -->
+                       </li>
+                    </ul>
+                </div><!-- 페이징 처리 끝 -->     
+            </div><!-- (게시글 + 페이지)ajax 사용하기 위함 -->
                    
            </div>
 
-		<!-- 이미지버튼 클릭하면 나오는 이미지 -->
-		<div class="collapse mt-3" id="imgContainer">
-			<div class="row">
-				<!-- 첫 번째 이미지 -->
-				<!-- <div class="card col-md-3" style="margin-right: 3%; margin-top: 3%;"> 
-			<div class="card col-md-3">-->
-				<div class="card-body post-container mt-3">
-					<img src="/images/profile.jpg">
-				</div>
-			</div>
-		</div><!-- 이미지 끝 -->
+        <!-- 이미지버튼 클릭하면 나오는 이미지 -->
+        <div class="collapse mt-3" id="imgContainer">        
+		    <!-- wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다! -->
+		    <div class="container rounded-5 p-4 p-lg-5 my-4 wrapForm">
+		        
+		    </div>
+        </div><!-- 이미지 끝 -->
        </div><!--게시글 & 이미지 끝 -->   
 </th:block>
 </body>

@@ -29,6 +29,21 @@
     font-style: normal;
 }
 
+a {
+    text-decoration-line: none;
+    color : #1C6758;
+}
+
+.breadcrumb {
+	font-family: 'NanumSquareRound';
+    font-size: 18px;
+    
+}
+
+.breadcrumb-item:last-child {
+	font-weight: bold;
+}
+
 /* 유저 닉네임 + 사진 보기 */
 .formTitle{
     font-weight: bold;
