@@ -38,55 +38,55 @@
 }
 
 .course-list-top_searchBox {
-	font-family: 'NanumSquareRound';
+    font-family: 'NanumSquareRound';
     height: 320px;
     width: 70%;
     margin: 0 auto;
 }
 
 .course-list-top_title_group{
-	 padding: 50px 0 0 70px;
+     padding: 50px 0 0 70px;
 }
 .course-list-top_title {
-	margin-top: 30px;
-	font-family: 'KimjungchulGothic-Bold';
+    margin-top: 30px;
+    font-family: 'KimjungchulGothic-Bold';
 }
 
 .course-list-top_title2{
-	font-family: 'KimjungchulGothic-Bold';
+    font-family: 'KimjungchulGothic-Bold';
 }
 
 .course-list-top_subtitle {
-	margin-top: 20px;
-	font-family: 'NanumSquareRound';
+    margin-top: 20px;
+    font-family: 'NanumSquareRound';
 }
 
 .course-list-top_conditionBox {
-	margin-top: 30px;
-	font-size: 20px;
+    margin-top: 30px;
+    font-size: 20px;
 }
 
 select {
-	-webkit-appearance:none;
-	-moz-appearance:none;
-	appearance:none;
-	background:url('data:image/svg+xml; base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktY2FyZXQtZG93bi1maWxsIiB2aWV3Qm94PSIwIDAgMTYgMTYiPgogIDxwYXRoIGQ9Ik03LjI0NyAxMS4xNCAyLjQ1MSA1LjY1OEMxLjg4NSA1LjAxMyAyLjM0NSA0IDMuMjA0IDRoOS41OTJhMSAxIDAgMCAxIC43NTMgMS42NTlsLTQuNzk2IDUuNDhhMSAxIDAgMCAxLTEuNTA2IDB6Ii8+Cjwvc3ZnPg==') no-repeat 95% 50%/15px auto;
-	border-radius: 10px;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    background:url('data:image/svg+xml; base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iY3VycmVudENvbG9yIiBjbGFzcz0iYmkgYmktY2FyZXQtZG93bi1maWxsIiB2aWV3Qm94PSIwIDAgMTYgMTYiPgogIDxwYXRoIGQ9Ik03LjI0NyAxMS4xNCAyLjQ1MSA1LjY1OEMxLjg4NSA1LjAxMyAyLjM0NSA0IDMuMjA0IDRoOS41OTJhMSAxIDAgMCAxIC43NTMgMS42NTlsLTQuNzk2IDUuNDhhMSAxIDAgMCAxLTEuNTA2IDB6Ii8+Cjwvc3ZnPg==') no-repeat 95% 50%/15px auto;
+    border-radius: 10px;
 }
 
 select::-ms-expand{
-	display:none;
+    display:none;
 }
 
 select option:checked {
-	background-color: #007bff;
-	color: white;
+    background-color: #E1ECC8;
+    color: #1C6758;
 }
 
 .course-list-top_conditions {
-	justify-content: space-evenly;
-	margin-top: 20px;
-	padding-left: 5%; padding-right: 5%;
+    justify-content: space-evenly;
+    margin-top: 20px;
+    padding-left: 5%; padding-right: 5%;
 }
 
 .course-list-top_condition {
@@ -98,109 +98,112 @@ select option:checked {
 }
 
 .keyword-search {
-	width: 88%;
+    width: 88%;
     height: 50px;
     margin: auto;
     margin-bottom: 25px;
     border-radius: 10px;
-	border: 1px solid #ccc;
+    border: 1px solid #ccc;
 }
 
 .course-list-top_searchTarget {
-	cursor: pointer;
-	border : none;
+    cursor: pointer;
+    border : none;
 }
 
 #searchTargetAttr {
-	border-bottom-left-radius: 10px;
+    border-bottom-left-radius: 10px;
     border-top-left-radius: 10px;
     border-bottom-right-radius: 0px;
     border-top-right-radius: 0px;
 }
 
 #searchKeyword {
-	border-bottom-right-radius: 10px;
-	border-top-right-radius: 10px;
-	border: none;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    border: none;
 }
 
 .btngroup{
-	margin: auto;
+    margin: auto;
 }
 
 .searchbtn {
-	width: 40%;
-	height: 50px;
-	font-size: 20px;
-	font-weight:bold;
-	border: 0px;
-	background-color: #3D8361 !important ;
-	color: white !important;
-	border-radius: 10px;
-	justify-content: space-around;
+    width: 40%;
+    height: 50px;
+    font-size: 20px;
+    font-weight:bold;
+    border: 0px;
+    background-color: #3D8361 !important ;
+    color: white !important;
+    border-radius: 10px;
+    justify-content: space-around;
 }
 
 .searchbtn:hover,
 .searchbtn:active,
 .searchbtn:focus {
-    background-color: #1C6758 !important;	/* !important : 다른 모든 스타일 규칙보다 우선시하도록. */
+    background-color: #1C6758 !important;   /* !important : 다른 모든 스타일 규칙보다 우선시하도록. */
     color: white !important;
 }
 
 .resetbtn {
-	height: 50px;
-	font-size: 20px;
-	font-weight:bold;
-	border: 0px;
-	background-color: #FBC252 !important ;
-	color: white !important;
-	border-radius: 10px;
+    height: 50px;
+    font-size: 20px;
+    font-weight:bold;
+    border: 0px;
+    background-color: #FBC252 !important ;
+    color: white !important;
+    border-radius: 10px;
 }
 
 .resetbtn:hover,
 .resetbtn:active,
 .resetbtn:focus {
-    background-color: #FFB100  !important;	/* !important : 다른 모든 스타일 규칙보다 우선시하도록. */
+    background-color: #FFB100  !important;  /* !important : 다른 모든 스타일 규칙보다 우선시하도록. */
     color: white !important;
 }
 
 #courseSearchBtn {
-	border-radius: 10px;
-
+    border-radius: 10px;
 }
 
 #courseResetBtn {
-	border-radius: 10px;
+    border-radius: 10px;
 }
 
 .sortBox {
-	font-family: 'NanumSquareRound';
-	margin: 0 auto;
-	height: 100px;
-	display: flex;
-	margin-top: -100px;
-	align-items: center;
-	align-content: center; 
-	justify-content: space-between;
+    font-family: 'NanumSquareRound';
+    margin: 0 auto;
+    height: 100px;
+    display: flex;
+    margin-top: -100px;
+    align-items: center;
+    align-content: center; 
+    justify-content:flex-end;
+    padding-right: 30px;
 }
 
 .sortBox > * {
-	/* margin-right: 50px; */
-	margin-top: 50px;
-	margin-bottom: 20px;
-	height: 50px;
+    /* margin-right: 50px; */
+    margin-top: 50px;
+    margin-bottom: 20px;
+    height: 50px;
 }
 
 .courseCount{
     color:#3D8361;
     font-weight: bold;
-    font-size: 1.2rem;
-    margin: 0;
+    font-size: 1.3rem;
+    margin-left: 10px;
     padding-top: 40px;
+    position: absolute;
+    top: -115px;
 }
 
 .course-lists{
-	margin-top: 25px;
+    margin-top: 25px;
+    position:relative;
 }
 
 .course-list-sort {
@@ -208,95 +211,110 @@ select option:checked {
     width: 230px;
     font-size: 20px;
     cursor: pointer;
-    text-indent: 15px;
-}
-
-/* 질문 */
-.course-list-sort option{
-	text-indent: 15px;
+    padding-left: 10px;
 }
 
 /* /* map {
-	display: inline;
+    display: inline;
 } */ */
 
 .course-lists {
-	margin-top: 70px;
+    margin-top: 70px;
 }
 
 .course-list {
-	font-family: 'NanumSquareRound';
-	cursor: pointer;
-	margin-bottom: 50px;
-	transform: scale(1);
-	/* position: relative; */
+    font-family: 'NanumSquareRound';
+    cursor: pointer;
+    margin-bottom: 50px;
+    transform: scale(1);
+    /* position: relative; */
 }
 
 .course-list:hover{
-	transform:scale(1.01);
+    transform:scale(1.01);
 }
 
 .course-list_titlebox {
-	position: relative;
-	margin-right: -20px;
+    position: relative;
+    margin-right: -20px;
 }
 
 .course-list_big-title {
-	width: 100%;
+    width: 100%;
 }
 
 .course-list_small-title {
-	font-family: 'KimjungchulGothic-Bold';
+    font-family: 'KimjungchulGothic-Bold';
 }
 
 .course-list_level {
-	font-size: 20px;
-	top: -85%; right: 5%;
-	position: absolute;
-	display: inline-block;
-	padding: 0.25rem 0.5rem;
-	min-width: 5rem;
-	white-space: nowrap;
-	height: 2rem;
-	text-align: center;
-	line-height: 1.5rem;
+    font-size: 20px;
+    top: -85%; right: 5%;
+    position: absolute;
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    min-width: 5rem;
+    white-space: nowrap;
+    height: 2rem;
+    text-align: center;
+    line-height: 1.5rem;
 }
 
 .bg-info, .bg-success {
-	width: 4.5rem;
+    width: 4.5rem;
 }
 
 .bg-danger {
-    width: 7rem;	
+    width: 7rem;    
 }
 
 .course-list_imgBox {
-	height: 230px;
+    height: 230px;
 }
 
 
 .course-list_small-title {
-	height: 45px;
-	margin-bottom: 55px;
+    height: 45px;
+    margin-bottom: 55px;
 }
 
 .course-list_region {
-	height: 10px;
-	margin-top: 55px;
+    height: 10px;
+    margin-top: 55px;
 }
 
 .course-list_aditDc {
-	height: 90px;
+    height: 90px;
 }
 
-.heart-icon {
-	width: 25px;
-	padding-bottom: 3px;
-	margin-left: 10px;
+.count-icon {
+    width: 25px;
+    padding-bottom: 3px;
+    margin-right: 5px;
+}
+
+.countBox {
+	text-align: lest;
+	position: relative;
+}
+
+.left-align {
+	display: inline-block;
+}
+
+.right-align-number {
+	position: absolute;
+	right: 0px;
+}
+
+.right-align-eye {
+    position: absolute;
+    right: 30px;
+    top: 7px;
 }
 
 .pageInfo_wrap {
-	margin-bottom: 100px;
+    margin-bottom: 100px;
 }
 
 .page-link {
@@ -307,22 +325,22 @@ select option:checked {
 }
 
 .page-border {
-	border-color: #ccc;
+    border-color: #ccc;
 }
 
 .pagination li.page-item {
-	/* padding: 8px 12px; */
+    /* padding: 8px 12px; */
 }
 
 .page-link {
-	font-size: 1.2rem;
-	margin: 10px;
-	line-height: 23px;
-	border-radius: 10px;
+    font-size: 1.2rem;
+    margin: 10px;
+    line-height: 23px;
+    border-radius: 10px;
 }
 
 /* .page-number {
-	border-radius: 10px;
+    border-radius: 10px;
 }
 
 .page-number:hover {
@@ -356,5 +374,4 @@ select option:checked {
     background-color: #e0e0e0; /* 호버 시 변경할 배경 색상 설정 */
     cursor: pointer; /* 호버 시 커서 설정 */
 }
-
 

@@ -21,7 +21,12 @@
     font-weight: normal;
     font-style: normal;
 }
-
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 /* 드래그 선택 컬러 */
 ::selection{
 	color: white;
@@ -82,3 +87,7 @@ body{
 	width: 100%;
 	background-color: #EEF2E6;
 }
+
+.searchBox {
+   font-family: 'NanumSquareRound';
+} 

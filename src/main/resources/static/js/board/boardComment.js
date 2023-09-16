@@ -1,7 +1,7 @@
 /**
  * 
  */
-	console.log("자바스크립트 작동중")
+	//console.log("자바스크립트 작동중")
  // * 수정 버튼 클릭 시, 
  //   수정과 삭제 버튼 사라지게 하고, 등록 버튼 나타나도록.
  		
@@ -94,10 +94,9 @@
 	function(){
 		let commentId = $(this).parent().parent().prev().children("#commentId").val()
 		let userId = document.getElementById('userId').value;
-		let img = $(this).children('img');	
 		
 		// 회원이 아니면 confirm 대화상자 표시
-	    if(userId != null) {
+	    if(userId != null && userId != '') {
 	        // 좋아요 처리 요청
 	        // 경로를 처리하는 컨트롤러 메소드에서 @RequestBody 어노테이션이 붙은 매개변수가 있어서
 	        fetch(`/api/comment/like/${commentId}`, {
@@ -110,13 +109,9 @@
 	        .then(() => {
 	            // 좋아요 아이콘 상태 업데이트
 	            if (isLiked) {
-	                img.src = "/images/common/heart-nonclick.png";
-	                isLiked = false;
-	                console.log(`이 코스는 ${commentId}의 좋아요가 취소되었습니다.`);
+	                //console.log(`이 코스는 ${commentId}의 좋아요가 취소되었습니다.`);
 	            } else {
-	                img.src = "/images/common/heart-click.png";
-	                isLiked = true;
-	                console.log(`이 코스는 ${commentId}의 좋아요가 추가되었습니다.`);
+	                //console.log(`이 코스는 ${commentId}의 좋아요가 추가되었습니다.`);
 	            }
 	            // 좋아요 수(text) 업데이트
 	            fetch(`/api/comment/like/${commentId}/like-count`, {
@@ -126,7 +121,7 @@
 			    .then(data => {
 			        const likeCountElement = $(this).children('#commentLikeCnt');
 			        likeCountElement.text(data.likeCount); // 좋아요 수 업데이트
-			        console.log('좋아요 수 : ' + data.likeCount);
+			        //console.log('좋아요 수 : ' + data.likeCount);
 			    })
 			    .catch(error => {
 			        console.error('좋아요 수 업데이트 중 오류 발생: ', error);
@@ -142,4 +137,18 @@
 	        }
 	    }
 		
+	})
+
+	// 좋아요를 마우스오버했을때
+	$(".commentLike").on("mouseover",
+	function(){
+		let img = $(this).children('img');	
+		img.attr("src", "/images/common/heart-hover.png");
+	})
+	
+	// 좋아요를 마우스아웃했을때
+	$(".commentLike").on("mouseout",
+	function(){
+		let img = $(this).children('img');	
+		img.attr("src", "/images/common/heart-click.png");
 	})

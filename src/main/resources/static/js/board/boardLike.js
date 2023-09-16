@@ -12,15 +12,15 @@ window.addEventListener('load', function() {
     // isLikedString 이 "true"면 true를, 아니면 false 반환
     isLiked = (isLikedString === "true");
     
-    console.log("isLiked : " + isLiked);
-    console.log("userId : " + userId);
-    console.log("courseId: " + courseId);
+//    console.log("isLiked : " + isLiked);
+//    console.log("userId : " + userId);
+//    console.log("courseId: " + courseId);
     
     // isLiked 의 상태 확인하기
     if(isLiked) {
-            console.log(`이 ${courseId} 코스는 ${userId}의 좋아요 상태입니다.`);
+//            console.log(`이 ${courseId} 코스는 ${userId}의 좋아요 상태입니다.`);
         } else {
-            console.log(`이 ${courseId} 코스는 ${userId}의 좋아요 상태가 아닙니다.`);
+//            console.log(`이 ${courseId} 코스는 ${userId}의 좋아요 상태가 아닙니다.`);
         }
     
 });
@@ -29,9 +29,8 @@ function toggleLikeImage(element) {
     boardId = document.getElementById('boardId').value;
     userId = document.getElementById('userId').value;
     let img = element.querySelector('img');
-    
     // 회원이 아니면 confirm 대화상자 표시
-    if(userId != null) {
+    if(userId != null && userId != '') {
         // 좋아요 처리 요청
         // 경로를 처리하는 컨트롤러 메소드에서 @RequestBody 어노테이션이 붙은 매개변수가 있어서
         fetch(`/api/board/${boardId}`, {
@@ -46,11 +45,11 @@ function toggleLikeImage(element) {
             if (isLiked) {
                 img.src = "/images/common/heart-nonclick.png";
                 isLiked = false;
-                console.log(`이 코스는 ${boardId}의 좋아요가 취소되었습니다.`);
+                //console.log(`이 코스는 ${boardId}의 좋아요가 취소되었습니다.`);
             } else {
                 img.src = "/images/common/heart-click.png";
                 isLiked = true;
-                console.log(`이 코스는 ${boardId}의 좋아요가 추가되었습니다.`);
+                //console.log(`이 코스는 ${boardId}의 좋아요가 추가되었습니다.`);
             }
             // 좋아요 수(text) 업데이트
             updateLikeCount(boardId);
@@ -76,7 +75,7 @@ function updateLikeCount(boardId) {
     .then(data => {
         const likeCountElement = document.getElementById('likeCnt');
         likeCountElement.textContent = data.likeCount; // 좋아요 수 업데이트
-        console.log('좋아요 수 : ' + data.likeCount);
+        //console.log('좋아요 수 : ' + data.likeCount);
     })
     .catch(error => {
         console.error('좋아요 수 업데이트 중 오류 발생: ', error);

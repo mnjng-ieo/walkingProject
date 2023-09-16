@@ -42,6 +42,34 @@
 	            </div>
         	</div>
         	
+			<!-- 이미지 추가하기 : 1장 형식 -->
+            <div class="m-3">
+                 <label class="form-label">이미지를 등록해주세요</label>
+                 <div class="board-imgAndBtn"
+                      style="display: flex; gap: 10px;">
+                     <div class="board-imgBox"
+                          style="width: 250px; height: 250px; 
+                          background-color: #fff;" overflow= hidden;>
+                         <!-- 파일 업로드를 위한 숨겨진 input 요소. 
+                         업로드 버튼을 클릭하면 input을 클릭한 것처럼 작동하여 파일 선택 다이얼로그를 열게 됨 -->
+                         <input type="file" id="imageUploadInput" style="display:none;" accept="image/*">
+                         <img id="boardImage" 
+                              style="width: 100%; height: 100%; object-fit: cover;"
+                              th:src="${imagePaths!=null}? ${imagePaths[0]} :
+                               '/images/board/defaultBoardImage.jpg'"
+                              alt="Image ">
+                    </div>
+                    <button type="button" class="imageUploadButton"
+                            onclick="uploadImage()"
+                            style="width: 150px; height:50px;"
+                            >업로드</button>
+                    <button type="button" class="imageDeleteButton"
+                           onclick="deleteImage()"
+                           style="width: 150px; height:50px;"
+                           >업로드 취소</button>
+                 </div>
+            </div>
+        	
         	<!-- 해시태그-->
         	<div class="m-3">
 			  <label class="form-label">#</label>
@@ -82,6 +110,8 @@
 				<input type="hidden" id="courseAddr">
 				<input type="hidden" id="courseLength">
 				<input type="hidden" id="courseTime">
+				<input type="hidden" th:value="${courseimagePath}" id="courseimagePath">
+				<input type="hidden" th:value="${savedImageName}" id="savedImageName">
 			</div>
         		
         	<div class="text-center">

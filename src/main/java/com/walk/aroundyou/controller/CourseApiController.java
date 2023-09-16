@@ -114,7 +114,6 @@ public class CourseApiController {
 				.body(savedCourse);
 	}
 	
-	
 	/**
 	 * [관리자페이지] 산책로 수정 요청
 	 */
@@ -131,7 +130,9 @@ public class CourseApiController {
 		
 		// 수정페이지에서 최종 업로드 취소 상태로 수정 요청했을 시
 		if(ifNewImageExists == 0) {
-			uploadImageService.deleteImage(existedImage);
+			if (existedImage != null) {
+				uploadImageService.deleteImage(existedImage);
+			}
 		}
 		
 		// 이미지를 수정할 때는 우선 기존 이미지를 삭제하고 다시 저장하는 순서를 겪는다.

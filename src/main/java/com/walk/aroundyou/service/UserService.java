@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,17 @@ import org.springframework.validation.FieldError;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domainenum.StateId;
 import com.walk.aroundyou.domainenum.UserRole;
+import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
+import com.walk.aroundyou.dto.IUserResponse;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
 import com.walk.aroundyou.dto.UserSignupDTO;
+import com.walk.aroundyou.repository.BoardRepository;
+import com.walk.aroundyou.repository.CourseLikeRepository;
+import com.walk.aroundyou.repository.CourseRepository;
 import com.walk.aroundyou.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -39,23 +48,18 @@ public class UserService {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	/////////////////// 회원가입
-//	public String join(String userid, String pw) {
-//
-//		UserSignupDTO request = new UserSignupDTO();
-//		Member member = request.toEntity();
-//
-//		validateDuplicateMember(member);
-//		userRepository.save(member);
-//
-//		return member.getUserId();
-//	}
-//	///////////////// 중복 아이디 체크
-//	private void validateDuplicateMember(Member member) {
-//	userRepository.findByUserId(member.getUserId()).ifPresent(m -> {
-//	throw new IllegalStateException("이미 존재하는 회원입니다.");
-//	});
-//	}
+	@Autowired
+	private BoardRepository boardRepository;
+	
+	@Autowired
+	private CourseLikeRepository courseLikeRepository;
+	
+	@Autowired
+	private CourseRepository courseRepository;
+	
+	// 화면에 보이는 최대 게시글 수 5개	(연서 추가)
+	private final static int SIZE_OF_PAGE = 5;
+	
 
 	
 	
@@ -162,6 +166,25 @@ public class UserService {
 	}
 
 	
+	////마이페이지 내가 쓴 게시글 확인(연서 추가)
+	public Page<IBoardListResponse> findMyBoardAndCnt(String userId, int page) {
+		return boardRepository.findMyBoardAndCnt(userId, PageRequest.of(page, SIZE_OF_PAGE));
+	}
+	
+	//// 마이페이지 내가 좋아요 한 산책로 확인(연서 추가)
+	public Page<ICourseLikeResponseDTO> findMyCourseAndCnt(String userId, int page) {
+		return courseLikeRepository.findMyCourseAndCnt(userId, PageRequest.of(page, 6));
+	}
+	
+	//// 마이페이지 내가 댓글 작성한 산책로 확인(연서 추가)
+	public Page<ICourseResponseDTO> findMyCourseCommentAndCnt(String userId, int page) {
+		return courseRepository.findMyCourseCommentAndCnt(userId, PageRequest.of(page, 6));
+	}
+	
+	////마이페이지 내가 댓글 작성한 게시물 확인(연서 추가)
+	public Page<IBoardListResponse> findMyBoardCommentAndCnt(String userId, int page) {
+		return boardRepository.findMyBoardCommentAndCnt(userId, PageRequest.of(page, SIZE_OF_PAGE));
+	}	
 	
 	
 	
@@ -173,6 +196,11 @@ public class UserService {
 	}
 	
 	
+	/////////// 4. 관리자페이지에서 출력할 유저 정보(20개씩 출력)
+	public Page<IUserResponse> findAllUsers(int page) {
+		return userRepository.findAllUsers(PageRequest.of(page, 20));
+	}
+		
 	
 
 	/////////// 5. user entity의 모든 항목을 반환하기
@@ -263,27 +291,6 @@ public class UserService {
 			}
 		}
 	}
-	/*public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
-		
-		// 아이디 찾고 아이디 존재하지 않을 경우 throw
-		Member member = userRepository.findByUserId(userId)
-				.orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
-		
-		// 입력한 비밀번호가 디비에 저장된 비밀번호와 맞지 않을 경우
-		if (!passwordEncoder.matches(dto.getCurrentPwd(), member.getUserPwd())) {
-			return null;
-		} else {
-			
-			// 변경하는 비밀번호 암호화
-			dto.setNewPwd(passwordEncoder.encode(dto.getNewPwd()));
-			member.setUserPwd(dto.getNewPwd());
-			userRepository.save(member);
-		}
-		
-		return member.getUserId();
-	}*/
-
-	
 	
 	
 	///////////////////////////////////// 비밀번호 찾기 -> 이메일 전송

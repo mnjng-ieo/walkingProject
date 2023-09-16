@@ -38,10 +38,11 @@
 				<ul class="ms-lg-2 ms-1 d-flex">
 					<p class="rounded-circle mx-lg-2 mx-1 overflow-hidden" style="width:60px; height:60px;">
 						<img
-							th:src="${userImg!=null}? '@{/images/{userImg}(userImg=${userImg})}': 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1931&q=80'"
-							style="width:60px; height:60px;">
+							th:src="${boardWriterImagePath!=null}? 
+							     ${boardWriterImagePath} : '/images/defaultUserImage.png'"
+							style="width: 60px; height: 60px">
 					</p>
-					<p class="ms-2 userNickname">[[${ board.userNickname }]]</p>
+					<p class="ms-3 userNickname">[[${ board.userNickname }]]</p>
 				</ul>
 				<ul class="d-flex mx-3">
 					<p class="px-2">
@@ -51,7 +52,7 @@
 					<p class="px-2">
 						<i class="fa-regular fa-eye"></i> [[${ board.boardViewCount }]]
 					</p>
-					<p class="px-2"
+					<p class="px-2 pe-4 pe-lg-5 like"
 						onmouseover="changeLikeImage(this)"
 						onmouseout="restoreLikeImage(this)"
 						onclick="toggleLikeImage(this)">
@@ -102,11 +103,13 @@
 				<input type="hidden" id="courseAddr" th:value="${course.signguCn}">
 				<input type="hidden" id="courseLength" th:value="${course.coursDetailLtCn}">
 				<input type="hidden" id="courseTime" th:value="${#dates.format(course.coursTimeCn, 'H시간 mm분 소요')}">
+				<input type="hidden" th:value="${courseimagePath}" id="courseimagePath">
+				<input type="hidden" th:value="${savedImageName}" id="savedImageName">
 			</div>
 			
 			
 			
-			<div class="px-5 commentTitle">댓글</div>
+			<div class="px-5 commentTitle" th:if="${comments != null}" >댓글</div>
 			<!-- 댓글 리스트 -->
 			<div class="commentList mx-5 mb-2">
 				<div class="d-flex justify-content-center flex-wrap mb-4 px-lg-5" th:each="comment : ${comments}" 
@@ -130,15 +133,15 @@
 						<!-- 코멘트 내용 --> 
 						
 						<div class="rounded-4 bg-white commentBox">
-							<div th:if="${comment.userId == loginId}" class="m-1 pt-4 p-2 px-4 commentForm" style="display: none;" >
+							<div class="m-1 pt-4 p-2 px-4 commentForm" style="display: none;" >
 								<!-- </div> -->
 								<!-- 수정 버튼 클릭 시, 출력될 코멘트 작성란 -->
 								<!-- <div class="m-3 commentForm" style="width: 93%; display: none;"> -->
 									<input type="hidden" name="commentId" id="commentId" th:value="${comment.commentId}"></input>
-									<input type="hidden" name="userId" id="userId" th:value="${comment.userId}"></input>
-									<textarea name="commentContent" id="commentContent"
+									<input th:if="${comment.userId == loginId}" type="hidden" name="userId" id="userId" th:value="${comment.userId}"></input>
+									<textarea th:if="${comment.userId == loginId}" name="commentContent" id="commentContent"
 										class="form-control" >[[${comment.commentContent}]]</textarea>
-									<div class="d-flex justify-content-end mt-3 pb-2">
+									<div th:if="${comment.userId == loginId}" class="d-flex justify-content-end mt-3 pb-2">
 										<button type="submit"
 												class="btn btn-sm px-4 registerbtn text-center">등록</button>
 										<button type="button" id="cancelbtn"
@@ -151,7 +154,7 @@
 								<div class="mx-4" th:text="${comment.commentContent}" style="white-space:pre-wrap;"></div>
 								<!-- 수정 및 삭제 버튼 -->
 								<div class="d-flex justify-content-end p-3">
-									<div class="mx-3 mt-1 commentLike">
+									<div class="mx-3 mt-1 commentLike like">
 									<!-- 
 									
 										onmouseover="changeCommentLikeImage(this)"
@@ -166,9 +169,11 @@
 	                        alt="좋아요" 
 	                        style="width: 25px;transform: translate(0px,-2px);"/>
 	                    <span id="commentLikeCnt">[[${ board.likeCnt }]]</span>
-									
+									<input type="hidden" th:value="${#lists.contains(likedComments, comment.commentId)}?'true':’false'" id="isLikedComment">
+										
 									 -->
-										<img src="/images/common/heart-click.png" style="width: 20px; height: 20px;"/>
+										<img 
+											src="/images/common/heart-click.png" style="width: 20px; height: 20px;"/>
 										<span class="fs-6" id="commentLikeCnt">[[${comment.commentLikeCnt}]]</span>
 									</div>
 									<button type="button" id="modifybtn"

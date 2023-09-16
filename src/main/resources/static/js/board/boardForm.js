@@ -157,6 +157,14 @@ window.onload = function(){
 		courseAddr = result.signguCn
 		courseLength = result.coursDetailLtCn
 		courseTime = result.coursTimeCn
+		
+		let savedImageName = getValue("savedImageName").value;
+		let imagePath;
+	    if (savedImageName) {
+	        imagePath = '/upload-images/course/' + savedImageName;
+	    } else {
+	        imagePath = '/images/defaultCourseMainImg.jpg';
+	    }
 		// 지도 중심을 이동 시킵니다
 	    map.setCenter(new kakao.maps.LatLng(parseFloat(courseLat)+0.003, courseLng));
 		// 지도에 마커를 표시합니다 
@@ -174,8 +182,9 @@ window.onload = function(){
 		                    </div>
 		                    <div class="body">
 		                        <div class="img">
-		                            <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">
-		                       </div>
+								    <img src="${imagePath}"
+								        style="width:100%; height:100%;">
+								</div>
 		                        <div class="desc">
 		                            <div class="ellipsis">${courseName}</div>
 		                            <div class="textsm ellipsis">${courseAddr}</div> 
@@ -212,30 +221,107 @@ window.onload = function(){
 	
 	
 	
-	
+		
 	// 생성처리
 	document.getElementById("submitBtn").addEventListener("click",
 		function(){
+            
+            // 이미지 업로드를 위한 FormData 객체 생성
+            const formData = new FormData();
+            const imageUploadInput = document.getElementById('imageUploadInput');
+            
+            // (최종 업로드 취소되지 않은) 새로 업로드된 파일이 있는지 확인
+		    if (imageUploadInput.files.length === 0) {
+				// 이미지를 최종 선택하지 않은 경우
+				formData.append('ifNewImageExists', 0);
+			} else {
+				// 이미지를 최종 선택한 경우
+				formData.append('ifNewImageExists', 1);
+				formData.append('files', imageUploadInput.files[0]);
+			}
+            
+            // board 데이터
+            const dto = {
+                boardType : document.getElementById("boardType").value,
+                boardTitle : document.getElementById("boardTitle").value,
+                boardContent : document.getElementById("boardContent").value,
+                courseId : document.getElementById("courseId").value
+            };
+            // 문자열 데이터를 JSON으로 변환하여 FormData에 추가
+            // - Blob : 데이터를 처리하는 객체
+            formData.append('dto',
+                            new Blob([JSON.stringify(dto)], 
+                                     {type: "application/json"}));
 			fetch('/api'+window.location.pathname,{
 				method: 'PUT',
-				headers:{
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					boardType : document.getElementById("boardType").value,
-					boardTitle : document.getElementById("boardTitle").value,
-					boardContent : document.getElementById("boardContent").value,
-					courseId : document.getElementById("courseId").value
-				})
+				body: formData,
 			})
 			.then((response)=>	{
-				if(response.ok){
-				alert('등록이 완료되었습니다.');
-				location.replace('/board');
-				} else{
-					alert('잘못된 접근입니다.');
-				}
+				if(!response.ok) {
+                    throw new Error('등록 오류 발생');
+                }
+                // 응답 헤더에서 boardId 값 가져오기
+                boardId = response.headers.get('boardId');
+                //console.log('boardId : ' + boardId);
+                return response.json();
+            })
+			.then((data) =>	{
+				alert('등록/수정이 완료되었습니다.');
+				if(boardId) {
+                    location.replace(`/board/${boardId}`);
+                } else {
+                    location.replace('/board');
+                }
+			})
+			.catch(error => {
+                console.error('등록 중 오류 발생 : ', error);
 			})
 	})
 
+}
+
+
+// 전역 범수 선언할 때 주의! 여러 JS파일 간에도 공유 가능하기 때문에 이름을 명확히 한다.
+let boardFile; 
+
+// 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
+function uploadImage() {
+    //console.log('이미지 업로드 버튼이 눌러졌습니다.');
+    const imageUploadInput = document.getElementById('imageUploadInput');
+    // input 내용에 변화가 생기면, courseMainImage 요소의 src 속성 변경시키기
+    // 사용자가 input 요소에서 파일을 선택하거나 변경할 때 발생
+    imageUploadInput.addEventListener('change', function() {
+        // 선택된 파일을 가져와 file 변수에 저장 (this = imageUploadInput)
+        boardFile = this.files[0];
+        
+        // file이 선택되었을 때
+        if (boardFile) {
+            //console.log('File 객체 안에 파일이 들어갔습니다.');
+            // 서버로 파일 업로드 요청을 보내는 코드 작성
+            // 파일 업로드 후, 이미지 경로를 받아와서 이미지를 변경 (const였다가 수정)
+            const reader = new FileReader();   // 파일을 읽기 위한 객체 생성
+            reader.onload = function(e) {      // 파일 읽기 완료되면 호출
+                const boardImage = document.getElementById('boardImage');
+                boardImage.src = e.target.result;  // 읽은 파일의 데이터
+            };
+            reader.readAsDataURL(boardFile);
+        } else {
+            // 파일 선택이 취소되었을 경우 file을 어떻게 제거할까? - deleteImage()
+        }
+    });
+    
+    // input 요소 클릭하여 파일 선택 다이얼로그 열기 
+    imageUploadInput.click(); // ---> 클릭한 것과 같은 효과!
+}
+
+// 이미지 업로드 취소 기능 ; 이미지를 기본 이미지로 변경
+// 취소하면 다시 이미지를 등록해주세요와 기본이미지 두 개 보이기
+function deleteImage() {
+    //console.log('이미지 업로드 취소 버튼이 눌러졌습니다.');
+    const boardImage = document.getElementById('boardImage');
+    boardImage.src = '/images/board/defaultBoardImage.jpg';
+    
+    // file 변수를 초기화(삭제)
+    boardFile = null;
+    //console.log('File 객체를 초기화했습니다. null');
 }

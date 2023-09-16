@@ -707,7 +707,33 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 		""", nativeQuery = true)
 	public int countBoardLikesByBoardId(@Param("boardId")Long boardId);
 
-
+	
+	//// 마이페이지에서 작성한 댓글들의 게시글 목록 출력
+	@Query(value ="""
+	        SELECT 
+			    b.board_id as boardId,
+			    b.board_type as boardType,
+			    b.board_title as boardTitle,
+			    b.user_nickname as userNickname,
+			    b.user_id as userId,
+			    b.board_view_count as boardViewCount,
+			    b.board_created_date as boardCreatedDate,
+			    b.board_updated_date as boardUpdatedDate,
+			    COUNT(c.comment_id) as commentCnt,
+			    COUNT(bl.board_like_id) as likeCnt
+			FROM board as b
+			LEFT JOIN comment as c ON b.board_id = c.board_id
+			LEFT JOIN board_like as bl ON b.board_id = bl.board_id
+			WHERE b.board_id  IN 
+			    (select c2.board_id
+			        from comment c2 
+			        where c2.user_id = :#{#userId} 
+			            and c2.comment_type = 'BOARD') 
+			GROUP BY b.board_id
+			ORDER BY b.board_id DESC
+					""" // ORDER BY 최신순
+			, nativeQuery = true)
+	Page<IBoardListResponse> findMyBoardCommentAndCnt(@Param("userId") String userId, Pageable pageable);
 	
 	
 }

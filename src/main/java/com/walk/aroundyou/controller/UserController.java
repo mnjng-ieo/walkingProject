@@ -1,16 +1,21 @@
 package com.walk.aroundyou.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 //import java.util.HashMap;
 //import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -23,13 +28,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.domainenum.UserRole;
+import com.walk.aroundyou.dto.IBoardListResponse;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
+import com.walk.aroundyou.dto.IUserResponse;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
 import com.walk.aroundyou.dto.UserSignupDTO;
+import com.walk.aroundyou.security.AdminAuthorize;
+import com.walk.aroundyou.service.BoardService;
 import com.walk.aroundyou.service.UploadImageService;
 import com.walk.aroundyou.service.UserService;
 
@@ -46,6 +57,10 @@ public class UserController {
 
 	private final UserService userService;
 	private final UploadImageService uploadImageService;
+	private final BoardService boardService;
+	
+	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
+	private final static int PAGINATION_SIZE = 5;
 
 	///////////////// 로그인 메인 페이지(처음 시작 할 때의 화면)
 	@GetMapping("/login")
@@ -147,28 +162,24 @@ public class UserController {
 		return userService.checkEmail(userEmail);
 	}
 
-	// 임시 비밀번호 생성하고 메일을 생성 & 전송하는 컨트롤러
-	// 이메일로 임시 비밀번호 보내기
-//	@PostMapping("/login/pwdlookup/send")
-//	public String sendEmail(@RequestParam("userEmail") String userEmail) {
-//		log.info("sendEmail진입");
-//		log.info("이메일 : " + userEmail);
-//
-//		// 임시 비밀번호 생성
-//		String tmpPwd = userService.getTmpPwd();
-//
-//		// 임시 비밀번호 저장
-//		userService.updatePwd(tmpPwd, userEmail);
-//
-//		// 메일 생성 & 전송
-//		MailService mailService = new MailService();
-//		UserPasswordSendDTO mail = mailService.createMail(tmpPwd, userEmail);
-//		mailService.sendMail(mail);
-//
-//		log.info("임시 비밀번호 전송 완료");
-//
-//		return "/login";
-//	}
+	// 임시 비밀번호 생성하고 전송하는 컨트롤러
+	@PostMapping("/login/pwdlookup/send")
+	@ResponseBody
+	public String sendEmail(@RequestParam("userEmail") String userEmail) {
+		log.info("sendEmail진입");
+		log.info("이메일 : " + userEmail);
+
+		// 임시 비밀번호 생성
+		String tmpPwd = userService.getTmpPwd();
+
+		// 임시 비밀번호 저장
+		userService.updatePwd(tmpPwd, userEmail);
+		
+		log.info("임시 비밀번호 : " + tmpPwd);
+		log.info("임시 비밀번호 전송 완료");
+
+		return "임시로 발급한 비밀번호는 \"" + tmpPwd + "\"입니다." + "\n" + "자동으로 로그아웃되오니 임시비밀번호 복사 후 재 로그인해주세요!";
+	}
 
 	//////////////////// 마이페이지
 	// Principal은 Spring Security에서 인증된 사용자 정보를 제공하는 객체
@@ -180,9 +191,11 @@ public class UserController {
 	@GetMapping("/mypage")
 	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
 	public String showMypage(
-			Model model
-			, Authentication authentication
-			, @AuthenticationPrincipal User user) {
+			Model model, 
+			Authentication authentication, 
+			@AuthenticationPrincipal User user,
+			@RequestParam(value = "page", required=false, 
+			defaultValue="0") int currentPage) {
 
 		// 헤더에 정보 추가하기 위한 코드
 		if (user != null) {
@@ -221,6 +234,56 @@ public class UserController {
 					log.info("imagePath : " + imagePath);
 					model.addAttribute("imagePath", imagePath);
 				}
+
+				// 마이페이지에서 내 게시글, 좋아요 확인하기(연서 추가)
+				Page<IBoardListResponse> myBoards = 
+					userService.findMyBoardAndCnt(userId, currentPage);
+				
+				//*** 0916 추가 게시글 이미지 모아보기 - 지수 작성
+				List<String> myBoardImagePaths = new ArrayList<>();
+				for (IBoardListResponse boardDTO : myBoards.getContent()) {
+					Board board = boardService.findById(boardDTO.getBoardId()).get();
+					List<UploadImage> myBoardUploadImages = uploadImageService.findByBoard(board);
+					if (myBoardUploadImages != null && !myBoardUploadImages.isEmpty()) {
+						UploadImage myBoardUploadImage = myBoardUploadImages.get(0);
+						String myBoardUploadImagePath = 
+								uploadImageService.
+								findBoardFullPathById(myBoardUploadImage.getFileId());
+						myBoardImagePaths.add(myBoardUploadImagePath);
+					} else {
+						myBoardImagePaths.add(null);
+					}
+				}
+				
+				// 내가 올린 이미지 개수 구하기
+				int myBoardImageCnt = 0;
+				for (String path : myBoardImagePaths) {
+					if (path != null && path != "") {
+						myBoardImageCnt++;
+					}
+				}
+				model.addAttribute("myBoardImageCnt", myBoardImageCnt);
+				model.addAttribute("myBoardImagePaths", myBoardImagePaths);
+				
+				// pagination 설정
+				int totalPages = myBoards.getTotalPages();
+				int pageStart = getPageStart(currentPage, totalPages);
+				int pageEnd = 
+						(PAGINATION_SIZE < totalPages)? 
+								pageStart + PAGINATION_SIZE - 1
+								:totalPages;
+						if(pageEnd == 0) {
+					          pageEnd = 1;
+					    }
+				// model에 user 객체 추가해서 뷰로 넘겨줌				
+				model.addAttribute("user", member.get());
+				
+				model.addAttribute("lastPage", totalPages);
+				model.addAttribute("currentPage", currentPage);
+				model.addAttribute("pageStart", pageStart);
+				model.addAttribute("pageEnd", pageEnd);
+				model.addAttribute("myBoards", myBoards);
+				
 				return "mypage";
 			} else {
 				return "error";
@@ -230,18 +293,190 @@ public class UserController {
 			return "login"; // 로그인 페이지로 리다이렉트 또는 다른 처리를 수행
 		}
 	}
+	
+	// 마이페이지에서 내 산책로 댓글 확인하기(연서 추가)
+	@GetMapping("/mypage/course-commenet")
+	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
+	public String showMyCourseComment(
+			Model model, Authentication authentication, 
+			@AuthenticationPrincipal User user,
+			@RequestParam(value = "page", required=false, defaultValue="0") int currentPage) {
 
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
+
+		if (authentication != null && authentication.isAuthenticated()) {
+			// 현재 로그인한 사용자 아이디
+			String userId = authentication.getName();
+			// 위에 가져온 아이디를 기준으로 사용자 정보 불러옴
+			Optional<Member> member = userService.findByUserId(userId);
+
+			if (member.isPresent()) {
+				// 이미지 경로 넘기기
+				UploadImage uploadImage = 
+						uploadImageService.findByUser(member.get());
+				String imagePath;
+				if (uploadImage != null) {
+					imagePath = 
+							uploadImageService.findUserFullPathById(
+									uploadImage.getFileId());
+					log.info("imagePath : " + imagePath);
+					model.addAttribute("imagePath", imagePath);
+				}	
+
+				Page<ICourseResponseDTO> myCourseComments =
+					userService.findMyCourseCommentAndCnt(userId, currentPage);
+				
+				// pagination 설정
+				int totalPages = myCourseComments.getTotalPages();
+				int pageStart = getPageStart(currentPage, totalPages);
+				int pageEnd = 
+						(PAGINATION_SIZE < totalPages)? 
+								pageStart + PAGINATION_SIZE - 1
+								:totalPages;
+						if(pageEnd == 0) {
+					          pageEnd = 1;
+					    }								
+								
+				// model에 user 객체 추가해서 뷰로 넘겨줌				
+				model.addAttribute("user", member.get());
+				
+				model.addAttribute("lastPage", totalPages);
+				model.addAttribute("currentPage", currentPage);
+				model.addAttribute("pageStart", pageStart);
+				model.addAttribute("pageEnd", pageEnd);
+				model.addAttribute("myCourseComments", myCourseComments);
+				
+				return "mypageCourseComment";
+			} else {
+				return "error";
+			}
+		} else {
+			// 로그인되지 않은 경우 처리
+			return "login"; // 로그인 페이지로 리다이렉트 또는 다른 처리를 수행
+		}
+	}
+	
+
+	// 마이페이지에서 게시물 내 댓글 확인하기(연서 추가)
+	@GetMapping("/mypage/board-commenet")
+	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
+	public String showMyBoardComment(
+			Model model, Authentication authentication, 
+			@AuthenticationPrincipal User user,
+			@RequestParam(value = "page", required=false, defaultValue="0") int currentPage) {
+
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			}
+		}
+
+		if (authentication != null && authentication.isAuthenticated()) {
+			// 현재 로그인한 사용자 아이디
+			String userId = authentication.getName();
+			// 위에 가져온 아이디를 기준으로 사용자 정보 불러옴
+			Optional<Member> member = userService.findByUserId(userId);
+
+			if (member.isPresent()) {
+				// 이미지 경로 넘기기
+				UploadImage uploadImage = 
+						uploadImageService.findByUser(member.get());
+				String imagePath;
+				if (uploadImage != null) {
+					imagePath = 
+							uploadImageService.findUserFullPathById(
+									uploadImage.getFileId());
+					log.info("imagePath : " + imagePath);
+					model.addAttribute("imagePath", imagePath);
+				}	
+
+				Page<IBoardListResponse> myBoardComments =
+					userService.findMyBoardCommentAndCnt(userId, currentPage);
+				
+				// pagination 설정
+				int totalPages = myBoardComments.getTotalPages();
+				int pageStart = getPageStart(currentPage, totalPages);
+				int pageEnd = 
+						(PAGINATION_SIZE < totalPages)? 
+								pageStart + PAGINATION_SIZE - 1
+								:totalPages;
+						if(pageEnd == 0) {
+					          pageEnd = 1;
+					    }
+				// model에 user 객체 추가해서 뷰로 넘겨줌				
+				model.addAttribute("user", member.get());
+				
+				model.addAttribute("lastPage", totalPages);
+				model.addAttribute("currentPage", currentPage);
+				model.addAttribute("pageStart", pageStart);
+				model.addAttribute("pageEnd", pageEnd);
+				model.addAttribute("myBoardComments", myBoardComments);
+				
+				return "mypageBoardComment";
+			} else {
+				return "error";
+			}
+		} else {
+			// 로그인되지 않은 경우 처리
+			return "login"; // 로그인 페이지로 리다이렉트 또는 다른 처리를 수행
+		}
+	}
+	
+	// pagination의 시작 숫자 얻는 메소드(연서 추가)
+	private int getPageStart(int currentPage, int totalPages) {
+		int result = 1;
+		if(totalPages < currentPage + (int)Math.floor(PAGINATION_SIZE/2)) {
+			// 시작페이지의 최소값은 1!
+			result = Math.max(1, totalPages - PAGINATION_SIZE + 1);
+		} else if (currentPage > (int)Math.floor(PAGINATION_SIZE/2)) {
+			result = currentPage - (int)Math.floor(PAGINATION_SIZE/2) + 1;
+		}
+		return result;
+	}
+	
 	// 변경 후 블러오는 정보
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
-	@PostMapping("/main/mypage")
+	@PostMapping("/mypage")
 	public String processMypage(
 			@RequestParam("userId") String userId,
-			@ModelAttribute UpdateMypageDTO dto,
+			@ModelAttribute @Valid UpdateMypageDTO dto, Errors errors,
 			@RequestParam(value="file", required=false) MultipartFile file,
 			@RequestParam(value="ifNewImageExists", defaultValue="0") int ifNewImageExists,
 			Model model, @AuthenticationPrincipal User user
 			) throws IOException {
-
+		
+		if(errors.hasErrors()) {
+			// 유저페이지 변경 실패 시 입력 데이터 값을 유지
+			model.addAttribute("myDto", dto);
+			
+			// 유효성 통과 못한 필드와 메시지를 핸들링
+			Map<String, String> validatorResult = userService.validateHandling(errors);
+			for(String key : validatorResult.keySet()) {
+				model.addAttribute(key, validatorResult.get(key));
+			}
+			return "mypage";
+		}
+		
 	// 헤더에 정보 추가하기 위한 코드
 	if (user != null) {
 		model.addAttribute("loginId", user.getUsername());
@@ -305,14 +540,45 @@ public class UserController {
 		// userNickname.toString(), userImg.toString(), userDescription.toString());
 
 		if (updatedUser != null) {
-			return "redirect:/main/mypage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
+			return "redirect:/mypage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
 		} else {
 			model.addAttribute("showAlert", false);
 
 			// ${showAlert}가 있는 폼으로 이동
-			return "mypage"; // 오류 처리
+			return "user/mypage"; // 오류 처리
 		}
 	}
+
+
+	//////////////////관리자 페이지(연서 작성)
+	@GetMapping("/admin/users")
+	@AdminAuthorize
+	public String showUsers(
+	Model model,
+	@RequestParam(value = "page", required=false, defaultValue="0") int currentPage) {
+	
+	Page<IUserResponse> users = userService.findAllUsers(currentPage);
+	
+	// pagination 설정
+	int totalPages = users.getTotalPages();
+	int pageStart = getPageStart(currentPage, totalPages);
+	int pageEnd = 
+		(PAGINATION_SIZE < totalPages)? 
+				pageStart + PAGINATION_SIZE - 1
+				:totalPages;
+		if(pageEnd == 0) {
+	       pageEnd = 1;
+	 }
+	
+	model.addAttribute("lastPage", totalPages);
+	model.addAttribute("currentPage", currentPage);
+	model.addAttribute("pageStart", pageStart);
+	model.addAttribute("pageEnd", pageEnd);
+	model.addAttribute("users", users);		
+	
+	return "adminUsers";
+	}
+	
 
 	//////////////////// 유저페이지
 	@PreAuthorize("isAuthenticated()")
@@ -357,9 +623,10 @@ public class UserController {
 	}
 
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
-	@PostMapping("/main/mypage/userpage")
+	@PostMapping("/mypage/userpage")
 	public String processuserpage(
 			UpdateUserpageDTO dto, 
+			Errors errors,
 			Model model, 
 			@AuthenticationPrincipal User user) {
 		
@@ -382,7 +649,7 @@ public class UserController {
 		Member updatedMember = userService.updateUserInfo(dto);
 
 		if (updatedMember != null) {
-			return "redirect:/main/mypage/userpage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
+			return "redirect:/mypage/userpage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
 		} else {
 			model.addAttribute("showAlert", false);
 
@@ -410,78 +677,58 @@ public class UserController {
 					}
 				}
 			}
-			return "user/userpage";
+			return "user/changepwd";
 		}
 
 	//////////////////////////////////////////////
 	///////////////// 변경 예정
-	@PostMapping("/main/mypage/userpage/changepwd")
+	@PostMapping("/mypage/userpage/changepwd")
 	@ResponseBody
-	public String processChangePwd(@Valid UserPasswordChangeDTO dto, Errors errors, Model model, Authentication authentication,
-			@AuthenticationPrincipal User user) {
+	 public String updatePassword(@Valid UserPasswordChangeDTO dto, Errors errors, Model model, Authentication authentication, @AuthenticationPrincipal User user) {
 		
 		if (errors.hasErrors()) {
 			// 회원가입 실패 시 입력 데이터 값을 유지
-			model.addAttribute("changePwdDto", dto);
-
+			model.addAttribute("dto", dto);
+			
 			// 유효성 통과 못한 필드와 메시지를 핸들링
 			Map<String, String> validatorResult = userService.validateHandling(errors);
-
+			
 			for (String key : validatorResult.keySet()) {
 				model.addAttribute(key, validatorResult.get(key));
 			}
+			return "user/changepwd"; // 유효성 검사 오류 시 다시 폼 페이지로
 		}
 
-		String result = userService.updateMemberPassword(dto, user.getUsername());
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String result = userService.updateMemberPassword(dto, userDetails.getUsername());
+
 		
-		// 비밀번호 변경 시 자동 로그아웃으로 재 로그인 알림! (페이지는 로그인 페이지로)
-		return result;
+        // 현재 비밀번호가 틀렸을 경우
+        if (result == null) {
+            model.addAttribute("dto", dto);
+            model.addAttribute("wrongPassword", "입력하신 비밀번호와 저장된 비밀번호가 일치하지 않습니다.");
+            
+            return "changepwd";
+        }
+		
+        // new password 비교
+        if (!Objects.equals(dto.getNewPwd(), dto.getComfirmPwd())) {
+            model.addAttribute("dto", dto);
+            model.addAttribute("differentPassword", "새로 입력하신 비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+            return "changepwd";
+        }
+
+        
+
+        // 성공하면 로그아웃
+        return "redirect:/logout";
 	}
-
-	//////////////////////////////////////////////
-	/*public String processChangePwd(@Valid UserPasswordChangeDTO dto, Errors errors, Model model, Authentication authentication,
-			@AuthenticationPrincipal User user) {
-		
-		if (errors.hasErrors()) {
-			// 회원가입 실패 시 입력 데이터 값을 유지
-			model.addAttribute("changePwdDto", dto);
-			
-			// 유효성 통과 못한 필드와 메시지를 핸들링
-			Map<String, String> validatorResult = userService.validateHandling(errors);
-			
-			for (String key : validatorResult.keySet()) {
-				model.addAttribute(key, validatorResult.get(key));
-			}
-		}
-		
-		// new password 끼리 비교
-		// Objects.equals(a, b) : a와 b가 같으면 true 반환, 다르면 false 반환
-		if (!Objects.equals(dto.getNewPwd(), dto.getComfirmPwd())) {
-			
-			model.addAttribute("dto", dto);
-			model.addAttribute("differentPassword", "비밀번호가 같지 않습니다.");
-			return "redirect:/main/mypage/userpage";
-		}
-		
-		String result = userService.updateMemberPassword(dto, user.getUsername());
-		
-		// 현재 비밀번호가 틀렸을 경우(디비와)
-		if (result == null) {
-			model.addAttribute("dto", dto);
-			model.addAttribute("wrongPassword", "비밀번호가 맞지 않습니다.");
-			return "redirect:/main/mypage/userpage";
-		}
-		
-		// 비밀번호 변경 시 자동 로그아웃으로 재 로그인 알림! (페이지는 로그인 페이지로)
-		return "redirect:/login";
-	}*/
-
 	
 	
 	
 	//////////////////// 탈퇴
 	// 탈퇴 버튼 누르면 나오는 화면
-	@GetMapping("/main/mypage/userpage/withdraw")
+	@GetMapping("/mypage/userpage/withdraw")
 	public String showWithdrawForm(
 			@AuthenticationPrincipal User user, Model model) {
 		
@@ -499,22 +746,14 @@ public class UserController {
 			}
 		}
 		// 탈퇴 폼 템플릿을 보여줌
-		return "user/userpage";
+		return "user/withdraw";
 	}
-	// 탈퇴 처리하는 곳
-//	@PostMapping("/main/mypage/userpage/withdraw")
-//	@ResponseBody
-//	public String processWithdrawForm(@RequestParam String currentPwd, @AuthenticationPrincipal User user, Model model) {
-//
-//		String result = userService.deleteByUserId(user.getUsername(), currentPwd);
-//		
-//		return result;
-//
-//	}
-	@PostMapping("/main/mypage/userpage/withdraw")
+
+
+	@PostMapping("/mypage/userpage/withdraw")
 	//@ResponseBody
 	public String processWithdrawForm(
-			@RequestParam String currentPwd, 
+			@RequestParam String checkPwd, 
 			@AuthenticationPrincipal User user,
 			Model model) {
 		
@@ -533,15 +772,16 @@ public class UserController {
 		}
 		
 
-		boolean result = userService.deleteByUserId(user.getUsername(), currentPwd);
+		boolean result = userService.deleteByUserId(user.getUsername(), checkPwd);
 		
 		if (result) {
 			// 탈퇴 후 로그아웃하도록 리다이렉트
-			model.addAttribute("withdrawM", result);
 			return "redirect:/logout";
 		} else {
-			model.addAttribute("wrongPassword", "비밀번호가 맞지 않습니다");
-			return "redirect:/main/mypage/userpage";
+			// success : 쿼리 문자열 파라미터
+			// 로직을 처리하거나 사용자에게 메시지를 전달하는 데 사용
+			model.addAttribute("inputPwd", "비밀번호를 다시 입력해주세요!");
+			return "redirect:/mypage/userpage/withdraw?fail=true";
 		}
 	}
 
@@ -557,5 +797,11 @@ public class UserController {
 		// 강퇴 후 관리자 대시보드로 리다이렉트
 		return "redirect:/admin/dashboard";
 	}
-
+	
+	// 관리자 페이지로 이동
+	@GetMapping("/admin")
+	@AdminAuthorize
+	public String showAdminPage() {
+	    return "adminPage";
+	}
 }

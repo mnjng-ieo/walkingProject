@@ -18,6 +18,15 @@ window.onload = function(){
 	let courseLength = getValue("courseLength")
 	let courseTime = getValue("courseTime")
 	
+	let savedImageName = getValue("savedImageName").value;
+	let imagePath;
+	if (savedImageName) {
+	    imagePath = '/upload-images/course/' + savedImageName;
+	} else {
+	    imagePath = '/images/defaultCourseMainImg.jpg';
+	}
+
+	
 	let mapContainer = document.getElementById('map'), // 지도의 중심좌표
     mapOption = { 
         center: new kakao.maps.LatLng(parseFloat(courseLat)+0.003, courseLng), // 지도의 중심좌표
@@ -44,8 +53,9 @@ window.onload = function(){
 	                    </div>
 	                    <div class="body">
 	                        <div class="img">
-	                            <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">
-	                       </div>
+							    <img src="${imagePath}"
+							        style="width:100%; height:100%;">
+							</div>
 	                        <div class="desc">
 	                            <div class="ellipsis">${courseName}</div>
 	                            <div class="textsm ellipsis">${courseAddr}</div> 

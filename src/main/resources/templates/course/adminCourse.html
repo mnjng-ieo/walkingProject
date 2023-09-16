@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8">
+    <title>관리자 산책로 상세 조회</title>
+    <link rel="stylesheet" href="/css/course/adminCourse.css">
+    <link rel="stylesheet" href="/css/board/boardMap.css">
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f5041361e9b1c4d5fd6a9c27cfadb45e"></script>
+    <script src="/js/course/adminCourse.js"></script>
+    <script src="/js/course/adminCourseMap.js"></script>
+</head>
+<body>
+<th:block layout:fragment="Content">
+    <div class="course-top_topBox">
+        <div class="container row course-top_Box">
+            <div class="col-md-5 course-top_titleBox">
+                <h5 class="course-top_subtitle">산책로 데이터 관리페이지 - 개별 상세 조회</h5>
+                <h1 class="course-top_title"
+                    th:text="${course.courseId} + '번 ' + 
+                            ${course.wlkCoursFlagNm}"></h1>
+                <h1 class="course-top_title2"
+                    th:text="' - ' + 
+                            ${course.wlkCoursNm}"></h1>
+                <h3 class="course-top_title3">&nbsp;&nbsp;&nbsp;&nbsp;을 보고계십니다.</h3>
+            </div>
+            <div class="col-md-7 course-top_buttonBox">
+                <div class="row mb-3 course-top_topButton">
+                    <button type="button" class="col goToUserPageButton rounded-3"
+                            th:onclick="'openUserPageInNewTab(' + ${course.courseId} + ')'">
+                            사용자 페이지에서 보기</button>
+                    <button type="button" class="col goBackToListButton ms-3 rounded-3"
+                            th:onclick="redirectToCourses()">목록으로 돌아가기</button>
+                </div>
+                <div class="row mb-3 course-top_bottomButton">
+                    <!-- 예정 : 상단 바 바로 아래에 위치하도록 조절하기 -->
+                    <button type="button" class="col updateButton rounded-3"
+                            id="updateButton" 
+                            th:onclick="'loadUpdatePage(' + ${course.courseId} + ')'">수정</button>
+                    <button type="button" class="col deleteButton ms-3 rounded-3"
+                            id="deleteButton"
+                            th:onclick="'deleteCourse(' + ${course.courseId} + ')'">삭제</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container courseInfo" th:object="${course}">
+        <div class="row">
+            <div class="col-lg-6">
+                <table class="table">
+                    <tr>
+                    <!-- 
+                        <td class="name">산책로 고유 ID</td>
+                        <td class="content" th:text="*{courseId}"
+                            id="courseId" th:value="*{courseId}"></td>
+                     -->
+                    </tr>
+                    <tr>
+                        <td class="name">산책 경로 구분명</td>
+                        <td class="content" th:text="*{wlkCoursFlagNm}" id="flagName"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">산책 경로명</td>
+                        <td class="content" th:text="*{wlkCoursNm}" id="courseName"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">주요 코스</td>
+                        <td class="content" th:text="*{coursDc}"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">지역(행정자치구명)</td>
+                        <td class="content" th:text="*{signguCn}"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">난이도</td>
+                        <td class="content" th:text="*{coursLevelNm}"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">단위 거리</td>
+                        <td class="content" th:text="*{coursLtCn}"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">상세 거리</td>
+                        <td class="content" th:text="*{coursDetailLtCn} + ' km'" id="courseLength"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">상세 설명</td>
+                        <td class="content" th:text="*{aditDc}"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">소요 시간</td>
+                        <td class="content" 
+                            th:text="${#dates.format(course.coursTimeCn, 'H시간 mm분 소요')}" id="courseTime"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">화장실 정보</td>
+                        <td class="content" th:text="*{toiletDc}"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">편의시설 정보</td>
+                        <td class="content" th:text="*{cvntlNm}"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">지번 주소</td>
+                        <td class="content" th:text="*{lnmAddr}" id="courseAddr"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">경로지점 위도</td>
+                        <td class="content" th:text="*{coursSpotLa}" id="courseLat"></td>
+                    </tr>
+                    <tr>
+                        <td class="name">경로지점 경도</td>
+                        <td class="content" th:text="*{coursSpotLo}" id="courseLng"></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-lg-5 course-mapBox rounded-3" ms-auto id="map">
+                <div class="course-map">
+                    <input type="hidden" th:value="${course.courseId}" id="courseId">
+                </div>      
+            </div>
+        </div>
+        <div class="row course-imgBox mb-5">
+            <!-- 메인 사진; 기본 ) src="/images/defaultCourseMainImg.jpg"
+                  th:src="${imagePath}? 
+                  ${imagePath}: '/images/defaultCourseMainImg.jpg'" 
+             -->
+            <p><i class="fa-solid fa-square-check fs-4" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
+            <input type="hidden" th:value="${savedImageName}" id="savedImageName">
+            <input type="hidden" th:value="${imagePath}" id="imagePath">
+            <img class="course-main-img" 
+                 th:src="${savedImageName}? 
+                 '/upload-images/course/' + ${savedImageName} : '/images/defaultCourseMainImg.jpg'" 
+                 alt="산책로 사진" />
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

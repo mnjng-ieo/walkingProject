@@ -74,7 +74,6 @@
 	color: white;
 }
 
-/* 9/14 추가수정 시작 */
 .modifybtn:hover, .registerbtn:hover{
 	color: white;
 	background: #1C6758;
@@ -101,4 +100,7 @@
 	color: white;
 	background: #1C6758;
 }
-/* 9/14 추가수정 끝 */
+/* 좋아요 클릭하면 호버 */
+.like{
+	cursor: pointer
+}

@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICommentResponseDto;
+import com.walk.aroundyou.service.BoardService;
 import com.walk.aroundyou.service.CommentService;
 import com.walk.aroundyou.service.CourseLikeService;
 import com.walk.aroundyou.service.CourseService;
@@ -36,9 +38,10 @@ public class CourseViewController {
 	private final CourseService courseService;
 	private final CourseLikeService courseLikeService;
 	private final UploadImageService uploadImageService;
-	private final UserService userService;
 	private final CommentService commentService;
-
+	private final UserService userService;
+	private final BoardService boardService;
+	
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
 	
@@ -257,11 +260,15 @@ public class CourseViewController {
 			
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+				model.addAttribute("user", currentUser);
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
 							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
 					model.addAttribute("currentUserImagePath", currentUserImagePath);
+					
+					String currentUserNickname = currentUser.getUserNickname();
+					model.addAttribute("currentUserNickname", currentUserNickname);
 				}
 			}
 		} else {
@@ -296,11 +303,27 @@ public class CourseViewController {
 		} 
 		
 		////// 9/14 댓글 리스트 불러오기(값 없을 때 체크)
+		// + 댓글 목록 유저 이미지 (0916 추가)
 		List<ICommentResponseDto> comments = commentService.findByCourseId(courseId);
+		List<String> commentMemberImagePaths = new ArrayList<>();
 		
 		if(!comments.isEmpty()) {			
 			log.info("comment 값이 있음");	
 			model.addAttribute("comments", comments);
+			
+			// 해당 댓글 목록이 비어있지 않다면 사용자 목록을 구해오고, 그 순서대로 이미지의 리스트를 얻자...
+			for(ICommentResponseDto comment : comments) {
+				Member commentMember = userService.findByUserId(comment.getUserId()).get();
+				UploadImage commentMemberImage = uploadImageService.findByUser(commentMember);
+				if(commentMemberImage != null) {
+					String commentMemberImagePath = 
+							uploadImageService.findUserFullPathById(commentMemberImage.getFileId());
+					commentMemberImagePaths.add(commentMemberImagePath);	
+				} else {
+					commentMemberImagePaths.add("/images/defaultUserImage.png");
+				}
+			model.addAttribute("commentMemberImagePaths", commentMemberImagePaths);
+			}
 		}
 		
 		// 게시글 출력 용도
@@ -308,6 +331,26 @@ public class CourseViewController {
 		         courseService.findBoardAndCntByCourseId(courseId, currentPage, sort);
 		model.addAttribute("courseBoardList", courseBoardList);
 		      
+		// *** 게시물 작성자 이미지 경로 가져오기 - 0916 추가
+		if(courseBoardList != null && !courseBoardList.isEmpty()) {
+			List<String> writerMemberImagePaths = new ArrayList<>();
+			
+			for(IBoardListResponse boardResponseDTO : courseBoardList.getContent()) {
+				Board board = boardService.findById(boardResponseDTO.getBoardId()).get();
+				if (board != null) {
+					// 작성자 이미지 불러오기
+					UploadImage writerMemberImage = 
+							uploadImageService.findByUser(board.getUserId());
+					String writerMemberImagePath = (writerMemberImage != null) ?
+							uploadImageService.
+							findUserFullPathById(writerMemberImage.getFileId()) :
+								"/images/defaultUserImage.png";
+					writerMemberImagePaths.add(writerMemberImagePath);
+				}
+				model.addAttribute("wirterMemberImagePaths", writerMemberImagePaths);
+			}
+		}
+		
 	    // pagination 설정
 	    int totalPages = courseBoardList.getTotalPages();
 	    int pageStart = getPageStart(currentPage, totalPages);
@@ -409,6 +452,9 @@ public class CourseViewController {
 				(PAGINATION_SIZE < totalPages)? 
 						pageStart + PAGINATION_SIZE - 1
 						:totalPages;
+		if(pageEnd == 0) {
+	    	pageEnd = 1;
+	    }
 		model.addAttribute("lastPage", totalPages);
 		// 이전, 이후 버튼에 문제있어서 currentPage + 1 값을 수정했다.
 		model.addAttribute("currentPage", currentPage);
@@ -452,7 +498,7 @@ public class CourseViewController {
 		model.addAttribute("sort", sort);
 		
 		// courseList.html라는 뷰 조회
-		return "adminCourseList";
+		return "/course/adminCourseList";
 	}
 
 	/**
@@ -495,7 +541,7 @@ public class CourseViewController {
 		} 
 		model.addAttribute("course", courseResponseDTO);
 		
-		return "adminCourse";
+		return "/course/adminCourse";
 	}
 
 	/**
@@ -519,7 +565,7 @@ public class CourseViewController {
 		}
 		model.addAttribute("course", new CourseResponseDTO());
 		
-		return "adminInsertCourse";
+		return "/course/adminInsertCourse";
 	}
 	
 	/**
@@ -559,7 +605,7 @@ public class CourseViewController {
 		} 
 		model.addAttribute("course", new CourseResponseDTO(course));
 		
-		return "adminUpdateCourse";
+		return "/course/adminUpdateCourse";
 	}
 }
 

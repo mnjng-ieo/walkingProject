@@ -75,15 +75,16 @@ public class BoardRestController {
 	        log.info("해시태그 추가 처리 완료");
 	        
 	        // 산책로 추가 처리
-	        boardCourseService.save(
-	        		BoardCourse.builder()
-	        		.boardId(Board.builder()
-	        				.boardId(boardId).build())
-	        		.courseId(Course.builder()
-	        				.courseId(board.getCourseId()).build())
-	        		.build());
-	        log.info("산책로 추가 처리 완료");
-	        
+	        if(board.getCourseId() != null) {
+		        boardCourseService.save(
+		        		BoardCourse.builder()
+		        		.boardId(Board.builder()
+		        				.boardId(boardId).build())
+		        		.courseId(Course.builder()
+		        				.courseId(board.getCourseId()).build())
+		        		.build());
+		        log.info("산책로 추가 처리 완료");
+	        }
 	        // 이미지 추가 처리 (0912 - 지수 작성)
 	        Board savingBoard = boardService.findById(boardId).get();
 	        
@@ -151,13 +152,16 @@ public class BoardRestController {
 	        
 	        // 산책로 삭제 처리
 	        boardCourseService.deleteByBoardId(id);
-	        // 산책로 추가 처리
-	        boardCourseService.save(BoardCourse.builder()
-	        		.boardId(Board.builder().boardId(id).build())
-	        		.courseId(Course.builder().courseId(board.getCourseId()).build())
-	        		.build());
-	        log.info("산책로 추가 처리 완료");
 	        
+	        
+	        // 산책로 추가 처리
+	        if(board.getCourseId() != null) {
+	        	boardCourseService.save(BoardCourse.builder()
+		        		.boardId(Board.builder().boardId(id).build())
+		        		.courseId(Course.builder().courseId(board.getCourseId()).build())
+		        		.build());
+		        log.info("산책로 추가 처리 완료");
+	        }
 	        // 이미지 추가 처리
 	        Board updatedBoard = boardService.findById(id).get();
 	        

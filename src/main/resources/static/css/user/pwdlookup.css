@@ -1,0 +1,44 @@
+@font-face {
+    font-family: 'KimjungchulGothic-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Yeongdo-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/Yeongdo-Rg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1{
+   font-family: 'KimjungchulGothic-Bold';
+}
+
+h6, label, .form-control {
+   font-family: 'NanumSquareRound';
+}
+
+
+/* 회원정보 변경 버튼 */
+.checkEmail {
+   font-family: 'KimjungchulGothic-Bold' !important;
+   height: 60px;
+   margin: auto;
+}
+
+.checkEmail:hover,
+.checkEmail:active,
+.checkEmail:focus {
+   background-color:  white !important;
+   color: #7FB77E !important;
+   border: 2px solid #F96666 !important;
+}

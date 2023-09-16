@@ -42,7 +42,8 @@
                     <select class="course-list-top_condition region" 
                             id="region" name="region" onchange="handleSelectChange(this)">
                         <option class="" value="">지역 선택</option>
-                        <option class="" value="서울 강남구">서울 강남구</option>
+                        <option class="" value="서울 강남구"
+                            th:selected="${selectedRegion == '서울 강남구'}">서울 강남구</option>
                         <option class="" value="서울 강동구">서울 강동구</option>
                         <option class="" value="서울 강북구">서울 강북구</option>
                         <option class="" value="서울 강서구">서울 강서구</option>
@@ -114,7 +115,7 @@
                 <div class ="row justify-content-evenly btngroup">
                     <button type="button" class="searchbtn" 
                             id="courseSearchBtn"
-                            onclick="loadPage(0)">
+                            onclick="loadPage(0), scrollToPosition()">
                             검색 <i class="fa-solid fa-magnifying-glass"></i></button>
                     <button type="button" class="searchbtn resetbtn" 
                             id="courseResetBtn"
@@ -125,7 +126,6 @@
         </div>
     </div>
     <div class="container sortBox">
-        <p class = "my-2 courseCount">게시물 수 : <span th:text="${courses.totalElements}"></span></p>
         <!-- 정렬 방식 선택 : onchange 속성으로 값이 변경될 때마다 Ajax 요청 실행 -->
         <select class="course-list-sort sort border" 
                 id="sort" name="sort" 
@@ -141,6 +141,11 @@
     <input type="hidden" id="imagePaths" th:value="${imagePaths}" />
     <div class="container course-lists" >
         <div class="row">
+            <!-- 검색 결과 없을 때 처리 -->
+            <p class = "my-2 courseCount">게시물 수 : <span th:text="${courses.totalElements}"></span></p>
+            <p th:if="${courses.totalElements == 0}" 
+	        class= "noResult mx-5 mt-5 text-center fs-1">검색 결과에 해당하는 산책로가 없습니다.</p>
+    
             <!-- th:each="item : ${courses}" -->
             <div class="col-4" 
                  th:each="item, stat : ${courses}">
@@ -210,7 +215,8 @@
                            <i class="fa-regular fa-pen-to-square fa-lg count-icon left-align"
                                 style="margin-right: 1px;"></i>
                            <span class="left-align" th:text="${item.mentionCnt}+'개'">언급 수</span>
-                           <span class="right-align-number" th:text="${item.coursViewCount}">조회수</span>
+                           <span class="right-align-number" th:text="${item.coursViewCount}"
+                                style="margin-left: 2px;">조회수</span>
                            <i class="fa-regular fa-eye fa-lg count-icon right-align-eye"
                                 style="margin-top: 4px;"></i>
                         </p>

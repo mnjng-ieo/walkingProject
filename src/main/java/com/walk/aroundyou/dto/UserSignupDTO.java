@@ -56,8 +56,7 @@ public class UserSignupDTO {
 	@NotBlank(message = "이메일을 입력해주세요.")
 	@Email(message = "올바른 이메일 주소를 입력해주세요.")
 	private String userEmail;
-	
-	private String userImg;
+
 	private String userDescription;
 	private Timestamp userJoinDate;
 	private Timestamp userUpdateDate;
@@ -76,7 +75,6 @@ public class UserSignupDTO {
 				.userNickname(userNickname)
 				.userTelNumber(userTelNumber)
 				.userEmail(userEmail)
-				.userImg(userImg)
 				.userDescription(userDescription)
 				.userJoinDate(new Timestamp(System.currentTimeMillis()))
 				.userUpdateDate(new Timestamp(System.currentTimeMillis()))

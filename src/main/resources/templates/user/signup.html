@@ -46,8 +46,7 @@
 	
 				<!-- 이름 입력 필드 -->
 				<div class="mb-5 w-75 m-auto">
-					<label for="userName" class="form-label fs-5"></label> 
-					<label for="userName" class="form-label">이름<span class="text-danger"> *</span></label> 
+					<label for="userName" class="form-label fs-5">이름<span class="text-danger"> *</span></label> 
 					<input type="text" class="form-control form-control-lg" id="userName" name="userName"
 						   th:value="${signupDto != null}? ${signupDto.userName} : ''"
 					       placeholder="이름을 입력해주세요" required> <span
@@ -81,16 +80,15 @@
 					       placeholder="010-1234-5678">
 				</div>
 		
-			</div>
-	
-				<br>
+				<div class="text-center">
 				<!-- 회원 가입 버튼 -->
-				<button type="submit" class="btn rounded-3 d-block fs-5 w-75 signupbtn mb-5" id="signupFormBtn">회원 가입</button>
+				<button type="submit" class="btn rounded-3 fs-5 w-75 signupbtn mb-5" id="signupFormBtn">회원 가입</button>
+				</div>
 			</form>
 		</div>
 	</div>
 	
-		<!-- 아이디 중복 체크 ajax -->
+	<!-- 아이디 중복 체크 ajax -->
 	<script>
 	document.addEventListener("DOMContentLoaded", function () {
 	    var checkUserIdBtn = document.getElementById("checkUserIdBtn");

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Password 찾기</title>
+
+   <!-- 부트스트랩 CSS 링크 -->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+   <!-- 부트스트랩 JavaScript 및 jQuery 링크 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    
+<link href="/css/user/pwdlookup.css" rel="stylesheet"></link>
+
+<script>
+
+//const header = $("meta[name='_csrf_header']").attr('content');
+//const token = $("meta[name='_csrf']").attr('content');
+
+document.addEventListener("DOMContentLoaded", function () {
+        const checkEmailButton = document.getElementById("checkEmail");
+        checkEmailButton.addEventListener("click", checkEmail);
+
+        function checkEmail() {
+            const userEmail = document.getElementById("userEmail").value;
+
+            if (!userEmail || userEmail.trim() === "") {
+                alert("이메일을 입력하세요.");
+            } else {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", '/login/pwdlookup/check?userEmail=' + encodeURIComponent(userEmail), true);
+                //xhr.setRequestHeader(header, token);
+
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        const result = xhr.responseText;
+                        console.log("result: " + result);
+                        if (result === "true") {
+                            sendEmail();
+                            alert("이메일이 존재합니다.");
+                        } else if (result === "false") {
+                            alert("가입되지 않은 이메일입니다.");
+                        }
+                    } else {
+                        alert("서버 오류: " + xhr.status);
+                    }
+                };
+
+                xhr.onerror = function () {
+                    alert("요청 실패");
+                };
+
+                xhr.send();
+            }
+        }
+
+        function sendEmail() {
+        	
+            const userEmail = document.getElementById("userEmail").value;
+
+            const xhr = new XMLHttpRequest();
+            
+            xhr.open("POST", "/login/pwdlookup/send?userEmail=" + userEmail, true);
+            //xhr.setRequestHeader(header, token);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            
+            
+            var data = "userEmail=" + encodeURIComponent(userEmail);
+            
+            xhr.onreadystatechange = function() {
+            	if(xhr.readyState === XMLHttpRequest.DONE) {
+            		if(xhr.status === 200) {
+            			alert(xhr.response);
+            			window.location.href = "/logout";
+            		}else {
+            			alert("요청 실패");
+            		}
+            	}
+            };
+            
+            // 요청 전송
+            xhr.send(data);
+            
+        }
+    });
+   
+</script>
+
+</head>
+<body>
+    
+     <div class="container">
+        <h1 class="text-center mt-5 ">비밀번호 찾기</h1>
+         <div class="container border rounded-4 shadow-lg p-5 mt-4"
+            style="width: 800px;">
+            <h6 class="mt-6">이메일을 입력하시면 임시비밀번호가 전송되오니 로그인 후 비밀번호를 변경 하시길 바랍니다.</h6>
+            <h6>비밀번호 찾기 성공 시 자동으로 로그아웃됩니다.</h6>
+        <br>
+        <br>
+        <form action="/login/idlookup" method="post" id="pwdLookupForm" name="sendEmail">
+        
+            <!-- 아이디 입력 필드 -->
+            <div class="mb-3">
+                <label for="userEmail" class="form-label">가입한 이메일 주소</label>
+                <input type="email" class="form-control" id="userEmail" name="userEmail" required>
+            </div>
+            
+            <br>
+            <!-- 비밀번호 찾기 버튼 -->
+            <button type="button" class="btn rounded-3 d-block fs-5 w-75 mb-5 mt-5" style="background-color:  #7FB77E;
+   color: white;
+   border: 2px solid #7FB77E; margin: auto;" id="checkEmail" 
+            >임시 비밀번호 생성</button>
+             
+        </form>
+    </div>
+    </div>
+
+
+</body>
+</html>

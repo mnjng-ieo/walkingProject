@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마이페이지</title>
+
+<!-- Popper.js -->
+<script
+	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<!-- 자바스크립트 -->
+<script type="text/javascript" src="/js/common/mypage.js"></script>
+<script type="text/javascript" src="/js/common/mypageCourse.js"></script> 
+<!-- css -->
+<link rel="stylesheet" href="/css/common/mypageCourse.css">
+<link rel="stylesheet" href="/css/common/mypage.css">
+
+</head>
+<body>
+<th:block layout:fragment="Content">
+<!-- 상단 -->
+<div class ="container d-flex justify-content-between">
+    <!-- 브레드크럼(왼쪽) -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+      <ol class="breadcrumb px-3 pt-4">
+        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/mypage}">마이페이지</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/mypage-course}">내가 좋아한 길</a></li>
+      </ol>
+    </nav>
+
+    <!-- 사이드바(오른쪽) -->
+    <section class ="sidebar">
+        <div class ="px-5 pt-4">
+            <button class="btn sidebarBtn fs-2" type="button" 
+            data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" 
+            aria-controls="offcanvasRight">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+          <div class="offcanvas-header">
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+             <div class="flex-shrink-0 p-3 bg-white" style="width: 300px;">
+                  <a href="/"
+                      class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+                      <span class="fs-2 fw-semibold sidebar-title">WalkAroundYou
+                        <img src="/images/common/logo_img.png" class="side-logo mb-5"></img>
+                      </span>
+                  </a>
+                  <ul class="list-unstyled ps-0">
+    
+                      <li class="mb-1">
+                          <button
+                              class="fs-4 btn btn-toggle align-items-center rounded collapsed"
+                              data-bs-toggle="collapse" data-bs-target="#account-collapse"
+                              aria-expanded="false">나의 정보
+                           <i class="fa-solid fa-gear sidebar-sub-title"></i>    
+                          </button>
+                          <div class="collapse show mx-4" id="account-collapse">
+                              <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-5 small">
+                                  <li class="my-1"><a th:href="@{/mypage}" class="link-dark rounded">마이페이지</a></li>
+                                  <li class="my-1"><a th:href="@{/mypage/userpage}" class="link-dark rounded">정보
+                                          조회</a></li>
+                                  <li class="my-1"><a th:href="@{/logout}" class="link-dark rounded">로그아웃</a></li>
+                              </ul>
+                          </div>
+                      </li>
+    
+                      <li class="border-top my-5"></li>
+                      <li class="mb-1">
+                          <button
+                              class="fs-4 btn btn-toggle align-items-center rounded collapsed"
+                              data-bs-toggle="collapse" data-bs-target="#home-collapse"
+                              aria-expanded="true">나의 기록
+                           <i class="fa-solid fa-seedling sidebar-sub-title2"></i>
+                          </button>
+                          <div class="collapse show mx-4" id="home-collapse">
+                              <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                  <li class="my-1"><a th:href="@{/mypage-course}" class="link-dark rounded">내가 좋아한 길</a></li>
+                                  <li class="my-1"><a th:href="@{/mypage/course-commenet}" class="link-dark rounded">댓글 작성한 산책로</a></li>
+                                  <li class="my-1"><a th:href="@{/mypage/board-commenet}" class="link-dark rounded">댓글 작성한 게시물</a></li>
+                              </ul>
+                          </div>
+                      </li>
+                  </ul>
+              </div>        
+          </div>
+        </div>
+    </section><!-- 사이드바 끝 -->             
+</div><!-- 상단 끝 -->   
+    
+    <!-- 내가 좋아요 한 산책로 -->
+    <div id="searchResults">
+    <!-- 산책로 목록 카드 ; 검색 결과를 표시할 영역-->
+    <div class="container course-lists" >
+    <h1 class = "my-5 text-center course-title" >내가 <i class="fa-solid fa-heart" style="color: #ff0000;"></i> 한 산책로 모아보기</h1>     
+    <p class = "my-3 px-4 myCount">
+       산책로 수 : <span th:text="${myCourses.totalElements}"></span></p>
+
+        <div class="row px-4">
+            <p th:if="${myCourses.totalElements == 0}" 
+                  class= "noResult mx-5 mt-5 text-center fs-1">좋아요 한 산책로가 없습니다.</p>
+            <div class="col-4" th:each="item : ${myCourses}">
+                <div class="card course-list"
+                     th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
+                    <!-- 예정 : Course에 추가할 coursImg. 현재 default만 설정 -->
+                    <img class="card-img-top course-list_imgBox" 
+                         src="/images/defaultCourseImg.png" alt="산책로 사진" />
+                    <div class="card-body course-list_textbox">
+                        <div class="course-list_titlebox">
+                            <div class="row course-list_title">
+                                <!-- 산책로 이름 - 큰이름과 작은이름이 서로 같으면 큰 이름만 출력 되도록 
+                                     하려면 th:if="${item.wlkCoursNm} != ${item.wlkCoursFlagNm}" 붙이기 -->
+                                <h5 class="col-10 card-title course-list_big-title" 
+                                    th:text="${item.wlkCoursFlagNm}">
+                                    산책로 큰이름</h5>
+                                <!-- 산책로 난이도 -->
+                                <p class="col-3 rounded-pill badge text-center course-list_level"
+                                   th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : 
+                                                     item.coursLevelNm == '쉬움' ? ' bg-info' : 
+                                                     item.coursLevelNm == '보통' ? ' bg-success' : 
+                                                     item.coursLevelNm == '어려움' ? ' bg-warning' : 
+                                                     item.coursLevelNm == '매우어려움' ? ' bg-danger' : ''}"
+                                   th:text="${item.coursLevelNm}">난이도</p>
+                            </div>
+                            <div>
+                                <!-- 산책로 큰이름과 작은 이름이 같은 경우 고려할 때
+                                <h5 class="card-text"
+                                    th:if="${item.wlkCoursNm} == ${item.wlkCoursFlagNm}"
+                                    >&nbsp;</h5> -->
+                                <h3 class="card-text course-list_small-title" 
+                                    th:text="${item.wlkCoursNm}">산책로 작은이름</h3>
+                            </div>
+                        </div>
+                        
+                        <!-- 지역 -->
+                        <p class="card-text course-list_region" 
+                           th:text="${item.signguCn}">지역</p>
+                        <!-- "코스거리" | "소요시간"시간 분 소요 -->
+                        <p class="card-text course-list_distance">
+                            <span th:text="${item.coursDetailLtCn}">총코스거리</span>km |  
+                            <span th:text="${#dates.format(item.coursTimeCn, 'H시간 mm분 소요')}">
+                             소요 시간</span>
+                        </p>
+                        <!-- 산책로 설명 : 일정 길이 넘어가면 ... 로 축약되도록 -->
+                        <p class="card-text course-list_aditDc" 
+                           th:text="${#strings.length(item.aditDc) &gt; 70 ? 
+                                    #strings.substring(item.aditDc, 0, 70) + '...' 
+                                    : item.aditDc}">산책로 설명
+                        </p>
+                        <!-- 예정 : 좋아요 수 / 언급 수 / 댓글 수 -->
+                        <p class="card-text">
+                           <img class="heart-icon"
+                                 src="/images/common/heart-click.png" alt="좋아요" />
+                           <span th:text="${item.likeCnt}">좋아요 수</span>개 
+                           <span style="margin-right:15px;"></span>
+                           <i class="fa-regular fa-comment-dots"></i>
+                           <span th:text="${item.commentCnt}">댓글 수</span>개
+                           <span style="margin-right:15px;"></span>
+                           <i class="fa-regular fa-pen-to-square"></i>
+                           <span th:text="${item.mentionCnt}">언급 수</span>개
+                           <span style="margin-right:120px;"></span>
+                           <i class="fa-regular fa-eye "></i>
+                           <span th:text="${item.coursViewCount}">조회수</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 페이지네이션 기능 -->
+    <div class="pageInfo_wrap" id="pagination">
+        <!--pagination-sm 추가하면 작아지고, pagination-lg 추가하면 커진다 -->
+        <ul class="pagination pagination-sm
+                   justify-content-center">
+           <li class="page-item" id="pagePrev"
+               th:classappend="${currentPage == 0} ? 'disabled' : ''">
+               <!-- 링크 클릭할 때 해당 링크의 url로 이동하는 기본 동작 막기 위해 사용
+                    자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
+               <!-- th:onclick="'loadPage(\''+${currentPage - 1}+'\')'" -->
+               <a class="page-link arrow" 
+                  href="javascript:void(0);"
+                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">
+                <i class="fa-solid fa-chevron-left"></i></a>
+           </li>
+           <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
+               <li th:if="${page == (currentPage+1)}" 
+                   class="page-item active">
+                   <a class="page-link" 
+                   href="javascript:void(0);"
+                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+               </li>
+               <li th:unless="${page == (currentPage+1)}" 
+                   class="page-item">
+                   <a class="page-link" 
+                   href="javascript:void(0);"
+                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+               </li>
+           </th:block>
+           <li class="page-item" id="pageNext"
+               th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
+               <a class="page-link arrow" 
+               href="javascript:void(0);"
+               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
+                <i class="fa-solid fa-chevron-right"></i></a>
+           </li>
+        </ul>
+    </div>
+    </div>
+  
+    
+
+     	
+</th:block>
+</body>
+</html>

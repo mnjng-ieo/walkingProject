@@ -2,6 +2,7 @@ package com.walk.aroundyou.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +24,13 @@ import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.IBoardDetailResponse;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICommentResponseDto;
+import com.walk.aroundyou.service.BoardLikeService;
 import com.walk.aroundyou.service.BoardService;
 import com.walk.aroundyou.service.CommentService;
 import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.TagService;
 import com.walk.aroundyou.service.UploadImageService;
 import com.walk.aroundyou.service.UserService;
-import com.walk.aroundyou.service.BoardLikeService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -248,18 +249,16 @@ public class BoardViewController {
 
 		// 조회한 좋아요 상태 확인
 		boolean isLiked;
-		List<String> likedComments;
+		List<Long> likedComments = Collections.emptyList();
 		
 		// 헤더에 정보 추가하기 위한 코드 + 좋아요 상태 
 		if (user != null) {
 			String userId = user.getUsername(); // 실제 로그인한 유저 정보
 			model.addAttribute("loginId", userId);
 			isLiked = boardLikeService.isBoardLiked(userId, id);
-			// 사용자의 댓글 좋아요 리스트 불러오기
-			//likedComments = commentService.findByUserId(userId); 
-			
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+				model.addAttribute("user", currentUser);
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -272,8 +271,6 @@ public class BoardViewController {
 		}		
 		model.addAttribute("isLiked", isLiked);
 
-		
-		
 		
 		// 게시글 내용 불러오기
 		Optional<IBoardDetailResponse> board = boardService.findBoardDetail(id);
@@ -292,10 +289,10 @@ public class BoardViewController {
 
 		// 댓글 리스트 불러오기(값 없을 때 체크)
 		List<ICommentResponseDto> comments = commentService.findByBoardId(id);
-
 		if (!comments.isEmpty()) {
 			log.info("comment 값이 있음");
 			model.addAttribute("comments", comments);
+			
 		}
 		
 		// 산책로 정보 불러오기
@@ -303,6 +300,19 @@ public class BoardViewController {
 		if (course.isPresent()) {
 			log.info("course 값이 있음");
 			model.addAttribute("course", course.get());
+			
+			// ★★★★★★★ 지도 이미지 경로 넘기기 - 0916 지수 작성
+			UploadImage courseUploadImage = uploadImageService.findByCourse(course.get());
+			String courseImagePath;
+			if (courseUploadImage != null) {
+				courseImagePath = 
+						uploadImageService.findCourseFullPathById(
+								courseUploadImage.getFileId());
+				log.info("courseImagePath : " + courseImagePath);
+				model.addAttribute("courseImagePath", courseImagePath);
+				String savedImageName = courseUploadImage.getSavedFileName();
+	            model.addAttribute("savedImageName",savedImageName);
+			}
 		} else {
 			log.info("course 값이 없음");
 		}
@@ -341,6 +351,7 @@ public class BoardViewController {
 			}
 		}
 		
+		
 		// 3. 댓글 목록(comments) 유저 이미지
 		List<String> commentMemberImagePaths = new ArrayList<>();
 		/// 해당 댓글 목록이 비어있지 않다면 사용자의 목록을 구해오고, 그 순서대로 이미지의 리스트를 얻자...
@@ -358,6 +369,7 @@ public class BoardViewController {
 			model.addAttribute("commentMemberImagePaths", commentMemberImagePaths);
 			} 
 		} 
+		
 		
 		return "board/boardDetail";
 	}
@@ -380,13 +392,15 @@ public class BoardViewController {
 
 	// 게시물 작성 폼
 	@GetMapping("/board-editor")
-	public String getBoardForm(Model model, Optional<Long> course
+	public String getBoardForm(Model model
+			, @RequestParam(name = "course", required = false) Long course
 			, @AuthenticationPrincipal User user) {
 		// 헤더에 정보 추가하기 위한 코드
 		if (user != null) {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+				model.addAttribute("isAdmin", currentUser.getRole());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -401,11 +415,23 @@ public class BoardViewController {
 		// 산책로 지역 선택 항목 가져오기
 		List<String> allSignguCn = courseService.findAllSignguCn();
 		model.addAttribute("allSignguCn", allSignguCn);
-		if (course.isPresent()) {
-			Course resultCourse = courseService.findById(course.get());
+		if (course != null) {
+			Course resultCourse = courseService.findById(course);
 			model.addAttribute("courseId", resultCourse.getCourseId());
 			model.addAttribute("wlkCoursFlagNm", resultCourse.getWlkCoursFlagNm());
 			model.addAttribute("wlkCoursNm", resultCourse.getWlkCoursNm());
+			
+			UploadImage courseUploadImage = uploadImageService.findByCourse(resultCourse);
+			String courseImagePath;
+			if (courseUploadImage != null) {
+				courseImagePath = 
+						uploadImageService.findCourseFullPathById(
+								courseUploadImage.getFileId());
+				log.info("courseImagePath : " + courseImagePath);
+				model.addAttribute("courseImagePath", courseImagePath);
+				String savedImageName = courseUploadImage.getSavedFileName();
+	            model.addAttribute("savedImageName",savedImageName);
+			}
 		}
 
 		return "/board/boardForm";
@@ -457,6 +483,18 @@ public class BoardViewController {
 			model.addAttribute("courseId", resultCourse.getCourseId());
 			model.addAttribute("wlkCoursFlagNm", resultCourse.getWlkCoursFlagNm());
 			model.addAttribute("wlkCoursNm", resultCourse.getWlkCoursNm());
+			// ★★★★★★★ 지도 이미지 경로 넘기기 - 0916 지수 작성
+			UploadImage courseUploadImage = uploadImageService.findByCourse(course.get());
+			String courseImagePath;
+			if (courseUploadImage != null) {
+				courseImagePath = 
+						uploadImageService.findCourseFullPathById(
+								courseUploadImage.getFileId());
+				log.info("courseImagePath : " + courseImagePath);
+				model.addAttribute("courseImagePath", courseImagePath);
+				String savedImageName = courseUploadImage.getSavedFileName();
+	            model.addAttribute("savedImageName",savedImageName);
+			}
 		} else {
 			log.info("course 값이 없음");
 		}
