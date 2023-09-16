@@ -24,85 +24,90 @@
 </head>
 <body>
 <th:block layout:fragment="Content">
-<!-- 브레드크럼(왼쪽) -->
-<div class ="container">
+<!-- 상단 -->
+<div class ="container d-flex justify-content-between">
+    <!-- 브레드크럼(왼쪽) -->
 	<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-	  <ol class="breadcrumb px-5 pt-4">
+	  <ol class="breadcrumb px-3 pt-4">
 	    <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
 	    <li class="breadcrumb-item"><a th:href="@{/mypage}">마이페이지</a></li>
 	  </ol>
 	</nav>
-</div>
 
-<!-- 사이드바(오른쪽) -->
-<section class ="sidebar">
-    <div class ="container d-flex justify-content-end mt-5">
-        <button class="btn btn-success px-4 fs-5" type="button" 
-        data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" 
-        aria-controls="offcanvasRight">나의 정보</button>
-    </div>
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title p-2" id="offcanvasRightLabel">Sidebar </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-         <div class="flex-shrink-0 p-3 bg-white" style="width: 280px;">
-              <a href="/"
-                  class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
-                  <span class="fs-3 fw-semibold">W.A.Y
-                    <img src="/images/common/logo_img.png" class="logo p-2 mb-3"></img>
-                  </span>
-              </a>
-              <ul class="list-unstyled ps-0">
-
-                  <li class="mb-1">
-                      <button
-                          class="fs-4 btn btn-toggle align-items-center rounded collapsed"
-                          data-bs-toggle="collapse" data-bs-target="#account-collapse"
-                          aria-expanded="false">나의 정보</button>
-                      <div class="collapse show mx-4" id="account-collapse">
-                          <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-5 small">
-                              <li class="my-1"><a th:href="@{/mypage}" class="link-dark rounded">마이페이지</a></li>
-                              <li class="my-1"><a th:href="@{/mypage/userpage}" class="link-dark rounded">정보
-                                      조회</a></li>
-                              <li class="my-1"><a th:href="@{/logout}" class="link-dark rounded">로그아웃</a></li>
-                          </ul>
-                      </div>
-                  </li>
-
-                  <li class="border-top my-5"></li>
-                  <li class="mb-1">
-                      <button
-                          class="fs-4 btn btn-toggle align-items-center rounded collapsed"
-                          data-bs-toggle="collapse" data-bs-target="#home-collapse"
-                          aria-expanded="true">나의 기록</button>
-                      <div class="collapse show mx-4" id="home-collapse">
-                          <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                              <li class="my-1"><a th:href="@{/mypage-course}" class="link-dark rounded">내가 좋아한 길</a></li>
-                              <li class="my-1"><a th:href="@{/mypage/course-commenet}" class="link-dark rounded">댓글 작성한 산책로</a></li>
-                              <li class="my-1"><a th:href="@{/mypage/board-commenet}" class="link-dark rounded">댓글 작성한 게시물</a></li>
-                          </ul>
-                      </div>
-                  </li>
-              </ul>
-          </div>        
-      </div>
-    </div>
-</section><!-- 사이드바 끝 -->             
+	<!-- 사이드바(오른쪽) -->
+	<section class ="sidebar">
+	    <div class ="px-5 pt-4">
+	        <button class="btn sidebarBtn fs-2" type="button" 
+	        data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" 
+	        aria-controls="offcanvasRight">
+	            <i class="fa-solid fa-bars"></i>
+	        </button>
+	    </div>
+	    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+	      <div class="offcanvas-header">
+	        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+	      </div>
+	      <div class="offcanvas-body">
+	         <div class="flex-shrink-0 p-3 bg-white" style="width: 300px;">
+	              <a href="/"
+	                  class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+	                  <span class="fs-2 fw-semibold sidebar-title">WalkAroundYou
+	                    <img src="/images/common/logo_img.png" class="side-logo mb-5"></img>
+	                  </span>
+	              </a>
+	              <ul class="list-unstyled ps-0">
+	
+	                  <li class="mb-1">
+	                      <button
+	                          class="fs-4 btn btn-toggle align-items-center rounded collapsed"
+	                          data-bs-toggle="collapse" data-bs-target="#account-collapse"
+	                          aria-expanded="false">나의 정보
+	                       <i class="fa-solid fa-gear sidebar-sub-title"></i>    
+	                      </button>
+	                      <div class="collapse show mx-4" id="account-collapse">
+	                          <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-5 small">
+	                              <li class="my-1"><a th:href="@{/mypage}" class="link-dark rounded">마이페이지</a></li>
+	                              <li class="my-1"><a th:href="@{/mypage/userpage}" class="link-dark rounded">정보
+	                                      조회</a></li>
+	                              <li class="my-1"><a th:href="@{/logout}" class="link-dark rounded">로그아웃</a></li>
+	                          </ul>
+	                      </div>
+	                  </li>
+	
+	                  <li class="border-top my-5"></li>
+	                  <li class="mb-1">
+	                      <button
+	                          class="fs-4 btn btn-toggle align-items-center rounded collapsed"
+	                          data-bs-toggle="collapse" data-bs-target="#home-collapse"
+	                          aria-expanded="true">나의 기록
+	                       <i class="fa-solid fa-seedling sidebar-sub-title2"></i>
+	                      </button>
+	                      <div class="collapse show mx-4" id="home-collapse">
+	                          <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-1 small">
+	                              <li class="my-1"><a th:href="@{/mypage-course}" class="link-dark rounded">내가 좋아한 길</a></li>
+	                              <li class="my-1"><a th:href="@{/mypage/course-commenet}" class="link-dark rounded">댓글 작성한 산책로</a></li>
+	                              <li class="my-1"><a th:href="@{/mypage/board-commenet}" class="link-dark rounded">댓글 작성한 게시물</a></li>
+	                          </ul>
+	                      </div>
+	                  </li>
+	              </ul>
+	          </div>        
+	      </div>
+	    </div>
+	</section><!-- 사이드바 끝 -->             
+</div><!-- 상단 끝 -->
 
     <div class="container">
         
         <h1 class="my-5 text-center formTitle">My Page</h1>
                 
         <!-- 유저 소개 조회 -->
-        <div class="formBox" id="getUserBox">
+        <div class="formBox shadow-sm" id="getUserBox">
             <div class="needs-validation" th:object="${user}">
                 <input type="hidden" name="userId" th:value="${user.userId}">
                 <div class="m-3 d-flex justify-content-center userBox">
                     <div class="user-imgWithBtnBox">
                     <div class="user-imgBox">
-                        <!-- src="/images/defaultUserImage.png"-->
                         <div class="user-imgBox_imageborder">
                             <img class="user-imgBox_image" 
                                 alt="유저 프로필 사진"
@@ -121,7 +126,9 @@
                                 <!--  -->
                                 <button type="submit" id="modifyBtn" 
                                         style="margin-top: -1px;"
-                                        class="userBox_btn">내소개 수정</button>
+                                        class="btn userBox_btn">수정하기
+                                <i class="fa-solid fa-pencil"></i>        
+                                </button>
                             </div>
                         </div>
                         <div class="row user-descBox">
@@ -191,24 +198,24 @@
                 </div>
             </form>
         </div>
-    </div>
+    </div><!-- 사용자 정보 끝 -->
 
     
     <!-- 게시글 & 이미지 -->
-    <div class="container my-5">
+    <div class="container post-img">
         <!-- 게시글 버튼 -->
         <div class = "text-center">
-        <button class="btn btn-primary mb-3" id="postBtn" 
-            style="width: 35%; background-color: #facfbd; color: black; border-color: #facfbd;">
+        <button class="btn post-img-btn mb-3" id="postBtn" 
+            style="width: 35%; background-color: #E1ECC8;">
             게시글</button>
 
         <!--이미지 버튼 -->
-        <button class="btn btn-primary mb-4" id="imgBtn"
-            style="width: 35%; background-color: #b5d284; color: white; border-color: #b5d284; margin-left: 10%;">이미지
+        <button class="btn post-img-btn mb-4" id="imgBtn"
+            style="width: 35%; background-color: #F7F6DC; margin-left: 10%;">이미지
         </button>
            </div>
         <!-- 게시글 버튼 클릭하면 나오는 게시글 -->
-        <div class="collapse mt-3 p-3" id="postContainer">
+        <div class="collapse mt-5 p-3" id="postContainer">
             <div id="needToChange">
                <div class = "d-flex justify-content-between mb-4 px-2 me-auto">
                    <p class = "my-2 myCount">
@@ -311,7 +318,7 @@
         <div class="collapse mt-3" id="imgContainer">        
 		    <!-- wrapForm 안에 게시물이나 이미지 넣으면 예쁘겠다! -->
 		    <div class="container rounded-5 p-4 p-lg-5 my-4 wrapForm">
-		        
+
 		    </div>
         </div><!-- 이미지 끝 -->
        </div><!--게시글 & 이미지 끝 -->   

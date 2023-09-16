@@ -19,72 +19,79 @@
 </head>
 <body>
 <th:block layout:fragment="Content">
-<!-- 브레드크럼(왼쪽) -->
-<div class ="container">
-	<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-	  <ol class="breadcrumb px-5 pt-4">
-	    <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-	    <li class="breadcrumb-item"><a th:href="@{/mypage}">마이페이지</a></li>
-	    <li class="breadcrumb-item"><a th:href="@{mypage/course-commenet}">댓글 작성한 산책로</a></li>
-	  </ol>
-	</nav>
-</div>
-<!-- 사이드바(오른쪽) -->
-<section class ="sidebar">
-    <div class ="container d-flex justify-content-end mt-5">
-        <button class="btn btn-success px-4 fs-5" type="button" 
-        data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" 
-        aria-controls="offcanvasRight">나의 정보</button>
-    </div>
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title p-2" id="offcanvasRightLabel">Sidebar </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-         <div class="flex-shrink-0 p-3 bg-white" style="width: 280px;">
-              <a href="/"
-                  class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
-                  <span class="fs-3 fw-semibold">W.A.Y
-                    <img src="/images/common/logo_img.png" class="logo p-2 mb-3"></img>
-                  </span>
-              </a>
-              <ul class="list-unstyled ps-0">
+<!-- 상단 -->
+<div class ="container d-flex justify-content-between">
+    <!-- 브레드크럼(왼쪽) -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+      <ol class="breadcrumb px-3 pt-4">
+        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/mypage}">마이페이지</a></li>
+        <li class="breadcrumb-item"><a th:href="@{mypage/course-commenet}">댓글 작성한 산책로</a></li>
+      </ol>
+    </nav>
 
-                  <li class="mb-1">
-                      <button
-                          class="fs-4 btn btn-toggle align-items-center rounded collapsed"
-                          data-bs-toggle="collapse" data-bs-target="#account-collapse"
-                          aria-expanded="false">나의 정보</button>
-                      <div class="collapse show mx-4" id="account-collapse">
-                          <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-5 small">
-                              <li class="my-1"><a th:href="@{/mypage}" class="link-dark rounded">마이페이지</a></li>
-                              <li class="my-1"><a th:href="@{/mypage/userpage}" class="link-dark rounded">정보
-                                      조회</a></li>
-                              <li class="my-1"><a th:href="@{/logout}" class="link-dark rounded">로그아웃</a></li>
-                          </ul>
-                      </div>
-                  </li>
-
-                  <li class="border-top my-5"></li>
-                  <li class="mb-1">
-                      <button
-                          class="fs-4 btn btn-toggle align-items-center rounded collapsed"
-                          data-bs-toggle="collapse" data-bs-target="#home-collapse"
-                          aria-expanded="true">나의 기록</button>
-                      <div class="collapse show mx-4" id="home-collapse">
-                          <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                              <li class="my-1"><a th:href="@{/mypage-course}" class="link-dark rounded">내가 좋아한 길</a></li>
-                              <li class="my-1"><a th:href="@{/mypage/course-commenet}" class="link-dark rounded">댓글 작성한 산책로</a></li>
-                              <li class="my-1"><a th:href="@{/mypage/board-commenet}" class="link-dark rounded">댓글 작성한 게시물</a></li>
-                          </ul>
-                      </div>
-                  </li>
-              </ul>
-          </div>        
-      </div>
-    </div>
-</section><!-- 사이드바 끝 -->     
+    <!-- 사이드바(오른쪽) -->
+    <section class ="sidebar">
+        <div class ="px-5 pt-4">
+            <button class="btn sidebarBtn fs-2" type="button" 
+            data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" 
+            aria-controls="offcanvasRight">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+          <div class="offcanvas-header">
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+             <div class="flex-shrink-0 p-3 bg-white" style="width: 300px;">
+                  <a href="/"
+                      class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+                      <span class="fs-2 fw-semibold sidebar-title">WalkAroundYou
+                        <img src="/images/common/logo_img.png" class="side-logo mb-5"></img>
+                      </span>
+                  </a>
+                  <ul class="list-unstyled ps-0">
+    
+                      <li class="mb-1">
+                          <button
+                              class="fs-4 btn btn-toggle align-items-center rounded collapsed"
+                              data-bs-toggle="collapse" data-bs-target="#account-collapse"
+                              aria-expanded="false">나의 정보
+                           <i class="fa-solid fa-gear sidebar-sub-title"></i>    
+                          </button>
+                          <div class="collapse show mx-4" id="account-collapse">
+                              <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-5 small">
+                                  <li class="my-1"><a th:href="@{/mypage}" class="link-dark rounded">마이페이지</a></li>
+                                  <li class="my-1"><a th:href="@{/mypage/userpage}" class="link-dark rounded">정보
+                                          조회</a></li>
+                                  <li class="my-1"><a th:href="@{/logout}" class="link-dark rounded">로그아웃</a></li>
+                              </ul>
+                          </div>
+                      </li>
+    
+                      <li class="border-top my-5"></li>
+                      <li class="mb-1">
+                          <button
+                              class="fs-4 btn btn-toggle align-items-center rounded collapsed"
+                              data-bs-toggle="collapse" data-bs-target="#home-collapse"
+                              aria-expanded="true">나의 기록
+                           <i class="fa-solid fa-seedling sidebar-sub-title2"></i>
+                          </button>
+                          <div class="collapse show mx-4" id="home-collapse">
+                              <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                  <li class="my-1"><a th:href="@{/mypage-course}" class="link-dark rounded">내가 좋아한 길</a></li>
+                                  <li class="my-1"><a th:href="@{/mypage/course-commenet}" class="link-dark rounded">댓글 작성한 산책로</a></li>
+                                  <li class="my-1"><a th:href="@{/mypage/board-commenet}" class="link-dark rounded">댓글 작성한 게시물</a></li>
+                              </ul>
+                          </div>
+                      </li>
+                  </ul>
+              </div>        
+          </div>
+        </div>
+    </section><!-- 사이드바 끝 -->             
+</div><!-- 상단 끝 -->       
     
     <!-- 내가 좋아요 한 산책로 -->
     <div id="searchResults">
