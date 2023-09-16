@@ -248,6 +248,10 @@
     background: #3D8361;
     color: white;
 }
+#createbtn:hover {
+	background-color: #7FB77E;
+	color: #F7F6DC;
+}
 
 
 /* 지도 정보 관련 css */

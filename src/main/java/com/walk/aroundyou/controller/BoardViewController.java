@@ -248,6 +248,17 @@ public class BoardViewController {
 		if(course.isPresent()) {			
 			log.info("course 값이 있음");
 			model.addAttribute("course", course.get());
+			
+			// ★★★★★★★ 지도 이미지 경로 넘기기 - 0916 지수 작성
+			UploadImage courseUploadImage = uploadImageService.findByCourse(course.get());
+			String courseImagePath;
+			if (courseUploadImage != null) {
+				courseImagePath = 
+						uploadImageService.findCourseFullPathById(
+								courseUploadImage.getFileId());
+				log.info("courseImagePath : " + courseImagePath);
+				model.addAttribute("courseImagePath", courseImagePath);
+			}
 		} else {
 			log.info("course 값이 없음");	
 		}
@@ -326,6 +337,17 @@ public class BoardViewController {
 			model.addAttribute("courseId", resultCourse.getCourseId());
 			model.addAttribute("wlkCoursFlagNm", resultCourse.getWlkCoursFlagNm());
 			model.addAttribute("wlkCoursNm", resultCourse.getWlkCoursNm());
+			
+			// ★★★★★★★ 지도 이미지 경로 넘기기 - 0916 지수 작성
+			UploadImage courseUploadImage = uploadImageService.findByCourse(resultCourse);
+			String courseImagePath;
+			if (courseUploadImage != null) {
+				courseImagePath = 
+						uploadImageService.findCourseFullPathById(
+								courseUploadImage.getFileId());
+				log.info("courseImagePath : " + courseImagePath);
+				model.addAttribute("courseImagePath", courseImagePath);
+			}
 		}
 		
 		return "boardForm";
@@ -356,6 +378,17 @@ public class BoardViewController {
 			model.addAttribute("courseId", resultCourse.getCourseId());
 			model.addAttribute("wlkCoursFlagNm", resultCourse.getWlkCoursFlagNm());
 			model.addAttribute("wlkCoursNm", resultCourse.getWlkCoursNm());
+			
+			// ★★★★★★★ 지도 이미지 경로 넘기기 - 0916 지수 작성
+			UploadImage courseUploadImage = uploadImageService.findByCourse(course.get());
+			String courseImagePath;
+			if (courseUploadImage != null) {
+				courseImagePath = 
+						uploadImageService.findCourseFullPathById(
+								courseUploadImage.getFileId());
+				log.info("courseImagePath : " + courseImagePath);
+				model.addAttribute("courseImagePath", courseImagePath);
+			}
 		} else {
 			log.info("course 값이 없음");	
 		}
@@ -366,18 +399,18 @@ public class BoardViewController {
 	
 	
 	// 하나의 게시물에 포함된 해시태그 리스트 출력하기
-		@GetMapping("/tagList/{boardId}")
-		// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
-		public String tagListInBoardContent(@PathVariable Long boardId, Model model) {
-			log.info("/tagList/{boardId} 접근 .... ");
-			// 존재하지 않는 boardId를 조회할때도 대비하기, 아직 구현하지 않음
-			Optional<Board> boardContent = boardService.findById(boardId);
-			List<String> boardTagList = 
-				tagService.findTagsByBoardId(boardId);
-			model.addAttribute("boardContent", boardContent.get().getBoardContent());
-			model.addAttribute("boardTagList", boardTagList);
-			return "boardTag";
-		}	
+	@GetMapping("/tagList/{boardId}")
+	// @PathVariable 어노테이션을 사용하여 URL에서 추출한 boardId를 파라미터로 전달
+	public String tagListInBoardContent(@PathVariable Long boardId, Model model) {
+		log.info("/tagList/{boardId} 접근 .... ");
+		// 존재하지 않는 boardId를 조회할때도 대비하기, 아직 구현하지 않음
+		Optional<Board> boardContent = boardService.findById(boardId);
+		List<String> boardTagList = 
+			tagService.findTagsByBoardId(boardId);
+		model.addAttribute("boardContent", boardContent.get().getBoardContent());
+		model.addAttribute("boardTagList", boardTagList);
+		return "boardTag";
+	}	
 	
 	
 	// 페이지네이션 시작 페이지를 계산해주는 컨트롤러

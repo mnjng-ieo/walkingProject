@@ -227,12 +227,16 @@ public class CourseViewController {
 			isLiked = courseLikeService.isCourseLiked(userId, courseId);
 			
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			// 접속자의 이미지 - 헤더와 댓글 작성란에 사용 가능!
 			if (currentUser != null) {
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
 							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
 					model.addAttribute("currentUserImagePath", currentUserImagePath);
+					
+					String currentUserNickname = currentUser.getUserNickname();
+					model.addAttribute("currentUserNickname", currentUserNickname);
 				}
 			}
 		} else {
@@ -240,7 +244,7 @@ public class CourseViewController {
 		}		
 		model.addAttribute("isLiked", isLiked);
 		
-		
+
 		CourseResponseDTO courseResponseDTO = 
 				courseService.findByIdWithCounts(courseId);
 		model.addAttribute("course", courseResponseDTO);
@@ -266,11 +270,27 @@ public class CourseViewController {
 		} 
 		
 	////// 9/14 댓글 리스트 불러오기(값 없을 때 체크)
+		// + 댓글 목록 유저 이미지 (0916 추가)
 		List<ICommentResponseDto> comments = commentService.findByCourseId(courseId);
+		List<String> commentMemberImagePaths = new ArrayList<>();
 		
 		if(!comments.isEmpty()) {			
 			log.info("comment 값이 있음");	
 			model.addAttribute("comments", comments);
+			
+			// 해당 댓글 목록이 비어있지 않다면 사용자 목록을 구해오고, 그 순서대로 이미지의 리스트를 얻자...
+			for(ICommentResponseDto comment : comments) {
+				Member commentMember = userService.findByUserId(comment.getUserId()).get();
+				UploadImage commentMemberImage = uploadImageService.findByUser(commentMember);
+				if(commentMemberImage != null) {
+					String commentMemberImagePath = 
+							uploadImageService.findUserFullPathById(commentMemberImage.getFileId());
+					commentMemberImagePaths.add(commentMemberImagePath);	
+				} else {
+					commentMemberImagePaths.add("/images/defaultUserImage.png");
+				}
+			model.addAttribute("commentMemberImagePaths", commentMemberImagePaths);
+			}
 		}
 		
 		// 게시글 출력 용도

@@ -82,7 +82,7 @@
                 alert('등록이 완료되었습니다.');
                 location.replace(window.location.href);
             } else{
-                alert('잘못된 접근입니다.');
+                alert('댓글을 작성하려면 로그인 해주세요.');
                 location.replace(window.location.href);
             }
         })

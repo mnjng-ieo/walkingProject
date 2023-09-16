@@ -109,7 +109,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	@Modifying
 	@Transactional
 	@Query(value = "INSERT INTO comment "
-			+ "	(user_id, user_nickname, comment_content, board_id, comment_type)"
+			+ "	(user_id, user_nickname, comment_content, course_id, comment_type)"
 			+ "	VALUES "
 			+ "	(:#{#create.userId.userId}, :#{#create.userNickname}, :#{#create.commentContent}, "
 			+ " :#{#create.courseId.courseId}, 'COURSE')"
