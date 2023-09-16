@@ -16,7 +16,7 @@
 <script
 	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 
-
+<link href="/css/user/idlookup.css" rel="stylesheet"></link>
 <script>
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -43,7 +43,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if (xhr.readyState === XMLHttpRequest.DONE) { 
                 if (xhr.status === 200) {
                 	idLookupResult.textContent = xhr.response;
-                	modal.show();
                 }else {
                 	alert("아이디 찾기 오류");
                 	}
@@ -65,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		<h1 class="text-center mt-5 ">아이디 찾기</h1>
          <div class="container border rounded-4 shadow-lg p-5 mt-4"
             style="width: 800px;">
-		<h6 class="mt-6">이름과 이메일 주소를 입력하세요</h6>
+		<h6 class="fs-5">이름과 이메일 주소를 입력하세요</h6>
 		<br>
 		<br>
 		<form id="idLookupForm">
@@ -109,7 +108,9 @@ document.addEventListener("DOMContentLoaded", function() {
 				</div>
 				<div class="modal-footer">
 					<form action="/login" method="get">
-						<button type="submit" class="btn btn-primary">로그인 화면으로 이동</button>
+						<button type="submit" id="ok" class="btn btn-primary" style="background-color:  #B1D7B4;
+   color: black;
+   border: 2px solid #B1D7B4; margin: auto;">로그인 화면으로 이동</button>
 					</form>
 				</div>
 			</div>
