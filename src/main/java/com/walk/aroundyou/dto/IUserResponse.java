@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public interface IUserReponse {
+public interface IUserResponse {
 
 	/// 리포지토리와 상호작용
 	String getUserId();

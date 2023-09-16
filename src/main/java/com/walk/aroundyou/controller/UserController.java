@@ -32,7 +32,7 @@ import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
 import com.walk.aroundyou.dto.ICourseResponseDTO;
-import com.walk.aroundyou.dto.IUserReponse;
+import com.walk.aroundyou.dto.IUserResponse;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
@@ -69,7 +69,7 @@ public class UserController {
 			Model model,
 			@RequestParam(value = "page", required=false, defaultValue="0") int currentPage) {
 		
-		Page<IUserReponse> users = userService.findAllUsers(currentPage);
+		Page<IUserResponse> users = userService.findAllUsers(currentPage);
 		
 		// pagination 설정
 		int totalPages = users.getTotalPages();

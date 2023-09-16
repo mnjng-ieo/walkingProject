@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.walk.aroundyou.domain.Member;
-import com.walk.aroundyou.dto.IUserReponse;
+import com.walk.aroundyou.dto.IUserResponse;
 
 @Repository
 public interface UserRepository extends JpaRepository<Member, String> {
@@ -51,7 +51,7 @@ public interface UserRepository extends JpaRepository<Member, String> {
 	   			 ORDER BY user_join_date desc
 		               """ 
 		         , nativeQuery = true)
-	Page<IUserReponse> findAllUsers(Pageable pageable);
+	Page<IUserResponse> findAllUsers(Pageable pageable);
 	
 	// 5. user entity의 모든 항목을 반환하기
 	List<Member> findAll();
