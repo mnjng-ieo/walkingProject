@@ -69,6 +69,8 @@ a {
     font-weight: bold;
 }
 .formBox {
+	margin-left: 8%; margin-right: 8%;
+	background-color: #EEF2E6;
     border: 1px solid #ccc;
     border-radius: 20px; 
     padding: 2%;
@@ -130,6 +132,10 @@ a {
     outline: none;
 }
 
+.user-imgBox{
+	background-color: white;
+}
+
 .user-imgBox_imageborder {
     height:90%; border-radius: 100px;
 }
@@ -184,7 +190,7 @@ a {
     background-color: #FFB100;  
 }
 .user-descBox {
-    text-indent: 10px;
+	padding-left: 5px;
 }
 
 .user-imgBox_imageborder {
@@ -213,11 +219,11 @@ a {
 }
 
 #postBtn:hover {
-    background-color: #d1e9cb !important;;
+    background-color: #D6CDA4 !important;;
 }
 
 #imgBtn:hover {
-    background-color: #f9ebdb !important;;
+    background-color: #B1D7B4 !important;;
 }
 
 /* ---내가 쓴 게시글--- */
@@ -246,6 +252,7 @@ a {
     color:#3D8361;
     font-weight: bold;
     font-size: 1.2rem;
+    margin-left: 70px;
 }
 
 .sidebar {
@@ -313,18 +320,30 @@ a {
 }
 
 /* 내 이미지 모아보기 */
+.myImage-row {
+	padding-left: 8%;
+	padding-right: 8%;
+	margin-bottom: 35px;
+}
+
 .myImage-lists {
 	position: relative;
-	border: 1px solid gold;
+	margin-top: 65px;
+	margin-bottom: 200px;
 }
 
 .myImage-list-wrapper{
-	margin-top: 30px;
-	border: 1px solid red;
+	margin-top: 0px;
+	width: 33%;
+	transition: transform 0.2s;
+	cursor: pointer;
+}
+
+.myImage-list-wrapper:hover{
+   transform: scale(1.01);
 }
 
 .myImage-list {
-	border: 1px solid blue;
 	width: 100%;
 	aspect-ratio: 1/1;
 	overflow: hidden;

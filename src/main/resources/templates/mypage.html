@@ -203,33 +203,35 @@
     
     <!-- 게시글 & 이미지 -->
     <div class="container post-img">
-        <!-- 게시글 버튼 -->
-        <div class = "text-center">
-        <button class="btn post-img-btn mb-3" id="postBtn" 
-            style="width: 35%; background-color: #E1ECC8;">
-            게시글</button>
-
         <!--이미지 버튼 -->
-        <button class="btn post-img-btn mb-4" id="imgBtn"
-            style="width: 35%; background-color: #F7F6DC; margin-left: 10%;">이미지
+        <div class = "text-center">
+        <button class="btn post-img-btn mb-4" id="imgBtn" 
+            style="width: 35%; background-color: #E1ECC8;">
+            이미지</button>
+
+        <!-- 게시글 버튼 -->
+        <button class="btn post-img-btn mb-4" id="postBtn" 
+            style="width: 35%; background-color: #F7F6DC; margin-left: 5%;">게시글
         </button>
            </div>
         <!-- 게시글 버튼 클릭하면 나오는 게시글 -->
         <div class="collapse mt-5 p-3" id="postContainer">
-            <div id="needToChange">
-               <div class = "d-flex justify-content-between mb-4 px-2 me-auto">
+            <div id="needToChange" style="position: relative;">
+               <div class = "d-flex justify-content-between mb-4 px-2 me-auto"
+                    style="position: relative;">
                    <p class = "my-2 myCount">
                    게시물 수 : <span th:text="${myBoards.totalElements} + ' 개'"></span></p>
                    <a class="btn type-btn mx-4 border rounded-3 type-button b-editor" 
-                   th:href="@{/board-editor}" role="button">게시글 작성</a>
+                   th:href="@{/board-editor}" role="button"
+                   style="position: absolute; right: 70px;">게시글 작성</a>
                </div>
                <p th:if="${myBoards.totalElements == 0}" 
                   class= "noResult mx-5 mt-5 text-center fs-5">작성하신 게시물이 없습니다.</p>
-               <table class="table table-hover">
+               <table class="table table-hover mx-4">
                   <thead>
                     <tr>
                         <th class ="col-lg-2">글 번호</th>
-                        <th class ="col-lg-8">게시물</th>
+                        <th class ="col-lg-6">게시물</th>
                         <th class ="col-lg-2">댓글 수</th>
                     </tr>
                   </thead>
@@ -239,10 +241,10 @@
                       th:data-url="@{/board/{id}(id=${myBoard.boardId})}" 
                       onclick="redirectToDetail(this)"
                       style="cursor:pointer;">
-                    <td>
+                    <td> <!-- 글번호 -->
                       <span th:text = "${myBoard.boardId}">글 번호</span>
                     </td>
-                    <td>
+                    <td> <!-- 게시물 -->
                         <!-- 제목의 글자수 길면 ...으로 생략 -->
                         <div class = "first fs-5"
                             th:text = "${#strings.length(myBoard.boardTitle) &gt; 50 ? 
@@ -267,7 +269,7 @@
                             <div class="m-1" th:text = "${myBoard.likeCnt}">좋아요 수</div>
                         </div>
                     </td>
-                    <td>
+                    <td> <!-- 댓글 수 -->
                       <span th:text = "${myBoard.commentCnt}" class = "mx-4">댓글 수</span>
                     </td>  
                    </tr>
@@ -317,18 +319,22 @@
         <!-- 이미지버튼 클릭하면 나오는 이미지 -->
         <div class="collapse mt-3" id="imgContainer">  
             <div class="container myImage-lists">
-                <div class="row myImage-row">
-                    <!-- 게시물 사진이 없을 때 처리 -->
+                <!-- 게시물 사진이 없을 때 처리 -->
+                <div class = "d-flex justify-content-between mb-4 px-2 me-auto">
                     <p class = "my-2 myCount">
                     내가 업로드한 사진 : <span th:text="${myBoardImageCnt} + ' 개'"></span></p>
                     <p th:if="${myBoardImageCnt == 0}" 
                     class= "noResult mx-5 mt-5 text-center fs-5">작성하신 게시물이 없습니다.</p>
-                    
-                    <div class="col-3 myImage-list-wrapper"
+                </div>
+                <div class="row justify-content-between myImage-row">
+                    <div class="myImage-list-wrapper"
+                        th:data-url="@{/board/{id}(id=${myBoard.boardId})}" 
+                        onclick="redirectToDetail(this)"
                         th:if="${myBoardImagePaths[stat.index] !=null}"
-                        th:each="myBoard, stat : ${myBoards}" >
+                        th:each="myBoard, stat : ${myBoards}"
+                         >
                         <!-- 현재 순환 중인 myBoard에 해당하는 이미지 경로를 가져와서 image에 할당 -->
-                        <div class="card myImage-list">
+                        <div class="myImage-list">
                             <img class="myImage-img"
                                 th:src="${myBoardImagePaths[stat.index]}"
                                 alt="나의 게시물 사진"/>
