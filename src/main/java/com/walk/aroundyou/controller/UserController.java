@@ -32,11 +32,13 @@ import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
 import com.walk.aroundyou.dto.ICourseResponseDTO;
+import com.walk.aroundyou.dto.IUserReponse;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
 import com.walk.aroundyou.dto.UserPasswordSendDTO;
 import com.walk.aroundyou.dto.UserRequest;
+import com.walk.aroundyou.security.AdminAuthorize;
 import com.walk.aroundyou.service.MailService;
 import com.walk.aroundyou.service.UploadImageService;
 import com.walk.aroundyou.service.UserService;
@@ -60,6 +62,34 @@ public class UserController {
 	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
 	private final static int PAGINATION_SIZE = 5;
 
+	//// 관리자 페이지(연서 작성)
+	@GetMapping("/admin/users")
+	@AdminAuthorize
+	public String showUsers(
+			Model model,
+			@RequestParam(value = "page", required=false, defaultValue="0") int currentPage) {
+		
+		Page<IUserReponse> users = userService.findAllUsers(currentPage);
+		
+		// pagination 설정
+		int totalPages = users.getTotalPages();
+		int pageStart = getPageStart(currentPage, totalPages);
+		int pageEnd = 
+				(PAGINATION_SIZE < totalPages)? 
+						pageStart + PAGINATION_SIZE - 1
+						:totalPages;
+				if(pageEnd == 0) {
+			          pageEnd = 1;
+			    }
+		
+		model.addAttribute("lastPage", totalPages);
+		model.addAttribute("currentPage", currentPage);
+		model.addAttribute("pageStart", pageStart);
+		model.addAttribute("pageEnd", pageEnd);
+		model.addAttribute("users", users);		
+		
+		return "adminUsers";
+	}
 	
 	///////////////// 로그인 메인 페이지(처음 시작 할 때의 화면)
 	@GetMapping("/login")

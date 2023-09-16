@@ -18,6 +18,7 @@ import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICommentResponseDto;
 import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
 import com.walk.aroundyou.dto.ICourseResponseDTO;
+import com.walk.aroundyou.dto.IUserReponse;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
@@ -168,15 +169,15 @@ public class UserService {
 	}
 
 	
-	
+	/////////// 4. 관리자페이지에서 출력할 유저 정보(20개씩 출력)
+	public Page<IUserReponse> findAllUsers(int page) {
+		return userRepository.findAllUsers(PageRequest.of(page, 20));
+	}
 	
 	/////////// 5. user entity의 모든 항목을 반환하기
 	public List<Member> findAll() {
 		return userRepository.findAll();
 	}
-	
-	
-	
 
 	/////////////////////// 아이디 찾기
 	public String searchByUserId(String userName, String userEmail) {

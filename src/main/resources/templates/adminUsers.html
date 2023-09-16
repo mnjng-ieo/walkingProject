@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8">
+    <title>관리자 페이지</title>    
+    <script type="text/javascript" src="/js/user/adminUsers.js"></script>
+    <link rel="stylesheet" href="/css/user/adminUsers.css">
+</head>
+
+<body>
+<th:block layout:fragment="Content">
+
+    <div class="col-md-5 user-list-top_title">
+        <div class="container">
+	        <h5 class="user-list-top_subtitle">회원 데이터 관리페이지</h5>
+	        <h1 class="user-list-top_bigTitle">회원 </h1>
+	        <h1 class="user-list-top_bigTitle2">전체 목록 조회</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div id="needToChange">
+        <h5>총 회원 수 : [[${users.totalElements}]] 명</h5>
+        <table class="table table-responsive text-center my-3">
+            <thead>
+                <tr>
+                    <th scope="col">회원ID</th>
+                    <th scope="col">회원 이름</th>
+                    <th scope="col">회원 닉네임</th>
+                    <th scope="col">회원 전화번호</th>
+                    <th scope="col">회원 이메일</th>
+                    <th scope="col">가입일시</th>
+                    <th scope="col">수정일시</th>
+                    <th scope="col">상태정보</th>
+                    <th scope="col">회원 권한</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                <tr th:each="user:${users}">
+	                    <td>[[${ user.userId }]]</td>
+	                    <td>[[${ user.userName }]]</td>
+	                    <td>[[${ user.userNickname }]]</td>
+	                    <td>[[${ user.userTelNumber }]]</td>
+	                    <td>[[${ user.userEmail }]]</td>
+	                    <td>[[${ #dates.format(user.userJoinDate, 'yyyy-MM-dd HH:mm:ss') }]]</td>
+	                    <td>[[${ #dates.format(user.userUpdateDate, 'yyyy-MM-dd HH:mm:ss') }]]</td>
+	                    <td>[[${ user.role }]]</td>
+	                    <td>[[${ user.stateId }]]</td>
+                </tr>
+            </tbody>
+        </table>
+	    <!-- 페이지네이션 기능 -->
+	    <div class="pageInfo_wrap my-5" id="pagination">
+	        <!--pagination-sm 추가하면 작아지고, pagination-lg 추가하면 커진다 -->
+	        <ul class="pagination pagination
+	                   justify-content-center">
+	           <li class="page-item" id="pagePrev"
+	               th:classappend="${currentPage == 0} ? 'disabled' : ''">
+	               <!-- 링크 클릭할 때 해당 링크의 url로 이동하는 기본 동작 막기 위해 사용
+	                    자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
+	               <!-- th:onclick="'loadPage(\''+${currentPage - 1}+'\')'" -->
+	               <a class="page-link arrow" 
+	                  href="javascript:void(0);"
+	                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">
+	                <i class="fa-solid fa-chevron-left"></i></a>
+	           </li>
+	           <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
+	               <li th:if="${page == (currentPage+1)}" 
+	                   class="page-item active">
+	                   <a class="page-link" 
+	                   href="javascript:void(0);"
+	                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+	               </li>
+	               <li th:unless="${page == (currentPage+1)}" 
+	                   class="page-item">
+	                   <a class="page-link" 
+	                   href="javascript:void(0);"
+	                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+	               </li>
+	           </th:block>
+	           <li class="page-item" id="pageNext"
+	               th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
+	               <a class="page-link arrow" 
+	               href="javascript:void(0);"
+	               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
+	                <i class="fa-solid fa-chevron-right"></i></a>
+	           </li>
+	        </ul>
+	    </div><!-- 페이징 처리 끝 -->  
+    </div><!-- ajax 부분 -->
+    
+    </div><!-- 컨테이너 끝 -->
+    
+</th:block>    
+</body>
+</html>
