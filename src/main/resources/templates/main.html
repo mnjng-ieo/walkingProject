@@ -1,18 +1,283 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/defaultLayout}">
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{common/layouts/defaultLayout}">
 <head>
 <meta charset="UTF-8">
-<title>홈페이지</title>
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+   <title>홈페이지</title>  
+   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>-->
+   <link href="/css/common/main.css" rel="stylesheet"></link>
+   <script src="/js/common/main.js"></script>
 </head>
 <body>
 <th:block layout:fragment="Content">
-   <div class="container">
-      <h1>main.html</h1>
-       <a th:href="@{/main/mypage}" >mypage</a>
-   </div>     
+   <div class="main-section">
+      <!-- main - 검색창 -->
+      <div class="main">
+         <div class="d-flex justify-content-center" style="height: 100%">
+            <div class="d-flex align-items-center" style="width: 52%;"> 
+              
+               <!-- 검색창 & 검색 버튼 -->
+               <div class="d-flex mt-75" style="width: 100%;" >
+               
+                  <!-- 검색창 --> 
+                  <form th:action="@{/search}" method="get" id="searchForm" 
+                        class="search input-group flex-nowrap justify-content-center mx-2">
+                     <div class="input-group mb-3">
+                        <input type="text" name="keyword" id="searchKeyword" 
+                              class="form-control bg-body-tertiary fs-4 search" 
+                              placeholder="검색하세요" 
+                              aria-label="검색하세요" aria-describedby="button-addon2">
+                        <button class="btn fs-4 searchbtn" type="submit" id="button-addon2">
+                           <i class="fa-solid fa-magnifying-glass"></i>
+                         </button>
+                     </div>   
+                  </form>
+               </div>
+            </div>
+         </div>   
+      </div> <!-- main - 검색창 끝 -->
+      
+      
+      <!-- 좋아요 순 BEST 9 : 카드 형식으로 출력 / 캐러셀 이용 -->
+      <div class="container best9">
+          <h2>가장 인기있는 산책로 BEST 9</h2>
+          <!-- 산책로 목록을 3개씩 그룹화 -->
+          <div id="course-carousel" class=" carousel carousel-dark slide" data-bs-ride="carousel" >
+              <div class="carousel-inner">
+                  <!-- 첫 번째 그룹 -->
+                  <div class="carousel-item active" data-bs-interval="5000">
+                      <div class="course-lists">
+                          <div class="row">
+                              <div class="col-4" th:each="item, iterStat : ${courses}" th:if="${iterStat.index < 3}">
+                                  <div class="card course-list" th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
+                                      <!-- 산책로 이미지 -->
+                                      <img class="card-img-top course-list_imgBox" src="/images/course/defaultCourseImg.png" alt="산책로 사진" />
+                                      <div class="card-body course-list_textbox">
+                                          <div class="course-list_titlebox">
+                                              <div class="row course-list_title">
+                                                  <!-- 산책로 큰이름 -->
+                                                  <h5 class="col-10 card-title course-list_big-title" th:text="${item.wlkCoursFlagNm}"></h5>
+                                                  <!-- 산책로 난이도 -->
+                                                  <p class="col-3 rounded-pill badge text-center course-list_level" th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : item.coursLevelNm == '쉬움' ? ' bg-info' : item.coursLevelNm == '보통' ? ' bg-success' : item.coursLevelNm == '어려움' ? ' bg-warning' : item.coursLevelNm == '매우어려움' ? ' bg-danger' : ''}" th:text="${item.coursLevelNm}"></p>
+                                              </div>
+                                              <div>
+                                                  <!-- 산책로 작은이름 -->
+                                                  <h3 class="card-text course-list_small-title" th:text="${item.wlkCoursNm}"></h3>
+                                              </div>
+                                          </div>
+                                          <!-- 지역 -->
+                                          <p class="card-text course-list_region" th:text="${item.signguCn}"></p>
+                                          <!-- "코스거리" | "소요시간"시간 분 소요 -->
+                                          <p class="card-text course-list_distance">
+                                              <span th:text="${item.coursDetailLtCn}"></span>km |
+                                              <span th:text="${#dates.format(item.coursTimeCn, 'H시간 mm분 소요')}"></span>
+                                          </p>
+                                          <!-- 산책로 설명 -->
+                                          <p class="card-text course-list_aditDc" th:text="${#strings.length(item.aditDc) &gt; 70 ? #strings.substring(item.aditDc, 0, 70) + '...' : item.aditDc}"></p>
+                                          <!-- 좋아요 수 / 언급 수 / 댓글 수 -->
+                                          <p class="card-text">
+                                              <img class="heart-icon" src="/images/common/heart-click.png" alt="좋아요" />
+                                              좋아요 <span th:text="${item.likeCnt}"></span>개
+                                              댓글 <span th:text="${item.commentCnt}"></span>개
+                                              언급 <span th:text="${item.mentionCnt}"></span>개
+                                          </p>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <!-- 두 번째 그룹 -->
+                  <div class="carousel-item" data-bs-interval="5000">
+                      <div class="course-lists">
+                          <div class="row">
+                              <div class="col-4" th:each="item, iterStat : ${courses}" th:if="${iterStat.index >= 3 && iterStat.index < 6}">
+                                  <div class="card course-list" th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
+                                      <!-- 산책로 이미지 -->
+                                      <img class="card-img-top course-list_imgBox" src="/images/course/defaultCourseImg.png" alt="산책로 사진" />
+                                      <div class="card-body course-list_textbox">
+                                          <div class="course-list_titlebox">
+                                              <div class="row course-list_title">
+                                                  <!-- 산책로 큰이름 -->
+                                                  <h5 class="col-10 card-title course-list_big-title" th:text="${item.wlkCoursFlagNm}"></h5>
+                                                  <!-- 산책로 난이도 -->
+                                                  <p class="col-3 rounded-pill badge text-center course-list_level" th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : item.coursLevelNm == '쉬움' ? ' bg-info' : item.coursLevelNm == '보통' ? ' bg-success' : item.coursLevelNm == '어려움' ? ' bg-warning' : item.coursLevelNm == '매우어려움' ? ' bg-danger' : ''}" th:text="${item.coursLevelNm}"></p>
+                                              </div>
+                                              <div>
+                                                  <!-- 산책로 작은이름 -->
+                                                  <h3 class="card-text course-list_small-title" th:text="${item.wlkCoursNm}"></h3>
+                                              </div>
+                                          </div>
+                                          <!-- 지역 -->
+                                          <p class="card-text course-list_region" th:text="${item.signguCn}"></p>
+                                          <!-- "코스거리" | "소요시간"시간 분 소요 -->
+                                          <p class="card-text course-list_distance">
+                                              <span th:text="${item.coursDetailLtCn}"></span>km |
+                                              <span th:text="${#dates.format(item.coursTimeCn, 'H시간 mm분 소요')}"></span>
+                                          </p>
+                                          <!-- 산책로 설명 -->
+                                          <p class="card-text course-list_aditDc" th:text="${#strings.length(item.aditDc) &gt; 70 ? #strings.substring(item.aditDc, 0, 70) + '...' : item.aditDc}"></p>
+                                          <!-- 좋아요 수 / 언급 수 / 댓글 수 -->
+                                          <p class="card-text">
+                                              <img class="heart-icon" src="/images/common/heart-click.png" alt="좋아요" />
+                                              좋아요 <span th:text="${item.likeCnt}"></span>개
+                                              댓글 <span th:text="${item.commentCnt}"></span>개
+                                              언급 <span th:text="${item.mentionCnt}"></span>개
+                                          </p>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <!-- 세 번째 그룹 -->
+                  <div class="carousel-item">
+                      <div class="course-lists" data-bs-interval="5000">
+                          <div class="row">
+                              <div class="col-4" th:each="item, iterStat : ${courses}" th:if="${iterStat.index >= 6 && iterStat.index < 9}">
+                                  <div class="card course-list" th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
+                                      <!-- 산책로 이미지 -->
+                                      <img class="card-img-top course-list_imgBox" src="/images/course/defaultCourseImg.png" alt="산책로 사진" />
+                                      <div class="card-body course-list_textbox">
+                                          <div class="course-list_titlebox">
+                                              <div class="row course-list_title">
+                                                  <!-- 산책로 큰이름 -->
+                                                  <h5 class="col-10 card-title course-list_big-title" th:text="${item.wlkCoursFlagNm}"></h5>
+                                                  <!-- 산책로 난이도 -->
+                                                  <p class="col-3 rounded-pill badge text-center course-list_level" th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : item.coursLevelNm == '쉬움' ? ' bg-info' : item.coursLevelNm == '보통' ? ' bg-success' : item.coursLevelNm == '어려움' ? ' bg-warning' : item.coursLevelNm == '매우어려움' ? ' bg-danger' : ''}" th:text="${item.coursLevelNm}"></p>
+                                              </div>
+                                              <div>
+                                                  <!-- 산책로 작은이름 -->
+                                                  <h3 class="card-text course-list_small-title" th:text="${item.wlkCoursNm}"></h3>
+                                              </div>
+                                          </div>
+                                          <!-- 지역 -->
+                                          <p class="card-text course-list_region" th:text="${item.signguCn}"></p>
+                                          <!-- "코스거리" | "소요시간"시간 분 소요 -->
+                                          <p class="card-text course-list_distance">
+                                              <span th:text="${item.coursDetailLtCn}"></span>km |
+                                              <span th:text="${#dates.format(item.coursTimeCn, 'H시간 mm분 소요')}"></span>
+                                          </p>
+                                          <!-- 산책로 설명 -->
+                                          <p class="card-text course-list_aditDc" th:text="${#strings.length(item.aditDc) &gt; 70 ? #strings.substring(item.aditDc, 0, 70) + '...' : item.aditDc}"></p>
+                                          <!-- 좋아요 수 / 언급 수 / 댓글 수 -->
+                                          <p class="card-text">
+                                              <img class="heart-icon" src="/images/common/heart-click.png" alt="좋아요" />
+                                              좋아요 <span th:text="${item.likeCnt}"></span>개
+                                              댓글 <span th:text="${item.commentCnt}"></span>개
+                                              언급 <span th:text="${item.mentionCnt}"></span>개
+                                          </p>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <!-- 캐러셀 컨트롤러 -->
+              <div>  
+                 <button class="carousel-control-prev" type="button"
+                     data-bs-target="#course-carousel" data-bs-slide="prev">
+                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                     <span class="visually-hidden">Previous</span>
+                 </button>
+                 <button class="carousel-control-next" type="button" 
+                     data-bs-target="#course-carousel" data-bs-slide="next">
+                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                     <span class="visually-hidden">Next</span>
+                 </button>
+              </div>
+          </div>
+      </div>
+
+      
+      <!-- 해시태그 출력 : 해시태그 데이터 넣고 다시 작업해야 함 -->
+      <h2 class="container mb-4">지금 핫한 해시태그</h2>
+      <div class="container p-3 rounded-4 border border-1 shadow hotTagBorder">
+         <!-- 가장 많이 사용된 태그 메인화면에 출력하기 -->
+           <div class="px-5 hotTags" style="text-align: center;">
+            <div class = "d-flex flex-wrap justify-content-between">    
+               <span class = "p-1 flex-fill" 
+                       th:each="hotTag, i : ${hotTagList}"
+                       th:if="${i.index < 6}">
+                      <a class="btn rounded-5 tags tags1"
+                         onclick="loadPostsByTag(this)"
+                         th:data-tag-id="${hotTag}"
+                         th:text = "${hotTag}" role="button">핫한 해시태그</a>              
+                  </span>
+               </div>
+               <div class = "d-flex flex-wrap justify-content-between"> 
+                  <span class = "p-1 flex-fill" 
+                       th:each="hotTag, i : ${hotTagList}"
+                       th:if="${ 6 <= i.index  && i.index < 12}">
+                      <a class="btn rounded-5 tags tags2"
+                         onclick="loadPostsByTag(this)"
+                         th:text = "${hotTag}" role="button">핫한 해시태그</a>              
+                  </span>
+               </div>  
+            </div> 
+      </div>   <!-- 해시태그 출력 끝-->
+       
+       
+      <!-- 선택한 해시태그와 관련된 게시물 : Ajax 이용 -->
+      <div id="needToChange" class="container" style="margin-bottom: 90px; margin-top: 80px;">
+         <h4 class="container mt-5 mb-3" style="width: 92%;">현재 핫한 해시태그가 포함된 게시물 목록</h4>
+             <div class="container" style="width: 92%;">
+                <table class="table table-hover">
+                  <thead>
+                       <tr>
+                        <th class ="col-lg-2">글 번호</th>
+                        <th class ="col-lg-8">게시물</th>
+                        <th class ="col-lg-2">댓글 수</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  <!-- 자바스트립트 redirectToDetail 메서드 사용 : 컬럼을 누르면 게시글 상세페이지로 이동하는 url 작성-->
+                  <tr th:each="tagBoard : ${tagBoardList}" 
+                        th:data-url="@{/board/{id}(id=${tagBoard.boardId})}" 
+                     onclick="redirectToDetail(this)"
+                     style="cursor:pointer;">
+                        <td>
+                        <span th:text = "${tagBoard.boardId}">글 번호</span>
+                        </td>
+                        <td>
+                           <!-- 제목의 글자수 길면 ...으로 생략 -->
+                           <div class = "first fs-5"
+                               th:text = "${#strings.length(tagBoard.boardTitle) &gt; 50 ? 
+                               #strings.substring(tagBoard.boardTitle, 0, 50) + '...' : tagBoard.boardTitle}">글 제목</div>
+                          <div class = "second d-flex">
+                               <p style="width: 30px; height: 30px;">
+                                   <img src = "/images/common/userImg.png" class="img-fluid mt-2"/>
+                               </p>
+                               <div class="mt-3 mx-2" th:text = "${tagBoard.userNickname}">작성자 닉네임</div>
+                          </div>
+                          
+                          <div class  ="third d-flex text-secondary">
+                               <div class="m-1" th:text = "|date ${#dates.format(tagBoard.boardCreatedDate, 'yyyy-MM-dd')}|">작성일자</div>
+                              <div class="m-1" th:text = "|in ${tagBoard.boardType}|">카테고리</div>
+                              <p class="m-1" style="width: 20px; height: 20px;">
+                                   <i class="fa-regular fa-eye"></i>
+                               </p>
+                              <div class="m-1" th:text = "${tagBoard.boardViewCount}">조회수</div>
+                              <p class="m-1" style="width: 20px; height: 20px;">
+                                   <img src = "/images/common/heart-click.png" class="img-fluid"/>
+                               </p>
+                              <div class="m-1" th:text = "${tagBoard.likeCnt}">좋아요 수</div>
+                          </div>
+                         </td>
+                        <td>
+                          <span th:text = "${tagBoard.commentCnt}" class = "mx-4">댓글 수</span>
+                         </td>  
+                      </tr>
+                  </tbody>
+                </table>
+             </div>
+      </div>
+      
+   </div> <!-- main 화면 끝 --> 
 </th:block>
+
+
 </body>
 </html>

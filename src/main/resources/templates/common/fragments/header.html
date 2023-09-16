@@ -68,7 +68,12 @@
                <div class="nav-item">
                   <a th:href="@{/logout}" class="nav-link link-body-emphasis px-2">Logout</a>
                </div>
-
+               
+	            <div class="nav-item">
+	            <div th:if="${adminId != null}">
+	                  <a th:href="@{/admin}" class="nav-link link-body-emphasis px-2">admin</a>
+	            </div>
+               </div>
             </div>
 
          </div>

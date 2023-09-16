@@ -1,23 +1,26 @@
 package com.walk.aroundyou.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.walk.aroundyou.domain.Board;
-import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.domain.BoardCourse;
 import com.walk.aroundyou.repository.BoardCourseRepository;
 
-@Service
-public class BoardCourseService {
-	
-	@Autowired
-    private BoardCourseRepository boardCourseRepository;
+import lombok.extern.slf4j.Slf4j;
 
-	public List<Board> findCourse(Course courseId){
-		return boardCourseRepository.findByCourseId(courseId);
-		
+@Service
+@Slf4j
+public class BoardCourseService {
+	@Autowired
+	BoardCourseRepository boardCourseRepository;
+
+	public void save(BoardCourse boardCourse) {
+		boardCourseRepository.save(boardCourse);
 	}
+
+	public void deleteByBoardId(Long id) {
+		boardCourseRepository.deleteByBoardId(id);
+	}
+	
 	
 }

@@ -19,22 +19,23 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Data
+@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "board")
 public class Board {
-	
 	@Id
 	// 외래키 연결하는 어노테이션, 오류 발생할 수 있음
 	// mappedBy = 외래키 관계에서 원본테이블 이름
-	//@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+	//@OneToMany(mappedBy = "boards", cascade = CascadeType.REMOVE)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_id")
 	private Long boardId;
@@ -42,9 +43,9 @@ public class Board {
 	// users 테이블과 연결된 외래키
 	//@Column(name = "user_id", nullable = false)
 	//private Long userId;
-
+	
 	// 회원 ID
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="user_id", referencedColumnName="user_id" )
 	// 오류창에 JoinColumn과 같이 사용하지 않을수있다고해서 주석처리
 	// @Column(nullable=false, columnDefinition="varchar(100)")

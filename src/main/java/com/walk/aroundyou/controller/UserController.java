@@ -506,8 +506,9 @@ public class UserController {
 			) throws IOException {
 		
 		if(errors.hasErrors()) {
-			// 유저페이지 변경 실패 시 입력 데이터 값을 유지
-			model.addAttribute("myDto", dto);
+			
+			// 마이페이지 변경 실패 시 입력 데이터 값을 유지
+			model.addAttribute("user", dto);
 			
 			// 유효성 통과 못한 필드와 메시지를 핸들링
 			Map<String, String> validatorResult = userService.validateHandling(errors);
@@ -654,8 +655,12 @@ public class UserController {
 	// 유저페이지 - 처리하는 페이지
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
 	@PostMapping("/mypage/userpage")
-	public String processuserpage(@Valid UpdateUserpageDTO dto, Errors errors, Model model) {
-
+	public String processuserpage(@Valid UpdateUserpageDTO dto, Errors errors, Model model, @AuthenticationPrincipal User user) {
+		
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+		}
+		
 		if(errors.hasErrors()) {
 			// 유저페이지 변경 실패 시 입력 데이터 값을 유지
 			model.addAttribute("user", dto);
