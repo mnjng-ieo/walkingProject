@@ -126,7 +126,7 @@ function toggleLikeImage(element) {
     let img = element.querySelector('img');
     
     // 회원이 아니면 confirm 대화상자 표시
-    if(userId != null) {
+    if(userId != null && userId != '') {
         // 좋아요 처리 요청
         // 경로를 처리하는 컨트롤러 메소드에서 @RequestBody 어노테이션이 붙은 매개변수가 있어서
         fetch(`/api/courses/${courseId}`, {
@@ -201,7 +201,7 @@ function restoreLikeImage(element) {
 function goToBoardEditor(courseId) {
     // 회원이 아니면 confirm 대화상자 표시
     userId = document.getElementById('userId').value;
-    if(userId != null) {
+    if(userId != null && userId != '') {
         window.location.href = '/board-editor?course=' + courseId;
     } else {
         let confirmation = 
@@ -236,5 +236,19 @@ function copyToClipboard() {
     });
 }
     
-
-
+// 코멘트 작성폼으로 이동
+function commentFocus(){
+    let createContent = document.getElementById("createContent")
+    userId = document.getElementById('userId').value;
+    if(userId != null && userId != '') {
+        createContent.focus()
+    } else {
+        let confirmation = 
+            confirm('로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?');
+        if(confirmation) {
+            window.location.href = '/login';
+        } else {
+            // 취소 버튼 누르면 아무 동작 없이 현재 페이지에 머무르기
+        }
+    }
+}

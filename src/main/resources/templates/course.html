@@ -44,7 +44,7 @@
                     <span th:text="*{coursViewCount}">조회수</span> 
                 </div> -->
                 <div class="d-flex justify-content-end align-items-stretch iconBox">
-	                <div class="icon-wrapper viewIcon">
+	                <div class="icon-wrapper viewIcon" onclick="commentFocus()">
                         <img src="/images/common/view.png" alt="코멘트 달기" />
                         <p th:text="'조회수 ' + *{coursViewCount}">조회수</p>
                     </div>
@@ -67,7 +67,7 @@
 	                </div>
 	                <div class="icon-wrapper">
 	                    <img src="/images/comment.png" alt="코멘트 달기" />
-	                    <p>코멘트<br>달기</p>
+	                    <p>댓글<br>달기</p>
 	                </div>
 	                <div class="icon-wrapper"
 	                    onclick="copyToClipboard()">
@@ -143,17 +143,20 @@
     </div>
     
     <!-- ★ 댓글 ★ -->    
-    <div class="container rounded-5 p-4 p-lg-5 my-5 wrapForm">
+    <div class="container rounded-5 p-4 p-lg-5 wrapForm" style="margin-top: 100px;">
+    <h3 style="margin-left: 40px; margin-top: 30px; font-family: 'KimjungchulGothic-Bold';">
+        <i class="fa-solid fa-leaf" style="color: #7fb77e;"></i> &nbsp;댓글 달기</h3>
     <!-- 댓글 리스트 -->
     <div class="commentList mx-5 my-5 mb-2">
         <div class="d-flex justify-content-center flex-wrap mb-4 px-lg-5" 
              th:each="comment, stat : ${comments}" 
                 style="text-align: auto">
-            <div class="mt-1 rounded-circle mx-1 overflow-hidden " style="width: 80px; height: 80px;" >
+            <div class="mt-1 rounded-circle mx-1 overflow-hidden " 
+                style="width: 80px; height: 80px;" >
                 <img class="border rounded-circle m-1" 
                     th:src="${commentMemberImagePaths!=null}? 
                     ${commentMemberImagePaths[stat.index]} : '/images/defaultUserImages.png'"
-                    style="width: 80px; height: 80px;" ></img>
+                    style="width: 100%; height: 100%;" ></img>
             </div>
             <div class="col-10 bubble">
         <!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
@@ -166,15 +169,17 @@
             <!-- 코멘트 하단 : 코멘트 내용 및 버튼 -->   
                 <!-- 코멘트 내용 --> 
                 <div class="rounded-4 bg-white commentBox">
-                    <div th:if="${comment.userId == loginId}" class="m-1 pt-4 p-2 px-4 commentForm" style="display: none;" >
+                    <div class="m-1 pt-4 p-2 px-4 commentForm" style="display: none;" >
                         <!-- </div> -->
                         <!-- 수정 버튼 클릭 시, 출력될 코멘트 작성란 -->
                         <!-- <div class="m-3 commentForm" style="width: 93%; display: none;"> -->
                             <input type="hidden" name="commentId" id="commentId" th:value="${comment.commentId}"></input>
-                            <input type="hidden" name="userId" id="userId" th:value="${comment.userId}"></input>
+                            <input th:if="${comment.userId == loginId}" type="hidden" name="userId" id="userId" th:value="${comment.userId}"></input>
                             <textarea name="commentContent" id="commentContent"
+                                th:if="${comment.userId == loginId}"
                                 class="form-control" >[[${comment.commentContent}]]</textarea>
-                            <div class="d-flex justify-content-end mt-3 pb-2">
+                            <div class="d-flex justify-content-end mt-3 pb-2"
+                                 th:if="${comment.userId == loginId}">
                                 <button type="submit"
                                         class="btn btn-sm px-4 registerbtn text-center">등록</button>
                                 <button type="button" id="cancelbtn"
@@ -268,30 +273,34 @@
         
     
     <!-- 산책로 연관 게시물 : 연서님 작성 -->
-    <div class="container boardList">
+    <div class="container boardList " style="margin-top: 70px;">
         <div class = "d-flex">
             <!-- 자바스크립트에서 사용할 용도이므로 숨기기 -->
             <h5 th:text="${id}"></h5>
             <h5 th:text="${id}" style = "display:none;"></h5>
-
-            <h5>해당 산책로 관련 게시물입니다.</h5>
+            
+            <h3 style="margin-left: 40px; margin-top: 30px;
+                    font-family: 'KimjungchulGothic-Bold'; margin-bottom: 50px;">
+                 <i class="fa-solid fa-leaf" style="color: #7fb77e;"></i> &nbsp;관련 게시물 모아보기</h3>
         </div>
 
         <!-- 정렬 방식 선택--> 
-        <div class = "d-flex justify-content-between">
-            <p class = "mb-2 mt-3 boardCount">게시물 수 : <span th:text="${courseBoardList.totalElements}"></span></p>
+        <div class = "d-flex justify-content-between" style="margin-bottom: 30px;">
+            <p class = "mb-2 boardCount"
+                >게시물 수 : <span th:text="${courseBoardList.totalElements}"></span></p>
             <select class="boardList-sort sort" 
                 id="boardCourseSort" name="sort" 
-                onchange="boardWithSearchResults()">
-            <option value="default">최신순</option>
-            <option value="boardViewCount">조회 순</option>
-            <option value="likeCnt">좋아요 순</option>
-        </select>
+                onchange="boardWithSearchResults()"
+                style="border-radius: 10px; padding-left: 5px;">
+	            <option value="default">최신순</option>
+	            <option value="boardViewCount">조회 순</option>
+	            <option value="likeCnt">좋아요 순</option>
+            </select>
         </div>
       
         <div id="needToChange">
         <p th:if="${courseBoardList.totalElements == 0}" 
-                      class= "noResult mx-5 m-5 text-center fs-5">해당 산책로가 언급된 게시물이 없습니다.</p>
+           class= "noResult mx-5 m-5 text-center fs-5">해당 산책로가 언급된 게시물이 없습니다.</p>
         <!-- 테이블로 게시물 목록 출력 -->
         <table class="table table-hover">
           <thead>
@@ -303,23 +312,33 @@
           </thead>
           <tbody>
             <!-- 자바스트립트 redirectToDetail 메서드 사용 : 컬럼을 누르면 게시글 상세페이지로 이동하는 url 작성-->
-            <tr th:each="courseBoard : ${courseBoardList}" 
+            <tr th:each="courseBoard, stat : ${courseBoardList}" 
                th:data-url="@{/board/{id}(id=${courseBoard.boardId})}" 
                onclick="redirectToDetail(this)"
                style="cursor:pointer;">
-              <td>
-                <span th:text = "${courseBoard.boardId}">글 번호</span>
+              <td style="padding-top: 20px; padding-left: 20px;">
+                <span th:text = "${courseBoard.boardId}"
+                    >글 번호</span>
               </td>
               <td>
                 <!-- 제목의 글자수 길면 ...으로 생략 -->
                 <div class = "first fs-5"
+                    style="margin-top: 10px;"
                     th:text = "${#strings.length(courseBoard.boardTitle) &gt; 50 ? 
                     #strings.substring(courseBoard.boardTitle, 0, 50) + '...' : courseBoard.boardTitle}">글 제목</div>
                 <div class = "second d-flex">
-                    <p style="width: 30px; height: 30px;">
-                        <img src = "/images/common/userimg.png" class="img-thumbnail mt-3"/>
+                    <p class="rounded-circle overflow-hidden"
+                        style="width: 40px; height: 40px;
+                                margin-top: 10px; 
+                                position: relative; border: 1px solid #ccc;">
+                        <img th:src = "${writerMemberImagePaths!=null} ? 
+                                ${writerMemberImagePath[stat.index]} : '/images/defaultUserImage.png'" 
+                             class="img-thumbnail mt-3"
+                             style="width: 40px; height: 40px;
+                             position: absolute; top: -16.5px;"/>
                     </p>
-                    <div class="mt-3 mx-2" th:text = "${courseBoard.userNickname}">작성자 닉네임</div>
+                    <div class="mt-3 mx-2" style="font-size: 18px;"
+                         th:text = "${courseBoard.userNickname}">작성자 닉네임</div>
                 </div>
                 
                 <div class  ="third d-flex text-secondary">
@@ -336,8 +355,9 @@
                 </div>
     
               </td>
-              <td>
-                <span th:text = "${courseBoard.commentCnt}" class = "mx-4">댓글 수</span>
+              <td style="padding-top: 20px;" >
+                <span 
+                    th:text = "${courseBoard.commentCnt}" class = "mx-4">댓글 수</span>
               </td>  
             </tr>
           </tbody>

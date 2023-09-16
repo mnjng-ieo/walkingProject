@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -14,12 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICommentResponseDto;
+import com.walk.aroundyou.service.BoardService;
 import com.walk.aroundyou.service.CommentService;
 import com.walk.aroundyou.service.CourseLikeService;
 import com.walk.aroundyou.service.CourseService;
@@ -39,6 +40,7 @@ public class CourseViewController {
 	private final UploadImageService uploadImageService;
 	private final CommentService commentService;
 	private final UserService userService;
+	private final BoardService boardService;
 	
 	// 페이지네이션 사이즈
 	private final static int PAGINATION_SIZE = 5;
@@ -297,7 +299,27 @@ public class CourseViewController {
 		Page<IBoardListResponse> courseBoardList = 
 		         courseService.findBoardAndCntByCourseId(courseId, currentPage, sort);
 		model.addAttribute("courseBoardList", courseBoardList);
-		      
+		  
+		// *** 게시물 작성자 이미지 경로 가져오기 - 0916 추가
+		if(courseBoardList != null && !courseBoardList.isEmpty()) {
+			List<String> writerMemberImagePaths = new ArrayList<>();
+			
+			for(IBoardListResponse boardResponseDTO : courseBoardList.getContent()) {
+				Board board = boardService.findById(boardResponseDTO.getBoardId()).get();
+				if (board != null) {
+					// 작성자 이미지 불러오기
+					UploadImage writerMemberImage = 
+							uploadImageService.findByUser(board.getUserId());
+					String writerMemberImagePath = (writerMemberImage != null) ?
+							uploadImageService.
+							findUserFullPathById(writerMemberImage.getFileId()) :
+								"/images/defaultUserImage.png";
+					writerMemberImagePaths.add(writerMemberImagePath);
+				}
+				model.addAttribute("wirterMemberImagePaths", writerMemberImagePaths);
+			}
+		}
+		
 	    // pagination 설정
 	    int totalPages = courseBoardList.getTotalPages();
 	    int pageStart = getPageStart(currentPage, totalPages);
