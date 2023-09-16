@@ -66,7 +66,6 @@ public interface CourseLikeRepository
 			GROUP BY c.course_id
 					""" // ORDER BY 최신순
 			, nativeQuery = true)
-	Page<ICourseLikeResponseDTO> findMyCourseAndCnt(@Param("userId") String userId, PageRequest of);
+	Page<ICourseLikeResponseDTO> findMyCourseAndCnt(@Param("userId") String userId, Pageable pageable);
 	
-
 }

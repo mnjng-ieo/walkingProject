@@ -23,6 +23,12 @@ repositories {
 }
 
 dependencies {
+
+   /*/implementation 'jakarta.servlet:jakarta.servlet-api'
+    implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
+    implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'*/
+
     //// MVC 개발 라이브러리
     // MVC 환경 개발에 필요한 필수 라이브러리
     implementation 'org.springframework.boot:spring-boot-starter-web'   
@@ -36,6 +42,7 @@ dependencies {
 //  implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     // jpa방식 기술로 개발할때 필요
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // implementation 'com.h2database:h2' // 자동로그인
     // 순수 jdbc 기술로 개발할때 필요
 //  implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     // 대한민국에서 가장 많이 사용하고 있는 데이터베이스 기술
@@ -56,6 +63,19 @@ dependencies {
     // 테스트 라이브러리
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.2'
+    
+    // Spring Security를 사용하기 위한 스타터 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // 스프링 시큐리티를 테스트하기 위한 의존성 추가
+    testImplementation 'org.springframework.security:spring-security-test'
+    // 타임리프에서 스프링 시큐리티를 사용하기 위한 의존성 추가
+    //implementation 'org.thmeleaf.extras:thymeleaf-extras-springsecurity6'
+ 
+    // Spring Boot Starter Validation 유효성 검증
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    
+    // 이메일로 임시 비밀번호 전송해주는 Gmail SMTP
+    implementation 'org.springframework.boot:spring-boot-starter-mail'  
 }
 
 tasks.named('test') {

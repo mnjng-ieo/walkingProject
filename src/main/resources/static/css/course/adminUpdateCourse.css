@@ -1,0 +1,70 @@
+
+.course-top_title {
+    margin-top: 30px;
+}
+
+.course-top_buttonBox {
+    border: 1px solid blue;
+    margin-top: 150px;
+    height: 100px;
+}
+
+.course-top_topButton{
+    margin-bottom: 25px;
+}
+
+.course-top_buttonBox > * > button {
+    height: 40px;
+    max-width: 250px;
+}
+
+.name {
+    width: 20%;
+    margin-right: 50px;
+}
+
+.content {
+    width: 75%;
+    padding-right: 50px;
+}
+
+input {
+	width: 100%;
+	/* height: 40px; */
+	/* border: none; -- border가 뚜렷하게 있으니까 멋스럽지 않다... 어떻게 수정할까? */
+}
+
+/* .textarea-container {
+	height: 100px;
+	overflow-y: auto;
+} */
+
+.longText {
+	width: 100%;
+	resize: none;
+	height: 50px;
+	overflow-y: auto;
+}
+
+.aditDc {
+    width: 100%;
+    resize: none;
+    height: 100px;
+    overflow-y: auto;
+}
+
+.course-mapBox {
+    background-color: #ffff80;
+}
+
+.course-imgBox {
+    width: 100%; height: 100%;
+    margin-top: 50px;
+    overflow: hidden;
+}
+
+.course-main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

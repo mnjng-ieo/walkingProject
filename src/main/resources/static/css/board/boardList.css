@@ -94,14 +94,6 @@
     border-radius: 10px;
 }
 
-/* .page-number {
-    border-radius: 10px;
-}
-
-.page-number:hover {
-    border-radius: 10px;
-} */
-
 .page-item.active .page-link {
  z-index: 1;
  color: white;

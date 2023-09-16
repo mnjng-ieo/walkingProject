@@ -96,7 +96,7 @@
                     <div class="m-1" th:text = "|date ${#dates.format(board.boardCreatedDate, 'yyyy-MM-dd')}|">작성일자</div>
                     <div class="m-1" th:text = "|in ${board.boardType}|">카테고리</div>
                     <p class="m-1" style="width: 20px; height: 20px;">
-                        <img src = "/images/common/view.png" class="img-fluid"/>
+                        <i class="fa-regular fa-eye"></i>
                     </p>
                     <div class="m-1" th:text = "${board.boardViewCount}">조회수</div>
                     <p class="m-1" style="width: 20px; height: 20px;">
@@ -124,7 +124,8 @@
                         자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
                    <a class="page-link arrow" 
                       href="javascript:void(0);"
-                      th:onclick="'loadPage(' + (${currentPage - 2}) + ')'">Previous</a>
+                      th:onclick="'loadPage(' + (${currentPage - 2}) + ')'">
+                      <i class="fa-solid fa-chevron-left"></i></a>
                </li>
                <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
                    <li th:if="${page == (currentPage)}" 
@@ -144,7 +145,8 @@
                    th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
                    <a class="page-link arrow" 
                    href="javascript:void(0);"
-                   th:onclick="'loadPage(' + (${currentPage}) + ')'">Next</a>
+                   th:onclick="'loadPage(' + (${currentPage}) + ')'">
+                    <i class="fa-solid fa-chevron-right"></i></a>
                </li>
             </ul>
         </div>

@@ -64,13 +64,12 @@ public class BoardViewController {
 		Page<IBoardListResponse> boardList;
 		
 		// type 설정
-		if(type == null) {
-			boardList = boardService.findBoardAndCntByKeyword(keyword, page, sort);
-			model.addAttribute("boardList", boardList);
-		} else {
+		if(type != null && !type.equals("ALL")) {
 			boardList = boardService.findBoardAndCntByKeywordAndType(type.toUpperCase(), keyword, page, sort);
-			model.addAttribute("boardList", boardList);
+		} else {
+			boardList = boardService.findBoardAndCntByKeyword(keyword, page, sort);
 		}
+		model.addAttribute("boardList", boardList);
 		
 		log.info("리스트가 비어있나요? : {}", boardList.isEmpty());
 		log.info("키워드는? : {}", keyword);

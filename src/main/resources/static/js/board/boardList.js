@@ -6,7 +6,13 @@ function boardWithSearchResults() {
     let sort = document.getElementById('boardSort').value;
     // 주소창의 파라미터 얻어오기
     const urlParams = new URL(location.href).searchParams;
+    
     selectedType = urlParams.get('type');
+    
+    if( selectedType == undefined ) {
+        selectedType = 'ALL'
+    }
+    
     // console.log(`selectedType : ${selectedType}`)
     let xhr = new XMLHttpRequest();
     xhr.open('GET', `/board?type=${selectedType}&sort=${sort}&page=${currentPage}`, true);

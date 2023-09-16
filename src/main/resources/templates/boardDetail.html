@@ -4,68 +4,78 @@
     layout:decorate="~{common/layouts/defaultLayout}">
     
 <head>
-<title>게시판 상세 : [[${ board.boardTitle }]]</title>
+<title>[[${ board.boardTitle }]]</title>
 
     <link href="/css/board/boardMap.css" rel="stylesheet"></link> 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="/css/board/boardDetail.css" rel="stylesheet"></link> 
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f5041361e9b1c4d5fd6a9c27cfadb45e"></script>
-    <script type="text/javascript" src="/js/board/boardComment.js"></script> 
-    <script type="text/javascript" src="/js/board/boardMap.js"></script> 
+    <script type="text/javascript" src="/js/board/boardMap.js"></script>  
     
 </head> 
 <body>
 <th:block layout:fragment="Content">
     <div class="container">
-        <h1>~~ 게시물 상세화면 ~~</h1>
-        <div class="bg-light rounded-5 p-3 mb-3">
+        <h1 class="my-4" style="white-space:pre;"> </h1>    
+        <div class="rounded-5 p-5 mb-5 wrapDetail">
+            <!-- 게시판 -->
+            <th:block th:switch="${board.boardType}">
+            <div th:case="FREE" class="mt-3 ms-4 boardType">자유게시판</div>
+            <div th:case="COMUNITY" class="mt-3 ms-4 boardType">모임게시판</div>
+            <div th:case="REVIEW" class="mt-3 ms-4 boardType">후기게시판</div>
+            <div th:case="*" class="mt-3 ms-4 boardType">기타게시판</div>
+            </th:block>
+            
             <!-- 제목 -->
-            <div class="fs-2 m-lg-5 m-3">[[${ board.boardTitle }]]</div>
-            <!-- 프로필사진/닉네임/작성일자/조회수 -->
-            <div class="d-flex justify-content-between">
-                <ul class="d-flex">
-                    <p>
+            <div class="fs-3 mx-lg-3 mx-2 mb-4 boardTitle">[[${ board.boardTitle }]]</div>
+            <!-- 프로필사진/닉네임/작성일자/조회수 --><!-- 좋아요/공유 -->
+            <div class="d-flex justify-content-between boardInfo">
+                <ul class="ms-lg-2 ms-1 d-flex">
+                    <p class="rounded-circle mx-lg-2 mx-1 overflow-hidden" style="width:60px; height:60px;">
                         <img
-                            src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1931&q=80"
-                            class="rounded-circle mx-2" style="width: 30px; height: 30px">
+                            th:src="${userImg!=null}? '@{/images/{userImg}(userImg=${userImg})}': 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1931&q=80'"
+                            style="width:60px; height:60px;">
                     </p>
-                    <p>[[${ board.userNickname }]]</p>
+                    <p class="ms-2 userNickname">[[${ board.userNickname }]]</p>
                 </ul>
-                <ul class="d-flex mx-5">
+                <ul class="d-flex mx-3">
                     <p class="px-2">
-                        <i class="fa-regular fa-calendar-days"></i> [[${
+                        <i class="fa-regular fa-calendar-days boardCreatedDate"></i> [[${
                         #dates.format(board.boardCreatedDate, 'yyyy-MM-dd HH:mm') }]]
                     </p>
-                    <p>
+                    <p class="px-2">
                         <i class="fa-regular fa-eye"></i> [[${ board.boardViewCount }]]
+                    </p>
+                    <p class="px-2">
+                        <i class="fa-regular fa-heart"></i> [[${ board.likeCnt }]]
                     </p>
                 </ul>
             </div>
             <div>
-                <!-- 내용 -->
-                <div class="m-2 p-lg-5 pb-5 bg-white rounded-3">[[${
+                <div class="mx-lg-3 mx-2 p-lg-5 p-4 mb-3 bg-white rounded-4 boardContent">
+                    <!-- 이미지 -->
+                    <div class="board-imgBox mb-3" th:if="${imagePaths!=null}">
+                        <img class="board-imgBox_img"   
+                            th:src="${imagePaths[0]}"
+                            alt="게시판 등록사진" />        
+                    </div>
+                    <!-- 내용 -->
+                    <div style="white-space:pre-wrap;">[[${
                     board.boardContent }]]</div>
-                <!-- 좋아요/공유 -->
-                <div class="px-5 pt-2">
-                    <p>
-                        <i class="fa-regular fa-heart"></i> [[${ board.likeCnt }]]
-                    </p>
                 </div>
-                <!-- 해시태그 리스트 (09/09 - 연서 수정)-->
-                <div th:unless="${boardTagList == null}" class="m-lg-5">
+                <!-- 해시태그 리스트 -->
+                <div class="mx-lg-4 mx-3 px-3 my-4 boardTagList"
+                    th:if="${boardTagList != null}">
+                    <span class="mx-2 hashTitle">#</span>
                     <th:block th:each="boardTag : ${boardTagList}">
                         <a 
                             th:href="@{/tag/search/{tagContent}(tagContent = ${boardTag})}"
-                            role="button" class="btn btn-outline-secondary btn-sm rounded-5">[[${boardTag}]]</a>
-                        <!--<a>
-                        
-                            <span th:text="${boardTag}"
-                                class="badge bg-success-subtle text-dark px-2 py-1 me-1 fs-6 rounded-5"></span>
-                        </a> -->
+                            role="button" class="btn rounded-5 my-1 tagItem">[[${boardTag}]]</a>
                     </th:block>
                 </div>
             </div>
-            <!-- 산책로 정보 (09/09 - 연서 수정)-->
-            <div th:unless="${course == null}" class="px-4 mx-lg-5 px-lg-5">
+            <!-- 산책로 정보 -->
+            <div class="my-1 mx-3 px-4 mb-3 mx-lg-4 " th:unless="${course == null}">
+                <div class="mb-2 courseTitle">산책로</div>
                 <div id="map" style="width:100%;height:300px;" class="rounded-4"></div>
                 <input type="hidden" id="courseId" th:value="${course.courseId}">
                 <input type="hidden" id="flagName" th:value="${course.wlkCoursFlagNm}">
@@ -78,81 +88,113 @@
             </div>
             
             
-            <!-- 댓글 (09/09 - 연서 수정)-->
-            <div  th:unless="${comments == null}" class="commentList pb-2">
-                <div class="border mx-5 my-4 rounded text-bg-light shadow" th:each="comment : ${comments}" 
+            
+            <div class="px-5 commentTitle">댓글</div>
+            <!-- 댓글 리스트 -->
+            <div class="commentList mx-5 mb-2">
+                <div class="d-flex justify-content-center flex-wrap mb-4 px-lg-5" th:each="comment : ${comments}" 
                         style="text-align: auto">
-                    
-                <!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
-                    <div class="d-flex align-items-center justify-content-between m-4 pt-3" style="height: 65px;">
-                        <!-- user 이미지, 닉네임 --> 
-                        <div class="d-flex align-items-center ">
-                            <img class="border rounded-circle m-1 " th:text"${comment.userImg}" 
-                                src="/images/userImg.jpg" style="width: 80px; height: 80px;" ></img>
-                            <p class="m-3" th:text="${comment.userNickname}"></p>
-                        </div>
-                        
-                        <!-- 수정일자, 좋아요 버튼, 좋아요 수 --> 
-                        <div class="d-flex align-items-center p-2">
-                            <p class="m-2" th:text="${#dates.format(comment.commentUpdatedDate, 'yyyy-MM-dd HH:mm')}" ></p>
-                            <button type="button m-2" class="btn btn-sm btn-outline-danger" >♥</button>
-                            <p class="m-2" th:text="${comment.commentLikeCnt}" >좋아요 개수</p>
-                        </div>
+                    <div class="mt-1 rounded-circle mx-1 overflow-hidden " style="width: 80px; height: 80px;" >
+                        <img class="" 
+                            th:src="${userImg!=null}? '@{/images/{userImg}(userImg=${userImg})}': '/images/common/userImg.png'"
+                            style="width: 80px; height: 80px;" ></img>
                     </div>
-                
-                <!-- 코멘트 하단 : 코멘트 내용 및 버튼 -->   
-                    <!-- 코멘트 내용 --> 
-                    <div>
-                        <div class="m-1 px-3 commentForm" style="display: none;" >
-                            <form class="pt-4 px-4" id="modifyForm" th:action="@{/board-comment/{id}(id=${board.boardId})}" method="POST">
-                            <!-- </div> -->
+                    <div class="col-10 bubble">
+                <!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
+                        <div class="d-flex justify-content-between mx-2">
+                            <!-- user 이미지, 닉네임 --> 
+                                <div class="mx-2" th:text="${comment.userNickname}"></div>
+                                <div class="mx-2" th:text="${#dates.format(comment.commentUpdatedDate, 'yyyy-MM-dd HH:mm')}" ></div>
+                                
                             
-                            <!-- 수정 버튼 클릭 시, 출력될 코멘트 작성란 -->
-                            <!-- <div class="m-3 commentForm" style="width: 93%; display: none;"> -->
-                                <input type="hidden" name="boardId" id="boardId" th:value="${comment.boardId}"></input>
-                                <input type="hidden" name="commentId" id="commentId" th:value="${comment.commentId}"></input>
-                                <input type="hidden" name="userId" id="userId" th:value="${comment.userId}"></input>
-                                <input type="text" name="commentContent" id="commentContent" th:value="${comment.commentContent}" class="form-control" >
-                                <div class="d-flex justify-content-end mt-4 pb-2">
-                                    <button type="submit text-center"
-                                            class="btn btn-primary btn-sm registerbtn">등록</button>
-                                    <div type="button text-center" id="cancelbtn"
-                                        class="btn btn-secondary btn-sm mx-3 cancelbtn">취소</div>
-                                </div>
-                            </form>
                         </div>
+                    
+                    <!-- 코멘트 하단 : 코멘트 내용 및 버튼 -->   
+                        <!-- 코멘트 내용 --> 
                         
-                        <!-- 수정 후 등록 버튼 클릭 시, 출력될 코멘트 내용-->
-                        <div class="m-1 px-3 commentResult">
-                            <p class="p-4 mx-4" th:text="${comment.commentContent}"></p>
-                            <!-- 수정 및 삭제 버튼 -->
-                            <div class="d-flex justify-content-end m-3 pb-2">
-                                <button type="button text-center" id="modifybtn"
-                                        class="btn btn-primary btn-sm mx-1 modifybtn">수정</button>
-                                <button type="button text-center" id="deletebtn"
-                                        class="btn btn-secondary btn-sm mx-3 deletebtn">삭제</button>
+                        <div class="rounded-4 bg-white commentBox">
+                            <div th:if="${comment.userId == loginId}" class="m-1 pt-4 p-2 px-4 commentForm" style="display: none;" >
+                                <!-- </div> -->
+                                <!-- 수정 버튼 클릭 시, 출력될 코멘트 작성란 -->
+                                <!-- <div class="m-3 commentForm" style="width: 93%; display: none;"> -->
+                                    <input type="hidden" name="commentId" id="commentId" th:value="${comment.commentId}"></input>
+                                    <input type="hidden" name="userId" id="userId" th:value="${comment.userId}"></input>
+                                    <textarea name="commentContent" id="commentContent"
+                                        class="form-control" >[[${comment.commentContent}]]</textarea>
+                                    <div class="d-flex justify-content-end mt-3 pb-2">
+                                        <button type="submit"
+                                                class="btn btn-sm px-4 registerbtn text-center">등록</button>
+                                        <button type="button" id="cancelbtn"
+                                            class="btn btn-secondary btn-sm px-4 mx-3 cancelbtn text-center">취소</button>
+                                    </div>
                             </div>
+                            
+                            <!-- 수정 후 등록 버튼 클릭 시, 출력될 코멘트 내용-->
+                            <div class="m-1 pt-4 commentResult">
+                                <div class="mx-4" th:text="${comment.commentContent}" style="white-space:pre-wrap;"></div>
+                                <!-- 수정 및 삭제 버튼 -->
+                                <div class="d-flex justify-content-end p-3">
+                                    <div class="mx-3 mt-1">
+                                        <img src="/images/common/heart-click.png" style="width: 20px; height: 20px;"/>
+                                        <span class="fs-6">[[${comment.commentLikeCnt}]]</span>
+                                    </div>
+                                    <button type="button" id="modifybtn"
+                                            th:if="${comment.userId == loginId}" 
+                                            class="btn btn-sm px-4 mx-1 modifybtn text-center">수정</button>
+                                    <!-- 시큐리티가 정리되면 th:if="${comment.userId == userId}" 추가 -->
+                                    <button type="button" id="deletebtn"
+                                            th:if="${comment.userId == loginId}" 
+                                            class="btn btn-secondary btn-sm px-4 mx-3 deletebtn text-center">삭제</button>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="d-flex justify-content-center">
-            <form th:action="@{/board-editor/{id}(id=${board.boardId})}"
-                method="get">
-                <button class="w-40 btn btn-outline-primary" type="submit">수정하기</button>
-            </form>
-            <form th:action="@{/board/{id}(id=${board.boardId})}" method="post">
-                <button class="w-40 btn btn-outline-primary" type="submit">삭제하기</button>
-            </form>
+            <!-- 댓글 입력창 -->
+            <div class="border mt-3 mx-5 rounded-4 text-bg-light"
+                th:if="${loginId != null}" >
+                <!-- 코멘트 상단 : user 이미지, 닉네임 -->
+                <div class="d-flex align-items-center justify-content-between m-4">
+                    <!-- user 이미지, 닉네임 --> 
+                    <div class="d-flex align-items-center ms-2">
+                        <p class="rounded-circle m-1 overflow-hidden" style="width: 60px; height: 60px;">
+                            <img
+                                th:src="${userImg!=null}? '@{/images/{userImg}(userImg=${userImg})}': '/images/common/userImg.png'" style="width: 60px; height: 60px;" ></img>
+                        </p>
+                        <p class="m-3" >[[${user!=null}?${user.userNickname}:'로그인된 사용자 닉네임']]</p>
+                        <input type="hidden">
+                    </div>
+                </div>
+                
+                <!-- 코멘트 작성란 -->
+                <div class="px-3 input-group">
+                    <textarea type="text" id="createContent" name="createContent"
+                        class="border mx-3 p-6 form-control" placeholder="댓글을 입력하세요"></textarea>
+                </div>
+                
+                <!-- 버튼 -->
+                <div class=" d-flex justify-content-end m-3 px-3">
+                    <button type="button" class=" text-center btn btn-primary btn px-4 mx-3" id="createbtn">등록</button> 
+                </div>
+            </div>
+            <!-- 9/14 추가수정 시작 -->
+            <div class="d-flex justify-content-center" 
+                th:if="${board.userId == loginId}" >
+                <form th:action="@{/board-editor/{id}(id=${board.boardId})}"
+                    method="get">
+                    <button class="mt-5 mx-lg-5 mx-3 btn btn-lg submitBtn" type="submit">수정하기</button>
+                </form>
+                <form th:action="@{/board/{id}(id=${board.boardId})}" method="post">
+                    <button class="mt-5 mx-lg-5 mx-3 btn btn-lg submitBtn" type="submit">삭제하기</button>
+                </form>
+            </div>
         </div>
     </div>
 
-
-    <script>
-        
-    </script>
-
+            <!-- 9/14 추가수정 끝 -->
+    <script type="text/javascript" src="/js/board/boardComment.js"></script>
 </th:block>
 </body>
 </html>

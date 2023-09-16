@@ -19,15 +19,15 @@
         
 	        
 			<div class="btn-group" role="group">		    
-		        <a class="btn type-btn border rounded-0 rounded-top-5 type-button fs-5" 
-		        th:href="@{/board}"
-		        th:classappend="${param.type == null} ? 'activeBtn' : ''">전체 게시판</a>
-		    
+		        <a class="btn type-btn border rounded-0 rounded-top-5 type-button fs-5"
+		           th:href="@{/board}"
+		           th:classappend="${param.type == null} ? 'activeBtn' : ''">전체 게시판</a>
+		          
 		        <a class="btn type-btn border rounded-0 rounded-top-5 type-button fs-5" 
 	               th:href="@{/board?type=FREE}"
 	               th:classappend="${param.type != null && param.type.toString().equals('FREE')} ? 'activeBtn' : ''">자유 게시판</a>
 		    
-		        <a class="btn type-btn border rounded-0 rounded-top-5 type-button fs-5" 
+		        <a class="btn type-btn border rounded-0 rounded-top-5 type-button fs-5"
 	               th:href="@{/board?type=COMMUNITY}"
 	               th:classappend="${param.type != null && param.type.toString().equals('COMMUNITY')} ? 'activeBtn' : ''">모임 게시판</a>
 		    
@@ -87,7 +87,7 @@
                     <div class="m-1" th:text = "|date ${#dates.format(board.boardCreatedDate, 'yyyy-MM-dd')}|">작성일자</div>
                     <div class="m-1" th:text = "|in ${board.boardType}|">카테고리</div>
                     <p class="m-1" style="width: 20px; height: 20px;">
-                        <img src = "/images/common/view.png" class="img-fluid"/>
+                        <i class="fa-regular fa-eye"></i>
                     </p>
                     <div class="m-1" th:text = "${board.boardViewCount}">조회수</div>
                     <p class="m-1" style="width: 20px; height: 20px;">
@@ -148,8 +148,8 @@
         <form th:action="@{/board/search}" method="get" id="boardSearchForm"> 
         <div class ="search-group d-flex p-2 justify-content-center">
             <div class ="">
-                <select name = "boardType"  class = "form-select">
-                    <option value = "FREE" value2 = "COMMUNITY" value3 = "REVIEW">전체</option>
+                <select name = "boardType" id = "boardType" class = "form-select">
+                    <option value = "ALL">전체</option>
                     <option value = "FREE">자유 게시판</option>
                     <option value = "COMMUNITY">모임 게시판</option>
                     <option value = "REVIEW">후기 게시판</option>

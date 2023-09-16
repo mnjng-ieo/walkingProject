@@ -315,6 +315,7 @@ public class CourseService {
 			return Optional.ofNullable(courses.get(0));			
 		}
 	}
+		
 	/**
 	 * [메인페이지] 산책로 조회순 정렬 메소드
 	 */
@@ -336,12 +337,30 @@ public class CourseService {
 		Sort sort = Sort.by(Direction.DESC, "likeCnt");
 		
 		// 페이징 처리 : (페이지 번호, 한 페이지에서 보이는 목록 수(3), 정렬 설정) 
-		PageRequest pageRequest = PageRequest.of(0, 3, sort);
+		PageRequest pageRequest = PageRequest.of(0, 9, sort);
 		
 		Page<ICourseResponseDTO> coursePage = 
 				courseRepository.findCoursesWithCounts(pageRequest);
 		
 		return coursePage;
 	}
+		
+	// 민정언니
+	//// 게시판 산책로 지도처리를 위한 메소드
+	// 산책로 지역 선택 항목 가져오기
+	public List<String> findAllSignguCn() {
+		return courseRepository.findAllSignguCn();
+	}
+	// 지역에 따른 산책로이름(산책로 큰분류) 가져오기
+	public List<String> findFlagNameBySignguCn(String signguCn) {
+		log.info("findFlagNameBySignguCn() 서비스 접근");
+		return courseRepository.findFlagNameBySignguCn(signguCn);
+	}
+	// 산책로이름에 따른 코스이름(산책로 작은분류) 정보 가져오기
+	public List<Course> findCourseNameByWlkCoursFlagNm(String wlkCoursFlagNm) {
+		log.info("findFlagNameBySignguCn() 서비스 접근");
+		return courseRepository.findCourseNameByWlkCoursFlagNm(wlkCoursFlagNm);
+	}
+				
 
 }

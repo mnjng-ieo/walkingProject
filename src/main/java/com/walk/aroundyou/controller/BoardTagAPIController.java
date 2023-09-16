@@ -68,20 +68,20 @@ public class BoardTagAPIController {
 	
 	// 4-2. 파싱된 해시태그 리스트 저장하기
 	// 게시물 저장하면 해시태그 파싱하여 태그도 저장하기
-	@PostMapping("/board/post")
-	public ResponseEntity<Board> createBoard(@RequestBody BoardRequest board) {
-		// 저장된 게시물의 boardId 가져오기
-        Long boardId = boardService.save(board);
-        log.info("boardId : {}", boardId);
-        // 게시물에서 해시태그 파싱하여 리스트로 저장
-        List<String> createTagList = tagService.createTagList(boardId);
-        log.info("createList : {}", createTagList);
-        // for문 사용하여 태그 하나씩 저장 
-        for (String tagContent : createTagList) {
-        	tagService.saveBoardTag(boardId, tagContent);
-        }
-        return ResponseEntity.ok().build();
-    } 
+//	@PostMapping("/board/post")
+//	public ResponseEntity<Board> createBoard(@RequestBody BoardRequest board) {
+//		// 저장된 게시물의 boardId 가져오기
+//        Long boardId = boardService.save(board);
+//        log.info("boardId : {}", boardId);
+//        // 게시물에서 해시태그 파싱하여 리스트로 저장
+//        List<String> createTagList = tagService.createTagList(boardId);
+//        log.info("createList : {}", createTagList);
+//        // for문 사용하여 태그 하나씩 저장 
+//        for (String tagContent : createTagList) {
+//        	tagService.saveBoardTag(boardId, tagContent);
+//        }
+//        return ResponseEntity.ok().build();
+//    } 
 
 	// 5. 동일한 tag_id를 가진 board_tag_id의 tag_content 출력
 	// 메인화면에 지금 핫한 해시태그에 출력될 내용
@@ -91,13 +91,13 @@ public class BoardTagAPIController {
 	}	
 	
 	// 6. 해시태그 클릭 시 게시물 목록 페이지 출력하는데 좋아요 수, 댓글 수를 포함한 게시물 출력(연습용)
-	@GetMapping("/api/findBoardAndCntByTagId/{tagId}")
-	public Page<IBoardListResponse> findBoardAndCntByTagId(
-			@PathVariable("tagId") Tag tagId,
-			@RequestParam(value="page", defaultValue="1") int page) {
-		return tagService.findBoardAndCntByTagId(tagId, page);
-		
-	}
+//	@GetMapping("/api/findBoardAndCntByTagId/{tagId}")
+//	public Page<IBoardListResponse> findBoardAndCntByTagId(
+//			@PathVariable("tagId") Tag tagId,
+//			@RequestParam(value="page", defaultValue="1") int page) {
+//		return tagService.findBoardAndCntByTagId(tagId, page);
+//		
+//	}
 	
 	/*------------------------------------------------------*/
 	/// BoardTagRepository 사용하여 출력 확인하기
