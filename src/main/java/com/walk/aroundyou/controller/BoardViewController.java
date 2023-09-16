@@ -257,7 +257,11 @@ public class BoardViewController {
 						uploadImageService.findCourseFullPathById(
 								courseUploadImage.getFileId());
 				log.info("courseImagePath : " + courseImagePath);
+				
 				model.addAttribute("courseImagePath", courseImagePath);
+				
+				String savedImageName = courseUploadImage.getSavedFileName();
+				model.addAttribute("savedImageName",savedImageName);
 			}
 		} else {
 			log.info("course 값이 없음");	

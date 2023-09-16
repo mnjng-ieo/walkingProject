@@ -12,7 +12,7 @@ function updateViewWithSearchResults(){
     
     let xhr = new XMLHttpRequest();
     // 페이지 번호까지 쿼리 파라미터로 추가
-    xhr.open("GET", "/main/mypage-course?page=" + currentPage, true);
+    xhr.open("GET", "/mypage-course?page=" + currentPage, true);
     
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {

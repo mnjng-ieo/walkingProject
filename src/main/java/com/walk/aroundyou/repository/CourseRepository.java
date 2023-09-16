@@ -18,6 +18,44 @@ public interface CourseRepository
 			extends JpaRepository<Course, Long>, 
 					JpaSpecificationExecutor<Course> {
 	
+	//// 마이페이지에서 작성한 댓글들의 산책로 목록 출력
+	@Query(value ="""
+SELECT 
+                c.course_id as courseId
+                , c.adit_dc as aditDc
+                , c.cours_dc as coursDc
+                , c.cours_detail_lt_cn as coursDetailLtCn
+                , c.cours_level_nm as coursLevelNm
+                , c.cours_lt_cn as coursLtCn
+                , c.cours_spot_la as coursSpotLa
+                , c.cours_time_cn as coursTimeCn
+                , c.cvntl_nm as cvntlNm
+                , c.esntl_id as esntlId
+                , c.signgu_cn as signguCn
+                , c.toilet_dc as toiletDc
+                , c.wlk_cours_flag_nm as wlkCoursFlagNm
+                , c.wlk_cours_nm as wlkCoursNm
+                , c.cours_view_count as coursViewCount
+                , COUNT(cm.comment_id) as commentCnt
+                , COUNT(cl.course_like_id) as likeCnt
+                , COUNT(bc.board_course_id) as mentionCnt
+            FROM Course as c
+                LEFT JOIN comment as cm ON cm.course_id = c.course_id 
+                LEFT JOIN course_like as cl ON cl.course_id = c.course_id
+                LEFT JOIN board_course as bc  ON bc.course_id = c.course_id
+            WHERE c.course_id IN 
+                (select c2.course_id
+                    from comment c2 
+                    where c2.comment_type = 'COURSE'
+                        and c2.user_id = 'yeonseo97') 
+            GROUP BY c.course_id
+            ORDER BY c.course_id desc
+					""" // ORDER BY 최신순
+			, nativeQuery = true)
+	Page<ICourseResponseDTO> findMyCourseCommentAndCnt(
+			@Param("userId") String userId, Pageable pageable);
+	
+	
 	/**
 	 * 특정 컬럼 값을 검색 조건으로 조회 메소드 작성 + 산책로명으로 정렬 + 페이징 처리
 	 * - 지역, 난이도, 코스거리, 소요시간 등 => findAll(Specification) 활용!

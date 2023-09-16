@@ -94,9 +94,9 @@ function deleteImage() {
 
 /////////////////////////////////////////////////////////////
 $(document).ready(function () {
-    // 첫 페이지에서 게시물만 보이게
-    $('#imgContainer').collapse('hide');
-    $('#postContainer').collapse('show');
+    // 첫 페이지에서 이미지만 보이게
+    $('#postContainer').collapse('hide');
+    $('#imgContainer').collapse('show');
     
     // imgBtn 버튼을 클릭할 때
     $('#imgBtn').on('click', function () {
@@ -155,6 +155,6 @@ function loadPage(pageNumber) {
     };
 
     // GET 요청을 보냄
-    xhr.open('GET', '/main/mypage?page=' + pageNumber, true);
+    xhr.open('GET', '/mypage?page=' + pageNumber, true);
     xhr.send();
 }

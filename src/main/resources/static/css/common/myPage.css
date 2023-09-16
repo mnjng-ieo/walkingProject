@@ -29,6 +29,41 @@
     font-style: normal;
 }
 
+a {
+    text-decoration-line: none;
+    color : #1C6758;
+}
+
+.breadcrumb {
+    font-family: 'NanumSquareRound';
+    font-size: 18px;
+    
+}
+
+.breadcrumb-item:last-child {
+    font-weight: bold;
+}
+
+.sidebarBtn {
+    color : #1C6758;
+    
+}
+.sidebar-title {
+    font-family: 'Yeongdo-Rg';
+}
+.sidebar-sub-title {
+    color : #1C6758;
+}
+
+.sidebar-sub-title2 {
+    color : #7FB77E;
+}
+.side-logo {
+    margin-left: -10px;
+    width: 50px;
+    height: 50px;
+}
+
 /* 유저 닉네임 + 사진 보기 */
 .formTitle{
     font-weight: bold;
@@ -139,11 +174,19 @@
 }
 
 .userBox_btn {
-    height: 40px; width: 100px;
+    height: 40px; width: 55%;
     border-radius: 10px;
-    background-color: #D6CDA4;
+    background-color: #FFD43B;
     margin: 10px 0 0 75px ;
+    padding: 0 10px 0 10px;
 }
+.userBox_btn:hover {
+    background-color: #FFB100;  
+}
+.user-descBox {
+    text-indent: 10px;
+}
+
 .user-imgBox_imageborder {
    height:90%; 
    width: 90%;
@@ -156,16 +199,40 @@
    width: auto;
 }
 
+.post-img {
+    margin-top: 120px;
+}
+
+.btn {
+    border: 0px !important;
+}
+
+.post-img-btn {
+    line-height: 35px;
+    font-size: 1.2rem;
+}
+
+#postBtn:hover {
+    background-color: #d1e9cb !important;;
+}
+
+#imgBtn:hover {
+    background-color: #f9ebdb !important;;
+}
+
 /* ---내가 쓴 게시글--- */
 /* 글 작성 버튼 */
 .b-editor {
-    height: 40px;
+    line-height: 30px;
     width: 130px;
-    color: #fff;
-    background-color: #1C6758; 
+    color: white;
+    background-color: #3D8361;
     font-size: 1rem;
 }
 
+.b-editor:hover {
+    background-color: #1C6758;
+}
 #postContainer {
     font-family: 'NanumSquareRound';
 }
@@ -243,4 +310,28 @@
 .mypageSidebar {
     height: 85vh;
     width: 280px;
+}
+
+/* 내 이미지 모아보기 */
+.myImage-lists {
+	position: relative;
+	border: 1px solid gold;
+}
+
+.myImage-list-wrapper{
+	margin-top: 30px;
+	border: 1px solid red;
+}
+
+.myImage-list {
+	border: 1px solid blue;
+	width: 100%;
+	aspect-ratio: 1/1;
+	overflow: hidden;
+}
+
+.myImage-img{
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
 }

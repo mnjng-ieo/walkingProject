@@ -3,14 +3,14 @@ package com.walk.aroundyou.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.walk.aroundyou.domain.Member;
+import com.walk.aroundyou.dto.IUserResponse;
 
 @Repository
 public interface UserRepository extends JpaRepository<Member, String> {
@@ -28,10 +28,29 @@ public interface UserRepository extends JpaRepository<Member, String> {
 
 	
     
+	// 4. 관리자페이지에서 출력할 유저 정보
+	   @Query(value ="""
+		         SELECT 
+					user_id as userId
+					, user_name as userName
+					, user_nickname as userNickname
+					, user_tel_number as userTelNumber
+					, user_email as userEmail
+					, user_description as userDescription	
+					, user_join_date as userJoinDate
+					, user_update_date as userUpdateDate
+				    , user_role as role
+				    , state_id as stateId
+		         FROM user u
+		         GROUP BY user_join_date 
+	   			 ORDER BY user_join_date desc
+		               """ 
+		         , nativeQuery = true)
+	Page<IUserResponse> findAllUsers(Pageable pageable);
+	
 	// 5. user entity의 모든 항목을 반환하기
 	List<Member> findAll();
-	
-	
+		
 	// 6. Id로 검색한 엔터티 삭제하기
 	void deleteByUserId(String userId);
 	

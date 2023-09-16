@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -206,7 +207,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			b.board_id as boardId
 			, b.board_type as boardType
 			, b.board_title as boardTitle
-			, b.board_content as boardContent
 			, user_nickname as userNickname
 			, user_id as userId
 			, board_view_count as boardViewCount
@@ -578,5 +578,64 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			      and board_type = :#{#type}
 			""", nativeQuery = true)
 	Page<IBoardListResponse> findBoardAndCntByNicknameAndType(@Param("type") String type, @Param("keyword") String keyword, Pageable pageable);
-		
+	
+	
+	//// 마이페이지에서 게시글 리스트 출력(연서 추가)
+	@Query(value ="""
+			SELECT 
+				b.board_id as boardId
+				, b.board_type as boardType
+				, b.board_title as boardTitle
+				, user_nickname as userNickname
+				, user_id as userId
+				, board_view_count as boardViewCount
+				, board_created_date as boardCreatedDate
+				, board_updated_date as boardUpdatedDate
+				, ifnull(comment_cnt, 0) as commentCnt
+				, ifnull(like_cnt, 0) as likeCnt
+			FROM board as b
+				LEFT JOIN 
+					(select board_id, count(board_id) as comment_cnt
+						from comment as c
+						group by c.board_id) as cc
+				on b.board_id = cc.board_id	
+				LEFT JOIN 
+					(select board_id, count(board_id) as like_cnt
+						from board_like as bl
+						group by bl.board_id) as bll
+				on b.board_id = bll.board_id
+			WHERE user_id = :#{#userId}
+			GROUP BY b.board_id
+			ORDER BY b.board_id desc
+					""" // ORDER BY 최신순
+			, nativeQuery = true)
+	Page<IBoardListResponse> findMyBoardAndCnt(@Param("userId") String userId, Pageable pageable);
+	
+	//// 마이페이지에서 작성한 댓글들의 게시글 목록 출력
+	@Query(value ="""
+	        SELECT 
+			    b.board_id as boardId,
+			    b.board_type as boardType,
+			    b.board_title as boardTitle,
+			    b.user_nickname as userNickname,
+			    b.user_id as userId,
+			    b.board_view_count as boardViewCount,
+			    b.board_created_date as boardCreatedDate,
+			    b.board_updated_date as boardUpdatedDate,
+			    COUNT(c.comment_id) as commentCnt,
+			    COUNT(bl.board_like_id) as likeCnt
+			FROM board as b
+			LEFT JOIN comment as c ON b.board_id = c.board_id
+			LEFT JOIN board_like as bl ON b.board_id = bl.board_id
+			WHERE b.board_id  IN 
+			    (select c2.board_id
+			        from comment c2 
+			        where c2.user_id = :#{#userId} 
+			            and c2.comment_type = 'BOARD') 
+			GROUP BY b.board_id
+			ORDER BY b.board_id DESC
+					""" // ORDER BY 최신순
+			, nativeQuery = true)
+	Page<IBoardListResponse> findMyBoardCommentAndCnt(@Param("userId") String userId, Pageable pageable);
+	
 }
