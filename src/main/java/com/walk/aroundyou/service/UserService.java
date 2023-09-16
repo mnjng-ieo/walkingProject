@@ -21,6 +21,7 @@ import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
 import com.walk.aroundyou.dto.ICourseResponseDTO;
+import com.walk.aroundyou.dto.IUserResponse;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
@@ -165,28 +166,23 @@ public class UserService {
 	}
 
 	
-	
 	////마이페이지 내가 쓴 게시글 확인(연서 추가)
 	public Page<IBoardListResponse> findMyBoardAndCnt(String userId, int page) {
-		
 		return boardRepository.findMyBoardAndCnt(userId, PageRequest.of(page, SIZE_OF_PAGE));
 	}
 	
 	//// 마이페이지 내가 좋아요 한 산책로 확인(연서 추가)
 	public Page<ICourseLikeResponseDTO> findMyCourseAndCnt(String userId, int page) {
-		
 		return courseLikeRepository.findMyCourseAndCnt(userId, PageRequest.of(page, 6));
 	}
 	
 	//// 마이페이지 내가 댓글 작성한 산책로 확인(연서 추가)
 	public Page<ICourseResponseDTO> findMyCourseCommentAndCnt(String userId, int page) {
-		
 		return courseRepository.findMyCourseCommentAndCnt(userId, PageRequest.of(page, 6));
 	}
 	
 	////마이페이지 내가 댓글 작성한 게시물 확인(연서 추가)
 	public Page<IBoardListResponse> findMyBoardCommentAndCnt(String userId, int page) {
-		
 		return boardRepository.findMyBoardCommentAndCnt(userId, PageRequest.of(page, SIZE_OF_PAGE));
 	}
 	
@@ -200,6 +196,11 @@ public class UserService {
 	}
 	
 	
+	
+	/////////// 4. 관리자페이지에서 출력할 유저 정보(20개씩 출력)
+	public Page<IUserResponse> findAllUsers(int page) {
+		return userRepository.findAllUsers(PageRequest.of(page, 20));
+	}
 	
 
 	/////////// 5. user entity의 모든 항목을 반환하기
@@ -259,7 +260,7 @@ public class UserService {
 
 	
 	
-	
+	///////////////////////////// 비밀번호 변경
 	 public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
 	        Member member = userRepository.findByUserId(userId).orElseThrow(() -> new UsernameNotFoundException("이메일이 존재하지 않습니다."));
 

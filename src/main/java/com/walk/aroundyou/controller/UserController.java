@@ -29,12 +29,12 @@ import com.walk.aroundyou.domain.role.UserRole;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICourseLikeResponseDTO;
 import com.walk.aroundyou.dto.ICourseResponseDTO;
+import com.walk.aroundyou.dto.IUserResponse;
 import com.walk.aroundyou.dto.UpdateMypageDTO;
 import com.walk.aroundyou.dto.UpdateUserpageDTO;
 import com.walk.aroundyou.dto.UserPasswordChangeDTO;
-import com.walk.aroundyou.dto.UserPasswordSendDTO;
 import com.walk.aroundyou.dto.UserSignupDTO;
-import com.walk.aroundyou.service.MailService;
+import com.walk.aroundyou.security.AdminAuthorize;
 import com.walk.aroundyou.service.UploadImageService;
 import com.walk.aroundyou.service.UserService;
 
@@ -102,6 +102,9 @@ public class UserController {
 		return "redirect:/login?success=true";
 	}
 
+	
+	
+	
 	//////////////////// 아이디 중복 체크
 	@GetMapping("/signup/checkId")
 	@ResponseBody
@@ -119,6 +122,9 @@ public class UserController {
 		}
 	}
 
+	
+	
+	
 	//////////////////// 아이디 찾기
 	@GetMapping("/login/idlookup")
 	public String showIdLookupForm() {
@@ -139,15 +145,15 @@ public class UserController {
 
 	
 	
-	///////////////////////////// 비밀번호 찾기 - 이메일로 받기
+	
+	
+	///////////////////////////// 비밀번호 찾기 - 임시 비밀번호 생성
 	@GetMapping("/login/pwdlookup")
 	public String showPwdLookupForm() {
 
 		// 아이디 조회 폼을 보여주는 뷰 이름
 		return "pwdlookupform";
 	}
-	
-	
 
 	// 뷰에서 userEmail을 파라미터로 받아 이메일 유무를 확인하는 서비스 호출
 	@PostMapping("/login/pwdlookup/check")
@@ -158,8 +164,7 @@ public class UserController {
 		return userService.checkEmail(userEmail);
 	}
 
-	// 임시 비밀번호 생성하고 메일을 생성 & 전송하는 컨트롤러
-	// 이메일로 임시 비밀번호 보내기
+	// 임시 비밀번호 생성하고 전송하는 컨트롤러
 	@PostMapping("/login/pwdlookup/send")
 	@ResponseBody
 	public String sendEmail(@RequestParam("userEmail") String userEmail) {
@@ -183,10 +188,7 @@ public class UserController {
 	//////////////////// 마이페이지
 	// Principal은 Spring Security에서 인증된 사용자 정보를 제공하는 객체
 	// 보통 사용자의 아이디(username)이나 식별자(identifier)와 같은 정보를 포함
-	// Principal 객체는 현재 로그인한 사용자에 대한 정보를 얻기 위해 컨트롤러 메서드에서 매개변수로 사용 가능
-	// 로그인 된 상태에 탈퇴를 하는 거니까 인증된 사용자의 정보를 받아오는 principal 사용
-	// 처음 불러오는 정보
-	// @PreAuthorize("isAuthenticated()")
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/mypage")
 	// Authentication은 이 사용자의 인증 상태와 함께 사용자 정보를 포함하는 래퍼 객체
 	public String showMypage(
@@ -491,7 +493,7 @@ public class UserController {
 	}
 	
 
-	// 변경 후 불러오는 정보
+	// 변경 후 불러오는 정보 -> 마이페이지 닉네임 변경 시 유효성검증 (0916 동희 추가)
 	///////// 0913 지수 추가 - 이미지 업로드 처리
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
 	@PostMapping("/mypage")
@@ -573,9 +575,6 @@ public class UserController {
         		log.info("기존 이미지를 유지합니다.");
         	}
 		}
-		// log.info("마이페이지 업데이트 성공: userId={}, userNickname={}, userImg={},
-		// userDescription={}", userId.toString(),
-		// userNickname.toString(), userImg.toString(), userDescription.toString());
 
 		if (updatedUser != null) {
 			return "redirect:/mypage"; // 정보가 업데이트되면 마이페이지로 리다이렉트
@@ -586,6 +585,41 @@ public class UserController {
 			return "mypage"; // 오류 처리
 		}
 	}
+	
+	
+	
+	
+	//////////////////관리자 페이지(연서 작성)
+	@GetMapping("/admin/users")
+	@AdminAuthorize
+	public String showUsers(
+	Model model,
+	@RequestParam(value = "page", required=false, defaultValue="0") int currentPage) {
+	
+	Page<IUserResponse> users = userService.findAllUsers(currentPage);
+	
+	// pagination 설정
+	int totalPages = users.getTotalPages();
+	int pageStart = getPageStart(currentPage, totalPages);
+	int pageEnd = 
+		(PAGINATION_SIZE < totalPages)? 
+				pageStart + PAGINATION_SIZE - 1
+				:totalPages;
+		if(pageEnd == 0) {
+	       pageEnd = 1;
+	 }
+	
+	model.addAttribute("lastPage", totalPages);
+	model.addAttribute("currentPage", currentPage);
+	model.addAttribute("pageStart", pageStart);
+	model.addAttribute("pageEnd", pageEnd);
+	model.addAttribute("users", users);		
+	
+	return "adminUsers";
+	}
+
+	
+	
 
 	//////////////////// 유저페이지
 	@PreAuthorize("isAuthenticated()")
@@ -617,6 +651,7 @@ public class UserController {
 		}
 	}
 
+	// 유저페이지 - 처리하는 페이지
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
 	@PostMapping("/mypage/userpage")
 	public String processuserpage(@Valid UpdateUserpageDTO dto, Errors errors, Model model) {
@@ -646,6 +681,7 @@ public class UserController {
 			return "userpage"; // 오류 처리
 		}
 	}
+	
 	
 
 	//////////////////// 비밀번호 변경
@@ -736,6 +772,9 @@ public class UserController {
 			return "redirect:/mypage/userpage/withdraw?fail=true";
 		}
 	}
+	
+	
+	
 
 	/////////////////// 관리자가 강퇴하는 곳 -> 관리자사이트
 	@PostMapping("/admin/ban")
