@@ -308,15 +308,11 @@ public class UserService {
 	public String updatePwd(String tmpPwd, String userEmail) {
 
 		String encryptPassword = passwordEncoder.encode(tmpPwd);
-		Optional<Member> member = userRepository.findByUserEmail(userEmail);
-		if(member.isPresent()) {
-		//.orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
-
-		// DB의 데이터 값을 변경
-		// member.updatePassword(encryptPassword);
-		member.get().setUserPwd(encryptPassword);
+		
+		Member member = new Member();
+		member.setUserPwd(encryptPassword);
 		log.info("임시 비밀번호 업데이트");
-		}
+		
 		return tmpPwd;
 	}
 

@@ -98,7 +98,6 @@
         <!-- 유저 소개 조회 -->
         <div class="formBox" id="getUserBox">
             <div class="needs-validation" th:object="${user}">
-                <input type="hidden" name="userId" th:value="${user.userId}">
                 <div class="m-3 d-flex justify-content-center userBox">
                     <div class="user-imgWithBtnBox">
                     <div class="user-imgBox">
@@ -142,7 +141,6 @@
             <form class="needs-validation" id="formData" 
                 method="post" action="/mypage" th:object="${user}"
                 enctype="multipart/form-data">
-                <input type="hidden" name="userId" th:value="${user.userId}">
                 <div class="m-3 d-flex justify-content-center userBox">
                     <div class="user-imgWithBtnBox">
                         <div class="user-imgBox">
@@ -173,7 +171,6 @@
                         <div class="row user-nicknameBox">
                             <div class="col-md-6">
                                 <input type="text" th:field="*{userNickname}" th:value="${myDto != null}? ${myDto.getUserNickname()} : ''"
-      "
                                     class="userNickname" />
                                     <span th:if="${valid_userNickname}" id="valid"
    th:text="${valid_userNickname}"></span>

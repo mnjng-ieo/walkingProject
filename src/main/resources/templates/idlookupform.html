@@ -65,28 +65,29 @@ document.addEventListener("DOMContentLoaded", function() {
 		<h1 class="text-center mt-5 ">아이디 찾기</h1>
          <div class="container border rounded-4 shadow-lg p-5 mt-4"
             style="width: 800px;">
-		<h6>이름과 이메일 주소를 입력하세요</h6>
+		<h6 class="mt-6">이름과 이메일 주소를 입력하세요</h6>
 		<br>
-		<hr>
 		<br>
 		<form id="idLookupForm">
 
 			<!-- 이름 입력 필드 -->
 			<div class="mb-3">
-				<label for="userName" class="form-label">등록한 이름</label> <input
+				<label for="userName" class="form-label">가입한 이름</label> <input
 					type="text" class="form-control" id="userName" name="userName"
 					required>
 			</div>
 			<!-- 이메일 입력 필드 -->
 			<div class="mb-3">
-				<label for="userEmail" class="form-label">등록한 이메일 주소</label> <input
+				<label for="userEmail" class="form-label">가입한 이메일 주소</label> <input
 					type="email" class="form-control" id="userEmail" name="userEmail"
 					required>
 			</div>
 
 			<br>
 			<!-- 아이디 찾기 버튼 -->
-			<button type="button" id="findIdBtn" class="btn btn-primary" data-bs-toggle="modal"
+			<button type="button" class="btn rounded-3 d-block fs-5 w-75 mb-5 mt-5" style="background-color:  #7FB77E;
+   color: white;
+   border: 2px solid #7FB77E; margin: auto;" id="findIdBtn" data-bs-toggle="modal"
 				data-bs-target="#staticBackdrop">아이디 찾기</button>
 		</form>
 	</div>

@@ -20,7 +20,7 @@
 
 
 				<!-- 초기 페이지 (아이콘 추가하기)-->
-				<form action="/main/mypage/userpage" method="post" id="originForm">
+				<form action="/mypage/userpage" method="post" id="originForm">
 					<div class="form-group mb-3 w-75 m-auto">
 						<label for="userId" class="form-label fs-5 mt-5">아이디</label> 
 						<span class="form-control-lg mt-2" id="userId" th:text="${user.userId}">
@@ -67,7 +67,7 @@
 
 
 				<!-- 수정 페이지 -->
-				<form action="/main/mypage/userpage" method="post" id="modifyForm"
+				<form action="/mypage/userpage" method="post" id="modifyForm"
 					th:object="${user}" style="display: none;">
 
 

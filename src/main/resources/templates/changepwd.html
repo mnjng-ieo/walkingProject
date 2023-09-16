@@ -19,7 +19,7 @@
          <br>
          <br>
          <!-- 정상 페이지(기본 페이지) -->
-			<form action="/main/mypage/userpage/changepwd" method="post"
+			<form action="/mypage/userpage/changepwd" method="post"
 				th:if="${dto == null}">
 				<div class="form-group">
 					<div class="form-floating mb-3">
@@ -64,7 +64,7 @@
 
 
 			<!-- 에러 페이지 -->
-			<form action="/main/mypage/userpage/changepwd" method="post"
+			<form action="/mypage/userpage/changepwd" method="post"
 				th:unless="${dto == null}">
 				<div class="form-group">
 					

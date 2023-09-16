@@ -39,9 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (result === "true") {
                             sendEmail();
                             alert("이메일이 존재합니다.");
-                        	modal.show();
-      
-                            //window.location.href = "/login";
                         } else if (result === "false") {
                             alert("가입되지 않은 이메일입니다.");
                         }
@@ -61,8 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
         function sendEmail() {
         	
             const userEmail = document.getElementById("userEmail").value;
-            const pwdLookupResult = document.getElementById("pwdLookupResult").value;
-            const staticBackdrop = document.getElementById("staticBackdrop").value;
 
             const xhr = new XMLHttpRequest();
             
@@ -76,8 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
             xhr.onreadystatechange = function() {
             	if(xhr.readyState === XMLHttpRequest.DONE) {
             		if(xhr.status === 200) {
-            			staticBackdrop.show();
-            			pwdLookupResult.textContent = xhr.response;
+            			alert(xhr.response);
+            			window.location.href = "/logout";
             		}else {
             			alert("요청 실패");
             		}
@@ -99,50 +94,28 @@ document.addEventListener("DOMContentLoaded", function () {
         <h1 class="text-center mt-5 ">비밀번호 찾기</h1>
          <div class="container border rounded-4 shadow-lg p-5 mt-4"
             style="width: 800px;">
+            <h6 class="mt-6">이메일을 입력하시면 임시비밀번호가 전송되오니 로그인 후 비밀번호를 변경 하시길 바랍니다.<br>비밀번호 성공 시 자동으로 로그아웃됩니다.</h6>
         <br>
-        <hr>
         <br>
         <form action="/login/idlookup" method="post" id="pwdLookupForm" name="sendEmail">
         
             <!-- 아이디 입력 필드 -->
             <div class="mb-3">
-                <label for="userEmail" class="form-label">입력한 이메일로 임시비밀번호가 전송됩니다.</label>
-                <input type="text" class="form-control" id="userEmail" name="userEmail" required>
+                <label for="userEmail" class="form-label">가입한 이메일 주소</label>
+                <input type="email" class="form-control" id="userEmail" name="userEmail" required>
             </div>
             
             <br>
             <!-- 비밀번호 찾기 버튼 -->
             <button type="button" class="btn rounded-3 d-block fs-5 w-75 mb-5 mt-5" style="background-color:  #7FB77E;
    color: white;
-   border: 2px solid #7FB77E; margin: auto;"id="checkEmail" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+   border: 2px solid #7FB77E; margin: auto;" id="checkEmail" 
             >임시 비밀번호 생성</button>
              
         </form>
     </div>
     </div>
 
-    <!-- 모달 창에 보이게 하기(button submit으로 하면 안 되겠지) -->
-   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
-      data-bs-keyboard="false" tabindex="-1"
-      aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog">
-         <div class="modal-content">
-            <div class="modal-header">
-               <h1 class="modal-title fs-5" id="staticBackdropLabel"></h1>
-               
-               <button type="button" class="btn-close" data-bs-dismiss="modal"
-                  aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="pwdLookupResult">
-            </div>
-            <div class="modal-footer">
-               <form action="/login" method="get">
-                  <button type="submit" class="btn btn-primary">로그인 화면으로 가기</button>
-               </form>
-            </div>
-         </div>
-      </div>
-   </div>
 
 </body>
 </html>

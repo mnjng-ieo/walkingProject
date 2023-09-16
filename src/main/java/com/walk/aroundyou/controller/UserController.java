@@ -162,7 +162,7 @@ public class UserController {
 	// 이메일로 임시 비밀번호 보내기
 	@PostMapping("/login/pwdlookup/send")
 	@ResponseBody
-	public ResponseEntity<?> sendEmail(@RequestParam("userEmail") String userEmail) {
+	public String sendEmail(@RequestParam("userEmail") String userEmail) {
 		log.info("sendEmail진입");
 		log.info("이메일 : " + userEmail);
 
@@ -170,17 +170,12 @@ public class UserController {
 		String tmpPwd = userService.getTmpPwd();
 
 		// 임시 비밀번호 저장
-		String newTmpPwd = userService.updatePwd(tmpPwd, userEmail);
-
-		// 메일 생성 & 전송
-//		MailService mailService = new MailService();
-//		UserPasswordSendDTO mail = mailService.createMail(tmpPwd, userEmail);
-//		mailService.sendMail(mail);
+		userService.updatePwd(tmpPwd, userEmail);
 		
-
+		log.info("임시 비밀번호 : " + tmpPwd);
 		log.info("임시 비밀번호 전송 완료");
 
-		return ResponseEntity.ok().body("임시로 발급한 비밀번호는 \"" + newTmpPwd + "\"입니다.");
+		return "임시로 발급한 비밀번호는 \"" + tmpPwd + "\"입니다." + "\n" + "자동으로 로그아웃되오니 임시비밀번호 복사 후 재 로그인해주세요!";
 	}
 	
 	
@@ -508,13 +503,6 @@ public class UserController {
 			Model model, @AuthenticationPrincipal User user
 			) throws IOException {
 		
-		/* <input type="text" class="form-control form-control-lg mt-2"
-		id="userNickname" name="userNickname"
-		th:value="${myDto != null}? ${myDto.getUserNickname()} : ''"
-		" required>
-</div>
-<span th:if="${valid_userNickname}" id="valid"
-	th:text="${valid_userNickname}"></span>*/
 		if(errors.hasErrors()) {
 			// 유저페이지 변경 실패 시 입력 데이터 값을 유지
 			model.addAttribute("myDto", dto);
@@ -601,7 +589,7 @@ public class UserController {
 
 	//////////////////// 유저페이지
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/main/mypage/userpage")
+	@GetMapping("/mypage/userpage")
 	
 	// import org.springframework.security.core.userdetails.User; 추가!
 	public String showUserpage(Model model, Authentication authentication, @AuthenticationPrincipal User user) {
@@ -630,7 +618,7 @@ public class UserController {
 	}
 
 	@PreAuthorize("isAuthenticated()") // 로그인한 사용자에게만 메서드가 호출된다
-	@PostMapping("/main/mypage/userpage")
+	@PostMapping("/mypage/userpage")
 	public String processuserpage(@Valid UpdateUserpageDTO dto, Errors errors, Model model) {
 
 		if(errors.hasErrors()) {
@@ -661,7 +649,7 @@ public class UserController {
 	
 
 	//////////////////// 비밀번호 변경
-	@GetMapping("/main/mypage/userpage/changepwd")
+	@GetMapping("/mypage/userpage/changepwd")
 	public String showChangePwd(@AuthenticationPrincipal User user, Model model) {
 		
 		if (user != null) {
@@ -671,7 +659,7 @@ public class UserController {
 		return "changepwd";
 	}
 	
-	@PostMapping("/main/mypage/userpage/changepwd")
+	@PostMapping("/mypage/userpage/changepwd")
     public String updatePassword(@Valid UserPasswordChangeDTO dto, Errors errors, Model model, Authentication authentication, @AuthenticationPrincipal User user) {
 		
 		if (user != null) {
@@ -721,7 +709,7 @@ public class UserController {
 	
 	//////////////////// 탈퇴
 	// 탈퇴 버튼 누르면 나오는 화면
-	@GetMapping("/main/mypage/userpage/withdraw")
+	@GetMapping("/mypage/userpage/withdraw")
 	public String showWithdrawForm(@AuthenticationPrincipal User user, Model model) {
 		
 		if (user != null) {
@@ -732,7 +720,7 @@ public class UserController {
 		return "withdraw";
 	}
 	
-	@PostMapping("/main/mypage/userpage/withdraw")
+	@PostMapping("/mypage/userpage/withdraw")
 	//@ResponseBody
 	public String processWithdrawForm(@RequestParam String checkPwd, @AuthenticationPrincipal User user,
 			Model model) {
@@ -745,7 +733,7 @@ public class UserController {
 			// success : 쿼리 문자열 파라미터
 			// 로직을 처리하거나 사용자에게 메시지를 전달하는 데 사용
 			model.addAttribute("inputPwd", "비밀번호를 다시 입력해주세요!");
-			return "redirect:/main/mypage/userpage/withdraw?fail=true";
+			return "redirect:/mypage/userpage/withdraw?fail=true";
 		}
 	}
 
