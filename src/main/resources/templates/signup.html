@@ -83,7 +83,8 @@
 					<input type="button" id="checkUserIdBtn" value="중복체크"
 						class="btn btn-primary col-md-2"> 
 					<span
-						th:if="${valid_userId}" id="valid" th:text="${valid_userId}" th:style="${error ? 'color:#F96666;' : ''}"></span>
+						th:if="${valid_userId}" id="valid" th:text="${valid_userId}" 
+						th:style="${valid_userId !=null? 'color:#F96666;' : ''}"></span>
 				</div>
 				<div id="result" class="col=nd-12"></div>
 			</div>
@@ -96,7 +97,8 @@
 					th:value="${signupDto != null}? ${signupDto.userPwd} : ''"
 					class="form-control" placeholder="비밀번호를 입력해주세요" required /> 
 					<span
-					th:if="${valid_userPwd}" id="valid" th:text="${valid_userPwd}" th:style="${error ? 'color:#F96666;' : ''}"></span>
+					th:if="${valid_userPwd}" id="valid" th:text="${valid_userPwd}" 
+					th:style="${valid_userPwd !=null? 'color:#F96666;' : ''}"></span>
 			</div>
 
 			<!-- 이름 입력 필드 -->
@@ -108,7 +110,8 @@
 					th:value="${signupDto != null}? ${signupDto.userName} : ''"
 					placeholder="이름을 입력해주세요" required> 
 				<span
-					th:if="${valid_userName}" id="valid" th:text="${valid_userName}" th:style="${error ? 'color:#F96666;' : ''}"></span>
+					th:if="${valid_userName}" id="valid" th:text="${valid_userName}" 
+					th:style="${valid_userName !=null? 'color:#F96666;' : ''}"></span>
 			</div>
 
 			<!-- 닉네임 입력 필드 -->
@@ -120,7 +123,7 @@
 					class="form-control" placeholder="닉네임을 입력해주세요" required /> 
 					<span
 					th:if="${valid_userNickname}" id="valid"
-					th:text="${valid_userNickname}"th:style="${error ? 'color:#F96666;' : ''}"></span>
+					th:text="${valid_userNickname}" th:style="${valid_userNickname !=null? 'color:#F96666;' : ''}"></span>
 			</div>
 
 			<!-- 이메일 입력 필드 -->
@@ -131,7 +134,8 @@
 					th:value="${signupDto != null}? ${signupDto.userEmail} : ''"
 					class="form-control" placeholder="이메일을 입력해주세요" required /> 
 					<span
-					th:if="${valid_userEmail}" id="valid" th:text="${valid_userEmail}" th:style="${error ? 'color:#F96666;' : ''}"></span>
+					th:if="${valid_userEmail}" id="valid" th:text="${valid_userEmail}" 
+					th:style="${valid_userEmail !=null? 'color:#F96666;' : ''}"></span>
 			</div>
 
 			<!-- 전화번호 입력 필드 -->

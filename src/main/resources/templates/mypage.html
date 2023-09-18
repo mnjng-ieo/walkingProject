@@ -116,6 +116,8 @@
                             <div class="col-md-6">
                                 <span th:text="*{userNickname}"
                                     class="userNickname fixedName">내 닉네임</span>
+                                     <div th:if="${valid_userNickname}" id="valid"
+                     th:text="${valid_userNickname}" th:style="${valid_userNickname != null ? 'color:#F96666;' : ''}"></div>
                             </div>
                             <div class="col-md-6">
                                 <!--  -->
@@ -174,7 +176,9 @@
                     <div class="m-3 user-infoBox">
                         <div class="row user-nicknameBox">
                             <div class="col-md-6">
-                                <input type="text" th:field="*{userNickname}" class="userNickname" />
+                                <input type="text" th:field="*{userNickname}" class="userNickname" th:value="${user != null}? ${user.getUserNickname()} : ''"/>
+         <span th:if="${valid_userNickname}" id="valid"
+                     th:text="${valid_userNickname}" th:style="${valid_userNickname != null ? 'color:#F96666;' : ''}"></span>
                            
                             </div>
                             <div class="col-md-6">

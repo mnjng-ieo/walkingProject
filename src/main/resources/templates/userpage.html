@@ -39,7 +39,7 @@
 						<span class="form-control-lg mt-2" id="userNickname"
 							th:text="${user.userNickname}"> </span>
 						<div th:if="${valid_userNickname}" id="valid"
-                     th:text="${valid_userNickname}" th:style="${error ? 'color:#F96666;' : ''}"></div>
+                     th:text="${valid_userNickname}" th:style="${valid_userNickname != null ? 'color:#F96666;' : ''}"></div>
 
 					</div>
 
@@ -112,7 +112,8 @@
 								th:field="*{userNickname}" required>
 						</div>
 						<span th:if="${valid_userNickname}" id="valid"
-							th:text="${valid_userNickname}" th:style="${error ? 'color:#F96666;' : ''}"></span>
+							th:text="${valid_userNickname}" 
+							th:style="${valid_userNickname != null ? 'color:#F96666;' : ''}"></span>
 					</div>
 
 					<div class="form-group mb-3 w-75 m-auto row g-2 align-items-center">
