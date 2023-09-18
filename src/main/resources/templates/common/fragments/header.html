@@ -39,18 +39,14 @@
             <div class="second-nav d-flex justify-content-center">
                 <!-- 산책로목록 -->
                 <div class="nav-item">
-                    <a th:href="@{/course}" id="nav-link" class="nav-link px-3 fs-4">산책로목록</a>
+                    <a th:href="@{/course}" id="nav-link" class="nav-link px-3 fs-5">산책로목록</a>
                 </div>
 
                 <!-- 커뮤니티 -->
                 <div class="nav-item">
-                    <a th:href="@{/board}" id="nav-link" class="nav-link px-3 fs-4">커뮤니티</a>
+                    <a th:href="@{/board}" id="nav-link" class="nav-link px-3 fs-5">커뮤니티</a>
                 </div>
 
-                <!-- 마이페이지 -->
-                <div class="nav-item">
-                    <a th:href="@{/mypage}" id="nav-link" class="nav-link px-3 fs-4">마이페이지</a>
-                </div>
             </div>
 
 
@@ -72,13 +68,6 @@
                         <i class="fa-solid fa-magnifying-glass form-control nav-link"></i>
                     </form> 
                 </div> -->
-
-                <div class="position-relative">
-                    <button class="btn border col-lg-auto mb-lg-0 searchBtn" role="button" id="searchBtn">
-                        <i class="fa-solid fa-magnifying-glass form-control nav-link text-align-center"></i>
-                    </button>
-                </div>
-
                 <!-- 로그인된 상태에서 보이기 -->
                 <div th:if="${loginId != null}" class=" d-flex justify-content-center">
                     <!-- 로그인 된 정보, 로그아웃 버튼 nav에 띄우기 -->
@@ -88,15 +77,20 @@
                             style="width: 35px; height: 35px; border:none; padding: 0;"></img>
                     </div>
                     <div class="nav-item login-letter">
-                        <span class="nav-link px-3" th:text="${loginId} + ' 님'"></span>
+                        <a th:href="@{/mypage}" class="nav-link px-3 pt-1" th:text="${loginId} + ' 님'"></a>
                     </div>
                     <div class="nav-item login-letter">
-                        <a th:href="@{/logout}" class="nav-link px-3">Logout</a>
+                        <a th:href="@{/logout}" class="nav-link px-3 pt-1">Logout</a>
                     </div>
+                </div>
+                <div class="position-relative">
+                    <button class="btn col-lg-auto mb-lg-0 searchBtn" role="button" id="searchBtn">
+                        <i class="fa-solid fa-magnifying-glass form-control nav-link text-align-center"></i>
+                    </button>
                 </div>
             </div>
         </header>
-        <div class="border searchBox" id="searchBox">
+        <div class="searchBox" id="searchBox">
         <form role="search pt-2" th:action="@{/search}" method="get" >
             <input type="search" class="form-control search-header" 
             name="keyword" id="searchKeyword"
