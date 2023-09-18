@@ -1,5 +1,8 @@
 package com.walk.aroundyou.domain;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,10 +33,12 @@ public class BoardTag {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_id", nullable = false)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Board boardId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tag_id", nullable = false)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Tag tagId;
 
 }

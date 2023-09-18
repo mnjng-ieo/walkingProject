@@ -1,0 +1,90 @@
+@font-face {
+    font-family: 'KimjungchulGothic-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Yeongdo-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/Yeongdo-Rg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+     font-family: 'S-CoreDream-3Light';
+     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+     font-weight: normal;
+     font-style: normal;
+}
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+.box{
+	height: 60vh;
+}
+
+.course-list-top {
+    width: 100%;
+    height: 35vh;
+    background-color: #f5f5f5;
+    margin-bottom: 190px;
+}
+
+.course-list-top_searchBox {
+	font-family: 'NanumSquareRound';
+    height: 320px;
+    width: 70%;
+    margin: 0 auto;
+}
+
+.course-list-top_conditionBox {
+	margin-top: 30px;
+	font-size: 20px;
+}
+
+.course-list-top_title {
+    padding: 50px 0 0 70px;
+}
+
+.course-list-top_subtitle {
+	margin-top: 20px;
+	font-family: 'NanumSquareRound';
+}
+
+.course-list-top_bigTitle {
+	margin-top: 30px;
+	font-family: 'KimjungchulGothic-Bold';
+}
+
+.course-list-top_bigTitle2{
+	font-family: 'KimjungchulGothic-Bold';
+}
+
+.adminPage{
+	height: 20vh;
+}
+
+.buttonGroup {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn1, .btn2{
+	margin-top: 70px;
+	width: 20%;	
+	height: 50px;
+	border-radius: 10px;
+}

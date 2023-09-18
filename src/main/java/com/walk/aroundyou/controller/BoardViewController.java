@@ -77,6 +77,7 @@ public class BoardViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+				model.addAttribute("currentUserRole", currentUser.getRole());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -167,6 +168,8 @@ public class BoardViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -249,7 +252,6 @@ public class BoardViewController {
 
 		// 조회한 좋아요 상태 확인
 		boolean isLiked;
-		List<Long> likedComments = Collections.emptyList();
 		
 		// 헤더에 정보 추가하기 위한 코드 + 좋아요 상태 
 		if (user != null) {
@@ -258,7 +260,8 @@ public class BoardViewController {
 			isLiked = boardLikeService.isBoardLiked(userId, id);
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
-				model.addAttribute("user", currentUser);
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -400,7 +403,8 @@ public class BoardViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
-				model.addAttribute("isAdmin", currentUser.getRole());
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -446,6 +450,8 @@ public class BoardViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -513,6 +519,8 @@ public class BoardViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 

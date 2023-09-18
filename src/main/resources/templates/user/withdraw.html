@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8">
+<title>탈퇴하기</title>
+
+</head>
+<body>
+	<th:block layout:fragment="Content">
+         <div class="container">
+         <h1 class="text-center mt-5 ">탈퇴하기</h1>
+         <div class="container border rounded-4 shadow-lg p-5  mt-4"
+            style="width: 800px;">
+			
+			
+			<form id="idLookupForm" action="/mypage/userpage/withdraw"
+				method="post">
+
+         <h6 class="fs-4">탈퇴에 성공하시면 로그아웃 후 메인페이지로 이동합니다.</h6>
+         <br>
+         <br>
+				<div class="mb-3">
+					<label for="checkPwd" class="form-label fs-5">비밀번호를 입력하세요</label> <input
+						type="password" class="form-control" id="checkPwd" name="checkPwd"
+						required> <br>
+					<div class="alert alert-danger" id="error-message"
+						th:if="${param.fail}">
+						<p>비밀번호를 다시 입력해주세요.</p>
+					</div>
+
+				</div>
+
+				<br>
+				<!-- 탈퇴하기 버튼 -->
+				<button type="submit" id="withdrawBtn" class="btn rounded-3 d-block fs-5 w-75 mb-5" style="background-color:  #F96666;
+   color: white;
+   border: 2px solid #F96666; margin: auto;">탈퇴하기</button>
+			</form>
+		</div>
+		</div>
+
+	</th:block>
+
+</body>
+</html>

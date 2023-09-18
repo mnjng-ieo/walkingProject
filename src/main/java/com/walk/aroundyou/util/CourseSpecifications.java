@@ -5,6 +5,7 @@ import java.util.Date;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.walk.aroundyou.domain.Course;
+import com.walk.aroundyou.dto.ICourseResponseDTO;
 
 import jakarta.persistence.criteria.Predicate;
 
@@ -38,8 +39,15 @@ public class CourseSpecifications{
 	// 검색키워드가 특정 컬럼 값에 포함되는지 확인하는 메소드
 	public static Specification<Course> likeAttribute(String attributeName, String keyword) {
 		return (root, query, criteriaBuilder) -> {
+			
+			String formattedKeyword;
+			
 			// 검색 키워드의 공백 제거
-			String formattedKeyword = keyword.replace(" ", "");
+			if(keyword == null) {
+				formattedKeyword = "";
+			} else {
+				formattedKeyword = keyword.replace(" ", "");
+			}
 			// Predicate : 논리적인 조건 나타냄. sql의 where절 역할!
 			Predicate predicate = criteriaBuilder.like(
 					// 검색 대상이 되는 디비 데이터의 공백 제거

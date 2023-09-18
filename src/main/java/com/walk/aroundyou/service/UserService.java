@@ -95,11 +95,11 @@ public class UserService {
 
 		// HashMap import 안 될 경우 import java.util.HashMap; 직접 작성해주기
 		Map<String, String> validatorResult = new HashMap<>();
-		log.info("map<String, String>" + validatorResult);
 		for (FieldError error : errors.getFieldErrors()) {
 			String validKeyName = String.format("valid_%s", error.getField());
 			validatorResult.put(validKeyName, error.getDefaultMessage());
 		}
+		log.info("map<String, String>" + validatorResult);
 		return validatorResult;
 	}
 
@@ -268,28 +268,18 @@ public class UserService {
 	// 비밀번호 변경할 때 로그인 된 아이디를 기준으로 비밀번호 입력하고 맞으면
 	public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
 
-		// 아이디 찾고 아이디 존재하지 않을 경우 throw
-		Member member = userRepository.findByUserId(userId)
-				.orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다."));
+		Member member = userRepository.findByUserId(userId).get();
 
 		// 입력한 비밀번호가 디비에 저장된 비밀번호와 맞지 않을 경우
-		if (!passwordEncoder.matches(dto.getCurrentPwd(), member.getUserPwd())) {
-			return "현재 비밀번호가 맞지 않습니다.";
-		} else {
-			
-			// 비밀번호가 맞을 때 새로운 비밀번호 확인
-			if (dto.getNewPwd() != dto.getComfirmPwd()) {
+		if (passwordEncoder.matches(dto.getCurrentPwd(), member.getUserPwd())) {
 				
 				// 변경하는 비밀번호 암호화
 				dto.setNewPwd(passwordEncoder.encode(dto.getNewPwd()));
 				member.setUserPwd(dto.getNewPwd());
 				userRepository.save(member);
-				return "새로운 비밀번호 확인란을 다시 입력해주세요";
-			}else {
-				// 비밀번호가 모두 맞을 때 -> 성공
-				return "비밀번호 변경에 성공하셨습니다!" + "\n" + "재로그인 해주세요";
-			}
-		}
+		}	
+			return member.getUserId(); 
+			
 	}
 	
 	
@@ -322,15 +312,17 @@ public class UserService {
 
 	// 임시 비밀번호로 업데이트
 	public void updatePwd(String tmpPwd, String userEmail) {
-
+		log.info("임시 비밀번호 업데이트 시도 중 (0/4)");
 		String encryptPassword = passwordEncoder.encode(tmpPwd);
-		Member member = userRepository.findByUserEmail(userEmail)
-				.orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
-
+		log.info("임시 비밀번호 업데이트 시도 중 (1/4)");
+		Member member = userRepository.findByUserEmail(userEmail).get();
+		log.info("임시 비밀번호 업데이트 시도 중 (2/4)");
 		// DB의 데이터 값을 변경
 		// member.updatePassword(encryptPassword);
 		member.setUserPwd(encryptPassword);
-		log.info("임시 비밀번호 업데이트");
+		log.info("임시 비밀번호 업데이트 시도 중 (3/4)");
+		userRepository.save(member);
+		log.info("임시 비밀번호 업데이트 성공");
 	}
 
 	/////////////////////// 상태 정보

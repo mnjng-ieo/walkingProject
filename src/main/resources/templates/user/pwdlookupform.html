@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html  xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{common/layouts/defaultLayout}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,86 +16,14 @@
     
 <link href="/css/user/pwdlookup.css" rel="stylesheet"></link>
 
-<script>
 
-//const header = $("meta[name='_csrf_header']").attr('content');
-//const token = $("meta[name='_csrf']").attr('content');
-
-document.addEventListener("DOMContentLoaded", function () {
-        const checkEmailButton = document.getElementById("checkEmail");
-        checkEmailButton.addEventListener("click", checkEmail);
-
-        function checkEmail() {
-            const userEmail = document.getElementById("userEmail").value;
-
-            if (!userEmail || userEmail.trim() === "") {
-                alert("이메일을 입력하세요.");
-            } else {
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", '/login/pwdlookup/check?userEmail=' + encodeURIComponent(userEmail), true);
-                //xhr.setRequestHeader(header, token);
-
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        const result = xhr.responseText;
-                        console.log("result: " + result);
-                        if (result === "true") {
-                            sendEmail();
-                            alert("이메일이 존재합니다.");
-                        } else if (result === "false") {
-                            alert("가입되지 않은 이메일입니다.");
-                        }
-                    } else {
-                        alert("서버 오류: " + xhr.status);
-                    }
-                };
-
-                xhr.onerror = function () {
-                    alert("요청 실패");
-                };
-
-                xhr.send();
-            }
-        }
-
-        function sendEmail() {
-        	
-            const userEmail = document.getElementById("userEmail").value;
-
-            const xhr = new XMLHttpRequest();
-            
-            xhr.open("POST", "/login/pwdlookup/send?userEmail=" + userEmail, true);
-            //xhr.setRequestHeader(header, token);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            
-            
-            var data = "userEmail=" + encodeURIComponent(userEmail);
-            
-            xhr.onreadystatechange = function() {
-            	if(xhr.readyState === XMLHttpRequest.DONE) {
-            		if(xhr.status === 200) {
-            			alert(xhr.response);
-            			window.location.href = "/logout";
-            		}else {
-            			alert("요청 실패");
-            		}
-            	}
-            };
-            
-            // 요청 전송
-            xhr.send(data);
-            
-        }
-    });
-   
-</script>
 
 </head>
 <body>
-    
-     <div class="container">
+<th:block layout:fragment="Content">    
+     <div class="container pb-5">
         <h1 class="text-center mt-5 ">비밀번호 찾기</h1>
-         <div class="container border rounded-4 shadow-lg p-5 mt-4"
+         <div class="container border rounded-4 shadow-lg p-5 mt-4 mb-5"
             style="width: 800px;">
             <h6 class="mt-6">이메일을 입력하시면 임시비밀번호가 전송되오니 로그인 후 비밀번호를 변경 하시길 바랍니다.</h6>
             <h6>비밀번호 찾기 성공 시 자동으로 로그아웃됩니다.</h6>
@@ -118,6 +48,82 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
     </div>
 
+	<script>
+	
+	//const header = $("meta[name='_csrf_header']").attr('content');
+	//const token = $("meta[name='_csrf']").attr('content');
+	
+	document.addEventListener("DOMContentLoaded", function () {
+	        const checkEmailButton = document.getElementById("checkEmail");
+	        checkEmailButton.addEventListener("click", checkEmail);
+	
+	        function checkEmail() {
+	            const userEmail = document.getElementById("userEmail").value;
+	
+	            if (!userEmail || userEmail.trim() === "") {
+	                alert("이메일을 입력하세요.");
+	            } else {
+	                const xhr = new XMLHttpRequest();
+	                xhr.open("POST", '/login/pwdlookup/check?userEmail=' + encodeURIComponent(userEmail), true);
+	                //xhr.setRequestHeader(header, token);
+	
+	                xhr.onload = function () {
+	                    if (xhr.status === 200) {
+	                        const result = xhr.responseText;
+	                        console.log("result: " + result);
+	                        if (result === "true") {
+	                            sendEmail();
+	                            alert("이메일이 존재합니다.");
+	                        } else if (result === "false") {
+	                            alert("가입되지 않은 이메일입니다.");
+	                        }
+	                    } else {
+	                        alert("서버 오류: " + xhr.status);
+	                    }
+	                };
+	
+	                xhr.onerror = function () {
+	                    alert("요청 실패");
+	                };
+	
+	                xhr.send();
+	            }
+	        }
+	
+	        function sendEmail() {
+	         
+	            const userEmail = document.getElementById("userEmail").value;
+	
+	            const xhr = new XMLHttpRequest();
+	            
+	            xhr.open("POST", "/login/pwdlookup/send", true);
+	            //xhr.setRequestHeader(header, token);
+	            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            
+	            
+	            var data = "userEmail=" + encodeURIComponent(userEmail);
+	            
+	            xhr.onreadystatechange = function() {
+	               if(xhr.readyState === XMLHttpRequest.DONE) {
+	                  if(xhr.status === 200) {
+	                	  prompt(`임시로 발급한 비밀번호는 "${xhr.response}"입니다.` + "\n"
+							+ `확인버튼을 누르면 자동으로 로그아웃됩니다` + "\n"
+							+ `아래 임시비밀번호 복사 후 재 로그인해주세요!`, xhr.response);
+		                  window.location.href = "/logout";
+	                  }else {
+	                     alert("요청 실패");
+	                  }
+	               }
+	            };
+	            
+	            // 요청 전송
+	            xhr.send(data);
+	            
+	        }
+	    });
+	   
+	</script>
 
+</th:block>
 </body>
 </html>

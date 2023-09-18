@@ -153,7 +153,7 @@ public class CommentApiController {
 		
 		
 	// 산책로 댓글 등록
-	@PutMapping("/api/comment/course/{courseId}")
+	@PostMapping("/api/comment/course/{courseId}")
 	public ResponseEntity<?> createCourseComment(@PathVariable(name = "courseId") Long courseId
 			, @RequestBody AddCommentRequest comment
 			, @AuthenticationPrincipal User user){

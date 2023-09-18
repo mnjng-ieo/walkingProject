@@ -46,7 +46,7 @@ SELECT
                 (select c2.course_id
                     from comment c2 
                     where c2.comment_type = 'COURSE'
-                        and c2.user_id = 'yeonseo97') 
+                        and c2.user_id = :#{#userId}) 
             GROUP BY c.course_id
             ORDER BY c.course_id desc
 					""" // ORDER BY 최신순

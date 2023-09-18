@@ -1,20 +1,9 @@
-/* 목차 */
-/*
-	1. 폰트 
-	2. Header 영역
-	3. 중간 메인 영역
-	4. Footer 영역 	
-*/
-
-
-/* 1. 폰트 */
 @font-face {
     font-family: 'KimjungchulGothic-Bold';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
 }
-
 @font-face {
     font-family: 'Yeongdo-Rg';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/Yeongdo-Rg.woff') format('woff');
@@ -27,67 +16,209 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* 드래그 선택 컬러 */
 ::selection{
-	color: white;
+    color: white;
     background : #3D8361;
 }
 
 /* 전체 폰트 적용 */
 body{
-	font-family: 'KimjungchulGothic-Bold';
-}	
+    font-family: 'KimjungchulGothic-Bold';
+}   
 
 
-/* 2. Header 영역 */
-/* 상단 메뉴 배경색 변경 */
+/* Header 영역 */
 .topnav {
-	background-color: #3D8361;
+    background-color: white;
+    border-bottom: 1px solid #EEE;
+    /*position: relative;*/
+    overflow: hidden;
 }
 
 /* 로고 폰트체 적용 */
-.header {
-	 font-family: 'Yeongdo-Rg';
+header {
+    font-family: 'Yeongdo-Rg';
+    position: sticky;
+    top: 0; padding-top: 10px; padding-bottom: 0px;
+}
+
+.first-nav {
+    position: relative;
+}
+
+/* 로고 폰트 변경 */
+.logoName {
+    font-family: 'Yeongdo-Rg';
+    padding-top: 30px;
+    font-size: 42px;
+    margin-bottom: -10px;
+	color: black;
 }
 
 /* 로고 이미지 적용 */
 .logo {
-  width: 49px;
-  height: 49px;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 14px;
+  margin-left: -60px
+}
+/* 로고 선 */
+.logoBlock{
+	margin-top: 43px;
+	width: 70px;
+	height: 3px;
+	border-bottom: 3px solid black;
+  	transition: 2s;
+}
+.nav-link {
+    color: #0B6138;
+    font-size: 1.25rem;
+    font-family: 'GmarketSansMedium';
+    font-weight: 400;
+}
+
+.nav-link:hover{
+    color: #0B6138;
+}
+
+.header-admin-button{
+    background-color: #7FB77E;
+    color: white;
+    margin-right: 20px;
+}
+
+.header-admin-button:hover{
+    background-color: #E1ECC8;
+    color: #0B6138;
+}
+
+.header-login-button {
+    margin-right: 20px;
+}
+
+.header-login-button:hover {
+    background-color: #E1ECC8;
+    color: #0B6138;
+}
+
+.header-signup-button {
+    background-color: #7FB77E;
+    color: white;
+    margin-right: 20px;
+}
+
+.header-signup-button:hover {
+    background-color: #3D8361;
+    color: #F7F6DC;
+}
+
+.header-login-button, .header-signup-button, .header-admin-button {
+    margin-top: 10px;
+    width: 115px; height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    line-height: 43px;
+}
+
+.first-nav{
+    padding-left: 60px;
+}
+/* 로고호버 이벤트 */
+.first-nav:hover .logoName{
+	color: black;
+}
+.first-nav:hover .logoBlock{
+	width: 180px;
+  	transition: 1.5s;
 }
 
 
-/* 3. 중간 메인 영역 */
-/* 좋아요 순 BEST 9 */
-	/* 산책로명이 2줄을 차지할 경우, 말줄임 이용 */
-.ellipsis{
-	white-space: nowrap; 		/* 텍스트를 한 줄에 표시 */
-    overflow: hidden; 			/* 넘치는 부분을 숨김 */
-    text-overflow: ellipsis; 	/* 넘치는 부분에 "..." 추가 */
-    width: 100%; 				/* 너비를 100%로 설정하여 부모 요소의 크기에 맞게 텍스트를 자름 */
+.second-nav{
+    padding : 30px 30px 20px 0;
+    line-height: 30px;
 }
 
-/* 하트 아이콘 크기 설정 */
-.heart-icon {
-	width: 25px;
-	padding-bottom: 3px;
+.third-nav {
+    padding: 10px 0 20px 0;
+    line-height: 30px;
 }
 
-.carousel-control-prev-icon {
-	color: green;
+.third-nav div button {
+    font-size: 21px;
 }
 
+.searchBtn {
+    margin-top: 10px;
+    width: 50px; height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    line-height: 45px;
+    margin-right: 70px;
+    background-color: white;
+    color: white;
+    margin-right: 20px;
+} 
 
-
-/* 핫한 해시태그 출력 영역*/
-
-
-/* 4. Footer 영역 */
-.footer{
-	width: 100%;
-	background-color: #EEF2E6;
+.searchBtn:hover {
+    background-color: #E1ECC8;
+    color: #F7F6DC;
 }
+
+.searchBtn i {
+    display: block;
+    margin: 0 auto;
+    line-height: 25px;
+    color: #0B6138;
+    font-size: 1rem;
+}
+
 
 .searchBox {
-   font-family: 'NanumSquareRound';
-} 
+    height: 0px;
+    overflow: hidden; 
+    transition: 0.5s;
+    width: 100%;
+    align-items: center;
+    background-color: white;
+    border-top: 0px solid #ccc;
+    border-bottom: 0px solid #ccc;
+}
+
+.search-header{
+    font-family: 'NanumSquareRound';
+    margin: auto;
+    width: 50%;
+    display: block;
+    border: 1px solid #ccc;
+    height: 40px;
+    margin-top: 10px;
+}
+
+.login-image {
+	padding-top: 7px;
+}
+
+.login-letter {
+	padding-top: 13px;
+}
+
+
+/* Footer 영역 */
+.footer{
+    width: 100%;
+    background-color: #EEF2E6;
+}

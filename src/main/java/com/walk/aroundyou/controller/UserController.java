@@ -132,7 +132,7 @@ public class UserController {
 	public String showIdLookupForm() {
 
 		// 아이디 조회 폼을 보여주는 뷰 이름
-		return "idlookupform";
+		return "user/idlookupform";
 	}
 
 	@PostMapping("/login/idlookup")
@@ -150,13 +150,13 @@ public class UserController {
 	public String showPwdLookupForm() {
 
 		// 아이디 조회 폼을 보여주는 뷰 이름
-		return "pwdlookupform";
+		return "user/pwdlookupform";
 	}
 
 	// 뷰에서 userEmail을 파라미터로 받아 이메일 유무를 확인하는 서비스 호출
 	@PostMapping("/login/pwdlookup/check")
 	@ResponseBody
-	public boolean checkEmail(@RequestParam(name = "" + "Email") String userEmail) {
+	public boolean checkEmail(@RequestParam(name = "userEmail") String userEmail) {
 		log.info("checkEmail 진입");
 		// 아이디 조회 폼을 보여주는 뷰 이름
 		return userService.checkEmail(userEmail);
@@ -178,7 +178,7 @@ public class UserController {
 		log.info("임시 비밀번호 : " + tmpPwd);
 		log.info("임시 비밀번호 전송 완료");
 
-		return "임시로 발급한 비밀번호는 \"" + tmpPwd + "\"입니다." + "\n" + "자동으로 로그아웃되오니 임시비밀번호 복사 후 재 로그인해주세요!";
+		return "" + tmpPwd;
 	}
 
 	//////////////////// 마이페이지
@@ -202,6 +202,8 @@ public class UserController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -284,7 +286,7 @@ public class UserController {
 				model.addAttribute("pageEnd", pageEnd);
 				model.addAttribute("myBoards", myBoards);
 				
-				return "mypage";
+				return "user/mypage";
 			} else {
 				return "error";
 			}
@@ -307,6 +309,8 @@ public class UserController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -358,7 +362,7 @@ public class UserController {
 				model.addAttribute("pageEnd", pageEnd);
 				model.addAttribute("myCourseComments", myCourseComments);
 				
-				return "mypageCourseComment";
+				return "user/mypageCourseComment";
 			} else {
 				return "error";
 			}
@@ -382,6 +386,8 @@ public class UserController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -432,7 +438,7 @@ public class UserController {
 				model.addAttribute("pageEnd", pageEnd);
 				model.addAttribute("myBoardComments", myBoardComments);
 				
-				return "mypageBoardComment";
+				return "user/mypageBoardComment";
 			} else {
 				return "error";
 			}
@@ -467,14 +473,14 @@ public class UserController {
 		
 		if(errors.hasErrors()) {
 			// 유저페이지 변경 실패 시 입력 데이터 값을 유지
-			model.addAttribute("myDto", dto);
+			model.addAttribute("user", dto);
 			
 			// 유효성 통과 못한 필드와 메시지를 핸들링
 			Map<String, String> validatorResult = userService.validateHandling(errors);
 			for(String key : validatorResult.keySet()) {
 				model.addAttribute(key, validatorResult.get(key));
 			}
-			return "mypage";
+			return "user/mypage";
 		}
 		
 	// 헤더에 정보 추가하기 위한 코드
@@ -484,6 +490,8 @@ public class UserController {
 		if (currentUser != null) {
 			UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 			if (currentUserImage != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				String currentUserImagePath = 
 						uploadImageService.findUserFullPathById(currentUserImage.getFileId());
 				model.addAttribute("currentUserImagePath", currentUserImagePath);
@@ -576,7 +584,7 @@ public class UserController {
 	model.addAttribute("pageEnd", pageEnd);
 	model.addAttribute("users", users);		
 	
-	return "adminUsers";
+	return "user/adminUsers";
 	}
 	
 
@@ -594,6 +602,8 @@ public class UserController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -635,6 +645,8 @@ public class UserController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -660,7 +672,7 @@ public class UserController {
 	
 
 	//////////////////// 비밀번호 변경
-	@GetMapping("/main/mypage/userpage/changepwd")
+	@GetMapping("/mypage/userpage/changepwd")
 	public String showChangePwd(
 		@AuthenticationPrincipal User user, Model model) {
 			
@@ -669,6 +681,8 @@ public class UserController {
 				model.addAttribute("loginId", user.getUsername());
 				Member currentUser = userService.findByUserId(user.getUsername()).get();
 				if (currentUser != null) {
+			        model.addAttribute("currentUser", currentUser);
+					model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 					UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 					if (currentUserImage != null) {
 						String currentUserImagePath = 
@@ -683,13 +697,12 @@ public class UserController {
 	//////////////////////////////////////////////
 	///////////////// 변경 예정
 	@PostMapping("/mypage/userpage/changepwd")
-	@ResponseBody
 	 public String updatePassword(@Valid UserPasswordChangeDTO dto, Errors errors, Model model, Authentication authentication, @AuthenticationPrincipal User user) {
 		
 		if (errors.hasErrors()) {
 			// 회원가입 실패 시 입력 데이터 값을 유지
 			model.addAttribute("dto", dto);
-			
+			log.info("dto = {}", dto);
 			// 유효성 통과 못한 필드와 메시지를 핸들링
 			Map<String, String> validatorResult = userService.validateHandling(errors);
 			
@@ -708,14 +721,14 @@ public class UserController {
             model.addAttribute("dto", dto);
             model.addAttribute("wrongPassword", "입력하신 비밀번호와 저장된 비밀번호가 일치하지 않습니다.");
             
-            return "changepwd";
+            return "user/changepwd";
         }
 		
         // new password 비교
         if (!Objects.equals(dto.getNewPwd(), dto.getComfirmPwd())) {
             model.addAttribute("dto", dto);
             model.addAttribute("differentPassword", "새로 입력하신 비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
-            return "changepwd";
+            return "user/changepwd";
         }
 
         
@@ -737,6 +750,8 @@ public class UserController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -762,6 +777,8 @@ public class UserController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -785,23 +802,34 @@ public class UserController {
 		}
 	}
 
-	/////////////////// 관리자가 강퇴하는 곳 -> 관리자사이트
-	@PostMapping("/admin/ban")
-	public String banUser(@RequestParam String userId) {
-
-		// 입력 받은 아이디를 찾아서 그 아이디를 삭제시키기
-
-		// 관리자가 강퇴 처리
-		userService.deleteByAdmin(userId, UserRole.ADMIN);
-
-		// 강퇴 후 관리자 대시보드로 리다이렉트
-		return "redirect:/admin/dashboard";
-	}
 	
 	// 관리자 페이지로 이동
 	@GetMapping("/admin")
 	@AdminAuthorize
-	public String showAdminPage() {
-	    return "adminPage";
+	public String showAdminPage( 
+			@AuthenticationPrincipal User user,
+			Model model) {
+		
+		// 헤더에 정보 추가하기 위한 코드
+		if (user != null) {
+			model.addAttribute("loginId", user.getUsername());
+			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
+				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				if (currentUserImage != null) {
+					String currentUserImagePath = 
+							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+					model.addAttribute("currentUserImagePath", currentUserImagePath);
+				}
+			} else {
+				return "redirect:/";
+			}
+		} else {
+			return "redirect:/";
+		}
+
+	    return "user/adminPage";
 	}
 }

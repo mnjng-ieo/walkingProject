@@ -28,14 +28,14 @@
 	            </div>
         	</div>
             <div class="m-3">
-        		<lable for="boardTitle" class="form-label">제목</lable>
+        		<label for="boardTitle" class="form-label">제목</label>
         		<input type="text" class="form-control" id="boardTitle" name="boardTitle" placeholder="제목을 입력해주세요" th:value="${board.boardTitle}" required>
         		<div class="invalid-feedback">
 	              	제목을 입력해주세요!
 	            </div>
             </div>
         	<div class="m-3">
-        		<lable for="boardContent" class="form-label">본문</lable>
+        		<label for="boardContent" class="form-label">본문</label>
         		<textarea class="form-control" placeholder="내용을 입력해주세요" id="boardContent"  name="boardContent" rows="10" required>[[${board.boardContent}]]</textarea>
         		<div class="invalid-feedback">
 	              	본문을 입력해주세요!
@@ -49,7 +49,7 @@
                       style="display: flex; gap: 10px;">
                      <div class="board-imgBox"
                           style="width: 250px; height: 250px; 
-                          background-color: #fff;" overflow= hidden;>
+                          background-color: #fff; overflow: hidden;">
                          <!-- 파일 업로드를 위한 숨겨진 input 요소. 
                          업로드 버튼을 클릭하면 input을 클릭한 것처럼 작동하여 파일 선택 다이얼로그를 열게 됨 -->
                          <input type="file" id="imageUploadInput" style="display:none;" accept="image/*">

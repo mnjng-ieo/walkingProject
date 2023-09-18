@@ -65,6 +65,8 @@ public class TagViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 

@@ -121,6 +121,8 @@
                             <div class="col-md-6">
                                 <span th:text="*{userNickname}"
                                     class="userNickname fixedName">내 닉네임</span>
+                                 <div th:if="${valid_userNickname}" id="valid" th:text="${valid_userNickname}" 
+									th:style="${valid_userNickname != null ? 'color:#F96666;' : ''}"></div>
                             </div>
                             <div class="col-md-6">
                                 <!--  -->
@@ -180,7 +182,10 @@
                         <div class="row user-nicknameBox">
                             <div class="col-md-6">
                                 <input type="text" th:field="*{userNickname}"
-                                    class="userNickname" />
+                                    class="userNickname" 
+                                    th:value="${user != null}? ${user.getUserNickname()} : ''"/>
+								<span th:if="${valid_userNickname}" id="valid" th:text="${valid_userNickname}" 
+									th:style="${valid_userNickname != null ? 'color:#F96666;' : ''}"></span>
                             </div>
                             <div class="col-md-6">
                                 <button type="submit" id="modifySuccessBtn" 
@@ -250,10 +255,15 @@
                             th:text = "${#strings.length(myBoard.boardTitle) &gt; 50 ? 
                             #strings.substring(myBoard.boardTitle, 0, 50) + '...' : myBoard.boardTitle}">글 제목</div>
                         <div class = "second d-flex">
-                            <p style="width: 30px; height: 30px;">
-                                <img src = "/images/common/userImg.png" class="img-fluid mt-2"/>
-                            </p>
-                            <div class="mt-3 mx-2" th:text = "${myBoard.userNickname}">작성자 닉네임</div>
+                            <div class="rounded-5 mt-2" 
+                            	style="overflow:hidden; width: 40px; height: 40px;
+    align-items: center;">
+                                <img th:src="${imagePath}? 
+	                             ${imagePath}: '/images/defaultUserImage.png'"
+	                             class="img-fluid"
+	                             style="height: 100%;object-fit: cover;"/>
+                            </div>
+                            <div class="mx-2 mt-3" th:text = "${myBoard.userNickname}">작성자 닉네임</div>
                         </div>
                         
                         <div class  ="third d-flex text-secondary">
@@ -304,7 +314,7 @@
                            </li>
                        </th:block>
                        <li class="page-item" id="pageNext"
-                           th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
+                           th:classappend="${currentPage == lastPage - 1} ? 'disabled' : ''">
                            <a class="page-link arrow" 
                            href="javascript:void(0);"
                            th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">

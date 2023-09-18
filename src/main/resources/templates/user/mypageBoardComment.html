@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마이페이지</title>
+
+<!-- Popper.js -->
+<script
+	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<!-- 자바스크립트 -->
+<script type="text/javascript" src="/js/common/mypage.js"></script> 
+<!-- css -->
+<link rel="stylesheet" href="/css/common/mypage.css">
+
+</head>
+<body>
+<th:block layout:fragment="Content">
+<!-- 상단 -->
+<div class ="container d-flex justify-content-between">
+    <!-- 브레드크럼(왼쪽) -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+      <ol class="breadcrumb px-3 pt-4">
+        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+        <li class="breadcrumb-item"><a th:href="@{/mypage}">마이페이지</a></li>
+        <li class="breadcrumb-item"><a th:href="@{mypage/board-commenet}">댓글 작성한 게시물</a></li>
+      </ol>
+    </nav>
+
+    <!-- 사이드바(오른쪽) -->
+    <section class ="sidebar">
+        <div class ="px-5 pt-4">
+            <button class="btn sidebarBtn fs-2" type="button" 
+            data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" 
+            aria-controls="offcanvasRight">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+          <div class="offcanvas-header">
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+             <div class="flex-shrink-0 p-3 bg-white" style="width: 300px;">
+                  <a href="/"
+                      class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+                      <span class="fs-2 fw-semibold sidebar-title">WalkAroundYou
+                        <img src="/images/common/logo_img.png" class="side-logo mb-5"></img>
+                      </span>
+                  </a>
+                  <ul class="list-unstyled ps-0">
+    
+                      <li class="mb-1">
+                          <button
+                              class="fs-4 btn btn-toggle align-items-center rounded collapsed"
+                              data-bs-toggle="collapse" data-bs-target="#account-collapse"
+                              aria-expanded="false">나의 정보
+                           <i class="fa-solid fa-gear sidebar-sub-title"></i>    
+                          </button>
+                          <div class="collapse show mx-4" id="account-collapse">
+                              <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-5 small">
+                                  <li class="my-1"><a th:href="@{/mypage}" class="link-dark rounded">마이페이지</a></li>
+                                  <li class="my-1"><a th:href="@{/mypage/userpage}" class="link-dark rounded">정보
+                                          조회</a></li>
+                                  <li class="my-1"><a th:href="@{/logout}" class="link-dark rounded">로그아웃</a></li>
+                              </ul>
+                          </div>
+                      </li>
+    
+                      <li class="border-top my-5"></li>
+                      <li class="mb-1">
+                          <button
+                              class="fs-4 btn btn-toggle align-items-center rounded collapsed"
+                              data-bs-toggle="collapse" data-bs-target="#home-collapse"
+                              aria-expanded="true">나의 기록
+                           <i class="fa-solid fa-seedling sidebar-sub-title2"></i>
+                          </button>
+                          <div class="collapse show mx-4" id="home-collapse">
+                              <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                  <li class="my-1"><a th:href="@{/mypage-course}" class="link-dark rounded">내가 좋아한 길</a></li>
+                                  <li class="my-1"><a th:href="@{/mypage/course-commenet}" class="link-dark rounded">댓글 작성한 산책로</a></li>
+                                  <li class="my-1"><a th:href="@{/mypage/board-commenet}" class="link-dark rounded">댓글 작성한 게시물</a></li>
+                              </ul>
+                          </div>
+                      </li>
+                  </ul>
+              </div>        
+          </div>
+        </div>
+    </section><!-- 사이드바 끝 -->             
+</div><!-- 상단 끝 -->         
+
+    <div class="container">
+        
+        <h1 class="my-5 text-center">댓글 작성한 게시물 모아보기</h1>
+                
+   
+		<!-- 게시글 버튼 클릭하면 나오는 게시글 -->
+		<div class="mt-3 p-3" id="postContainer">
+            <div id="needToChange">
+               <div class = "d-flex justify-content-between mb-4 px-2 me-auto">
+	               <p class = "my-2 myCount">
+	               게시물 수 : <span th:text="${myBoardComments.totalElements}"></span></p>
+               </div>
+               <p th:if="${myBoardComments.totalElements == 0}" 
+                  class= "noResult my-5 text-center fs-5">작성하신 댓글이 없습니다.</p>
+               <table class="table table-hover">
+		          <thead>
+		            <tr>
+		                <th class ="col-lg-2">글 번호</th>
+		                <th class ="col-lg-8">게시물</th>
+		                <th class ="col-lg-2">댓글 수</th>
+		            </tr>
+		          </thead>
+                  <tbody>
+                  <!-- 자바스트립트 redirectToDetail 메서드 사용 : 컬럼을 누르면 게시글 상세페이지로 이동하는 url 작성-->
+                  <tr th:each="myBoardComment : ${myBoardComments}" 
+                      th:data-url="@{/board/{id}(id=${myBoardComment.boardId})}" 
+                      onclick="redirectToDetail(this)"
+                      style="cursor:pointer;">
+                    <td>
+                      <span th:text = "${myBoardComment.boardId}">글 번호</span>
+                    </td>
+                    <td>
+                        <!-- 제목의 글자수 길면 ...으로 생략 -->
+                        <div class = "first fs-5"
+                            th:text = "${#strings.length(myBoardComment.boardTitle) &gt; 50 ? 
+                            #strings.substring(myBoardComment.boardTitle, 0, 50) + '...' : myBoardComment.boardTitle}">글 제목</div>
+                        <div class = "second d-flex">
+                            <p style="width: 30px; height: 30px;">
+                                <img src = "/images/common/userImg.png" class="img-fluid mt-2"/>
+                            </p>
+                            <div class="mt-3 mx-2" th:text = "${myBoardComment.userNickname}">작성자 닉네임</div>
+                        </div>
+                        
+                        <div class  ="third d-flex text-secondary">
+                            <div class="m-1" th:text = "|date ${#dates.format(myBoardComment.boardCreatedDate, 'yyyy-MM-dd')}|">작성일자</div>
+                            <div class="m-1" th:text = "|in ${myBoardComment.boardType}|">카테고리</div>
+                            <p class="m-1" style="width: 20px; height: 20px;">
+                                <i class="fa-regular fa-eye"></i>
+                            </p>
+                            <div class="m-1" th:text = "${myBoardComment.boardViewCount}">조회수</div>
+                            <p class="" style="width: 20px; height: 20px;">
+                                <img src = "/images/common/heart-click.png" class="img-fluid"/>
+                            </p>
+                            <div class="m-1" th:text = "${myBoardComment.likeCnt}">좋아요 수</div>
+                        </div>
+                    </td>
+                    <td>
+                      <span th:text = "${myBoardComment.commentCnt}" class = "mx-4">댓글 수</span>
+                    </td>  
+                   </tr>
+                  </tbody>
+                </table>
+			    <!-- 페이지 넘기기 뷰 & 기능 -->
+			    <div class="pageInfo_wrap" id="pagination">
+			        <!--pagination-sm 추가하면 작아지고, pagination-lg 추가하면 커진다 -->
+			        <ul class="pagination pagination 
+			                   justify-content-center">
+			           <li class="page-item" id="pagePrev"
+			               th:classappend="${currentPage == 0} ? 'disabled' : ''">
+			               <!-- 링크 클릭할 때 해당 링크의 url로 이동하는 기본 동작 막기 위해 사용
+			                    자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
+			               <a class="page-link arrow" 
+			                  href="javascript:void(0);"
+			                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">
+			                    <i class="fa-solid fa-chevron-left"></i></a>
+			           </li>
+			           <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
+			               <li th:if="${page == (currentPage+1)}" 
+			                   class="page-item active">
+			                   <a class="page-link" 
+			                   href="javascript:void(0);"
+			                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+			               </li>
+			               <li th:unless="${page == (currentPage+1)}" 
+			                   class="page-item">
+			                   <a class="page-link" 
+			                   href="javascript:void(0);"
+			                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+			               </li>
+			           </th:block>
+			           <li class="page-item" id="pageNext"
+			               th:classappend="${currentPage == pageEnd-1} ? 'disabled' : ''">
+			               <a class="page-link arrow" 
+			               href="javascript:void(0);"
+			               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
+                               <i class="fa-solid fa-chevron-right"></i></a>
+			           </li>
+			        </ul>
+			    </div><!-- 페이징 처리 끝 -->     
+		    </div><!-- (게시글 + 페이지)ajax 사용하기 위함 -->
+                   
+           </div>
+
+		<!-- 이미지버튼 클릭하면 나오는 이미지 -->
+		<div class="collapse mt-3" id="imgContainer">
+			<div class="row">
+				<!-- 첫 번째 이미지 -->
+				<!-- <div class="card col-md-3" style="margin-right: 3%; margin-top: 3%;"> 
+			<div class="card col-md-3">-->
+				<div class="card-body post-container mt-3">
+					<img src="/images/profile.jpg">
+				</div>
+			</div>
+		</div><!-- 이미지 끝 -->
+       </div><!--게시글 & 이미지 끝 -->   
+</th:block>
+</body>
+</html>

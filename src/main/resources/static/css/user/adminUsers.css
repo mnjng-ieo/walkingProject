@@ -1,0 +1,105 @@
+/* 폰트 */
+@font-face {
+    font-family: 'KimjungchulGothic-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Yeongdo-Rg';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/Yeongdo-Rg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.user-list-top_title {
+    width: 100%;
+    height: 35vh;
+    background-color: #f5f5f5;
+    margin-bottom: 50px;
+}
+
+.user-list-top_title {
+    padding: 50px 0 0 70px;
+}
+
+.user-list-top_subtitle {
+    margin-top: 20px;
+    font-family: 'NanumSquareRound';
+}
+
+.user-list-top_bigTitle {
+    margin-top: 30px;
+    font-family: 'KimjungchulGothic-Bold';
+}
+
+.user-list-top_bigTitle2{
+    font-family: 'KimjungchulGothic-Bold';
+}
+
+.container {
+	font-family: 'NanumSquareRound';
+}
+
+tr {
+    line-height: 50px;
+}
+
+/* 페이지 css */
+.pageInfo_wrap {
+    margin-bottom: 100px;
+}
+
+.page-link {
+  color: #1C6758; 
+  background-color: #fff;
+  border: none;
+  height: 35px;
+}
+
+.page-border {
+    border-color: #ccc;
+}
+
+.page-link {
+    font-size: 1.2rem;
+    margin: 10px;
+    line-height: 23px;
+    border-radius: 10px;
+}
+
+.page-item.active .page-link {
+ z-index: 1;
+ color: white;
+ font-weight:bold;
+ background-color: #1C6758;
+ border-radius: 10px;
+}
+
+.page-link:focus, .page-link:hover {
+  color: #3D8361;
+  /* background-color: #EEF2E6; */
+  background-color: #FBC252;
+  border-color: #3D8361;
+  border-radius: 10px;
+}
+
+#pagePrev:a.page-link, #pageNext:a.page-link {
+    background-color: #f7f7f7;
+    border-radius: 10px;
+}
+
+/* 페이지네이션 이전/다음 버튼 호버 효과 */
+#pagePrev:not(.disabled):hover a.page-link,
+#pageNext:not(.disabled):hover a.page-link {
+    background-color: #e0e0e0; /* 호버 시 변경할 배경 색상 설정 */
+    cursor: pointer; /* 호버 시 커서 설정 */
+}    

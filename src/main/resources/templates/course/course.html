@@ -192,10 +192,11 @@
                         <div class="mx-4" th:text="${comment.commentContent}" style="white-space:pre-wrap;"></div>
                         <!-- 수정 및 삭제 버튼 -->
                         <div class="d-flex justify-content-end p-3">
-                            <div class="mx-3 mt-1">
-                                <img src="/images/common/heart-click.png" style="width: 20px; height: 20px;"/>
-                                <span class="fs-6">[[${comment.commentLikeCnt}]]</span>
-                            </div>
+	                     	<div class="mx-3 mt-1 commentLike like">
+								<img 
+									src="/images/common/heart-click.png" style="width: 20px; height: 20px;"/>
+								<span class="fs-6" id="commentLikeCnt">[[${comment.commentLikeCnt}]]</span>
+							</div>
                             <button type="button" id="modifybtn"
                                     th:if="${comment.userId == loginId}"
                                     class="btn btn-sm px-4 mx-1 modifybtn text-center">수정</button>
@@ -393,7 +394,7 @@
                </li>
            </th:block>
            <li class="page-item" id="pageNext"
-               th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
+               th:classappend="${currentPage == lastPage -1} ? 'disabled' : ''">
                <a class="page-link arrow rounded-3" 
                href="javascript:void(0);"
                th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">

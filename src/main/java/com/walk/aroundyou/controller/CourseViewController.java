@@ -17,6 +17,7 @@ import com.walk.aroundyou.domain.Board;
 import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.UploadImage;
+import com.walk.aroundyou.domainenum.UserRole;
 import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICommentResponseDto;
@@ -27,6 +28,7 @@ import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.UploadImageService;
 import com.walk.aroundyou.service.UserService;
 
+import jakarta.persistence.EnumType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,6 +65,8 @@ public class CourseViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -142,6 +146,8 @@ public class CourseViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -249,7 +255,7 @@ public class CourseViewController {
 			Model model, 
 			@AuthenticationPrincipal User user) {
 		// 조회한 좋아요 상태 확인
-		boolean isLiked;
+		boolean isLiked = false;
 		
 		// 헤더에 정보 추가하기 위한 코드 + 좋아요 상태 
 		if (user != null) {
@@ -257,22 +263,25 @@ public class CourseViewController {
 			//model.addAttribute("userId", userId);
 			model.addAttribute("loginId", userId);
 			isLiked = courseLikeService.isCourseLiked(userId, courseId);
-			
+			log.info("userId = {}", userId);
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
+			log.info("currentUser = {}", currentUser.toString());
 			if (currentUser != null) {
-				model.addAttribute("user", currentUser);
+				// 유저정보 보내기
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+				// 유저 닉네임 보내기
+				String currentUserNickname = currentUser.getUserNickname();
+				model.addAttribute("currentUserNickname", currentUserNickname);
+				// 유저 이미지 보내기
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
 							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
 					model.addAttribute("currentUserImagePath", currentUserImagePath);
-					
-					String currentUserNickname = currentUser.getUserNickname();
-					model.addAttribute("currentUserNickname", currentUserNickname);
 				}
 			}
 		} else {
-			isLiked = false;
 		}		
 		model.addAttribute("isLiked", isLiked);
 		
@@ -369,20 +378,6 @@ public class CourseViewController {
 		return "/course/course";
 	}
 	
-	/**
-	 *  pagination의 첫번째 숫자 얻는 메소드
-	 */
-	private int getPageStart(int currentPage, int totalPages) {
-		log.info("currentPage : {}, totalPages : {}", currentPage, totalPages);
-		int result = 1; 
-		if(totalPages < currentPage + (int)Math.floor(PAGINATION_SIZE/2)) {
-			// 시작페이지의 최소값은 1!
-			result = Math.max(1, totalPages - PAGINATION_SIZE + 1);
-		} else if (currentPage > (int)Math.floor(PAGINATION_SIZE/2)) {
-			result = currentPage - (int)Math.floor(PAGINATION_SIZE/2) + 1;
-		}
-		return result;
-	}
 	
 	/**
 	 * [관리자 페이지] 산책로 데이터 관리 - 산책로 목록 조회
@@ -406,14 +401,20 @@ public class CourseViewController {
 		if (user != null) {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
-			if (currentUser != null) {
+			if (currentUser != null && currentUser.getRole() == UserRole.valueOf("ADMIN")) {
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
 							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
 					model.addAttribute("currentUserImagePath", currentUserImagePath);
 				}
+			} else {
+				return "redirect:/";
 			}
+		} else {
+			return "redirect:/";
 		}
 			
 			String startTime = null;
@@ -511,14 +512,19 @@ public class CourseViewController {
 		if (user != null) {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
-			if (currentUser != null) {
+			if (currentUser != null && currentUser.getRole() == UserRole.valueOf("ADMIN")) {
+				model.addAttribute("currentUserRole", currentUser.getRole());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
 							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
 					model.addAttribute("currentUserImagePath", currentUserImagePath);
 				}
+			} else {
+				return "redirect:/";
 			}
+		} else {
+			return "redirect:/";
 		}
 		
 		CourseResponseDTO courseResponseDTO = courseService.findByIdWithCounts(id);
@@ -554,7 +560,8 @@ public class CourseViewController {
 		if (user != null) {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
-			if (currentUser != null) {
+			if (currentUser != null && currentUser.getRole() == UserRole.valueOf("ADMIN")) {
+				model.addAttribute("currentUserRole", currentUser.getRole());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -579,14 +586,19 @@ public class CourseViewController {
 		if (user != null) {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
-			if (currentUser != null) {
+			if (currentUser != null && currentUser.getRole() == UserRole.valueOf("ADMIN")) {
+				model.addAttribute("currentUserRole", currentUser.getRole());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
 							uploadImageService.findUserFullPathById(currentUserImage.getFileId());
 					model.addAttribute("currentUserImagePath", currentUserImagePath);
 				}
+			} else {
+				return "redirect:/";
 			}
+		} else {
+			return "redirect:/";
 		}
 		
 		Course course = courseService.findById(id);
@@ -606,6 +618,24 @@ public class CourseViewController {
 		model.addAttribute("course", new CourseResponseDTO(course));
 		
 		return "/course/adminUpdateCourse";
+	}
+	
+	/**
+	 *  pagination의 첫번째 숫자 얻는 메소드
+	 */
+	private int getPageStart(int currentPage, int totalPages) {
+		
+		log.info("currentPage = {}, totalPages = {}", currentPage, totalPages);
+		int result = 1;
+		if (Math.max(totalPages, PAGINATION_SIZE) < currentPage + (int) Math.ceil((double) PAGINATION_SIZE / 2)) {
+			log.info("if문 통과");
+			result = totalPages - PAGINATION_SIZE + 1;
+		} else if (currentPage > (int) Math.floor((double) PAGINATION_SIZE / 2)) {
+			result = currentPage - (int) Math.floor((double) PAGINATION_SIZE / 2) + 1;
+			log.info("else if문 통과");
+		}
+		
+		return result;
 	}
 }
 

@@ -42,7 +42,7 @@
                 placeholder="검색어를 입력하세요" aria-label="검색어를 입력하세요" 
                 aria-describedby="button-addon2"
                 th:value="${keyword}">  
-                <button class="searchBtn btn btn-success fs-5" type="submit" id="button-addon2">
+                <button class="boardSearchBtn btn btn-success fs-5" type="submit" id="button-addon2">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </div>      
@@ -141,7 +141,7 @@
                    </li>
                </th:block>
                <li class="page-item" id="pageNext"
-                   th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
+                   th:classappend="${currentPage == lastPage-1} ? 'disabled' : ''">
                    <a class="page-link arrow" 
                    href="javascript:void(0);"
                    th:onclick="'loadPage(' + (${currentPage}) + ')'">Next</a>

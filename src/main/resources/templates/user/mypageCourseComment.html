@@ -202,7 +202,7 @@
                </li>
            </th:block>
            <li class="page-item" id="pageNext"
-               th:classappend="${currentPage == lastPage} ? 'disabled' : ''">
+               th:classappend="${currentPage == lastPage - 1} ? 'disabled' : ''">
                <a class="page-link arrow" 
                href="javascript:void(0);"
                th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">

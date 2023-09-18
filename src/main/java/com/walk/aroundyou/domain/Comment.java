@@ -3,6 +3,8 @@ package com.walk.aroundyou.domain;
 import java.sql.Timestamp;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.walk.aroundyou.domainenum.CommentType;
 import com.walk.aroundyou.domainenum.StateId;
@@ -39,14 +41,16 @@ public class Comment {
 	
 	// 게시판 식별 번호 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="board_id", nullable = false)
+	@JoinColumn(name="board_id", nullable = true)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Board boardId;
 	
 	// 코스 식별 번호 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="course_id", nullable = true)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Course courseId;
-
+	
 	// 코멘트 내용 
 	@Column(name="comment_content", nullable=false, columnDefinition="varchar(255)")
 	private String commentContent;
@@ -70,6 +74,7 @@ public class Comment {
 	// 회원 ID
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="user_id", referencedColumnName="user_id" )
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	// 오류창에 JoinColumn과 같이 사용하지 않을수있다고해서 주석처리
 	// @Column(nullable=false, columnDefinition="varchar(100)")
 	private Member userId;

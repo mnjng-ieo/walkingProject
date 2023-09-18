@@ -380,3 +380,8 @@ select::-ms-expand{
     border-right: 12px solid transparent;
     /* background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')*/}
 .info .link {color: white;}
+
+/* 좋아요 호버 */
+.like{
+	cursor: pointer
+}

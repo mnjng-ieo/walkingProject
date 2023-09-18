@@ -1,11 +1,17 @@
-// 캐러셀 적용
-$(document).ready(function(){
-	$('#course-carousel').carousel();
+document.addEventListener("DOMContentLoaded", function () {
+   let searchBtn = document.getElementById('searchBtn')
+   let searchBox = document.getElementById('searchBox')
+   
+   searchBtn.addEventListener("click", function () {
+      //alert('돋보기 클릭');
+      if (searchBox.style.height == "70px") {
+           // 콜랩스를 숨김
+           //alert('searchBox 숨김')
+           searchBox.style.height = "0px";
+      } else {
+         // 콜랩스를 보이게 함
+           //alert('searchBox 보이게 함');
+           searchBox.style.height = "70px";
+      }
+   });
 });
-
-
-// 각 상세페이지로 경로 넘어가는 클릭 이벤트
-function redirectToCourseDetails(courseId){
-    let url = "/course/" + courseId;
-    window.location.href = url;
-}

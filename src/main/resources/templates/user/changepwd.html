@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/defaultLayout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+</head>
+<body>
+
+	<th:block layout:fragment="Content">
+
+		<div class="container">
+		<h1 class="text-center mt-5 ">비밀번호 변경하기</h1>
+         <div class="container border rounded-4 shadow-lg p-5 mt-4"
+            style="width: 800px;">
+         <h6 class="fs-4">비밀번호 변경에 성공하시면 로그아웃 후 메인페이지로 이동합니다.<br>다시 로그인해주세요.</h6>
+         <br>
+         <br>
+         
+         <!-- 정상 페이지(기본 페이지) -->
+			<form action="/mypage/userpage/changepwd" method="post"
+				th:if="${dto == null}">
+				<div class="form-group">
+					<div class="form-floating mb-3">
+						<input type="password" name="currentPwd" class="form-control"
+							id="currentPwd"
+							th:value="${dto != null}? ${dto.getCurrentPwd()} : ''" required>
+						<label class="fs-5" for="currentPwd">기존 비밀번호</label>
+					</div>
+
+					<div class="form-floating mb-3">
+						<input type="password" name="newPwd" class="form-control"
+							id="newPwd" th:value="${dto != null}? ${dto.getNewPwd()} : ''"
+							required> 
+						<label class="fs-5" for="newPwd">새로운 비밀번호</label> <span
+							th:if="${valid_newPwd}" id="valid" th:text="${valid_newPwd}"></span>
+					</div>
+					<div class="form-floating mb-3">
+						<input type="password" name="comfirmPwd" class="form-control"
+							id="comfirmPwd"
+							th:value="${dto != null}? ${dto.getComfirmPwd()} : ''" required>
+						<label class="fs-5" for="comfirmPwd">비밀번호 확인</label> <span
+							th:if="${valid_comfirmPwd}" id="valid"
+							th:text="${valid_comfirmPwd}"></span>
+					</div>
+
+					<div class="alert alert-danger" id="error-message"
+						th:if="${param.fail}">
+
+                  <!-- 오류 시 나오는 내용 -->
+						<div class="mt-5" th:if="${differentPassword}">
+						</div>
+						<div th:if="${wrongPassword}">
+						</div>
+					</div>
+				</div>
+				<button type="submit" class="btn rounded-3 d-block fs-5 w-75 mb-5 mt-5" style="background-color:  #7FB77E;
+   color: white;
+   border: 2px solid #7FB77E; margin: auto;">변경하기</button>
+			</form>
+
+
+			<!-- 에러 페이지 -->
+			<form action="/mypage/userpage/changepwd" method="post"
+				th:unless="${dto == null}">
+				<div class="form-group">
+					
+					<th:block th:if="${wrongPassword == null}">
+						<div class="form-floating mb-3">
+							<input type="password" name="currentPwd" class="form-control" id="currentPwd"
+								th:value="${dto != null}? ${dto.getCurrentPwd()} : ''" required>
+							<label class="fs-5" for="currentPwd">기존 비밀번호</label> 
+							<span
+								th:if="${valid_currentPwd}" id="valid" th:text="${valid_currentPwd}" 
+								th:style="${valid_currentPwd !=null? 'color:#F96666;' : ''}"></span>
+						</div>
+					</th:block>
+
+					<th:block th:unless="${wrongPassword == null}">
+						<div class="form-floating mb-3 has-danger">
+							<input type="password" name="currentPwd"
+								class="form-control is-invalid" id="currentPwd"
+								th:value="${dto != null}? ${dto.getCurrentPwd()} : ''" required>
+							<label class="fs-5" for="currentPwd">기존 비밀번호</label> 
+							<span
+								th:if="${valid_currentPwd}" id="valid" th:text="${valid_currentPwd}" 
+								th:style="${valid_currentPwd !=null? 'color:#F96666;' : ''}"></span>
+							<div class="invalid-feedback" th:text="${wrongPassword}"></div>
+						</div>
+					</th:block>
+
+					<div class="form-floating mb-3">
+						<input type="password" name="newPwd" class="form-control"
+							id="newPwd" th:value="${dto != null}? ${dto.getNewPwd()} : ''"
+							required> 
+							<label class="fs-5" for="newPwd">새로운 비밀번호</label> 
+							<span
+							th:if="${valid_newPwd}" id="valid" th:text="${valid_newPwd}" 
+							th:style="${valid_newPwd !=null? 'color:#F96666;' : ''}"></span>
+					</div>
+					
+					<th:block th:if="${differentPassword == null}">
+						<div class="form-floating mb-3">
+							<input type="password" name="comfirmPwd" class="form-control"
+								id="comfirmPwd"
+								th:value="${dto != null}? ${dto.getComfirmPwd()} : ''" required>
+							<label class="fs-5" for="comfirmPwd">비밀번호 확인</label> 
+							<span
+								th:if="${valid_comfirmPwd}" id="valid" th:text="${valid_comfirmPwd}"
+								th:style="${valid_comfirmPwd !=null? 'color:#F96666;' : ''}"></span>
+						</div>
+						
+					</th:block>
+					<th:block th:unless="${differentPassword == null}">
+						<div class="form-floating mb-3 has-danger">
+							<input type="password" name="comfirmPwd"
+								class="form-control is-invalid" id="comfirmPwd"
+								th:value="${dto != null}? ${dto.getComfirmPwd()} : ''" required>
+							<label class="fs-5" for="comfirmPwd">비밀번호 확인</label> 
+							<span
+								th:if="${valid_comfirmPwd}" id="valid" th:text="${valid_comfirmPwd}"
+								th:style="${valid_comfirmPwd !=null? 'color:#F96666;' : ''}"></span>
+							<div class="invalid-feedback" th:text="${differentPassword}"></div>
+						</div>
+					</th:block>
+				</div>
+				<button type="submit" class="btn rounded-3 d-block fs-5 w-75 mb-5 mt-5" style="background-color:  #7FB77E;
+   color: white;
+   border: 2px solid #7FB77E; margin: auto;">변경하기</button>
+			</form>
+			
+		</div>
+		</div>
+		
+		<script>
+		
+		</script>
+	</th:block>
+
+</body>
+</html>

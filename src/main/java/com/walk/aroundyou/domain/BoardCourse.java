@@ -1,5 +1,8 @@
 package com.walk.aroundyou.domain;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,10 +34,12 @@ public class BoardCourse {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "board_id", nullable = false)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Board boardId;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "course_id", nullable = false)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Course courseId;
 	
 }
