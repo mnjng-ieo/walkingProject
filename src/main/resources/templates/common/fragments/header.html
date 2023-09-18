@@ -1,106 +1,111 @@
 <!DOCTYPE html>
-<html
-	xmlns:th="http://www.thymeleaf.org">
-	
-	<!-- 
-	p-3 : padding을 3크기로
-	mb-3 : margin-bottom을 3크기로
-	border-bottom : 하단에 테두리
- -->	
-<th:block th:fragment="HeaderFragment">		
-	<!-- 
-		py-2 : padding의 y축(top, bottom)을 2크기만큼
-		bg-body-tertiary : body의 배경색을 tertiary(회색)으로
-		border-bottom : 아래 테두리
-	 -->	
-	<!-- 상단 메뉴 --> 
-	<nav class="py-2 topnav sticky-top">
-		<!-- 
-			d-flex : display:flex 활성화
-			flex-wrap : 줄바꿈 활성화
-			nav : navigation
-			nav-item : navigation의 항목
-			me-auto : margin-end(오른쪽)을 자동으로 하겠다
-			nav-link
-			link-body-emphasis : 링크의 색상 변경하겠다
-			px-2 : x축의 padding 크기를 2로
-			active : 활성화 상태로 설정
-		 --> 
-		<div class="container d-flex flex-wrap">
-			<ul class="nav me-auto">
-				<!-- Home --> 
-			    <li class="nav-item">
-					<a th:href="@{/}" id="nav-link" class="nav-link px-3" 
-						aria-current="page" style="color: white;">Home</a>
-				</li>
-				
-				<!-- 산책로목록 --> 
-			    <li class="nav-item">
-					<a th:href="@{/course}" id="nav-link" class="nav-link px-3" style="color: white;">산책로목록</a>
-				</li>
-				
-				<!-- 커뮤니티 --> 
-			    <li class="nav-item">
-					<a th:href="@{/board}" id="nav-link" class="nav-link px-3" style="color: white;">커뮤니티</a>
-				</li>
-				
-				<!-- 마이페이지 --> 
-			    <li class="nav-item">
-					<a th:href="@{/mypage}" id="nav-link" class="nav-link px-3" style="color: white;">마이페이지</a>
-				</li>
-	    	</ul>
-	    	
-			<!-- 회원가입, 로그인, 로그아웃 버튼 -->
-			<div class="nav">
-				<div th:if="${loginId == null}" class="d-flex flex-wrap">
-					<!-- 로그인 안 된 상태에서 nav에 로그인, 회원가입 버튼 보이기 -->
-					<a th:href="@{/login}" class="nav-link px-3" style="color: white;">로그인</a>
-					<a th:href="@{/signup}" class="nav-link px-3" style="color: white;">회원가입</a>
-				</div>
+<html xmlns:th="http://www.thymeleaf.org">
 
-				<!-- 로그인 된 상태에서 보이기 -->
-				<div th:if="${loginId != null}" class="d-flex flex-wrap">
-					<!-- 로그인 된 정보, 로그아웃 버튼 nav에 띄우기 -->
-					<div class="nav-item">
-						<span class="nav-link link-body-emphasis px-3"
-							th:text="${loginId} + ' 님'"></span>
-					</div>
-					<div class="nav-item">
-						<a th:href="@{/logout}" class="nav-link link-body-emphasis px-3">Logout</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</nav>
-	
-	<!-- 
-		py-3 : padding의 y축(top, bottom)을 3크기만큼
-		mb-4 : margin-bottom을 4크기만큼
-		border-bottom : 아래 테두리
-	 -->	
-	<!-- header 영역 -->
-	<header class="py-4 border-bottom" style="height: 90px;">
-		<!-- 
-			justify-content-center : 콘텐츠 채우기, 가운데에 추가간격없이 붙이기
-			align-items-center : 항목 정렬, 위아래 정렬에서 가운데로
-			mb-lg-0 : 창크기가 lg(max-width이 992px 이상)일때 margin-bottom을 0으로
-       		text-decoration-none : 밑줄 없음으로 설정
-			col-12 : 너비 설정, 총 너비에서 12칸을 차지하겠단 의미
-			col-lg-auto : 가변 너비, lg일때 자연스러운 너비로 설정
-			mb-md-0 : md(768px)에서는 margins-bottom을 0으로
-		 -->
-		 
-		<div class="container d-flex flex-wrap justify-content-center align-items-end">
-		    <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none">
-	    		<span class="fs-3 logoName" style="padding-top: 26px; padding-left: 13px;">Walk Around You</span>
-	    		<img src="/images/common/logo_img.png" class="logo mb-3"></img>
-	   		</a>
-	   		<form class="col-12 col-lg-auto mb-3 mb-lg-0 " role="search">
-				<input type="search" class="form-control" placeholder="Search..."
-					aria-label="Search" style="margin-bottom: 16px;">
-			</form>
-	  	</div>
-	</header>
+<!-- 
+    p-3 : padding을 3크기로
+    mb-3 : margin-bottom을 3크기로
+    border-bottom : 하단에 테두리
+ -->
+<th:block th:fragment="HeaderFragment">
+    <!-- 
+        py-2 : padding의 y축(top, bottom)을 2크기만큼
+        bg-body-tertiary : body의 배경색을 tertiary(회색)으로
+        border-bottom : 아래 테두리
+     -->
+    <!-- 상단 메뉴 -->
+    <nav class="topnav sticky-top">
+        <!-- 
+            d-flex : display:flex 활성화
+            flex-wrap : 줄바꿈 활성화
+            nav : navigation
+            nav-item : navigation의 항목
+            me-auto : margin-end(오른쪽)을 자동으로 하겠다
+            nav-link
+            link-body-emphasis : 링크의 색상 변경하겠다
+            px-2 : x축의 padding 크기를 2로
+            active : 활성화 상태로 설정
+         -->
+        <header class="mx-4 d-flex flex-wrap justify-content-center">
+            <!-- 로고명 및 로고 이미지 -->
+            <div class="first-nav me-auto">
+                <a th:href="@{/}" id="nav-link"
+                    class="nav-link d-flex align-items-center mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none">
+                    <span class="logoName" aria-current="page">WalkAroundYou</span>
+                    <img src="/images/common/logo_img.png" class="logo"></img>
+                </a>
+            </div>
+
+            <!-- 메뉴 -->
+            <div class="second-nav d-flex justify-content-center">
+                <!-- 산책로목록 -->
+                <div class="nav-item">
+                    <a th:href="@{/course}" id="nav-link" class="nav-link px-3 fs-4">산책로목록</a>
+                </div>
+
+                <!-- 커뮤니티 -->
+                <div class="nav-item">
+                    <a th:href="@{/board}" id="nav-link" class="nav-link px-3 fs-4">커뮤니티</a>
+                </div>
+
+                <!-- 마이페이지 -->
+                <div class="nav-item">
+                    <a th:href="@{/mypage}" id="nav-link" class="nav-link px-3 fs-4">마이페이지</a>
+                </div>
+            </div>
+
+
+            <!-- 관리자용 버튼, 회원가입, 로그인, 로그아웃 버튼, 돋보기 -->
+            <div class="third-nav d-flex justify-content-center">
+                <div th:if="${currentUser != null && currentUserRole == 'ADMIN'}">
+                    <!-- 관리자만 보이는 버튼 (클릭 시, 관리자 페이지로 이동)-->
+                    <button class="nav-link px-3 header-admin-button" onclick="location.href='/admin'">관리자</button>
+                </div>
+                <div th:if="${loginId == null}" class=" d-flex justify-content-center">
+                    <!-- 로그인 안 된 상태에서 nav에 로그인, 회원가입 버튼 보이기 -->
+                    <button class="nav-link px-3 header-login-button" onclick="location.href='/login'">로그인</button>
+                    <button class="nav-link px-3 header-signup-button" onclick="location.href='/signup'">회원가입</button>
+                </div>
+
+                <!-- 검색창 : 돋보기 
+                <div>
+                    <form class="border col-lg-auto mb-lg-0 searchBox" role="search">
+                        <i class="fa-solid fa-magnifying-glass form-control nav-link"></i>
+                    </form> 
+                </div> -->
+
+                <div class="position-relative">
+                    <button class="btn border col-lg-auto mb-lg-0 searchBtn" role="button" id="searchBtn">
+                        <i class="fa-solid fa-magnifying-glass form-control nav-link text-align-center"></i>
+                    </button>
+                </div>
+
+                <!-- 로그인된 상태에서 보이기 -->
+                <div th:if="${loginId != null}" class=" d-flex justify-content-center">
+                    <!-- 로그인 된 정보, 로그아웃 버튼 nav에 띄우기 -->
+                    <div class="nav-item login-image" style="overflow: hidden;">
+                        <img class="rounded-circle m-1 " th:src="${currentUserImagePath!=null}? 
+                                        ${currentUserImagePath}: '/images/defaultUserImage.png'"
+                            style="width: 35px; height: 35px; border:none; padding: 0;"></img>
+                    </div>
+                    <div class="nav-item login-letter">
+                        <span class="nav-link px-3" th:text="${loginId} + ' 님'"></span>
+                    </div>
+                    <div class="nav-item login-letter">
+                        <a th:href="@{/logout}" class="nav-link px-3">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="border searchBox" id="searchBox">
+        <form role="search pt-2" th:action="@{/search}" method="get" >
+            <input type="search" class="form-control search-header" 
+            name="keyword" id="searchKeyword"
+            placeholder="Search..." aria-label="Search">
+        </form>
+        </div>
+    </nav>
+    <!-- 돋보기 클릭 시, 자바스크립트로 출력되는 영역 -->
 
 </th:block>
+
 </html>
