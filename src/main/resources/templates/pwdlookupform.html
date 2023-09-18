@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html  xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{common/layouts/defaultLayout}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,83 +16,11 @@
     
 <link href="/css/user/pwdlookup.css" rel="stylesheet"></link>
 
-<script>
 
-//const header = $("meta[name='_csrf_header']").attr('content');
-//const token = $("meta[name='_csrf']").attr('content');
-
-document.addEventListener("DOMContentLoaded", function () {
-        const checkEmailButton = document.getElementById("checkEmail");
-        checkEmailButton.addEventListener("click", checkEmail);
-
-        function checkEmail() {
-            const userEmail = document.getElementById("userEmail").value;
-
-            if (!userEmail || userEmail.trim() === "") {
-                alert("이메일을 입력하세요.");
-            } else {
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", '/login/pwdlookup/check?userEmail=' + encodeURIComponent(userEmail), true);
-                //xhr.setRequestHeader(header, token);
-
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        const result = xhr.responseText;
-                        console.log("result: " + result);
-                        if (result === "true") {
-                            sendEmail();
-                            alert("이메일이 존재합니다.");
-                        } else if (result === "false") {
-                            alert("가입되지 않은 이메일입니다.");
-                        }
-                    } else {
-                        alert("서버 오류: " + xhr.status);
-                    }
-                };
-
-                xhr.onerror = function () {
-                    alert("요청 실패");
-                };
-
-                xhr.send();
-            }
-        }
-
-        function sendEmail() {
-        	
-            const userEmail = document.getElementById("userEmail").value;
-
-            const xhr = new XMLHttpRequest();
-            
-            xhr.open("POST", "/login/pwdlookup/send?userEmail=" + userEmail, true);
-            //xhr.setRequestHeader(header, token);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            
-            
-            var data = "userEmail=" + encodeURIComponent(userEmail);
-            
-            xhr.onreadystatechange = function() {
-            	if(xhr.readyState === XMLHttpRequest.DONE) {
-            		if(xhr.status === 200) {
-            			alert(xhr.response);
-            			window.location.href = "/logout";
-            		}else {
-            			alert("요청 실패");
-            		}
-            	}
-            };
-            
-            // 요청 전송
-            xhr.send(data);
-            
-        }
-    });
-   
-</script>
 
 </head>
 <body>
-    
+<th:block layout:fragment="Content">    
      <div class="container">
         <h1 class="text-center mt-5 ">비밀번호 찾기</h1>
          <div class="container border rounded-4 shadow-lg p-5 mt-4"
@@ -118,6 +48,80 @@ document.addEventListener("DOMContentLoaded", function () {
     </div>
     </div>
 
+	<script>
+	
+	//const header = $("meta[name='_csrf_header']").attr('content');
+	//const token = $("meta[name='_csrf']").attr('content');
+	
+	document.addEventListener("DOMContentLoaded", function () {
+	        const checkEmailButton = document.getElementById("checkEmail");
+	        checkEmailButton.addEventListener("click", checkEmail);
+	
+	        function checkEmail() {
+	            const userEmail = document.getElementById("userEmail").value;
+	
+	            if (!userEmail || userEmail.trim() === "") {
+	                alert("이메일을 입력하세요.");
+	            } else {
+	                const xhr = new XMLHttpRequest();
+	                xhr.open("POST", '/login/pwdlookup/check?userEmail=' + encodeURIComponent(userEmail), true);
+	                //xhr.setRequestHeader(header, token);
+	
+	                xhr.onload = function () {
+	                    if (xhr.status === 200) {
+	                        const result = xhr.responseText;
+	                        console.log("result: " + result);
+	                        if (result === "true") {
+	                            sendEmail();
+	                            alert("이메일이 존재합니다.");
+	                        } else if (result === "false") {
+	                            alert("가입되지 않은 이메일입니다.");
+	                        }
+	                    } else {
+	                        alert("서버 오류: " + xhr.status);
+	                    }
+	                };
+	
+	                xhr.onerror = function () {
+	                    alert("요청 실패");
+	                };
+	
+	                xhr.send();
+	            }
+	        }
+	
+	        function sendEmail() {
+	         
+	            const userEmail = document.getElementById("userEmail").value;
+	
+	            const xhr = new XMLHttpRequest();
+	            
+	            xhr.open("POST", "/login/pwdlookup/send?userEmail=" + userEmail, true);
+	            //xhr.setRequestHeader(header, token);
+	            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	            
+	            
+	            var data = "userEmail=" + encodeURIComponent(userEmail);
+	            
+	            xhr.onreadystatechange = function() {
+	               if(xhr.readyState === XMLHttpRequest.DONE) {
+	                  if(xhr.status === 200) {
+	                     alert(xhr.response);
+	                     window.location.href = "/logout";
+	                  }else {
+	                     alert("요청 실패");
+	                  }
+	               }
+	            };
+	            
+	            // 요청 전송
+	            xhr.send(data);
+	            
+	        }
+	    });
+	   
+	</script>
 
+</th:block>
 </body>
 </html>

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html  xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{common/layouts/defaultLayout}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,49 +19,11 @@
 	src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 
 <link href="/css/user/idlookup.css" rel="stylesheet"></link>
-<script>
 
-document.addEventListener("DOMContentLoaded", function() {
-	
-	var findIdBtn = document.getElementById("findIdBtn");
-	var idLookupResult = document.getElementById("idLookupResult");
-	
-	findIdBtn.addEventListener("click", function() {
-		
-        var userName = document.getElementById("userName").value;
-        var userEmail = document.getElementById("userEmail").value;
-
-        // XMLHttpRequest 생성
-        var xhr = new XMLHttpRequest();
-
-        // POST 요청 설정
-        xhr.open("POST", "/login/idlookup", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-        // 요청 본문 생성
-        var data = "userName=" + encodeURIComponent(userName) + "&userEmail=" + encodeURIComponent(userEmail);
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE) { 
-                if (xhr.status === 200) {
-                	idLookupResult.textContent = xhr.response;
-                }else {
-                	alert("아이디 찾기 오류");
-                	}
-                }
-            };
-
-        // 요청 전송
-        xhr.send(data);
-       
-    });
-});
-
-</script>
 
 </head>
 <body>
-
+<th:block layout:fragment="Content">
 	<div class="container ">
 		<h1 class="text-center mt-5 ">아이디 찾기</h1>
          <div class="container border rounded-4 shadow-lg p-5 mt-4"
@@ -118,5 +82,46 @@ document.addEventListener("DOMContentLoaded", function() {
 	</div>
 
 
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+   
+   var findIdBtn = document.getElementById("findIdBtn");
+   var idLookupResult = document.getElementById("idLookupResult");
+   
+   findIdBtn.addEventListener("click", function() {
+      
+        var userName = document.getElementById("userName").value;
+        var userEmail = document.getElementById("userEmail").value;
+
+        // XMLHttpRequest 생성
+        var xhr = new XMLHttpRequest();
+
+        // POST 요청 설정
+        xhr.open("POST", "/login/idlookup", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        // 요청 본문 생성
+        var data = "userName=" + encodeURIComponent(userName) + "&userEmail=" + encodeURIComponent(userEmail);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) { 
+                if (xhr.status === 200) {
+                  idLookupResult.textContent = xhr.response;
+                }else {
+                  alert("아이디 찾기 오류");
+                  }
+                }
+            };
+
+        // 요청 전송
+        xhr.send(data);
+       
+    });
+});
+
+</script>
+
+</th:block>
 </body>
 </html>
