@@ -139,6 +139,8 @@
             </div>
         </div>
         
+        
+        
         <!-- 유저 소개 수정폼 style="display: none;"-->
         <div class="formBox" id="modifyUserBox" style="display: none;">
             <form class="needs-validation" id="formData" 
@@ -172,13 +174,15 @@
 
                     </div>
                     
+                    
                     <!-- 유저 유효성 검증 추가하기 -->
                     <div class="m-3 user-infoBox">
                         <div class="row user-nicknameBox">
                             <div class="col-md-6">
-                                <input type="text" th:field="*{userNickname}" class="userNickname" th:value="${user != null}? ${user.getUserNickname()} : ''"/>
-         <span th:if="${valid_userNickname}" id="valid"
-                     th:text="${valid_userNickname}" th:style="${valid_userNickname != null ? 'color:#F96666;' : ''}"></span>
+                                <input type="text" th:field="*{userNickname}" class="userNickname" 
+                                th:value="${user != null}? ${user.getUserNickname()} : ''"/>
+                                <span th:if="${valid_userNickname}" id="valid" th:text="${valid_userNickname}" 
+                                th:style="${valid_userNickname != null ? 'color:#F96666;' : ''}"></span>
                            
                             </div>
                             <div class="col-md-6">
@@ -198,7 +202,7 @@
             </form>
         </div>
     </div>
-
+    
     
     <!-- 게시글 & 이미지 -->
     <div class="container my-5">

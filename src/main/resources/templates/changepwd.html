@@ -71,13 +71,12 @@
 					
 					<th:block th:if="${wrongPassword == null}">
 						<div class="form-floating mb-3">
-							<input type="password" name="currentPwd" class="form-control"
-								id="currentPwd"
+							<input type="password" name="currentPwd" class="form-control" id="currentPwd"
 								th:value="${dto != null}? ${dto.getCurrentPwd()} : ''" required>
 							<label class="fs-5" for="currentPwd">기존 비밀번호</label> 
 							<span
-								th:if="${valid_currentPwd}" id="valid"
-								th:text="${valid_currentPwd}" th:style="${valid_currentPwd !=null? 'color:#F96666;' : ''}"></span>
+								th:if="${valid_currentPwd}" id="valid" th:text="${valid_currentPwd}" 
+								th:style="${valid_currentPwd !=null? 'color:#F96666;' : ''}"></span>
 						</div>
 					</th:block>
 
@@ -88,8 +87,8 @@
 								th:value="${dto != null}? ${dto.getCurrentPwd()} : ''" required>
 							<label class="fs-5" for="currentPwd">기존 비밀번호</label> 
 							<span
-								th:if="${valid_currentPwd}" id="valid"
-								th:text="${valid_currentPwd}" th:style="${valid_currentPwd !=null? 'color:#F96666;' : ''}"></span>
+								th:if="${valid_currentPwd}" id="valid" th:text="${valid_currentPwd}" 
+								th:style="${valid_currentPwd !=null? 'color:#F96666;' : ''}"></span>
 							<div class="invalid-feedback" th:text="${wrongPassword}"></div>
 						</div>
 					</th:block>

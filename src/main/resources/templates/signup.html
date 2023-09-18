@@ -122,8 +122,8 @@
 					th:value="${signupDto != null}? ${signupDto.userNickname} : ''"
 					class="form-control" placeholder="닉네임을 입력해주세요" required /> 
 					<span
-					th:if="${valid_userNickname}" id="valid"
-					th:text="${valid_userNickname}" th:style="${valid_userNickname !=null? 'color:#F96666;' : ''}"></span>
+					th:if="${valid_userNickname}" id="valid" th:text="${valid_userNickname}" 
+					th:style="${valid_userNickname !=null? 'color:#F96666;' : ''}"></span>
 			</div>
 
 			<!-- 이메일 입력 필드 -->
