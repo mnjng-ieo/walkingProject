@@ -1,5 +1,13 @@
+/* 목차 */
+/*
+    1. 폰트 
+    2. Header 영역
+    3. 중간 메인 영역
+    4. Footer 영역    
+*/
 
-/* 폰트 */
+
+/* 1. 폰트 */
 @font-face {
     font-family: 'KimjungchulGothic-Bold';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/KimjungchulGothic-Bold.woff2') format('woff2');
@@ -14,23 +22,64 @@
     font-style: normal;
 }
 
+/* 드래그 선택 컬러 */
+::selection{
+    color: white;
+    background : #3D8361;
+}
 
 /* 전체 폰트 적용 */
 body{
-	font-family: 'KimjungchulGothic-Bold';
-}	
+    font-family: 'KimjungchulGothic-Bold';
+}   
 
 
-/* Header 영역 */
+/* 2. Header 영역 */
 /* 상단 메뉴 배경색 변경 */
 .topnav {
+    background-color: white;
+}
+
+.nav-link {
+	color: #0B6138;
+	font-size: 1.15rem;
+	font-family: 'NanumSquareRound';
+}
+
+.nav-link:hover{
+    color: #0B6138;
+}
+
+.header-login-button {
+	margin-right: 20px;
+}
+
+.header-login-button:hover {
+	background-color: #E1ECC8;
+	color: #0B6138;
+}
+
+.header-signup-button {
+	background-color: #7FB77E;
+	color: white;
+}
+
+.header-signup-button:hover {
 	background-color: #3D8361;
-	font-size: 20px;
+	color: #F7F6DC;
+}
+
+.header-login-button, .header-signup-button {
+	margin-top: 10px;
+	width: 115px; height: 40px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	line-height: 23px;
 }
 
 /* 로고 폰트체 적용 */
-.logoName {
-	 font-family: 'Yeongdo-Rg';
+.header {
+     font-family: 'Yeongdo-Rg';
 }
 
 /* 로고 이미지 적용 */
@@ -39,8 +88,32 @@ body{
   height: 49px;
 }
 
-/* Footer 영역 */
+
+/* 3. 중간 메인 영역 */
+/* 좋아요 순 BEST 9 */
+    /* 산책로명이 2줄을 차지할 경우, 말줄임 이용 */
+.ellipsis{
+    white-space: nowrap;        /* 텍스트를 한 줄에 표시 */
+    overflow: hidden;           /* 넘치는 부분을 숨김 */
+    text-overflow: ellipsis;    /* 넘치는 부분에 "..." 추가 */
+    width: 100%;                /* 너비를 100%로 설정하여 부모 요소의 크기에 맞게 텍스트를 자름 */
+}
+
+/* 하트 아이콘 크기 설정 */
+.heart-icon {
+    width: 25px;
+    padding-bottom: 3px;
+}
+
+.carousel-control-prev-icon {
+    color: green;
+}
+
+/* 핫한 해시태그 출력 영역*/
+
+
+/* 4. Footer 영역 */
 .footer{
-	width: 100%;
-	background-color: #EEF2E6;
+    width: 100%;
+    background-color: #EEF2E6;
 }
