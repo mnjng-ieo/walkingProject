@@ -38,6 +38,8 @@
 						<label for="userNickname" class="form-label fs-5 mt-4">닉네임</label>
 						<span class="form-control-lg mt-2" id="userNickname"
 							th:text="${user.userNickname}"> </span>
+						<div th:if="${valid_userNickname}" id="valid"
+                     th:text="${valid_userNickname}" th:style="${error ? 'color:#F96666;' : ''}"></div>
 
 					</div>
 
@@ -110,7 +112,7 @@
 								th:field="*{userNickname}" required>
 						</div>
 						<span th:if="${valid_userNickname}" id="valid"
-							th:text="${valid_userNickname}"></span>
+							th:text="${valid_userNickname}" th:style="${error ? 'color:#F96666;' : ''}"></span>
 					</div>
 
 					<div class="form-group mb-3 w-75 m-auto row g-2 align-items-center">
@@ -251,11 +253,11 @@
 
 
 				<!-- 버튼 -->
-				<form action="/main/mypage/userpage/changepwd" method="get" >
+				<form action="/mypage/userpage/changepwd" method="get" >
 					<button type="submit" class="btn rounded-3 d-block fs-5 w-75 mt-5 changePwdBtn" >비밀번호
 						변경하기</button>
 				</form>
-				<form action="/main/mypage/userpage/withdraw" method="get">
+				<form action="/mypage/userpage/withdraw" method="get">
 					<button type="submit"
 						class="btn rounded-3 d-block fs-5 w-75 mb-5 withdrawBtn">탈퇴하기</button>
 				</form>

@@ -26,25 +26,28 @@
 						<input type="password" name="currentPwd" class="form-control"
 							id="currentPwd"
 							th:value="${dto != null}? ${dto.getCurrentPwd()} : ''" required>
-						<label class="fs-5" for="currentPwd">기존 비밀번호</label> <span
+						<label class="fs-5" for="currentPwd">기존 비밀번호</label> 
+						<span
 							th:if="${valid_currentPwd}" id="valid"
-							th:text="${valid_currentPwd}"></span>
+							th:text="${valid_currentPwd}" th:style="${error ? 'color:#F96666;' : ''}"></span>
 					</div>
 
 					<div class="form-floating mb-3">
 						<input type="password" name="newPwd" class="form-control"
 							id="newPwd" th:value="${dto != null}? ${dto.getNewPwd()} : ''"
 							required> 
-						<label class="fs-5" for="newPwd">새로운 비밀번호</label> <span
-							th:if="${valid_newPwd}" id="valid" th:text="${valid_newPwd}"></span>
+						<label class="fs-5" for="newPwd">새로운 비밀번호</label> 
+						<span
+							th:if="${valid_newPwd}" id="valid" th:text="${valid_newPwd}" th:style="${error ? 'color:#F96666;' : ''}"></span>
 					</div>
 					<div class="form-floating mb-3">
 						<input type="password" name="comfirmPwd" class="form-control"
 							id="comfirmPwd"
 							th:value="${dto != null}? ${dto.getComfirmPwd()} : ''" required>
-						<label class="fs-5" for="comfirmPwd">비밀번호 확인</label> <span
+						<label class="fs-5" for="comfirmPwd">비밀번호 확인</label> 
+						<span
 							th:if="${valid_comfirmPwd}" id="valid"
-							th:text="${valid_comfirmPwd}"></span>
+							th:text="${valid_comfirmPwd}" th:style="${error ? 'color:#F96666;' : ''}"></span>
 					</div>
 
 					<div class="alert alert-danger" id="error-message"
@@ -76,7 +79,7 @@
 							<label class="fs-5" for="currentPwd">기존 비밀번호</label> 
 							<span
 								th:if="${valid_currentPwd}" id="valid"
-								th:text="${valid_currentPwd}"></span>
+								th:text="${valid_currentPwd}" th:style="${error ? 'color:#F96666;' : ''}"></span>
 						</div>
 					</th:block>
 
@@ -88,7 +91,7 @@
 							<label class="fs-5" for="currentPwd">기존 비밀번호</label> 
 							<span
 								th:if="${valid_currentPwd}" id="valid"
-								th:text="${valid_currentPwd}"></span>
+								th:text="${valid_currentPwd}" th:style="${error ? 'color:#F96666;' : ''}"></span>
 							<div class="invalid-feedback" th:text="${wrongPassword}"></div>
 						</div>
 					</th:block>
@@ -99,7 +102,7 @@
 							required> 
 							<label class="fs-5" for="newPwd">새로운 비밀번호</label> 
 							<span
-							th:if="${valid_newPwd}" id="valid" th:text="${valid_newPwd}"></span>
+							th:if="${valid_newPwd}" id="valid" th:text="${valid_newPwd}" th:style="${error ? 'color:#F96666;' : ''}"></span>
 					</div>
 					
 					<th:block th:if="${differentPassword == null}">
@@ -110,7 +113,7 @@
 							<label class="fs-5" for="comfirmPwd">비밀번호 확인</label> 
 							<span
 								th:if="${valid_comfirmPwd}" id="valid"
-								th:text="${valid_comfirmPwd}"></span>
+								th:text="${valid_comfirmPwd}" th:style="${error ? 'color:#F96666;' : ''}"></span>
 						</div>
 						
 					</th:block>
@@ -122,7 +125,7 @@
 							<label class="fs-5" for="comfirmPwd">비밀번호 확인</label> 
 							<span
 								th:if="${valid_comfirmPwd}" id="valid"
-								th:text="${valid_comfirmPwd}"></span>
+								th:text="${valid_comfirmPwd}" th:style="${error ? 'color:#F96666;' : ''}"></span>
 							<div class="invalid-feedback" th:text="${differentPassword}"></div>
 						</div>
 					</th:block>
