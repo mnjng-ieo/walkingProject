@@ -108,14 +108,18 @@ window.onload = function(){
     let moreOpenContent = document.getElementById("moreOpenContent")
     let moreClose = document.getElementById("moreClose")
     let moreOpen = document.getElementById("moreOpen")
-    moreClose.addEventListener('click', function(){
-        moreOpenContent.style.display ="block"
-        moreClose.style.display="none"
-    })
-    moreOpen.addEventListener('click', function(){
-        moreOpenContent.style.display ="none"
-        moreClose.style.display="block"
-    })
+    if(moreClose != null){		
+	    moreClose.addEventListener('click', function(){
+	        moreOpenContent.style.display ="block"
+	        moreClose.style.display="none"
+	    })
+	}
+	if(moreOpen != null){		
+	    moreOpen.addEventListener('click', function(){
+	        moreOpenContent.style.display ="none"
+	        moreClose.style.display="block"
+	    })
+	}
     // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
     function closeOverlay() {
         overlay.setMap(null);     

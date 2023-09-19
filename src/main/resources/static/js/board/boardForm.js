@@ -211,17 +211,12 @@ window.onload = function(){
 		});
 		
 	}
-	
-	
 
 	// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
 	function closeOverlay() {
 	    overlay.setMap(null);     
 	}
 	
-	
-	
-		
 	// 생성처리
 	document.getElementById("submitBtn").addEventListener("click",
 		function(){
@@ -293,7 +288,7 @@ let boardFile;
 // 이미지 업로드 기능 : 뷰에서 img의 src 속성 바꾸기
 function uploadImage() {
     //console.log('이미지 업로드 버튼이 눌러졌습니다.');
-    const imageUploadInput = document.getElementById('imageUploadInput');
+    let imageUploadInput = document.getElementById('imageUploadInput');
     // input 내용에 변화가 생기면, courseMainImage 요소의 src 속성 변경시키기
     // 사용자가 input 요소에서 파일을 선택하거나 변경할 때 발생
     imageUploadInput.addEventListener('change', function() {

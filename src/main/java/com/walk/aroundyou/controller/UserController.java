@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.walk.aroundyou.domain.Board;
+import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.IBoardListResponse;
@@ -42,6 +43,7 @@ import com.walk.aroundyou.dto.UserPasswordChangeDTO;
 import com.walk.aroundyou.dto.UserSignupDTO;
 import com.walk.aroundyou.security.AdminAuthorize;
 import com.walk.aroundyou.service.BoardService;
+import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.UploadImageService;
 import com.walk.aroundyou.service.UserService;
 
@@ -59,6 +61,7 @@ public class UserController {
 	private final UserService userService;
 	private final UploadImageService uploadImageService;
 	private final BoardService boardService;
+	private final CourseService courseService;
 
 	// 페이지네이션 사이즈(뷰에 보이는 페이지 수)
 	private final static int PAGINATION_SIZE = 5;
@@ -403,7 +406,24 @@ public class UserController {
 				}
 				// 마이페이지에서 내 좋아요 확인하기(연서 추가)
 				Page<ICourseLikeResponseDTO> myCourses = userService.findMyCourseAndCnt(userId, currentPage);
-
+				// 산책로 이미지 경로 넘기기
+				List<String> imagePaths = new ArrayList<>();
+				for (ICourseLikeResponseDTO courseResponseDTO : myCourses) {
+					//UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+					Course course = courseService.findById(courseResponseDTO.getCourseId());
+					UploadImage uploadImageCourse = uploadImageService.findByCourse(course);
+					if (uploadImageCourse != null) {
+						String imagePathCourse = 
+								uploadImageService.findCourseFullPathById(
+										uploadImageCourse.getFileId());
+						imagePaths.add(imagePathCourse);
+					} else {
+						// 여기 기본 이미지를 어떤 걸로 해야할지 약간 고민스럽다. 
+						imagePaths.add("/images/defaultCourseMainImg.jpg");
+					}
+				}
+				// 모델에 이미지 경로 리스트 추가
+				model.addAttribute("imagePaths", imagePaths);
 				// pagination 설정
 				int totalPages = myCourses.getTotalPages();
 				int pageStart = getPageStart(currentPage, totalPages);

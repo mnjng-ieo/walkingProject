@@ -65,7 +65,7 @@
 	                    <img src="/images/board-write.png" alt="게시물 작성하기" />
 	                    <p>게시물<br>작성하기</p>
 	                </div>
-	                <div class="icon-wrapper">
+	                <div class="icon-wrapper viewIcon" onclick="commentFocus()">
 	                    <img src="/images/comment.png" alt="코멘트 달기" />
 	                    <p>댓글<br>달기</p>
 	                </div>
@@ -151,13 +151,12 @@
         <div class="d-flex justify-content-center flex-wrap mb-4 px-lg-5" 
              th:each="comment, stat : ${comments}" 
                 style="text-align: auto">
-            <div class="mt-1 rounded-circle mx-1 overflow-hidden " 
-                style="width: 80px; height: 80px;" >
-                <img class="border rounded-circle m-1" 
-                    th:src="${commentMemberImagePaths!=null}? 
-                    ${commentMemberImagePaths[stat.index]} : '/images/defaultUserImages.png'"
-                    style="width: 100%; height: 100%;" ></img>
-            </div>
+			<div class="mt-1 rounded-circle mx-1 overflow-hidden " style="width: 80px; height: 80px;">
+				<img class="" 
+						th:src="${commentMemberImagePaths!=null}? 
+						${commentMemberImagePaths[stat.index]}: '/images/defaultUserImage.png'"
+						style="width: 100%; height: 100%;" ></img>
+			</div>
             <div class="col-10 bubble">
         <!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
                 <div class="d-flex justify-content-between mx-2">
