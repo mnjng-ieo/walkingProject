@@ -69,20 +69,20 @@
 				</ul>
 			</div>
 			<div>
-				<div class="mx-lg-3 mx-2 p-lg-5 p-4 mb-3 bg-white rounded-4 boardContent">
+				<div class="mx-lg-3 mx-2 p-lg-5 p-4 mb-3 bg-white rounded-4 boardContent text-center">
 					<!-- 이미지 -->
 				    <div th:if="${imagePaths!=null}"
-				    	class="board-imgBox mb-3"
-				        style="width: 250px; height: 250px; 
+				    	class="board-imgBox mb-5"
+				        style="width: auto; height: 500px; 
                         background-color: #fff; overflow: hidden;">
 				        <img class="board-imgBox_img"	
-				            style="width: 100%; height: 100%; object-fit: cover;"
+				            style="width: auto; height: 100%; object-fit: cover;"
 				            th:src="${imagePaths!=null}? ${imagePaths[0]} : 
 				            '/images/board/defaultBoardImage.png'"
 				            alt="게시판 등록사진" />    
 				    </div>
 				    <!-- 내용 -->
-					<div style="white-space:pre-wrap;">[[${
+					<div style="white-space:pre-wrap; text-align: left;">[[${
 					board.boardContent }]]</div>
 				</div>
 				<!-- 해시태그 리스트 -->
@@ -125,7 +125,7 @@
 							<img class="border rounded-circle" 
 								th:src="${commentMemberImagePaths!=null}? 
 								${commentMemberImagePaths[stat.index]}: '/images/defaultUserImage.png'"
-								style="width: 80px; height: 80px;" ></img>
+								style="width: 100%; height: 100%; " ></img>
 							<p class="m-3" th:text="${comment.userNickname}"></p>
 						</div>
 					</div>

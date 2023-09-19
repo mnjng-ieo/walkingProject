@@ -47,11 +47,25 @@
 			<!-- 마이페이지 --> 
 		    <div class="col mb-3 mx-3" style="width: 170px;">
 		      <h6 class="mt-2">마이페이지</h6>
-		      <ul class="nav flex-column">
+		      <ul th:if="${loginId == null}" class="nav flex-column">
 		        <li class="nav-item mt-2">
-					<a href="#" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">로그인</a></li>
+					<a href="/login" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">로그인</a></li>
 		        <li class="nav-item mt-1">
-					<a href="#" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">회원가입</a></li>
+					<a href="/signup" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">회원가입</a></li>
+		        <li class="nav-item mt-1">
+					<a href="/login/idlookup" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">아이디 찾기</a></li>
+		        <li class="nav-item mt-1">
+					<a href="/login/pwdlookup" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">비밀번호 찾기</a></li>
+		      </ul>		      
+		      <ul th:if="${loginId != null}"  class="nav flex-column">
+		        <li class="nav-item mt-2">
+					<a href="/mypage" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">마이페이지</a></li>
+		        <li class="nav-item mt-1">
+					<a href="/mypage/userpage" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">정보조회</a></li>
+		        <li class="nav-item mt-1">
+					<a href="/logout" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">로그아웃</a></li>
+		        <li th:if="${currentUser != null && currentUserRole == 'ADMIN'}" class="nav-item mt-1">
+					<a href="/admin" class="nav-link p-0 text-body-secondary" style="font-size: 13px;">관리자 페이지</a></li>
 		      </ul>
 		    </div>
 		    

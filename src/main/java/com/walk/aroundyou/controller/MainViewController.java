@@ -1,5 +1,6 @@
 package com.walk.aroundyou.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.Tag;
 import com.walk.aroundyou.domain.UploadImage;
+import com.walk.aroundyou.dto.CourseResponseDTO;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.repository.CourseRepository;
@@ -73,6 +75,26 @@ public class MainViewController {
 		// BEST 9개 출력
 		Page<ICourseResponseDTO> coursePage = courseService.findCoursesOrderByLikes();
 		model.addAttribute("courses", coursePage);  
+		// 산책로 이미지 경로 넘기기
+		List<String> imagePaths = new ArrayList<>();
+		for (ICourseResponseDTO courseResponseDTO : coursePage.getContent()) {
+			//UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			Course course = courseService.findById(courseResponseDTO.getCourseId());
+			UploadImage uploadImage = uploadImageService.findByCourse(course);
+			if (uploadImage != null) {
+				String imagePath = 
+						uploadImageService.findCourseFullPathById(
+								uploadImage.getFileId());
+				imagePaths.add(imagePath);
+			} else {
+				// 여기 기본 이미지를 어떤 걸로 해야할지 약간 고민스럽다. 
+				imagePaths.add("/images/defaultCourseMainImg.jpg");
+			}
+		}
+		// 모델에 이미지 경로 리스트 추가
+		model.addAttribute("imagePaths", imagePaths);
+		
+		
 		// 가장 많이 사용된 태그 메인화면에 출력하기 
 		List<String> hotTagList = tagService.findTagsByBoardTagId();
 		model.addAttribute("hotTagList", hotTagList);			

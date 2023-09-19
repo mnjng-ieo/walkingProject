@@ -1,5 +1,6 @@
 package com.walk.aroundyou.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,12 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.walk.aroundyou.domain.Course;
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.domain.UploadImage;
 import com.walk.aroundyou.dto.IBoardListResponse;
 import com.walk.aroundyou.dto.ICourseResponseDTO;
 import com.walk.aroundyou.dto.ITagResponse;
 import com.walk.aroundyou.repository.TagRepository;
+import com.walk.aroundyou.service.CourseService;
 import com.walk.aroundyou.service.MainSearchService;
 import com.walk.aroundyou.service.UploadImageService;
 import com.walk.aroundyou.service.UserService;
@@ -38,6 +41,9 @@ public class MainSearchController {
 
 	@Autowired
 	private UploadImageService uploadImageService;
+	
+	@Autowired
+	private CourseService courseService;
 	
 	@GetMapping("/search")
 	public String mainSearch(
@@ -76,6 +82,24 @@ public class MainSearchController {
 		if (courseResults.size() > 5) { // 다섯개 이상이면 
 		    courseResults = courseResults.subList(0, 5); // 다섯개 까지만 표시
 		}
+		// 산책로 이미지 경로 넘기기
+		List<String> imagePaths = new ArrayList<>();
+		for (ICourseResponseDTO courseResponseDTO : courseResults) {
+			//UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+			Course course = courseService.findById(courseResponseDTO.getCourseId());
+			UploadImage uploadImage = uploadImageService.findByCourse(course);
+			if (uploadImage != null) {
+				String imagePath = 
+						uploadImageService.findCourseFullPathById(
+								uploadImage.getFileId());
+				imagePaths.add(imagePath);
+			} else {
+				// 여기 기본 이미지를 어떤 걸로 해야할지 약간 고민스럽다. 
+				imagePaths.add("/images/defaultCourseMainImg.jpg");
+			}
+		}
+		// 모델에 이미지 경로 리스트 추가
+		model.addAttribute("imagePaths", imagePaths);
 
 		// 3. 게시물
 		List<IBoardListResponse> boardResults = 

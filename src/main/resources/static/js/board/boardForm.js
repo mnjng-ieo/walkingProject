@@ -156,11 +156,11 @@ window.onload = function(){
 		courseLng = result.coursSpotLo
 		courseAddr = result.signguCn
 		courseLength = result.coursDetailLtCn
-		courseTime = result.coursTimeCn
-		
+		courseTime = result.coursTimeCn;
+
 		let savedImageName = document.getElementById("savedImageName").value;
 		let imagePath;
-	    if (savedImageName != null) {
+	    if (savedImageName) {
 	        imagePath = '/upload-images/course/' + savedImageName;
 	    } else {
 	        imagePath = '/images/defaultCourseMainImg.jpg';
@@ -229,13 +229,19 @@ window.onload = function(){
             // 이미지 업로드를 위한 FormData 객체 생성
             const formData = new FormData();
             const imageUploadInput = document.getElementById('imageUploadInput');
-            
+            const boardImage = document.getElementById('boardImage');
+   
             // (최종 업로드 취소되지 않은) 새로 업로드된 파일이 있는지 확인
 		    if (imageUploadInput.files.length === 0) {
-				// 이미지를 최종 선택하지 않은 경우
-				formData.append('ifNewImageExists', 0);
+				if( boardImage.src == '/images/board/defaultBoardImage.jpg'){
+					// 이미지를 최종 선택하지 않은 경우(이미지 삭제)
+					formData.append('ifNewImageExists', 0);					
+				}else{
+					// 이미지가 변경되지 않는 경우(이미지 유지)
+					formData.append('ifNewImageExists', 2);					
+				}
 			} else {
-				// 이미지를 최종 선택한 경우
+				// 이미지를 최종 선택한 경우(이미지 변경)
 				formData.append('ifNewImageExists', 1);
 				formData.append('files', imageUploadInput.files[0]);
 			}

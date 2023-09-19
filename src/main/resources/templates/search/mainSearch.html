@@ -4,7 +4,7 @@
       layout:decorate="~{common/layouts/defaultLayout}">
 <head>
 <meta charset="UTF-8">
-    <title>홈페이지</title>
+    <title>[[${{keyword}}]] 에 대한 전체 검색결과</title>
     <script type="text/javascript" src="/js/common/mainSearch.js"></script>
     <link rel="stylesheet" href="/css/common/mainSearch.css">
 
@@ -46,7 +46,7 @@
         <p class ="searchCount fs-3 mt-5">검색어가 포함된 산책로 <span th:text="${totalCourseResults}"></span>건</p>
         <div id="courseResults" class = "border rounded-4 shadow-sm">
             <p th:if="${#lists.isEmpty(courseResults)}" class= "noResult mx-5 mt-5 text-center fs-5">검색어와 일치하는 산책로가 없습니다.</p>
-            <div th:each="courseResult : ${courseResults}"
+            <div th:each="courseResult, stat : ${courseResults}"
                  th:data-url="@{/course/{id}(id=${courseResult.courseId})}"
                  onclick="redirectToDetail(this)"
                  style="cursor:pointer;"
@@ -54,7 +54,9 @@
               <div class="row g-0">
                 <!-- 사진 -->
                 <div class="col-lg-2">
-                  <img src="/images/course/defaultCourseImg.png" class="img-fluid" alt="산책로 사진">
+	                <img class="card-img-top course-list_imgBox img-fluid" 
+		                th:src="${imagePaths[stat.index]}"
+		                alt="산책로 사진" />
                 </div>
                 <!-- 글 부분-->
                 <div class="col-lg-10">

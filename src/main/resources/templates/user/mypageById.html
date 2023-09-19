@@ -5,12 +5,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>마이페이지</title>
+<title>[[${user.userNickname}]]</title>
 <!-- Popper.js -->
 <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 <!-- 자바스크립트 -->
-<script type="text/javascript" src="/js/common/mypage.js"></script> 
+<script type="text/javascript" src="/js/common/mypageById.js"></script> 
 <!-- css -->
 <link rel="stylesheet" href="/css/common/mypage.css">
 
@@ -23,79 +23,6 @@
 </head>
 <body>
 <th:block layout:fragment="Content">
-<!-- 상단 -->
-<div class ="container d-flex justify-content-between">
-    <!-- 브레드크럼(왼쪽) -->
-    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-      <ol class="breadcrumb px-3 pt-4">
-        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-        <li class="breadcrumb-item"><a th:href="@{/mypage}">마이페이지</a></li>
-      </ol>
-    </nav>
-
-    <!-- 사이드바(오른쪽) -->
-    <section class ="sidebar">
-        <div class ="px-5 pt-4">
-            <button class="btn sidebarBtn fs-2" type="button" 
-            data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" 
-            aria-controls="offcanvasRight">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-          <div class="offcanvas-header">
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-          <div class="offcanvas-body">
-             <div class="flex-shrink-0 p-3 bg-white" style="width: 300px;">
-                  <a href="/"
-                      class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
-                      <span class="fs-2 fw-semibold sidebar-title">WalkAroundYou
-                        <img src="/images/common/logo_img.png" class="side-logo mb-5"></img>
-                      </span>
-                  </a>
-                  <ul class="list-unstyled ps-0">
-    
-                      <li class="mb-1">
-                          <button
-                              class="fs-4 btn btn-toggle align-items-center rounded collapsed"
-                              data-bs-toggle="collapse" data-bs-target="#account-collapse"
-                              aria-expanded="false">나의 정보
-                           <i class="fa-solid fa-gear sidebar-sub-title"></i>    
-                          </button>
-                          <div class="collapse show mx-4" id="account-collapse">
-                              <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-5 small">
-                                  <li class="my-1"><a th:href="@{/mypage}" class="link-dark rounded">마이페이지</a></li>
-                                  <li class="my-1"><a th:href="@{/mypage/userpage}" class="link-dark rounded">정보
-                                          조회</a></li>
-                                  <li class="my-1"><a th:href="@{/logout}" class="link-dark rounded">로그아웃</a></li>
-                              </ul>
-                          </div>
-                      </li>
-    
-                      <li class="border-top my-5"></li>
-                      <li class="mb-1">
-                          <button
-                              class="fs-4 btn btn-toggle align-items-center rounded collapsed"
-                              data-bs-toggle="collapse" data-bs-target="#home-collapse"
-                              aria-expanded="true">나의 기록
-                           <i class="fa-solid fa-seedling sidebar-sub-title2"></i>
-                          </button>
-                          <div class="collapse show mx-4" id="home-collapse">
-                              <ul class="fs-5 btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                  <li class="my-1"><a th:href="@{/mypage-course}" class="link-dark rounded">내가 좋아한 길</a></li>
-                                  <li class="my-1"><a th:href="@{/mypage/course-commenet}" class="link-dark rounded">댓글 작성한 산책로</a></li>
-                                  <li class="my-1"><a th:href="@{/mypage/board-commenet}" class="link-dark rounded">댓글 작성한 게시물</a></li>
-                              </ul>
-                          </div>
-                      </li>
-                  </ul>
-              </div>        
-          </div>
-        </div>
-    </section><!-- 사이드바 끝 -->             
-</div><!-- 상단 끝 -->
-
     <div class="container">
         
         <h1 class="my-5 text-center formTitle">My Page</h1>
@@ -124,12 +51,6 @@
 									th:style="${valid_userNickname != null ? 'color:#F96666;' : ''}"></div>
                             </div>
                             <div class="col-md-6">
-                                <!--  -->
-                                <button type="submit" id="modifyBtn" 
-                                        style="margin-top: -1px;"
-                                        class="btn userBox_btn">수정하기
-                                <i class="fa-solid fa-pencil"></i>        
-                                </button>
                             </div>
                         </div>
                         <div class="row user-descBox">
@@ -144,65 +65,7 @@
                 </div>
             </div>
         </div>
-        
-        <!-- 유저 소개 수정폼 style="display: none;"-->
-        <div class="formBox" id="modifyUserBox" style="display: none;">
-            <form class="needs-validation" id="formData" 
-                method="post" action="/mypage" th:object="${user}"
-                enctype="multipart/form-data">
-                <input type="hidden" name="userId" th:value="${user.userId}">
-                <div class="m-3 d-flex justify-content-center userBox">
-                    <div class="user-imgWithBtnBox">
-                        <div class="user-imgBox">
-                            <!-- 파일 업로드를 위한 숨겨진 input 요소. 
-                                 업로드 버튼을 클릭하면 input을 클릭한 것처럼 작동하여 파일 선택 다이얼로그를 열게 됨 -->
-                             <input type="file" name="file" id="imageUploadInput" 
-                                    style="display:none;" accept="image/*">
-                             <input type="hidden" name="ifNewImageExists"
-                                   id="ifNewImageExists" value="1">
-                            <div class="user-imgBox_imageborder">
-                               <img class="user-imgBox_image" 
-                                   id="user-imgBox_image"
-                                   alt="유저 프로필 사진"
-                                th:src="${imagePath}? 
-                                ${imagePath}: '/images/defaultUserImage.png'" />
-                            </div>
-                            
-                        </div>
-                        <button type="button" class="imageUploadButton"
-                                onclick="uploadImage()"
-                                ><i class="fa-solid fa-plus"></i></button>
-                        <button type="button" class="imageDeleteButton"
-                               onclick="deleteImage()"
-                               ><i class="fa-solid fa-circle-xmark"></i></button>
-
-                    </div>
-                    <div class="m-3 user-infoBox">
-                        <div class="row user-nicknameBox">
-                            <div class="col-md-6">
-                                <input type="text" th:field="*{userNickname}"
-                                    class="userNickname" 
-                                    th:value="${user != null}? ${user.getUserNickname()} : ''"/>
-								<span th:if="${valid_userNickname}" id="valid" th:text="${valid_userNickname}" 
-									th:style="${valid_userNickname != null ? 'color:#F96666;' : ''}"></span>
-                            </div>
-                            <div class="col-md-6">
-                                <button type="submit" id="modifySuccessBtn" 
-                                        class="userBox_btn"
-                                    >수정 완료</button>
-                            </div>
-                        </div>
-                        <div class="row user-descBox">
-                            <textarea th:field="*{userDescription}"
-                                    class="userDesc userDescEdit"
-                                    id="userDescription" name="userDescription"
-                                    rows="4" placeholder="소개글 한 마디를 입력해주세요!"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div><!-- 사용자 정보 끝 -->
+       
 
     
     <!-- 게시글 & 이미지 -->
@@ -225,9 +88,6 @@
                     style="position: relative;">
                    <p class = "my-2 myCount">
                    게시물 수 : <span th:text="${myBoards.totalElements} + ' 개'"></span></p>
-                   <a class="btn type-btn mx-4 border rounded-3 type-button b-editor" 
-                   th:href="@{/board-editor}" role="button"
-                   style="position: absolute; right: 70px;">게시글 작성</a>
                </div>
                <p th:if="${myBoards.totalElements == 0}" 
                   class= "noResult mx-5 mt-5 text-center fs-5">작성하신 게시물이 없습니다.</p>
@@ -315,44 +175,45 @@
                        <li class="page-item" id="pageNext"
                            th:classappend="${currentPage == lastPage - 1} ? 'disabled' : ''">
                            <a class="page-link arrow" 
-                           href="javascript:void(0);"
-                           th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
-                               <i class="fa-solid fa-chevron-right"></i></a>
+	                           href="javascript:void(0);"
+	                           th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
+	                               <i class="fa-solid fa-chevron-right"></i></a>
                        </li>
                     </ul>
                 </div><!-- 페이징 처리 끝 -->     
             </div><!-- (게시글 + 페이지)ajax 사용하기 위함 -->
                    
            </div>
-           
+
         <!-- 이미지버튼 클릭하면 나오는 이미지 -->
         <div class="collapse mt-3" id="imgContainer">  
             <div class="container myImage-lists">
                 <!-- 게시물 사진이 없을 때 처리 -->
                 <div class = "d-flex justify-content-between mb-4 px-2 me-auto">
                     <p class = "my-2 myCount">
-                    내가 업로드한 사진 : <span th:text="${myBoardImageCnt} + ' 개'"></span></p>
+                    [[${user.userNickname}]] 님이 업로드한 사진 : <span th:text="${myBoardImageCnt} + ' 개'"></span></p>
                     <p th:if="${myBoardImageCnt == 0}" 
                     class= "noResult mx-5 mt-5 text-center fs-5">작성하신 게시물이 없습니다.</p>
                 </div>
-                <div class="row justify-content-between myImage-row">
+                <div class="row justify-content-left flex-wrap myImage-row">
                     <div class="myImage-list-wrapper"
-                        th:each="myBoardImage : ${myBoardImagePaths}"
-                        th:data-url="@{/board/{id}(id=${myBoardImage.board.boardId})}" 
+                        th:data-url="@{/board/{id}(id=${myBoard.boardId})}" 
                         onclick="redirectToDetail(this)"
-                        th:if="${myBoardImagePaths !=null}"
+                        th:if="${myBoardImagePaths[stat.index] !=null}"
+                        th:each="myBoard, stat : ${myBoards}"
                          >
                         <!-- 현재 순환 중인 myBoard에 해당하는 이미지 경로를 가져와서 image에 할당 -->
                         <div class="myImage-list">
                             <img class="myImage-img"
-                                th:src="|/upload-images/board/${myBoardImage.savedFileName}|"
+                                th:src="${myBoardImagePaths[stat.index]}"
                                 alt="나의 게시물 사진"/>
                         </div>
                     </div>
                 </div>
             </div>
         </div><!-- 이미지 끝 -->
-       </div><!--게시글 & 이미지 끝 -->   
+       </div><!--게시글 & 이미지 끝 -->
+       </div>   
 </th:block>
 </body>
 </html>

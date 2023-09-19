@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>마이페이지</title>
+<title>내가 좋아한 길</title>
 
 <!-- Popper.js -->
 <script
@@ -104,7 +104,7 @@
 
         <div class="row px-4">
             <p th:if="${myCourses.totalElements == 0}" 
-                  class= "noResult mx-5 mt-5 text-center fs-1">좋아요 한 산책로가 없습니다.</p>
+            	class= "noResult mt-5 text-center fs-5">좋아요 한 산책로가 없습니다.</p>
             <div class="col-4" th:each="item : ${myCourses}">
                 <div class="card course-list"
                      th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">

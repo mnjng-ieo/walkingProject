@@ -19,7 +19,7 @@ public interface CourseRepository
 	
 	//// 마이페이지에서 작성한 댓글들의 산책로 목록 출력
 	@Query(value ="""
-SELECT 
+			SELECT 
                 c.course_id as courseId
                 , c.adit_dc as aditDc
                 , c.cours_dc as coursDc
@@ -293,7 +293,7 @@ SELECT
 			SELECT *
 				FROM course c 
 				WHERE wlk_cours_flag_nm = :#{#wlkCoursFlagNm}
-				ORDER BY 1
+				ORDER BY wlk_cours_nm
 			""", nativeQuery = true)
 	public List<Course> findCourseNameByWlkCoursFlagNm(@Param("wlkCoursFlagNm")String wlkCoursFlagNm);
 

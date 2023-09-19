@@ -311,6 +311,11 @@ public class UploadImageService {
 		return originalFileName.substring(pos + 1);
 	}
 
+	public List<UploadImage> findMyImageByUserId(String userId) {
+		// TODO Auto-generated method stub
+		return uploadImageRepository.findMyImageByUserId(userId);
+	}
+
 	/**
 	 * 파일 다운로드 기능은 굳이 필요하지 않을 것 같아서 구현하지 않았음. 필요하다면 여기서 작성하기
 	 */

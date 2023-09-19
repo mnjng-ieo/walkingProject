@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-   let searchBtn = document.getElementById('searchBtn')
+   let searchBtn = document.getElementById('headerSearchBtn')
    let searchBox = document.getElementById('searchBox')
    
    searchBtn.addEventListener("click", function () {

@@ -266,20 +266,20 @@ public class UserService {
 	
 	/////////////////////// 비밀번호 변경
 	// 비밀번호 변경할 때 로그인 된 아이디를 기준으로 비밀번호 입력하고 맞으면
+	@Transactional
 	public String updateMemberPassword(UserPasswordChangeDTO dto, String userId) {
-
-		Member member = userRepository.findByUserId(userId).get();
-
-		// 입력한 비밀번호가 디비에 저장된 비밀번호와 맞지 않을 경우
-		if (passwordEncoder.matches(dto.getCurrentPwd(), member.getUserPwd())) {
-				
-				// 변경하는 비밀번호 암호화
-				dto.setNewPwd(passwordEncoder.encode(dto.getNewPwd()));
-				member.setUserPwd(dto.getNewPwd());
-				userRepository.save(member);
-		}	
-			return member.getUserId(); 
-			
+	
+	Member member = userRepository.findByUserId(userId).get();
+	
+	if (!passwordEncoder.matches(dto.getCurrentPwd(), member.getUserPwd())) {
+		return null;
+	} 
+	
+	member.setUserPwd(passwordEncoder.encode(dto.getNewPwd()));
+	userRepository.save(member);
+	
+	return "업데이트";
+	
 	}
 	
 	

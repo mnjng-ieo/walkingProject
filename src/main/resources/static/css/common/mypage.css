@@ -333,7 +333,7 @@ a {
 }
 
 .myImage-list-wrapper{
-	margin-top: 0px;
+	margin-top: 30px;
 	width: 33%;
 	transition: transform 0.2s;
 	cursor: pointer;

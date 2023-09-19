@@ -52,7 +52,9 @@
 		                        <div class="col-4" th:each="item, iterStat : ${courses}" th:if="${iterStat.index < 3}">
 		                            <div class="card course-list" th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
 		                                <!-- 산책로 이미지 -->
-		                                <img class="card-img-top course-list_imgBox" src="/images/course/defaultCourseImg.png" alt="산책로 사진" />
+		                                <img class="card-img-top course-list_imgBox" 
+					                         th:src="${imagePaths[iterStat.index]}"
+					                         alt="산책로 사진" />
 		                                <div class="card-body course-list_textbox">
 		                                    <div class="course-list_titlebox">
 		                                        <div class="row course-list_title">
@@ -95,7 +97,9 @@
 		                        <div class="col-4" th:each="item, iterStat : ${courses}" th:if="${iterStat.index >= 3 && iterStat.index < 6}">
 		                            <div class="card course-list" th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
 		                                <!-- 산책로 이미지 -->
-		                                <img class="card-img-top course-list_imgBox" src="/images/course/defaultCourseImg.png" alt="산책로 사진" />
+		                                <img class="card-img-top course-list_imgBox" 
+					                         th:src="${imagePaths[iterStat.index]}"
+					                         alt="산책로 사진" />
 		                                <div class="card-body course-list_textbox">
 		                                    <div class="course-list_titlebox">
 		                                        <div class="row course-list_title">
@@ -138,7 +142,9 @@
 		                        <div class="col-4" th:each="item, iterStat : ${courses}" th:if="${iterStat.index >= 6 && iterStat.index < 9}">
 		                            <div class="card course-list" th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
 		                                <!-- 산책로 이미지 -->
-		                                <img class="card-img-top course-list_imgBox" src="/images/course/defaultCourseImg.png" alt="산책로 사진" />
+		                                <img class="card-img-top course-list_imgBox" 
+					                         th:src="${imagePaths[iterStat.index]}"
+					                         alt="산책로 사진" />
 		                                <div class="card-body course-list_textbox">
 		                                    <div class="course-list_titlebox">
 		                                        <div class="row course-list_title">
