@@ -64,8 +64,13 @@ public class UserController {
 
 	///////////////// 로그인 메인 페이지(처음 시작 할 때의 화면)
 	@GetMapping("/login")
-	public String login(@AuthenticationPrincipal User user) {
-
+	public String login(
+			@RequestParam(value = "error", 
+			required = false) String error, Model model,
+			@AuthenticationPrincipal User user) {
+		if (error != null) {
+            model.addAttribute("errorMessage", "아이디나 비밀번호가 맞지 않습니다!");
+        }
 		// 헤더에 정보 추가하기 위한 코드
 		if (user == null) {			
 			return "login";
@@ -104,7 +109,7 @@ public class UserController {
 		userService.registerUser(dto);
 
 		// 회원가입이 완료된 이후에 로그인 페이지로 이동
-		return "redirect:/login";
+		return "redirect:/login?success=true";
 	}
 
 	//////////////////// 아이디 중복 체크

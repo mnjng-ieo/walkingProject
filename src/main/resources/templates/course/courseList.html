@@ -128,8 +128,8 @@
     <div class="container sortBox">
         <!-- 정렬 방식 선택 : onchange 속성으로 값이 변경될 때마다 Ajax 요청 실행 -->
         <select class="course-list-sort sort border" 
-                id="sort" name="sort" 
-                onchange="updateViewWithSearchResults();">
+        		id="sort" name="sort" 
+                onchange="updateViewWithSearchResults()">
             <option value="default">산책로명 가나다순</option>
             <option value="coursViewCount">조회수 순</option>
             <option value="coursDetailLtCnASC">거리 짧은 순</option>
@@ -138,131 +138,131 @@
     </div>
     <div id="searchResults">
     <!-- 산책로 목록 카드 ; 검색 결과를 표시할 영역-->
-    <input type="hidden" id="imagePaths" th:value="${imagePaths}" />
-    <div class="container course-lists" >
-        <div class="row">
-            <!-- 검색 결과 없을 때 처리 -->
-            <p class = "my-2 courseCount">게시물 수 : <span th:text="${courses.totalElements}"></span></p>
-            <p th:if="${courses.totalElements == 0}" 
-	        class= "noResult mx-5 mt-5 text-center fs-1">검색 결과에 해당하는 산책로가 없습니다.</p>
-    
-            <!-- th:each="item : ${courses}" -->
-            <div class="col-4" 
-                 th:each="item, stat : ${courses}">
-                <!-- 현재 순환 중인 item에 해당하는 이미지 경로를 가져와서 image 변수에 할당 -->
-                <div class="card course-list"
-                     th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
-                    <!-- src="/images/defaultCourseImg.png" 
-                         stat.index는 순환 중인 아이템의 인덱스를 나타냄. 
-                         image가 없는 course의 경우도 컨트롤러에서 기본값을 부여해줬다.
-                          -->
-                    <img class="card-img-top course-list_imgBox" 
-                         th:src="${imagePaths[stat.index]}"
-                         alt="산책로 사진" />
-                    <div class="card-body course-list_textbox">
-                        <div class="course-list_titlebox">
-                            <div class="row course-list_title">
-                                <!-- 산책로 이름 - 큰이름과 작은이름이 서로 같으면 큰 이름만 출력 되도록 
-                                     하려면 th:if="${item.wlkCoursNm} != ${item.wlkCoursFlagNm}" 붙이기 -->
-                                <h5 class="col-10 card-title course-list_big-title" 
-                                    th:text="${item.wlkCoursFlagNm}">
-                                    산책로 큰이름</h5>
-                                <!-- 산책로 난이도 -->
-                                <p class="col-3 rounded-pill badge text-center 
-                                          d-inline-block course-list_level"
-                                   th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : 
-                                                     item.coursLevelNm == '쉬움' ? ' bg-info' : 
-                                                     item.coursLevelNm == '보통' ? ' bg-success' : 
-                                                     item.coursLevelNm == '어려움' ? ' bg-warning' : 
-                                                     item.coursLevelNm == '매우어려움' ? ' bg-danger' : ''}"
-                                   th:text="${item.coursLevelNm}">난이도</p>
-                            </div>
-                            <div>
-                                <!-- 산책로 큰이름과 작은 이름이 같은 경우 고려할 때
-                                <h5 class="card-text"
-                                    th:if="${item.wlkCoursNm} == ${item.wlkCoursFlagNm}"
-                                    >&nbsp;</h5> -->
-                                <h3 class="card-text course-list_small-title" 
-                                    th:text="${item.wlkCoursNm}">산책로 작은이름</h3>
-                            </div>
-                        </div>
-                        
-                        <!-- 지역 -->
-                        <p class="card-text course-list_region" 
-                           th:text="${item.signguCn}">지역</p>
-                        <!-- "코스거리" | "소요시간"시간 분 소요 -->
-                        <p class="card-text course-list_distance">
-                            <span th:text="${item.coursDetailLtCn}">총코스거리</span>km |  
-                            <span th:text="${#dates.format(item.coursTimeCn, 'H시간 mm분 소요')}">
-                             소요 시간</span>
-                        </p>
-                        <!-- 산책로 설명 : 일정 길이 넘어가면 ... 로 축약되도록 -->
-                        <p class="card-text course-list_aditDc" 
-                           th:text="${item.aditDc != null && #strings.length(item.aditDc) &gt; 70 ? 
-                                    #strings.substring(item.aditDc, 0, 70) + '...' 
-                                    : item.aditDc}">산책로 설명
-                        </p>
-                        <!-- 좋아요 수 / 언급 수 / 댓글 수 / 조회 수 -->
-                        <p class="card-text countBox">
-                           <img class="count-icon left-align"
-                                 src="/images/common/heart-click.png" alt="좋아요" />
-                           <span class="left-align" th:text="${item.likeCnt}+'개'"
-                                style="margin-right: 14px;">좋아요 수</span> 
-                           <i class="fa-regular fa-comment-dots fa-lg count-icon left-align commentIcon"
-                                style="margin-right: 1px;"></i>
-                           <span class="left-align" th:text="${item.commentCnt}+'개'"
-                                style="margin-right: 14px;">댓글 수</span>
-                           <i class="fa-regular fa-pen-to-square fa-lg count-icon left-align"
-                                style="margin-right: 1px;"></i>
-                           <span class="left-align" th:text="${item.mentionCnt}+'개'">언급 수</span>
-                           <span class="right-align-number" th:text="${item.coursViewCount}"
-                                style="margin-left: 2px;">조회수</span>
-                           <i class="fa-regular fa-eye fa-lg count-icon right-align-eye"
-                                style="margin-top: 4px;"></i>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 페이지네이션 기능 -->
-    <div class="pageInfo_wrap" id="pagination">
-        <!--pagination-sm 추가하면 작아지고, pagination-lg 추가하면 커진다 -->
-        <ul class="pagination pagination 
-                   justify-content-center page-border">
-           <li class="page-item" id="pagePrev"
-               th:classappend="${currentPage == 0} ? 'disabled' : ''">
-               <!-- 링크 클릭할 때 해당 링크의 url로 이동하는 기본 동작 막기 위해 사용
-                    자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
-               <!-- th:onclick="'loadPage(\''+${currentPage - 1}+'\')'" -->
-               <a class="page-link arrow rounded-3" 
-                  href="javascript:void(0);"
-                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">
-                  <i class="fa-solid fa-chevron-left"></i></a>
-           </li>
-           <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
-               <li th:if="${page == (currentPage+1)}" 
-                   class="page-item active">
-                   <a class="page-link page-number" 
-                   href="javascript:void(0);"
-                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
-               </li>
-               <li th:unless="${page == (currentPage+1)}" 
-                   class="page-item page-number">
-                   <a class="page-link" 
-                   href="javascript:void(0);"
-                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
-               </li>
-           </th:block>
-           <li class="page-item" id="pageNext"
-               th:classappend="${currentPage == lastPage - 1} ? 'disabled' : ''">
-               <a class="page-link arrow rounded-3" 
-               href="javascript:void(0);"
-               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
-               <i class="fa-solid fa-chevron-right"></i></a>
-           </li>
-        </ul>
-    </div>
+	    <input type="hidden" id="imagePaths" th:value="${imagePaths}" />
+	    <div class="container course-lists" >
+	        <div class="row">
+	            <!-- 검색 결과 없을 때 처리 -->
+	            <p class = "my-2 courseCount">게시물 수 : <span th:text="${courses.totalElements}"></span></p>
+	            <p th:if="${courses.totalElements == 0}" 
+		        class= "noResult mx-5 mt-5 text-center fs-1">검색 결과에 해당하는 산책로가 없습니다.</p>
+	    
+	            <!-- th:each="item : ${courses}" -->
+	            <div class="col-4" 
+	                 th:each="item, stat : ${courses}">
+	                <!-- 현재 순환 중인 item에 해당하는 이미지 경로를 가져와서 image 변수에 할당 -->
+	                <div class="card course-list"
+	                     th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">
+	                    <!-- src="/images/defaultCourseImg.png" 
+	                         stat.index는 순환 중인 아이템의 인덱스를 나타냄. 
+	                         image가 없는 course의 경우도 컨트롤러에서 기본값을 부여해줬다.
+	                          -->
+	                    <img class="card-img-top course-list_imgBox" 
+	                         th:src="${imagePaths[stat.index]}"
+	                         alt="산책로 사진" />
+	                    <div class="card-body course-list_textbox">
+	                        <div class="course-list_titlebox">
+	                            <div class="row course-list_title">
+	                                <!-- 산책로 이름 - 큰이름과 작은이름이 서로 같으면 큰 이름만 출력 되도록 
+	                                     하려면 th:if="${item.wlkCoursNm} != ${item.wlkCoursFlagNm}" 붙이기 -->
+	                                <h5 class="col-10 card-title course-list_big-title" 
+	                                    th:text="${item.wlkCoursFlagNm}">
+	                                    산책로 큰이름</h5>
+	                                <!-- 산책로 난이도 -->
+	                                <p class="col-3 rounded-pill badge text-center 
+	                                          d-inline-block course-list_level"
+	                                   th:classappend="${item.coursLevelNm == '매우쉬움' ? ' bg-primary' : 
+	                                                     item.coursLevelNm == '쉬움' ? ' bg-info' : 
+	                                                     item.coursLevelNm == '보통' ? ' bg-success' : 
+	                                                     item.coursLevelNm == '어려움' ? ' bg-warning' : 
+	                                                     item.coursLevelNm == '매우어려움' ? ' bg-danger' : ''}"
+	                                   th:text="${item.coursLevelNm}">난이도</p>
+	                            </div>
+	                            <div>
+	                                <!-- 산책로 큰이름과 작은 이름이 같은 경우 고려할 때
+	                                <h5 class="card-text"
+	                                    th:if="${item.wlkCoursNm} == ${item.wlkCoursFlagNm}"
+	                                    >&nbsp;</h5> -->
+	                                <h3 class="card-text course-list_small-title" 
+	                                    th:text="${item.wlkCoursNm}">산책로 작은이름</h3>
+	                            </div>
+	                        </div>
+	                        
+	                        <!-- 지역 -->
+	                        <p class="card-text course-list_region" 
+	                           th:text="${item.signguCn}">지역</p>
+	                        <!-- "코스거리" | "소요시간"시간 분 소요 -->
+	                        <p class="card-text course-list_distance">
+	                            <span th:text="${item.coursDetailLtCn}">총코스거리</span>km |  
+	                            <span th:text="${#dates.format(item.coursTimeCn, 'H시간 mm분 소요')}">
+	                             소요 시간</span>
+	                        </p>
+	                        <!-- 산책로 설명 : 일정 길이 넘어가면 ... 로 축약되도록 -->
+	                        <p class="card-text course-list_aditDc" 
+	                           th:text="${item.aditDc != null && #strings.length(item.aditDc) &gt; 70 ? 
+	                                    #strings.substring(item.aditDc, 0, 70) + '...' 
+	                                    : item.aditDc}">산책로 설명
+	                        </p>
+	                        <!-- 좋아요 수 / 언급 수 / 댓글 수 / 조회 수 -->
+	                        <p class="card-text countBox">
+	                           <img class="count-icon left-align"
+	                                 src="/images/common/heart-click.png" alt="좋아요" />
+	                           <span class="left-align" th:text="${item.likeCnt}+'개'"
+	                                style="margin-right: 14px;">좋아요 수</span> 
+	                           <i class="fa-regular fa-comment-dots fa-lg count-icon left-align commentIcon"
+	                                style="margin-right: 1px;"></i>
+	                           <span class="left-align" th:text="${item.commentCnt}+'개'"
+	                                style="margin-right: 14px;">댓글 수</span>
+	                           <i class="fa-regular fa-pen-to-square fa-lg count-icon left-align"
+	                                style="margin-right: 1px;"></i>
+	                           <span class="left-align" th:text="${item.mentionCnt}+'개'">언급 수</span>
+	                           <span class="right-align-number" th:text="${item.coursViewCount}"
+	                                style="margin-left: 2px;">조회수</span>
+	                           <i class="fa-regular fa-eye fa-lg count-icon right-align-eye"
+	                                style="margin-top: 4px;"></i>
+	                        </p>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <!-- 페이지네이션 기능 -->
+	    <div class="pageInfo_wrap" id="pagination">
+	        <!--pagination-sm 추가하면 작아지고, pagination-lg 추가하면 커진다 -->
+	        <ul class="pagination pagination 
+	                   justify-content-center page-border">
+	           <li class="page-item" id="pagePrev"
+	               th:classappend="${currentPage == 0} ? 'disabled' : ''">
+	               <!-- 링크 클릭할 때 해당 링크의 url로 이동하는 기본 동작 막기 위해 사용
+	                    자바스크립트가 없는 상황에서는 아무 것도 일어나지 않게끔 한다. -->
+	               <!-- th:onclick="'loadPage(\''+${currentPage - 1}+'\')'" -->
+	               <a class="page-link arrow rounded-3" 
+	                  href="javascript:void(0);"
+	                  th:onclick="'loadPage(' + (${currentPage - 1}) + ')'">
+	                  <i class="fa-solid fa-chevron-left"></i></a>
+	           </li>
+	           <th:block th:each="page : ${#numbers.sequence(pageStart, pageEnd)}">
+	               <li th:if="${page == (currentPage+1)}" 
+	                   class="page-item active">
+	                   <a class="page-link page-number" 
+	                   href="javascript:void(0);"
+	                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+	               </li>
+	               <li th:unless="${page == (currentPage+1)}" 
+	                   class="page-item page-number">
+	                   <a class="page-link" 
+	                   href="javascript:void(0);"
+	                   th:onclick="'loadPage(' + (${page - 1}) + ')'">[[${page}]]</a>
+	               </li>
+	           </th:block>
+	           <li class="page-item" id="pageNext"
+	               th:classappend="${currentPage == lastPage - 1} ? 'disabled' : ''">
+	               <a class="page-link arrow rounded-3" 
+	               href="javascript:void(0);"
+	               th:onclick="'loadPage(' + (${currentPage + 1}) + ')'">
+	               <i class="fa-solid fa-chevron-right"></i></a>
+	           </li>
+	        </ul>
+	    </div>
     </div>
 </th:block>
 </body>

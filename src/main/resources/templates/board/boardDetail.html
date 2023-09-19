@@ -71,10 +71,15 @@
 			<div>
 				<div class="mx-lg-3 mx-2 p-lg-5 p-4 mb-3 bg-white rounded-4 boardContent">
 					<!-- 이미지 -->
-				    <div class="board-imgBox mb-3" th:if="${imagePaths!=null}">
+				    <div th:if="${imagePaths!=null}"
+				    	class="board-imgBox mb-3"
+				        style="width: 250px; height: 250px; 
+                        background-color: #fff; overflow: hidden;">
 				        <img class="board-imgBox_img"	
-				            th:src="${imagePaths[0]}"
-				            alt="게시판 등록사진" />        
+				            style="width: 100%; height: 100%; object-fit: cover;"
+				            th:src="${imagePaths!=null}? ${imagePaths[0]} : 
+				            '/images/board/defaultBoardImage.png'"
+				            alt="게시판 등록사진" />    
 				    </div>
 				    <!-- 내용 -->
 					<div style="white-space:pre-wrap;">[[${

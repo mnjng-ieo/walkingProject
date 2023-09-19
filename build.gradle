@@ -30,21 +30,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	// 타임리프 레이아웃 의존성 추가
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-
-	//// 데이터베이스를 다루는 기술 3대장 1.JPA 2.MyBatis 3.JDBC TEMPLATE
-	// jdbc Template방식 기술로 개발할때 필요
-//	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	// jpa방식 기술로 개발할때 필요
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	// 순수 jdbc 기술로 개발할때 필요
-//	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-	// 대한민국에서 가장 많이 사용하고 있는 데이터베이스 기술
-//	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
-	
+
 	// 실행시 필요한 데이터베이스 jdbc 드라이버
-//	runtimeOnly 'com.h2database:h2'
-//	runtimeOnly 'com.mysql:mysql-connector-j'
-//	runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
 	
@@ -68,6 +57,7 @@ dependencies {
     
     // Spring Boot Starter Validation 유효성 검증
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	
 }
 
 tasks.named('test') {

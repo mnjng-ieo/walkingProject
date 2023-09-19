@@ -156,28 +156,28 @@ public class CourseViewController {
 				}
 			}
 		}
-			String startTime = null;
-			String endTime = null; 
-			
-			if(time == null) {
-				
-			} else if(time.equals("1")) {
-				startTime = "00:00:00";
-				endTime = "00:59:00";
-		    } else if (time.equals("2")) {
-		    	startTime = "01:00:00";
-		    	endTime = "01:59:00";
-		    } else if (time.equals("3")) {
-		    	startTime = "02:00:00";
-		    	endTime = "02:59:00";
-		    } else if (time.equals("4")) {
-		    	startTime = "03:00:00";
-		    	endTime = "03:59:00";
-		    } else if (time.equals("5")) {
-		    	startTime = "04:00:00";
-		    	endTime = "99:00:00";
-		    }
+		String startTime = null;
+		String endTime = null; 
 		
+		if(time == null) {
+			
+		} else if(time.equals("1")) {
+			startTime = "00:00:00";
+			endTime = "00:59:00";
+	    } else if (time.equals("2")) {
+	    	startTime = "01:00:00";
+	    	endTime = "01:59:00";
+	    } else if (time.equals("3")) {
+	    	startTime = "02:00:00";
+	    	endTime = "02:59:00";
+	    } else if (time.equals("4")) {
+	    	startTime = "03:00:00";
+	    	endTime = "03:59:00";
+	    } else if (time.equals("5")) {
+	    	startTime = "04:00:00";
+	    	endTime = "99:00:00";
+	    }
+	
 		Page<CourseResponseDTO> coursePage = 
 				courseService.findAllByCondition(
 				region, level, distance, startTime, endTime,

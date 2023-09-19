@@ -198,6 +198,7 @@ select option:checked {
     margin-left: 10px;
     padding-top: 40px;
     position: absolute;
+    z-index: -100;
     top: -115px;
 }
 

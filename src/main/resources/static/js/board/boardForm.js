@@ -158,9 +158,9 @@ window.onload = function(){
 		courseLength = result.coursDetailLtCn
 		courseTime = result.coursTimeCn
 		
-		let savedImageName = getValue("savedImageName").value;
+		let savedImageName = document.getElementById("savedImageName").value;
 		let imagePath;
-	    if (savedImageName) {
+	    if (savedImageName != null) {
 	        imagePath = '/upload-images/course/' + savedImageName;
 	    } else {
 	        imagePath = '/images/defaultCourseMainImg.jpg';

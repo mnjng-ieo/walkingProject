@@ -40,7 +40,7 @@ public class SecurityConfig {
 		http.csrf((csrf) -> csrf.disable()).cors((cors) -> cors.disable())
 		
 				.authorizeHttpRequests(request -> request.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-						.requestMatchers("/status", "/images/**", "/css/**", "/js/**", "/login", "/", "/signup/**", "/login/idlookup", "/login/pwdlookup/**")
+						.requestMatchers("/status", "/images/**", "/upload-images/**", "/css/**", "/js/**", "/login", "/", "/signup/**", "/login/idlookup", "/login/pwdlookup/**")
 						.permitAll()
 						.requestMatchers("/**").permitAll() // 나중에 삭제
 						.requestMatchers("/**").hasAuthority(UserRole.USER.getRoleName()) // user만 가능한 기능 uri 넣기

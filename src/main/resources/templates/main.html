@@ -44,7 +44,7 @@
 		    <h2>가장 인기있는 산책로 BEST 9</h2>
 		    <!-- 산책로 목록을 3개씩 그룹화 -->
 		    <div id="course-carousel" class=" carousel carousel-dark slide" data-bs-ride="carousel" >
-		        <div class="carousel-inner">
+		        <div class="carousel-inner" th:if="${courses != null}">
 		            <!-- 첫 번째 그룹 -->
 		            <div class="carousel-item active" data-bs-interval="5000">
 		                <div class="course-lists">
@@ -196,7 +196,8 @@
 		<h2 class="container mb-4">지금 핫한 해시태그</h2>
 		<div class="container p-3 rounded-4 border border-1 shadow hotTagBorder">
 	    	<!-- 가장 많이 사용된 태그 메인화면에 출력하기 -->
-	        <div class="px-5 hotTags" style="text-align: center;">
+	        <div class="px-5 hotTags" style="text-align: center;"
+	        	th:if="${hotTagList != null}">
 				<div class = "d-flex flex-wrap justify-content-between">		
 					<span class = "p-1 flex-fill" 
 		                 th:each="hotTag, i : ${hotTagList}"
@@ -224,7 +225,8 @@
     	<div id="needToChange" class="container" style="margin-bottom: 90px; margin-top: 80px;">
 	    	<h4 class="container mt-5 mb-3" style="width: 92%;">현재 핫한 해시태그가 포함된 게시물 목록</h4>
 	    	    <div class="container" style="width: 92%;">
-		    	    <table class="table table-hover">
+		    	    <table class="table table-hover"
+		    	    	th:if="${tagBoardList != null}">
 						<thead>
 					        <tr>
 					        	<th class ="col-lg-2">글 번호</th>

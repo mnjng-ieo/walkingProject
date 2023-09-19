@@ -54,8 +54,7 @@
    
             <!-- 이름 입력 필드 -->
             <div class="mb-5 w-75 m-auto">
-               <label for="userName" class="form-label fs-5"></label> 
-               <label for="userName" class="form-label">이름
+               <label for="userName" class="form-label fs-5">이름
                <span class="text-danger"> *</span></label> 
                <input type="text" class="form-control form-control-lg" id="userName" name="userName"
                      th:value="${signupDto != null}? ${signupDto.userName} : ''"

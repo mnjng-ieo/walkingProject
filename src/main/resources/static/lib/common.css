@@ -161,7 +161,7 @@ header {
     font-size: 21px;
 }
 
-.searchBtn {
+.headerSearchBtn {
     margin-top: 10px;
     width: 50px; height: 40px;
     border: 1px solid #ccc;
@@ -173,12 +173,12 @@ header {
     margin-right: 20px;
 } 
 
-.searchBtn:hover {
+.headerSearchBtn:hover {
     background-color: #E1ECC8;
     color: #F7F6DC;
 }
 
-.searchBtn i {
+.headerSearchBtn i {
     display: block;
     margin: 0 auto;
     line-height: 25px;
