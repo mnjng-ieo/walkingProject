@@ -40,13 +40,12 @@
 						
 						<!-- 로그인 실패 시 알림! -->
 						<div class="alert alert-danger" id="error-message"
-							th:if="${param.error}">
-							<p th:text="${errorMessage}"></p>
+							th:if="${param.error}" th:text="${errorMessage}">
 						</div>
                   		<!-- 회원가입 성공 시 알림! -->
 						<div th:if="${param.success}">
 							<div class="alert alert-success">
-								<p>회원가입이 성공적으로 완료되었습니다.</p>
+								회원가입이 성공적으로 완료되었습니다.
 							</div>
 						</div>
 						
