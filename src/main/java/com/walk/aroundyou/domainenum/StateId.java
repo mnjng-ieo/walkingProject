@@ -3,8 +3,6 @@ package com.walk.aroundyou.domainenum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import net.bytebuddy.asm.Advice.Return;
-
 @Getter
 @ToString
 @AllArgsConstructor

@@ -14,7 +14,6 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude="userPwd")
 public class UserpageRequest {
 
 	/// DTO 클래스, 리포지토리와 상호작용

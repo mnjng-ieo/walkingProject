@@ -562,9 +562,26 @@ public class UserController {
 	@GetMapping("/admin/users")
 	@AdminAuthorize
 	public String showUsers(
-	Model model,
-	@RequestParam(value = "page", required=false, defaultValue="0") int currentPage) {
-	
+		Model model,
+		@RequestParam(value = "page", required=false, defaultValue="0") int currentPage,
+		@AuthenticationPrincipal User user) {
+	if (user != null) {
+		model.addAttribute("loginId", user.getUsername());
+		Member currentUser = userService.findByUserId(user.getUsername()).get();
+		if (currentUser != null) {
+	        model.addAttribute("currentUser", currentUser);
+			model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
+			UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
+			if (currentUserImage != null) {
+				String currentUserImagePath = 
+						uploadImageService.findUserFullPathById(currentUserImage.getFileId());
+				model.addAttribute("currentUserImagePath", currentUserImagePath);
+			}
+		}
+	} else {
+		// 로그인된 사용자가 아니면 돌아감
+		return "redirect:/board";
+	}
 	Page<IUserResponse> users = userService.findAllUsers(currentPage);
 	
 	// pagination 설정

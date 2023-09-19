@@ -72,15 +72,12 @@ public class MainViewController {
 		
 		// BEST 9개 출력
 		Page<ICourseResponseDTO> coursePage = courseService.findCoursesOrderByLikes();
-		
+		model.addAttribute("courses", coursePage);  
 		// 가장 많이 사용된 태그 메인화면에 출력하기 
 		List<String> hotTagList = tagService.findTagsByBoardTagId();
-
+		model.addAttribute("hotTagList", hotTagList);			
 		// 좋아요 순이 가장 많은 태그(=hotTagList.get(0))의 게시물 출력됨 
 		List<IBoardListResponse> tagBoardList = tagService.findBoardAndCntByMainTagDefault(hotTagList.get(0));
-		
-		model.addAttribute("courses", coursePage);  
-		model.addAttribute("hotTagList", hotTagList);
 		model.addAttribute("tagBoardList", tagBoardList);
 
 		return "main";

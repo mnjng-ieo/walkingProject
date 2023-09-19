@@ -6,16 +6,22 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.walk.aroundyou.domain.Member;
 import com.walk.aroundyou.dto.IUserResponse;
 
+import jakarta.transaction.Transactional;
+
 @Repository
 public interface UserRepository extends JpaRepository<Member, String> {
 	
 	// 1. 회원가입 시 User엔티티 전부 가져오기
+	@SuppressWarnings("unchecked")
+	@Modifying
+	@Transactional
 	Member save(Member member);
 	
 	
@@ -54,6 +60,8 @@ public interface UserRepository extends JpaRepository<Member, String> {
 	
 	
 	// 6. Id로 검색한 엔터티 삭제하기
+	@Modifying
+	@Transactional
 	void deleteByUserId(String userId);
 	
 	

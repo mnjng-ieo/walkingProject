@@ -513,7 +513,8 @@ public class CourseViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null && currentUser.getRole() == UserRole.valueOf("ADMIN")) {
-				model.addAttribute("currentUserRole", currentUser.getRole());
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -561,7 +562,8 @@ public class CourseViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null && currentUser.getRole() == UserRole.valueOf("ADMIN")) {
-				model.addAttribute("currentUserRole", currentUser.getRole());
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
@@ -587,7 +589,8 @@ public class CourseViewController {
 			model.addAttribute("loginId", user.getUsername());
 			Member currentUser = userService.findByUserId(user.getUsername()).get();
 			if (currentUser != null && currentUser.getRole() == UserRole.valueOf("ADMIN")) {
-				model.addAttribute("currentUserRole", currentUser.getRole());
+		        model.addAttribute("currentUser", currentUser);
+				model.addAttribute("currentUserRole", currentUser.getRole().getRoleName());
 				UploadImage currentUserImage = uploadImageService.findByUser(currentUser);
 				if (currentUserImage != null) {
 					String currentUserImagePath = 
