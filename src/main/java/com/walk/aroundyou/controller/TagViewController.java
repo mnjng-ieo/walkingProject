@@ -1,5 +1,6 @@
 package com.walk.aroundyou.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,6 +81,23 @@ public class TagViewController {
 		// 조회된 게시물 목록
 		Page<IBoardListResponse> tagBoardList = 
 			tagService.findBoardAndCntByTagId(tagId, currentPage, sort);
+		// 게시글 작성자 사진 출력하기
+		 List<String> tagBoardImagePaths = new ArrayList<>();
+	      for (IBoardListResponse boardDTO : tagBoardList) {
+	         Member tagBoardMember = userService.findByUserId(boardDTO.getUserId()).get();
+	         UploadImage tagBoardMemberImage = uploadImageService.findByUser(tagBoardMember);
+	         if(tagBoardMemberImage != null) {
+	            String tagBoardMemberImagePath = 
+	                  uploadImageService.findUserFullPathById(
+	                        tagBoardMemberImage.getFileId());
+	            tagBoardImagePaths.add(tagBoardMemberImagePath);
+	         } else {
+	            tagBoardImagePaths.add("/images/defaultCourseMainImg.jpg");
+	         }
+	      }
+	      model.addAttribute("tagBoardImagePaths", tagBoardImagePaths);
+		
+		
 		// pagination 설정
 		int totalPages = tagBoardList.getTotalPages();
 		int pageStart = getPageStart(currentPage, totalPages);

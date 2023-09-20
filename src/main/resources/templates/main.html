@@ -46,7 +46,7 @@
 		    <div id="course-carousel" class=" carousel carousel-dark slide" data-bs-ride="carousel" >
 		        <div class="carousel-inner" th:if="${courses != null}">
 		            <!-- 첫 번째 그룹 -->
-		            <div class="carousel-item active" data-bs-interval="5000">
+		            <div class="carousel-item active" data-bs-interval="4000">
 		                <div class="course-lists">
 		                    <div class="row">
 		                        <div class="col-4" th:each="item, iterStat : ${courses}" th:if="${iterStat.index < 3}">
@@ -98,7 +98,7 @@
 		                </div>
 		            </div>
 		            <!-- 두 번째 그룹 -->
-		            <div class="carousel-item" data-bs-interval="5000">
+		            <div class="carousel-item" data-bs-interval="4000">
 		                <div class="course-lists">
 		                    <div class="row">
 		                        <div class="col-4" th:each="item, iterStat : ${courses}" th:if="${iterStat.index >= 3 && iterStat.index < 6}">
@@ -151,7 +151,7 @@
 		            </div>
 		            <!-- 세 번째 그룹 -->
 		            <div class="carousel-item">
-		                <div class="course-lists" data-bs-interval="5000">
+		                <div class="course-lists" data-bs-interval="4000">
 		                    <div class="row">
 		                        <div class="col-4" th:each="item, iterStat : ${courses}" th:if="${iterStat.index >= 6 && iterStat.index < 9}">
 		                            <div class="card course-list" th:onclick="'redirectToCourseDetails(' + ${item.courseId} + ')'">

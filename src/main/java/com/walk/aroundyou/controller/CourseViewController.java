@@ -359,7 +359,6 @@ public class CourseViewController {
 				model.addAttribute("wirterMemberImagePaths", writerMemberImagePaths);
 			}
 		}
-		
 	    // pagination 설정
 	    int totalPages = courseBoardList.getTotalPages();
 	    int pageStart = getPageStart(currentPage, totalPages);
