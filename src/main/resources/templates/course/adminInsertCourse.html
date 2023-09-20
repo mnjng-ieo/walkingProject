@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    <div class="container mt-5 courseInfo" th:object="${course}">
+    <div class="container mt-5 pb-5 courseInfo" th:object="${course}">
         <div class="row">
             <div class="col-lg-6">
                 <!-- 서버로 courseId 값 넘기기 -->
@@ -263,9 +263,9 @@
                 </div>
             </div>
         </div>
-        <div class="row course-imgBox">
+        <div class="row course-imgBox mb-5">
             <!-- 메인 사진  -->
-            <div class="course-imgTop">
+            <div class="course-imgTop mb-2">
             	<p><i class="fa-solid fa-square-check" style="color: #4bab49;"></i> 산책로 메인 사진 - 상세페이지 상단 노출</p>
             	
             	<button type="button" class="imageUploadButton"
@@ -279,8 +279,8 @@
                  src="/images/defaultCourseMainImg_modify.png" alt="산책로 사진" />
         </div>
     </div>
-    <script src="/js/course/adminInsertCourse.js"></script>
     <script src="/js/course/adminCourse.js"></script>
+    <script src="/js/course/adminInsertCourse.js"></script>
 </th:block>
 </body>
 </html>

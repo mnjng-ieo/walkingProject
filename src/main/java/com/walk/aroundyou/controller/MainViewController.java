@@ -101,6 +101,21 @@ public class MainViewController {
 		// 좋아요 순이 가장 많은 태그(=hotTagList.get(0))의 게시물 출력됨 
 		List<IBoardListResponse> tagBoardList = tagService.findBoardAndCntByMainTagDefault(hotTagList.get(0));
 		model.addAttribute("tagBoardList", tagBoardList);
+		// 게시글 작성자 사진 출력하기
+		List<String> tagBoardImagePaths = new ArrayList<>();
+	      for (IBoardListResponse boardDTO : tagBoardList) {
+	         Member tagBoardMember = userService.findByUserId(boardDTO.getUserId()).get();
+	         UploadImage tagBoardMemberImage = uploadImageService.findByUser(tagBoardMember);
+	         if(tagBoardMemberImage != null) {
+	            String tagBoardMemberImagePath = 
+	                  uploadImageService.findUserFullPathById(
+	                        tagBoardMemberImage.getFileId());
+	            tagBoardImagePaths.add(tagBoardMemberImagePath);
+	         } else {
+	            tagBoardImagePaths.add("/images/defaultCourseMainImg.jpg");
+	         }
+	      }
+	      model.addAttribute("tagBoardImagePaths", tagBoardImagePaths);
 
 		return "main";
 	}
@@ -115,6 +130,22 @@ public class MainViewController {
 		
 		model.addAttribute("tagBoardList", tagBoardList);
 		model.addAttribute("tagContent", tagContent);
+
+		// 게시글 작성자 사진 출력하기
+		 List<String> tagBoardImagePaths = new ArrayList<>();
+	      for (IBoardListResponse boardDTO : tagBoardList) {
+	         Member tagBoardMember = userService.findByUserId(boardDTO.getUserId()).get();
+	         UploadImage tagBoardMemberImage = uploadImageService.findByUser(tagBoardMember);
+	         if(tagBoardMemberImage != null) {
+	            String tagBoardMemberImagePath = 
+	                  uploadImageService.findUserFullPathById(
+	                        tagBoardMemberImage.getFileId());
+	            tagBoardImagePaths.add(tagBoardMemberImagePath);
+	         } else {
+	            tagBoardImagePaths.add("/images/defaultCourseMainImg.jpg");
+	         }
+	      }
+	      model.addAttribute("tagBoardImagePaths", tagBoardImagePaths);
 		
 		return "board/tagBoardList";
 	}

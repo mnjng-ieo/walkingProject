@@ -151,7 +151,10 @@
         <div class="d-flex justify-content-center flex-wrap mb-4 px-lg-5" 
              th:each="comment, stat : ${comments}" 
                 style="text-align: auto">
-			<div class="mt-1 rounded-circle mx-1 overflow-hidden " style="width: 80px; height: 80px;">
+			<div class="mt-1 rounded-circle mx-1 overflow-hidden "
+						style="width: 80px; height: 80px; cursor: pointer;"
+						th:data-url="@{/@{userId}(userId=${comment.userId})}" 
+						onclick="goMemberPage(this)">
 				<img class="" 
 						th:src="${commentMemberImagePaths!=null}? 
 						${commentMemberImagePaths[stat.index]}: '/images/defaultUserImage.png'"
@@ -160,9 +163,12 @@
             <div class="col-10 bubble">
         <!-- 코멘트 상단 : user 이미지, 닉네임, 수정일자, 좋아요 버튼, 좋아요 수 -->
                 <div class="d-flex justify-content-between mx-2">
-                    <!-- user 이미지, 닉네임 --> 
-                        <div class="mx-2" th:text="${comment.userNickname}"></div>
-                        <div class="mx-2" th:text="${#dates.format(comment.commentUpdatedDate, 'yyyy-MM-dd HH:mm')}" ></div>
+                    <!-- user 이미지, 닉네임 -->
+                   	<div class="mx-2" th:text="${comment.userNickname}"
+						th:data-url="@{/@{userId}(userId=${comment.userId})}" 
+						onclick="goMemberPage(this)"
+						style="cursor: pointer;"></div>
+                	<div class="mx-2" th:text="${#dates.format(comment.commentUpdatedDate, 'yyyy-MM-dd HH:mm')}" ></div>
                 </div>
             
             <!-- 코멘트 하단 : 코멘트 내용 및 버튼 -->   
@@ -299,8 +305,6 @@
         </div>
       
         <div id="needToChange">
-        <p th:if="${courseBoardList.totalElements == 0}" 
-           class= "noResult mx-5 m-5 text-center fs-5">해당 산책로가 언급된 게시물이 없습니다.</p>
         <!-- 테이블로 게시물 목록 출력 -->
         <table class="table table-hover">
           <thead>
@@ -362,6 +366,8 @@
             </tr>
           </tbody>
         </table>
+        <p th:if="${courseBoardList.totalElements == 0}" 
+           class= "noResult mx-5 m-5 text-center fs-5">해당 산책로가 언급된 게시물이 없습니다.</p>
     
         <!-- 페이지네이션 기능 -->
     <div class="pageInfo_wrap" id="pagination">

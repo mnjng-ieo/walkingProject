@@ -155,21 +155,17 @@
                                     : item.aditDc}">산책로 설명
                         </p>
                         <!-- 예정 : 좋아요 수 / 언급 수 / 댓글 수 -->
-                        <p class="card-text">
-                           <img class="heart-icon"
+                        <div class="card-text d-flex flex-wrap justify-content-between">
+                           <img class="heart-icon" style="margin-top: -2px; margin-right:3px;"
                                  src="/images/common/heart-click.png" alt="좋아요" />
-                           <span th:text="${item.likeCnt}">좋아요 수</span>개 
-                           <span style="margin-right:15px;"></span>
-                           <i class="fa-regular fa-comment-dots"></i>
-                           <span th:text="${item.commentCnt}">댓글 수</span>개
-                           <span style="margin-right:15px;"></span>
-                           <i class="fa-regular fa-pen-to-square"></i>
-                           <span th:text="${item.mentionCnt}">언급 수</span>개
-                           <!-- 수정해야됨!!!!! -->
-                           <span style="margin-right:120px;"></span>
-                           <i class="fa-regular fa-eye "></i>
-                           <span th:text="${item.coursViewCount}">조회수</span>
-                        </p>
+                           <div style="margin-right:15px;">[[${item.likeCnt}]]개</div>
+                           <i class="fa-regular fa-comment-dots" style="margin: 3px; margin-right:5px;"></i>
+                           <div style="margin-right:15px;">[[${item.commentCnt}]]개</div>
+                           <i class="fa-regular fa-pen-to-square" style="margin: 3px; margin-right:5px;"></i>
+                           <div class="me-auto">[[${item.mentionCnt}]]개</div>
+                           <i class="fa-regular fa-eye" style="margin: 3px; margin-right:5px;"></i>
+                           <div>[[${item.coursViewCount}]]개</div>
+                        </div>
                     </div>
                 </div>
             </div>

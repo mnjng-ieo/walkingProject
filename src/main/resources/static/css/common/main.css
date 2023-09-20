@@ -115,8 +115,11 @@ body{
 
 .course-list_aditDc {
 	height: 90px;
+	
 }
-
+.course-list_region, .course-list_distance, .course-list_aditDc, .course-list_count{
+    font-family: 'NanumSquareRound';
+}
 .heart-icon {
 	width: 25px;
 	padding-bottom: 3px;
@@ -156,6 +159,9 @@ body{
 	background-color: #3D8361;
 	border: 1px solid #3D8361;
 	box-shadow: 1px 1px 1px 2px lightgrey;
+}
+.tagListBox{
+	font-family: 'NanumSquareRound';	
 }
 
 /* 캐러셀 컨트롤러 버튼의 위치 조정 및 z-index 설정 */

@@ -489,6 +489,25 @@ public class UserController {
 
 				Page<ICourseResponseDTO> myCourseComments = userService.findMyCourseCommentAndCnt(userId, currentPage);
 
+	            // ★★★★ 산책로 이미지 경로 넘기기 - 0920 지수 추가
+	            List<String> courseImagePaths = new ArrayList<>();
+	            for (ICourseResponseDTO courseResponseDTO : myCourseComments) {
+	               //UploadImage uploadImage = courseResponseDTO.getCourseImageId();
+	               Course course = courseService.findById(courseResponseDTO.getCourseId());
+	               UploadImage uploadImageCourse = uploadImageService.findByCourse(course);
+	               if (uploadImageCourse != null) {
+	                  String imagePathCourse = 
+	                        uploadImageService.findCourseFullPathById(
+	                              uploadImageCourse.getFileId());
+	                  courseImagePaths.add(imagePathCourse);
+	               } else {
+	                  // 여기 기본 이미지를 어떤 걸로 해야할지 약간 고민스럽다. 
+	                  courseImagePaths.add("/images/defaultCourseMainImg.jpg");
+	               }
+	            }
+	            // 모델에 이미지 경로 리스트 추가
+	            model.addAttribute("courseImagePaths", courseImagePaths);
+
 				// pagination 설정
 				int totalPages = myCourseComments.getTotalPages();
 				int pageStart = getPageStart(currentPage, totalPages);
@@ -554,6 +573,25 @@ public class UserController {
 				}
 
 				Page<IBoardListResponse> myBoardComments = userService.findMyBoardCommentAndCnt(userId, currentPage);
+	            
+	            // ★★★ 게시물 작성자 이미지 경로 가져오기 - 0920 추가 ★★★
+	            if(myBoardComments != null && myBoardComments.isEmpty()) {
+	               List<String> writerMemberImagePaths = new ArrayList<>();
+	               
+	               for(IBoardListResponse boardDTO : myBoardComments.getContent()) {
+	                  Board board = boardService.findById(boardDTO.getBoardId()).get();
+	                  if (board != null) {
+	                     UploadImage writerMemberImage =
+	                           uploadImageService.findByUser(board.getUserId());
+	                     String writerMemberImagePath = (writerMemberImage != null) ?
+	                        uploadImageService.
+	                        findUserFullPathById(writerMemberImage.getFileId()) : 
+	                           "/images/defaultUserImage.png";
+	                     writerMemberImagePaths.add(writerMemberImagePath);
+	                  }
+	                  model.addAttribute("writerMemberImagePaths", writerMemberImagePaths);
+	               }
+	            }
 
 				// pagination 설정
 				int totalPages = myBoardComments.getTotalPages();

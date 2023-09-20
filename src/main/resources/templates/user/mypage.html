@@ -229,8 +229,6 @@
                    th:href="@{/board-editor}" role="button"
                    style="position: absolute; right: 70px;">게시글 작성</a>
                </div>
-               <p th:if="${myBoards.totalElements == 0}" 
-                  class= "noResult mx-5 mt-5 text-center fs-5">작성하신 게시물이 없습니다.</p>
                <table class="table table-hover mx-4">
                   <thead>
                     <tr>
@@ -284,10 +282,14 @@
                    </tr>
                   </tbody>
                 </table>
+                <p th:if="${myBoards.totalElements == 0}" 
+	                  class= "noResult mx-5 mt-5 text-center fs-5">작성하신 게시물이 없습니다.</p>
                 <!-- 페이지 넘기기 뷰 & 기능 -->
-                <div class="pageInfo_wrap" id="pagination">
+                <div
+                	class="pageInfo_wrap" id="pagination">
                     <!--pagination-sm 추가하면 작아지고, pagination-lg 추가하면 커진다 -->
-                    <ul class="pagination pagination 
+                    <ul th:if="${myBoards.totalElements != 0}" 
+                    	class="pagination pagination 
                                justify-content-center">
                        <li class="page-item" id="pagePrev"
                            th:classappend="${currentPage == 0} ? 'disabled' : ''">
@@ -329,13 +331,13 @@
         <div class="collapse mt-3" id="imgContainer">  
             <div class="container myImage-lists">
                 <!-- 게시물 사진이 없을 때 처리 -->
-                <div class = "d-flex justify-content-between mb-4 px-2 me-auto">
+                <div class = "mb-3 px-2 me-auto">
                     <p class = "my-2 myCount">
                     내가 업로드한 사진 : <span th:text="${myBoardImageCnt} + ' 개'"></span></p>
                     <p th:if="${myBoardImageCnt == 0}" 
                     class= "noResult mx-5 mt-5 text-center fs-5">작성하신 게시물이 없습니다.</p>
                 </div>
-                <div class="row justify-content-between myImage-row">
+                <div class="row justify-content-left myImage-row">
                     <div class="myImage-list-wrapper"
                         th:each="myBoardImage : ${myBoardImagePaths}"
                         th:data-url="@{/board/{id}(id=${myBoardImage.board.boardId})}" 

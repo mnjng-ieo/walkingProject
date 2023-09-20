@@ -152,3 +152,9 @@
 		let img = $(this).children('img');	
 		img.attr("src", "/images/common/heart-click.png");
 	})
+	
+	function goMemberPage(dataUrl){
+		let url = dataUrl.getAttribute("data-url");
+		// 페이지 이동
+    	window.location.href = url;
+	}

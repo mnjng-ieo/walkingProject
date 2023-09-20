@@ -278,16 +278,27 @@ window.onload = function() {
                 allFieldsValid = false;
             }
         });
-    
-        // 모든 필수 입력 필드가 채워져 있으면 버튼 활성화, 그렇지 않으면 비활성화
-        if (allFieldsValid) {
-            insertFinishButton.removeAttribute('disabled');
-            updateFinishButton.removeAttribute('disabled');
-        } else {
-            insertFinishButton.setAttribute('disabled', 'true');
-            updateFinishButton.removeAttribute('disabled', 'true');
-            //alert('필수 입력 조건이 충족되지 않았습니다.');
-            // => 아예 해당 버튼이 클릭되지 않도록 함!
+        
+        if(insertFinishButton != null){
+	        // 모든 필수 입력 필드가 채워져 있으면 버튼 활성화, 그렇지 않으면 비활성화
+	        if (allFieldsValid) {
+	            insertFinishButton.removeAttribute('disabled');
+	        } else {
+	            insertFinishButton.setAttribute('disabled', 'true');
+	            //alert('필수 입력 조건이 충족되지 않았습니다.');
+	            // => 아예 해당 버튼이 클릭되지 않도록 함!			
+	        }
+		}
+		if(updateFinishButton != null){
+	        // 모든 필수 입력 필드가 채워져 있으면 버튼 활성화, 그렇지 않으면 비활성화
+	        if (allFieldsValid) {
+	            updateFinishButton.removeAttribute('disabled');
+	        } else {
+	            updateFinishButton.removeAttribute('disabled', 'true');
+	            //alert('필수 입력 조건이 충족되지 않았습니다.');
+	            // => 아예 해당 버튼이 클릭되지 않도록 함!			
+			}
+
         }
     }
     

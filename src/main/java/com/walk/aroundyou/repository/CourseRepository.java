@@ -18,41 +18,53 @@ public interface CourseRepository
 					JpaSpecificationExecutor<Course> {
 	
 	//// 마이페이지에서 작성한 댓글들의 산책로 목록 출력
-	@Query(value ="""
-			SELECT 
-                c.course_id as courseId
-                , c.adit_dc as aditDc
-                , c.cours_dc as coursDc
-                , c.cours_detail_lt_cn as coursDetailLtCn
-                , c.cours_level_nm as coursLevelNm
-                , c.cours_lt_cn as coursLtCn
-                , c.cours_spot_la as coursSpotLa
-                , c.cours_time_cn as coursTimeCn
-                , c.cvntl_nm as cvntlNm
-                , c.esntl_id as esntlId
-                , c.signgu_cn as signguCn
-                , c.toilet_dc as toiletDc
-                , c.wlk_cours_flag_nm as wlkCoursFlagNm
-                , c.wlk_cours_nm as wlkCoursNm
-                , c.cours_view_count as coursViewCount
-                , COUNT(cm.comment_id) as commentCnt
-                , COUNT(cl.course_like_id) as likeCnt
-                , COUNT(bc.board_course_id) as mentionCnt
-            FROM Course as c
-                LEFT JOIN comment as cm ON cm.course_id = c.course_id 
-                LEFT JOIN course_like as cl ON cl.course_id = c.course_id
-                LEFT JOIN board_course as bc  ON bc.course_id = c.course_id
-            WHERE c.course_id IN 
-                (select c2.course_id
-                    from comment c2 
-                    where c2.comment_type = 'COURSE'
-                        and c2.user_id = :#{#userId}) 
-            GROUP BY c.course_id
-            ORDER BY c.course_id desc
-					""" // ORDER BY 최신순
-			, nativeQuery = true)
-	Page<ICourseResponseDTO> findMyCourseCommentAndCnt(
-			@Param("userId") String userId, Pageable pageable);
+	   @Query(value ="""
+	         SELECT 
+	                c.course_id as courseId
+	                , c.adit_dc as aditDc
+	                , c.cours_dc as coursDc
+	                , c.cours_detail_lt_cn as coursDetailLtCn
+	                , c.cours_level_nm as coursLevelNm
+	                , c.cours_lt_cn as coursLtCn
+	                , c.cours_spot_la as coursSpotLa
+	                , c.cours_time_cn as coursTimeCn
+	                , c.cvntl_nm as cvntlNm
+	                , c.esntl_id as esntlId
+	                , c.signgu_cn as signguCn
+	                , c.toilet_dc as toiletDc
+	                , c.wlk_cours_flag_nm as wlkCoursFlagNm
+	                , c.wlk_cours_nm as wlkCoursNm
+	                , c.cours_view_count as coursViewCount
+	   		    	, ifnull(like_cnt, 0) as likeCnt
+	   		   		, ifnull(mention_cnt, 0) as mentionCnt
+	   		   		, ifnull(comment_cnt, 0) as commentCnt
+	         FROM Course as c
+	            LEFT JOIN
+	               (select course_id, count(course_id) as like_cnt
+	                  from course_like as cl
+	                  group by cl.course_id) as cll
+	            on c.course_id = cll.course_id
+	            LEFT JOIN
+	               (select course_id, count(course_id) as mention_cnt
+	                  from board_course as bc
+	                  group by bc.course_id) as bcc
+	            on c.course_id = bcc.course_id
+	            LEFT JOIN
+	               (select course_id, count(course_id) as comment_cnt
+	                  from comment as c
+	                  group by c.course_id) as cc
+	            on c.course_id = cc.course_id
+	         WHERE c.course_id IN 
+	                (select c2.course_id
+	                    from comment c2 
+	                    where c2.comment_type = 'COURSE'
+	                        and c2.user_id = :#{#userId}) 
+	         GROUP BY c.course_id
+	         ORDER BY c.course_id desc
+	               """ // ORDER BY 최신순
+	         , nativeQuery = true)
+	   Page<ICourseResponseDTO> findMyCourseCommentAndCnt(
+	         @Param("userId") String userId, Pageable pageable);
 	
 	
 	/**
@@ -217,6 +229,7 @@ public interface CourseRepository
 					, c.cours_spot_lo as CoursSpotLo
 					, ifnull(comment_cnt, 0) as commentCnt
 		            , ifnull(like_cnt, 0) as likeCnt
+				, ifnull(mention_cnt, 0) as mentionCnt
 				FROM course as c
 		            LEFT JOIN 
 		               (select course_id, count(course_id) as comment_cnt
@@ -227,7 +240,12 @@ public interface CourseRepository
 		               (select course_id, count(course_id) as like_cnt
 		                  from course_like as cl
 		                  group by cl.course_id) as cll
-				    on c.course_id = cll.course_id				
+				    on c.course_id = cll.course_id	
+					LEFT JOIN
+						(select course_id, count(course_id) as mention_cnt
+							from board_course as bc
+							group by bc.course_id) as bcc
+					on c.course_id = bcc.course_id			
 	            WHERE REPLACE(wlk_cours_flag_nm, ' ', '') like :#{#keyword}
 		         or REPLACE(wlk_cours_nm, ' ', '') like :#{#keyword}
 		         or REPLACE(cours_dc, ' ', '') like :#{#keyword}
