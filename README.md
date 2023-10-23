@@ -19,10 +19,15 @@
 ## 🤍 STACKS
 
 🌳 Language : Java 17
+
 🌳 Web : HTML5, CSS3, Bootstrap 5.3.1, J-query 3.3.1, JavaScript,  Ajax 
+
 🌳 Framework : Spring Tool Suite 4 (STS - 이클립스 기반의 IDE)
+
 🌳 Library : Lombok 1.18.28, Thymeleaf 3.1.3, Spring Security 6.1.3, Spring Boot 3.1.3
+
 🌳 Database : mariaDB, JPA 3.1.3
+
 🌳 협업툴 & etc : 깃허브, ERD 클라우드, Notion, Trello
 
 ## 🤍 주요 기능
@@ -88,73 +93,7 @@
 - 내가 댓글 단 게시물을 모아볼 수 있다
 - 나의 정보 조회 및 수정, 탈퇴가 가능하다
 
-## 🤍 화면구성
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/046651e7-4f0d-4f88-b58c-2febe2a73bea/Untitled.png)
+## 🤍 시연영상
+https://drive.google.com/file/d/1D711NKUN83ytbPaG0dMT75a3MTfKgk9-/view
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/4a0522ac-28b1-4697-a0cb-37a917aefb87/Untitled.png)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/c97cc704-aba8-4d18-aad9-3c85b3bcd118/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/acf62fc3-1404-4464-b2fb-77ed03188999/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/1b9f0822-06a9-41aa-a5e1-4492e24151d9/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/ca2f9e1a-84d9-466a-9ccb-7a3da43e5a4e/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/5149027b-bf59-453f-ae5b-45e77386e74c/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/faabf7dd-1bee-402d-9ca3-a46c9749fc3b/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/63f4bb25-9b0c-4149-8c6a-1806e72584c6/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/f92410aa-cb49-4bc1-8e0f-68740cd83701/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/f35cf736-75ac-40d1-8011-42ea1ab99472/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/1223f1bd-fcd9-4f43-8d1e-b6c3ca743f5b/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/a6b4ce39-cde0-455f-a238-233a14356c9f/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/2b2e1a6e-dc79-46b1-8bd4-37c7694fcdcb/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/529750bf-db51-44cc-92d7-3cc833c762e1/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/93674e0c-cb6f-4263-87f1-c4338df0e706/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/8e0a53ff-c073-4ed5-bc60-ece79767e6a5/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/9f459cea-5b04-48ca-8663-3044e05dfd5b/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/f5a5a466-4d06-4e4a-bafe-bdf107c95e2f/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/e9324c79-21f5-450c-bdcb-58aae5c4144d/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/54477f88-fe62-46c4-a371-ebc540d70a8f/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/332b271a-6b51-4585-a89e-3b949edb98b7/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/0a3b8068-a737-4854-9762-3bb67a47ce9f/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/eab113aa-7c4a-46ff-a5fd-cb156e5b6d5e/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/e9916dd1-a0de-4cbb-b071-257dc1bcc5bb/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/4ecd876a-a0e9-4e5a-bcdd-3be0ec3fb144/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/d94734b5-8f22-4bb2-9e0d-3107b1f71863/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/d10af8b9-d8a3-479f-bd41-44d623065f23/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/ac415668-16b6-4f5b-bdc0-8cdf62e9a34a/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/57d40536-b096-4cce-8964-0ade636f3c73/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/4c575af3-f071-49d4-b0ee-946f8ab1a459/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/63933427-8748-4e8f-afcf-b2d45ad30782/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/0a9efe09-0d81-4b1e-9919-b7b2661d2758/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/542d0381-f10d-4029-80f2-fd224679c32f/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/93de1692-aeab-4da2-9564-3a56f930da30/c296484d-d0af-4f81-a515-79ccde9178ed/Untitled.png)
